@@ -25,32 +25,38 @@ p {
 }
 #objects_list {
     width:100%;
-    border:1px solid #004C96;
 }
-#objects_list tr:nth-child(odd) {
-    background-color: #efefef;
+#objects_list tr {
+    background-color: #fff;
+}
+#objects_list hr {
+    margin:2px auto;
+    color:red;
+    border: 0;
+    width: 100%;
+    background-color: #5f5f5f;
+    height: 1px;
 }
 .objects_icon {
     width:40px;
     text-align: center;
-    vertical-align: middle;
+    vertical-align: top;
 }
 .objects_title {
     font-weight: bold;
     vertical-align: middle;
     white-space: nowrap;
-    cursor: pointer;
-}
-.objects_title a {
     text-decoration: none;
+    color:#3187c4;
 }
 .objects_addrs {
-    width:100px;
+    width:150px;
     color:#5f5f5f;
     font-style:italic;
 }
 .objects_dist {
-    text-align:center;
+    font-style:italic;
+    color:#5f5f5f;
 }
 .objects_addrs div {
     display:block;
