@@ -53,15 +53,16 @@ class Page extends PageCommon {
 
         $db->sql = "SELECT pt.*, rt.tp_name, rt.tp_icon,
                            ru.url,
-                           ROUND(1000 * (ABS(pt.pt_latitude - $c_lat) + ABS(pt.pt_longitude - $c_lon))) AS delta_sum
+                           ROUND(6371 * 1000 * acos(sin(RADIANS(pt.pt_latitude)) * sin(RADIANS($c_lat)) + cos(RADIANS(pt.pt_latitude)) * cos(RADIANS($c_lat)) * cos(RADIANS(pt.pt_longitude) - RADIANS($c_lon)))) AS dist_m
                     FROM $dbpt pt
                     LEFT JOIN $dprt rt ON rt.tp_id = pt.pt_type_id
                     LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
                     LEFT JOIN $dpru ru ON ru.uid = pc.pc_url_id
                     WHERE pt.pt_active = 1
                     AND pt.pt_latitude > 0 AND pt.pt_longitude > 0
-                    ORDER BY delta_sum
+                    ORDER BY dist_m
                     LIMIT 20";
+        //$db->showSQL();
         $db->exec();
         $points = array();
         while ($pt = $db->fetch()) {
