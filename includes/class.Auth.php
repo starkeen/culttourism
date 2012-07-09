@@ -3,6 +3,7 @@
 class Auth {
 
     private $db = null;
+    private $key_lifetime_hours = 2592000; //3600 * 24 * 30;
     public $key = null;
     private $session = null;
     private $meta = array(
@@ -40,7 +41,7 @@ class Auth {
             $this->key = $this->db->getEscapedString($_COOKIE['apikey']);
         } else {
             $this->key = md5(uniqid() . $this->secretstring);
-            if (!setcookie('apikey', $this->key, time() + 60 * 60 * 24 * 30, '/'))
+            if (!setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/'))
                 $this->key = + 'x_';
         }
         return $this->key;
@@ -54,22 +55,24 @@ class Auth {
         if (isset($row['au_session']) && $row['au_session'] == $this->session) {
             $this->db->sql = "UPDATE $dba
                                 SET au_date_last_act = now(),
-                                au_date_expire = DATE_ADD(now(),INTERVAL " . _AUTH_EXPIRE_HOURS . " HOUR),
+                                au_date_expire = DATE_ADD(now(),INTERVAL $this->key_lifetime_hours SECOND),
                                 au_last_act = '{$this->meta['uri']}'
                               WHERE au_key = '$this->key' LIMIT 1";
             $this->db->exec();
+            setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/');
         } elseif (isset($row['au_session']) && $row['au_session'] != $this->session) {
             $this->db->sql = "UPDATE $dba
                                 SET au_date_last_act = now(),
-                                au_date_expire = DATE_ADD(now(),INTERVAL " . _AUTH_EXPIRE_HOURS . " HOUR),
+                                au_date_expire = DATE_ADD(now(),INTERVAL $this->key_lifetime_hours SECOND),
                                 au_last_act = '{$this->meta['uri']}',
                                 au_session = '$this->session'
                               WHERE au_key = '$this->key' LIMIT 1";
             $this->db->exec();
+            setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/');
         } else {
             $this->db->sql = "INSERT INTO $dba
                                 SET au_date_last_act = now(), au_date_login = now(),
-                                au_date_expire = DATE_ADD(now(),INTERVAL " . _AUTH_EXPIRE_HOURS . " HOUR),
+                                au_date_expire = DATE_ADD(now(),INTERVAL $this->key_lifetime_hours SECOND),
                                 au_last_act = '{$this->meta['uri']}', au_service = '$service', au_browser = '{$this->meta['browser']}', au_ip = '{$this->meta['ip']}',
                                 au_session = '$this->session', au_key = '$this->key'";
             $this->db->exec();
