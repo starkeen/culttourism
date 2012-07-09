@@ -167,7 +167,7 @@ h1, .h1 {
     vertical-align: middle;
     padding: 4pt 0 0 8pt;
 }
-h2 {
+h2, .h2 {
     display:block;
     font-size: 16pt;
     font-weight: bold;

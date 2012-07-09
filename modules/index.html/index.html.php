@@ -7,7 +7,7 @@ class Page extends PageCommon {
         parent::__construct($db, 'index.html', $page_id);
 
         $smarty->assign('hello_text', $this->content);
-        $smarty->assign('stat', array('city' => $this->globalsettings['stat_city'], 'points' => $this->globalsettings['stat_points']));
+        $smarty->assign('stat', $this->globalsettings['stat_text']);
 
         $this->content = $smarty->fetch(_DIR_TEMPLATES.'/index.html/index.sm.html');
     }
