@@ -1,0 +1,157 @@
+/* 
+Document   : admin
+Created on : 06.07.2009, 13:20:43
+Author     : Andrey_Pns
+Description:
+Purpose of the stylesheet follows.
+*/
+
+body {
+    font-family: Geneva, Arial, Helvetica, sans-serif;
+    margin: 0; padding: 0;
+    font-size: 10pt;
+}
+#mainadmin {
+    float:left;
+}
+#adm_username {
+    text-align:right;
+}
+#mainadmin a {
+    color: #ffffff;
+}
+.pageicon {
+    float:left;
+    margin-right:10px;
+}
+#admheader {
+    height: 70px;
+    background-color: #614874;
+    color:white;
+    padding: 5px;
+}
+#admmainmenu {
+    list-style:none;
+    clear:both;
+}
+#admmainmenu li {
+    display:inline;
+    color: white;
+}
+#admmainmenu li a {
+    color: #614874;
+    background-color: #F0EDF1;
+    padding: 1px;
+}
+#admcontent {
+    font-size: 11pt;
+}
+img {
+    border: none;
+}
+h1, h2, h3 {
+    background-image: url('../img/bg/tab2.gif');
+    margin: 0;
+    padding: 10px;
+    padding-left: 20px;
+    color: #009FD4;
+}
+
+/* --------------------------------------  INDEX ------------------------ */
+#admenu_table {
+    margin-left: 20px;
+    border-top: 1px solid #7B68EE;
+    border-left: 1px solid #7B68EE;
+    border-right: 1px solid #7B68EE;
+}
+#admenu_table tr {
+    background-image: url('../img/bg/tab2.gif');
+    border: 1px solid #7B68EE;
+}
+#admenu_table td {
+    border-bottom: 1px solid #7B68EE;
+}
+#admenu_table td a {
+    color: #7B68EE;
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+#admenu_table td a:hover {
+    text-decoration: underline;
+}
+
+/* -------------------------------------- / INDEX ------------------------ */
+/* --------------------------------------  USERS ------------------------ */
+#usertable tr th {
+    text-align: left;
+}
+#usertable {
+    background-color: #8A648A;
+    margin: 5px;
+}
+#usertable tr th {
+    background-color: #D3CED3;
+}
+#usertable tr td {
+    background-color: #F1ECF1;
+    padding: 3px;
+}
+/* -------------------------------------- / USERS ------------------------ */
+/* --------------------------------------  MODULES ------------------------ */
+label {
+    color: #5C8DA0;
+    font-size: 10pt;
+}
+#modlist {
+    color: #1E90FF;
+}
+#modlist li a {
+    color: #1E90FF;
+}
+input, textarea, select, #addmdbtn, hr {
+    border: 1px solid #87CEEB;
+}
+#suburl {
+    /*border: 1px solid #87CEEB;
+    background-color:white;*/
+    font-size:smaller;
+}
+/* -------------------------------------- / MODULES ------------------------ */
+/* --------------------------------------  LOG_ERROR ------------------------ */
+#erlogtbl {
+    background-color: #8A648A;
+    margin: 10px;
+}
+#erlogtbl tr td {
+    background-color: #ffffff;
+    padding: 3px;
+}
+#erlogtbl tr th {
+    background-color: #D3CED3;
+    padding: 3px;
+}
+/* -------------------------------------- / LOG_ERROR ------------------------ */
+    
+/* --------------------------------------  CRON ------------------------ */
+#crontable {
+    background-color: #8A648A;
+    margin: 10px;
+}
+#crontable tr td {
+    background-color: #ffffff;
+    padding: 3px;
+}
+#crontable tr th {
+    background-color: #D3CED3;
+    padding: 3px;
+}
+#crontable tr td a {
+    color:#4169E1;
+}
+.input_elements {
+    vertical-align: middle;
+}
+/* -------------------------------------- / CRON ------------------------ */
+

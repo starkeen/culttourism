@@ -1,0 +1,24 @@
+<?php
+require_once('common.php');
+
+$smarty->assign('title', 'Настройки сайта');
+
+$dbe = $db->getTableName('log_errors');
+
+if (isset($_POST['clear_btn'])) {
+    $sql = "TRUNCATE TABLE $dbe";
+    $res = $db->exec($sql);
+}
+
+$sql = "SELECT * FROM $dbe ORDER BY le_date";
+$res = $db->exec($sql);
+$records = array();
+while ($row = mysql_fetch_assoc($res)) {
+    $records[$row['le_id']] = $row;
+}
+$smarty->assign('records', $records);
+
+$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES.'/_admin/errorlog.sm.html'));
+$smarty->display(_DIR_TEMPLATES.'/_admin/admpage.sm.html');
+exit();
+?>

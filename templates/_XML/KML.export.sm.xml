@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+    <Document>
+        <name>Exported data from culttourism.ru</name>
+        <open>1</open>
+        <description>Отобранные объекты сайта culttourism.ru</description>
+        <Style id="object0">
+            <IconStyle>
+                <Icon>
+                    <href>http://culttourism.ru/img/points/32/star.png</href>
+                </Icon>
+            </IconStyle>
+            <BalloonStyle>
+                <text><![CDATA[
+                      <b>$[name]</b>
+                      <br />
+                      $[description]
+                      <br />
+                      Адрес: $[address]
+                    ]]>
+                </text>
+            </BalloonStyle>
+        </Style>
+        <Folder>
+            <name>Объекты туризма {$region.pc_inwheretext}</name>
+            <description>Сохраненные с сайта culttourism.ru объекты культурного туризма и сферы обслуживания ({$region.pc_title})</description>
+            <LookAt>
+                <longitude>{$region.pc_longitude}</longitude>
+                <latitude>{$region.pc_latitude}</latitude>
+                <altitude>0</altitude>
+                <heading>100</heading>
+                <tilt>45</tilt>
+                <range>10000</range>
+            </LookAt>
+        {foreach from=$points item=point}
+            <Placemark id="culttourism_object_{$point.pt_id}">
+                <name>{$point.pt_name}</name>
+                <visibility>1</visibility>
+                <open>1</open>
+                <atom:link>http://culttourism.ru{$region.url}/object{$point.pt_id}.html</atom:link>
+                <address>{$point.pt_adress}</address>
+                <styleUrl>#object0</styleUrl>
+                <description><![CDATA[{$point.pt_text}]]>
+                </description>
+                <Style>
+                    <IconStyle>
+                        <scale>0.9</scale>
+                        <Icon>
+                            <href>root://icons/palette-4.png</href>
+                            <x>32</x>
+                            <y>128</y>
+                            <w>32</w>
+                            <h>32</h>
+                        </Icon>
+                    </IconStyle>
+                    <LabelStyle>
+                        <scale>0.9</scale>
+                    </LabelStyle>
+                </Style>
+                <Point id="culttourism_object_{$point.pt_id}">
+                    <coordinates>{$point.pt_longitude},{$point.pt_latitude},0</coordinates>
+                </Point>
+            </Placemark>
+        {/foreach}
+        </Folder>
+    </Document>
+</kml>

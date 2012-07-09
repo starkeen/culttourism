@@ -1,0 +1,33 @@
+{if $blogadmin == true}
+<div style="text-align: right;float:right;">
+    <a href="#" id="blog_entry_add"><b>добавить запись</b></a>
+</div>
+{/if}
+
+{if $entries}
+{foreach from=$entries key=beid item=entry}
+{if ($entry.br_active == 1 && $entry.br_showed == 1) || $blogadmin == true}
+<div class="blog_record">
+    <h2 class="blog_title">
+        <a href="/blog/{$entry.bg_year}/{$entry.bg_month}/{$entry.bg_day}.html">{$entry.br_title}</a>
+        {if $blogadmin == true}
+        <a href="#" class="blog_entry_edit" id="blog_edit_{$entry.br_id}" title="редактировать запись"><img src="../../img/btn/btn.edit.png" /></a>
+        <a href="#" class="blog_entry_delete" id="blog_delete_{$entry.br_id}" title="удалить запись"><img src="../../img/btn/btn.delete.png" /></a>
+        {/if}
+    </h2>
+    <div class="blog_attrs">
+        <img src="/img/ico/ico.calendar.gif" class="textmarker" />
+        {$entry.bg_datex},
+        {$entry.us_name}
+        {if $entry.br_active == 0 && $blogadmin == true}, отключено{/if}
+        {if $entry.br_showed == 0 && $blogadmin == true}, отложено{/if}
+    </div>
+    {$entry.br_text}
+</div>
+{/if}
+{/foreach}
+{else}
+<div class="blog_record">
+    Извините, записей нет. <a href="blog/">Вернуться</a>
+</div>
+{/if}

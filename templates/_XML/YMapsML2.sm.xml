@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ym:ymaps xmlns:ym="http://maps.yandex.ru/ymaps/1.x">
+    <Representation xmlns="http://maps.yandex.ru/representation/1.x">
+        <View>
+            <boundedBy xmlns="http://www.opengis.net/gml">
+                <Envelope>
+                    <lowerCorner>{$bounds.min_lon} {$bounds.min_lat}</lowerCorner>
+                    <upperCorner>{$bounds.max_lon} {$bounds.max_lat}</upperCorner>
+                </Envelope>
+            </boundedBy>
+        </View>
+        <Style xmlns:gml="http://www.opengis.net/gml" gml:id="userobject">
+            <iconStyle>
+                <size x="28" y="29"/>
+                <offset x="-7" y="-28"/>
+                <template>#placemark</template>
+            </iconStyle>
+            <balloonContentStyle>
+                <template>#balloon</template>
+            </balloonContentStyle>
+        </Style>
+        <Style xmlns:gml="http://www.opengis.net/gml" gml:id="commonStyle">
+            <iconStyle>
+                <size x="55" y="55"/>
+                <offset x="-27" y="-55"/>
+                <href>http://api.yandex.ru/images/maps/ymapsml/examples/icon_hotel.png</href>
+            </iconStyle>
+            <balloonContentStyle>
+                <template>#balloonTemplate</template>
+            </balloonContentStyle>
+        </Style>
+        {foreach from=$ptypes item=ptype}
+        <Style xmlns:gml="http://www.opengis.net/gml" gml:id="style{$ptype.tp_id}">
+            <parentStyle>#commonStyle</parentStyle>
+            <iconStyle>
+                <href>http://culttourism.ru/img/points/xmap/{$ptype.tp_icon}</href>
+            </iconStyle>
+        </Style>
+        {/foreach}
+        <Style xmlns:gml="http://www.opengis.net/gml" gml:id="style_town">
+            <parentStyle>#commonStyle</parentStyle>
+            <iconStyle>
+                <href>http://culttourism.ru/img/points/map/flag_city.png</href>
+            </iconStyle>
+            <balloonContentStyle>
+                <template>#balloonTemplateCity</template>
+            </balloonContentStyle>
+        </Style>
+        
+        <Template xmlns:gml="http://www.opengis.net/gml" gml:id="placemark">
+            <text>&lt;img src="http://api-maps.yandex.ru/i/0.4/micro/pm$[metaDataProperty.AnyMetaData.icon]s.png" width="28" height="29"/&gt;&lt;font style="font-weight:bold;position:relative;z-index:4;top:-29px;display:block;width:22px;text-align:center" color="$[metaDataProperty.AnyMetaData.color]"&gt;$[metaDataProperty.AnyMetaData.number]&lt;/font&gt;</text>
+        </Template>
+        <Template xmlns:gml="http://www.opengis.net/gml" gml:id="balloon">
+            <text>&lt;div style="max-width:400px;*width:400px;"&gt;&lt;strong&gt;$[name]&lt;/strong&gt;&lt;div&gt;$[description]&lt;/div&gt;&lt;/div&gt;</text>
+        </Template>
+        <Template xmlns:gml="http://www.opengis.net/gml" gml:id="balloonTemplate">
+            <text><![CDATA[
+                    <div style="font-size:12px;max-width:250px;">
+                        <div style="color:#4585C3;font-weight:bold"><a class="objlink" id="object_id_$[metaDataProperty.AnyMetaData.pid]" href="{$canonical_link.url}object$[metaDataProperty.AnyMetaData.pid].html">$[name]</a></div>
+                        <div>$[description]</div>
+                        <div class="point_dataext">адрес: $[metaDataProperty.AnyMetaData.address]</div>
+                    </div>]]>
+            </text>
+        </Template>
+        <Template xmlns:gml="http://www.opengis.net/gml" gml:id="balloonTemplateCity">
+            <text><![CDATA[
+                    <div style="font-size:12px;max-width:250px;">
+                        <div style="color:#4585C3;font-weight:bold"><a href="$[metaDataProperty.AnyMetaData.url]">$[name]</a></div>
+                    </div>]]>
+            </text>
+        </Template>
+    </Representation>
+    
+    <Attribution>
+        <Source id="culttourism">
+            <author>
+                <name>Достопримечательности в городах России и бывшего СССР</name>
+                <uri>http://culttourism.ru</uri>
+            </author>
+        </Source>
+    </Attribution>
+    
+    <ym:GeoObjectCollection xmlns="http://www.opengis.net/gml">
+        
+        <featureMembers>
+            {foreach from=$points item=point}
+            <ym:GeoObject id="pt{$point.pt_id}">
+                <metaDataProperty>
+                    <ym:AnyMetaData>
+                        {if $point.pt_adress}
+                        <ym:address>{$point.pt_adress}</ym:address>{/if}
+                        {if $point.pt_website}
+                        <ym:website>{$point.pt_website}</ym:website>{/if}
+                        <ym:pid>{$point.pt_id}</ym:pid>
+                    </ym:AnyMetaData>
+                </metaDataProperty>
+                <name>{$point.pt_name}</name>
+                <description>{$point.pt_short}</description>
+                <Point>
+                    <pos>{$point.pt_longitude} {$point.pt_latitude}</pos>
+                </Point>
+                <ym:style>#style{$point.pt_type_id}</ym:style>
+            </ym:GeoObject>
+            {/foreach}
+
+        </featureMembers>
+        
+        <gml:name xmlns:gml="http://www.opengis.net/gml">Достопримечательности России</gml:name>
+        <ym:style>#commonStyle</ym:style>
+    </ym:GeoObjectCollection>
+</ym:ymaps>

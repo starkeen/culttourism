@@ -1,0 +1,85 @@
+<style>
+    #searchrorm_form {
+        background-color: #E6EBD9;
+        margin:1px;
+    }
+    #searchform_input {
+        width: 500px;
+        height: 24px;
+        font-size: 16pt;
+        margin:50px 0 40px 60px;
+    }
+    #searchform_submit {
+        height: 42px;
+        width: 140px;
+        vertical-align:middle;
+        margin-top: 4px;
+        font-size: 15pt;
+
+        display: inline-block;
+        zoom: 1; /* хак IE7 для display: inline-block*/
+        outline: none;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        padding: .3em 2em .55em;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5); /* CSS3: тень для текста */
+        -webkit-border-radius: .5em; /* CSS3: закругление границ для Safari, Chrome */
+        -moz-border-radius: .5em; /* CSS3: закругление границ для FireFox */
+        border-radius: .5em;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2); /* CSS3: тень элемента для Safari, Chrome */
+        -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2); /* CSS3: тень элемента для FireFox */
+        box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+
+        border: solid 1px #D0C293;
+        background: #F1E1AA;
+        background: -o-linear-gradient(#F6ECCA, #E0D19E); /* CSS3: фон с градиентом для Opera 11+ */
+        background: -webkit-gradient(linear, left top, left bottom, from(#F6ECCA), to(#E0D19E)); /* CSS3: фон с градиентом для Safari, Chrome */
+        background: -moz-linear-gradient(top,  #F6ECCA,  #E0D19E); /* CSS3: фон с градиентом для FireFo 3.6+ */
+        filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#F6ECCA', endColorstr='#E0D19E'); /* CSS3: фон с градиентом для IE */
+    }
+    #searchform_submit:hover {
+        background: #EADBA5;
+        background: -o-linear-gradient(#E8DFBF, #DACB9A);
+        background: -webkit-gradient(linear, left top, left bottom, from(#E8DFBF), to(#DACB9A));
+        background: -moz-linear-gradient(top,  #E8DFBF,  #DACB9A);
+        filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#E8DFBF', endColorstr='#DACB9A');
+        color: #fff;
+    }
+    #searchform_submit:active {
+        position:relative;
+        top:1px;
+        left: 1px;
+    }
+</style>
+<form method="get" id="searchrorm_form">
+    <input type="text" id="searchform_input" name="q" value="{$search}" />
+    <input type="submit" id="searchform_submit" value="Искать" />
+    {if $error}<p style="color:red;margin:5px;">{$error}</p>{/if}
+</form>
+
+<hr style="margin-bottom:10px;" />
+{if $search && !$error}
+<p><strong>Результаты поиска</strong></p>
+
+{if $result}
+<ul>
+    {foreach from=$result item=res}
+    <li><a href="{$res.url}/">{$res.title}</a>
+        <br><span style="color:#aaa;font-size: 80%">{$res.descr}</span>
+    </li>
+    {/foreach}
+</ul>
+{else}
+<p>Увы, по запросу "{$search}" ничего найти не удалось</p>
+{/if}
+
+{else}
+<p>
+    На нашем сайте реализован поиск по названиям населённых пунктов, городов, а также регионов.
+    <br/>
+    Просто введите в поле выше название населённого пункта или региона, куда планируете поездку и нажмите кнопку "Искать".
+    <br/>
+    Дополнительные слова ("достопримечательности" и т. п.) вводить не нужно.
+</p>
+{/if}

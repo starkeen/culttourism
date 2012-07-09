@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>{$feed.title}</title>
+        <link>{$feed.sitelink}</link>
+        <managingEditor>{$feed.mail_editor}</managingEditor>
+        <webMaster>{$feed.mail_webmaster}</webMaster>
+        <description>{$feed.description}</description>
+        <lastBuildDate>{$feed.date_build}</lastBuildDate>
+        <pubDate>{$feed.date_build}</pubDate>
+        <generator>{$feed.generator}</generator>
+        <language>ru</language>
+        {foreach from=$entries item=entry}
+        <item>
+            <title><![CDATA[{$entry.br_title}]]></title>
+            <guid isPermaLink="true">{$entry.br_link}</guid>
+            <pubDate>{$entry.bg_pubdate}</pubDate>
+            <link>{$entry.br_link}</link>
+            <description><![CDATA[{$entry.br_text}]]></description>
+            <dc:creator>{$entry.us_name}</dc:creator>
+        </item>
+        {/foreach}
+    </channel>
+</rss>

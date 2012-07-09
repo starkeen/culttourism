@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>{$title}</title>
+        <link rel="shortcut icon" href="../favicon.ico" />
+        <link rel="stylesheet" href="../css/admin.css" type="text/css" />
+        <script type="text/javascript" src="http://yandex.st/jquery/1.4.2/jquery.min.js"></script>
+        <script type="text/javascript" src="../js/admin.js"></script>
+    </head>
+    <body>
+        <div id="admheader">
+            <p id="mainadmin">
+                <a href="/_admin/"><b>Административная часть сайта</b></a>&nbsp;
+                <a href="http://{$site_url}">{$site_url}</a>
+            </p>
+            <p id="adm_username">{if $adm_user}вы вошли как <b>{$adm_user}</b>{else}необходима авторизация{/if}</p>
+            <ul id="admmainmenu">
+                {foreach from=$adm_menu key=i item=admenuitem}
+                <li><a href="{$admenuitem.link}">{$admenuitem.title}</a></li>
+                {/foreach}
+                <li><a href="login.php?out"><b>Выйти</b></a></li>
+            </ul>
+        </div>
+        <div id="admcontent">
+            {$content}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+*.jpg
+*.png
+*.pdf
+*.gif
+*.zip
+*.gz
+*.gzip
+*.rar
+*.txt
+*.xls
+*.csv
+*.log
+*.ico
+img/
+templates_c/
+addons/

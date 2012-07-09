@@ -1,0 +1,107 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font: 14px/18px Arial, Tahoma, Verdana, sans-serif;
+    height: 100%;
+    background: #fff;
+}
+#maponpage {
+    width:100%;
+    min-height:300px;  
+    height:100%;
+}
+h1, h2, h3 {
+    margin:1em;
+}
+p {
+    margin: .5em;
+}
+#object_container {
+    position: relative;
+    width:100%;
+    height:100%;
+}
+#objects_list {
+    width:100%;
+    border:1px solid #004C96;
+}
+#objects_list tr:nth-child(odd) {
+    background-color: #efefef;
+}
+.objects_icon {
+    width:40px;
+    text-align: center;
+    vertical-align: middle;
+}
+.objects_title {
+    font-weight: bold;
+    vertical-align: middle;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.objects_title a {
+    text-decoration: none;
+}
+.objects_addrs {
+    width:100px;
+    color:#5f5f5f;
+    font-style:italic;
+}
+.objects_dist {
+    text-align:center;
+}
+.objects_addrs div {
+    display:block;
+    max-height:4em;
+    overflow:hidden;
+}
+.objects_descr {
+    color:#8f8faf;
+}
+.preloader {
+    vertical-align: middle;
+    margin:0 auto;
+    display:none;
+}
+#object_card {
+    position:absolute;
+    top:0;
+    right:0;
+    width:50%;
+    height:100%;
+    padding:1em;
+    text-align: center;
+    vertical-align: middle;
+    background: #fff;
+    border:1px solid #004C96;
+}
+#object_card_text {
+    position:fixed;
+}
+.object_fulltext {
+    text-align: left;
+}
+fieldset {
+    margin:1em;
+    padding:1em;
+    border:1px solid #efefef;
+}
+fieldset legend {
+    margin:4px;
+}
+#object_contacts {
+    text-align: left;
+    list-style: none;
+}
+#object_contacts img {
+    vertical-align: middle;
+}
+.textmarker {
+    margin-right:1em;
+}
+.toggled {
+    width:0;
+    display:none;
+}

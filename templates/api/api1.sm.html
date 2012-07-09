@@ -1,0 +1,19 @@
+<h1>Ближайшие ко мне</h1>
+<p><strong>Моё местонахождение:</strong> {$geocoder_info}</p>
+<div id="object_container">
+    <table id="objects_list">
+        {foreach from=$points item=point}
+        <tr>
+            <td class="objects_icon"><img src="/img/points/x32/{$point.tp_icon}" alt="{$point.tp_name}" /></td>
+            <td class="objects_title" id="ptitle_{$point.pt_id}"><strong>{$point.pt_name}</strong></td>
+            <td class="objects_dist">{$point.pt_dist} м</td>
+            <td class="objects_addrs"><div>{$point.pt_adress}</div></td>
+        </tr>
+        <tr>
+            <td class="objects_descr" colspan="4">{if $point.pt_short!=''}{$point.pt_short}{else}&nbsp;{/if}</td>
+        </tr>
+        {/foreach}
+    </table>
+    <div id="object_card" class="toggled"></div>
+</div>
+<img class="preloader" src="/img/preloader/c2.gif"/>
