@@ -2,7 +2,7 @@
 
 class Page extends PageCommon {
 
-    public $files_ver = 10;
+    public $files_ver = 11;
 
     public function __construct($db, $mod) {
         list($module_id, $page_id, $id) = $mod;

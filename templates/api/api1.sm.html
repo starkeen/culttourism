@@ -9,7 +9,7 @@
         <tr>
             <td rowspan="2" class="objects_icon"><img src="/img/points/x32/{$point.tp_icon}" alt="{$point.tp_name}" /></td>
             <td>
-                <a class="objects_title" id="ptitle_{$point.pt_id}" href="/api/2/?id={$point.pt_id}">{$point.pt_name}</a>
+                <a class="objects_title" id="ptitle_{$point.pt_id}" href="/api/2/?id={$point.pt_id}&latlon={$point.pt_latitude},{$point.pt_longitude}">{$point.pt_name}</a>
                 <span class="objects_dist">~{$point.pt_dist} м</span>
             </td>
             <td rowspan="2" class="objects_addrs"><div>{$point.pt_adress}</div></td>

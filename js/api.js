@@ -1,4 +1,5 @@
-$(document).ready(function(){
+$(document).ready(function() {
+    /*
     $(".objects_title").live("click", function() {
         $("#object_card").text("").show().animate({
             width: "80%"
@@ -10,9 +11,11 @@ $(document).ready(function(){
             });
         return false;
     });
+    
     $("#do_toggle").live("click", function() {
         $("#object_card").animate({
             width: "0%"
         },500).hide();
     });
+    */
 });
