@@ -46,6 +46,7 @@ abstract class Core {
     protected function __construct($db, $mod) {
         $this->db = $db;
         if (!$this->db->link) {
+            $this->module_id = $mod;
             return $this->getError('503', $smarty);
         }
         $mod_id = $mod;
@@ -189,7 +190,12 @@ abstract class Core {
                 }
                 break;
         }
-        $smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
+        if ($this->module_id == 'api')
+            $smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
+        elseif ($this->module_id == 'ajax')
+            $smarty->display(_DIR_TEMPLATES . '/_main/empty.sm.html');
+        else
+            $smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
         exit();
     }
 
