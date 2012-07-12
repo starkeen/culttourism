@@ -36,7 +36,8 @@ header, nav, section, article, aside, footer {
     display: block;
 }
 body {
-    font: 14px/18px Arial, Tahoma, Verdana, sans-serif;
+    font-family: 'Open Sans', Arial, Tahoma, Verdana, sans-serif;
+    font-size: 14px;
     height: 100%;
     background: #fff;
 }
