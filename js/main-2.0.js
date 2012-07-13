@@ -484,7 +484,7 @@ function showMap(c_lat,c_lon,c_zoom,f_point){
                 $("#city_zoom").val(map.getZoom());
             });
         }
-        if (f_point == 0) {//от координат города
+        else if (f_point == 0) {//от координат города
             var mapOnClick = function (e) {
                 map.events.remove("click", mapOnClick);
                 var coords = e.get('coordPosition');
@@ -516,7 +516,7 @@ function showMap(c_lat,c_lon,c_zoom,f_point){
             };
             map.events.add('click', mapOnClick);
         }
-        if (f_point == 1) {//от имеющихся координат объекта
+        else if (f_point == 1) {//от имеющихся координат объекта
             myPlacemark = new ymaps.Placemark([c_lon, c_lat], {
                 hintContent: "Перетащите для изменения координат",
                 balloonContent: $("#obj_name").text()
@@ -536,17 +536,17 @@ function showMap(c_lat,c_lon,c_zoom,f_point){
                 $("#city_zoom").val(map.getZoom())
             });
             map.geoObjects.add(myPlacemark);
-            $(".dogo").live("click", function() {
-                var point = [parseFloat($("#obj_lon").val()),parseFloat($("#obj_lat").val())];
-                map.panTo(point, {
-                    flying: true,
-                    delay:0,
-                    duration:1000
-                });
-                myPlacemark.geometry.setCoordinates(point);
-                return false;
-            });
         };
+        $(".dogo").live("click", function() {
+            var point = [parseFloat($("#obj_lon").val()),parseFloat($("#obj_lat").val())];
+            map.panTo(point, {
+                flying: true,
+                delay:0,
+                duration:1000
+            });
+            myPlacemark.geometry.setCoordinates(point);
+            return false;
+        });
         $("#obj_addr_searcher").live("click", function() {
             ymaps.geocode($("#obj_addr_searcher").text(), {
                 kind: 'house',
@@ -554,6 +554,13 @@ function showMap(c_lat,c_lon,c_zoom,f_point){
                 results: 20
             }).then(function (res) {
                 map.geoObjects.add(res.geoObjects);
+                res.geoObjects.each(function (obj) {
+                    map.panTo(obj.geometry._n, {
+                        flying: true,
+                        delay:0,
+                        duration:1000
+                    });
+                });
             });
         });
     });
