@@ -440,6 +440,7 @@ class Page extends PageCommon {
             $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
             $short_end = @mb_strpos($pt['pt_description'], ' ', 50, 'utf-8');
             $pt['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
+            $pt['pt_website'] = htmlspecialchars($pt['pt_website'], ENT_QUOTES);
             $points[] = $pt;
         }
 
@@ -499,6 +500,7 @@ class Page extends PageCommon {
             $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
             $short_end = @mb_strpos($pt['pt_description'], ' ', 50, 'utf-8');
             $pt['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
+            $pt['pt_website'] = htmlspecialchars($pt['pt_website'], ENT_QUOTES);
             $points[] = $pt;
         }
 
@@ -558,6 +560,7 @@ class Page extends PageCommon {
             $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
             $short_end = @mb_strpos($pt['pt_description'], ' ', 100, 'utf-8');
             $pt['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
+            $pt['pt_website'] = htmlspecialchars($pt['pt_website'], ENT_QUOTES);
             $points[] = $pt;
         }
 
