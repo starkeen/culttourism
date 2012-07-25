@@ -432,7 +432,7 @@ class Page extends PageCommon {
                     AND pp.pt_latitude BETWEEN '{$bounds['min_lat']}' AND '{$bounds['max_lat']}'
                     AND pp.pt_longitude BETWEEN '{$bounds['min_lon']}' AND '{$bounds['max_lon']}'
                     ORDER BY pt.tr_order DESC, pp.pt_rank
-                    LIMIT 100";
+                    LIMIT 200";
         $db->exec();
         $points = array();
         while ($pt = $db->fetch()) {
