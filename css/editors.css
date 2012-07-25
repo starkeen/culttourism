@@ -1,5 +1,6 @@
 body {
-    font: 14px/18px Arial, Tahoma, Verdana, sans-serif;
+    font-family: 'Open Sans', Verdana, Arial, Tahoma, sans-serif;
+    font-size: 14px;
     height: 100%
 }
 a {
