@@ -18,6 +18,7 @@
         <!--[if lte IE 6]><link rel="stylesheet" href="/css/style_ie.css" type="text/css" media="screen, projection, print" /><![endif]-->
         <script type="text/javascript" src="http://yandex.st/jquery/1.7.2/jquery.min.js"></script>
         <script type="text/javascript" src="http://{$page->basepath}/js/jquery.simplemodal.1.4.min.js"></script>
+        <script type="text/javascript" src="http://www.panoramio.com/wapi/wapi.js?v=1&amp;hl=ru"></script>
         {if $page->canonical}
         <link rel="canonical" href="http://{$page->basepath}{$page->canonical}" />
         {/if}
@@ -39,14 +40,11 @@
         <script src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&amp;load=package.full&amp;wizard=constructor&amp;lang=ru-RU" type="text/javascript"></script>
         <link rel="alternate" type="application/rss+xml" title="RSS blog" href="{$page->globalsettings.main_rss}" />
     </head>
-
     <body>
-
         <div id="wrapper">
-
             <header id="header">
-                <a href="/">
-                <img src="/img/header/logotype.png" alt="Культурный туризм" />
+                <a href="/" title="Достопримечательности России">
+                    <img src="/img/header/logotype.png" alt="Культурный туризм" title="Достопримечательности России" />
                 </a>
                 <ul id="mainmenu" class="menu_common">
                     <li class="navigate"><a href="http://{$page->basepath}/" title="Главная страница">Главная</a></li>
@@ -62,14 +60,11 @@
                     <li><a id="show_auth_form" href="/sign/in/" title="Вход">&#x25bc;</a></li>
                 </ul>
             </header><!-- #header-->
-
             <div id="content">
                 {if $page->h1}<h1>{$page->h1}</h1>{/if}
                 {$page->content}
             </div><!-- #content-->
-
         </div><!-- #wrapper -->
-
         <footer id="footer">
             <div id="footer_conters">
                 <!--noindex-->{$page->counters}<!--/noindex-->
@@ -78,6 +73,5 @@
                 {$debug_info}
             </div>
         </footer><!-- #footer -->
-
     </body>
 </html>

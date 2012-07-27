@@ -347,9 +347,12 @@ class Page extends PageCommon {
         if ($object['pt_latitude'] && $object['pt_longitude']) {
             $object_lat_short = mb_substr($object['pt_latitude'], 0, 8);
             $object_lon_short = mb_substr($object['pt_longitude'], 0, 8);
-            $object_lat_w = (($object_lat_short >= 0) ? 'N' : 'S') . abs($object_lat_short);
-            $object_lon_w = (($object_lon_short >= 0) ? 'E' : 'W') . abs($object_lon_short);
-            $object['gps_dec'] = "$object_lat_w $object_lon_w";
+            $object['gps_dec'] = (($object_lat_short >= 0) ? 'N' : 'S') . abs($object_lat_short) . ' ' . (($object_lon_short >= 0) ? 'E' : 'W') . abs($object_lon_short);
+            $object['sw_ne_delta'] = 0.01;
+            $object['sw_ne'] = array(
+                'sw' => array('lat' => $object['pt_latitude'] - $object['sw_ne_delta'], 'lon' => $object['pt_longitude'] - $object['sw_ne_delta']),
+                'ne' => array('lat' => $object['pt_latitude'] + $object['sw_ne_delta'], 'lon' => $object['pt_longitude'] + $object['sw_ne_delta']),
+            );
             //$object['gps_deg'] = 0;
         }
         $smarty->assign('object', $object);
