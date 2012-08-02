@@ -175,8 +175,13 @@ class Page extends PageCommon {
             $db->sql = "SELECT url FROM $dburl WHERE uid = '{$row['pc_url_id']}'";
             $db->exec();
             $canonical_url = $db->fetch();
-            if ($canonical_url['url'] != '')
+            if ($canonical_url['url'] != '') {
                 $this->canonical = $canonical_url['url'] . '/';
+                if ($canonical_url['url'] != $url) {
+                    header("Location: {$canonical_url['url']}/");
+                }
+            }
+
 
             //----------------------  в н у т р и  ------------------------
             $row['region_in'] = array();
@@ -328,6 +333,10 @@ class Page extends PageCommon {
         $dbrp = $db->getTableName('ref_pointtypes');
         $dburl = $db->getTableName('region_url');
 
+        $uridata = explode('/', $_SERVER['REQUEST_URI']);
+        array_pop($uridata);
+        $url = implode('/', $uridata);
+
         $db->sql = "SELECT pt.pt_name, pt.pt_description, pt.pt_citypage_id,
                     pt.pt_latitude, pt.pt_longitude, pt_latlon_zoom,
                     pt.pt_website, pt.pt_adress, pt.pt_email, pt.pt_worktime, pt.pt_phone,
@@ -368,8 +377,12 @@ class Page extends PageCommon {
         $db->sql = "SELECT url FROM $dburl WHERE uid = '{$city['pc_url_id']}'";
         $db->exec();
         $canonical_url = $db->fetch();
-        if ($canonical_url['url'] != '')
+        if ($canonical_url['url'] != '') {
             $this->canonical = $canonical_url['url'] . "/object$id.html";
+            if ($canonical_url['url'] != $url) {
+                header("Location: $this->canonical");
+            }
+        }
 
         //------------------  s t a t i s t i c s  ------------------------
         $hash = $this->getUserHash();
