@@ -178,6 +178,8 @@ class Page extends PageCommon {
             if ($canonical_url['url'] != '') {
                 $this->canonical = $canonical_url['url'] . '/';
                 if ($canonical_url['url'] != $url) {
+                    //$this->getError('301', "{$canonical_url['url']}/");
+                    header("HTTP/1.1 301 Moved Permanently");
                     header("Location: {$canonical_url['url']}/");
                 }
             }
@@ -380,6 +382,8 @@ class Page extends PageCommon {
         if ($canonical_url['url'] != '') {
             $this->canonical = $canonical_url['url'] . "/object$id.html";
             if ($canonical_url['url'] != $url) {
+                //$this->getError('301', "$this->canonical");
+                header("HTTP/1.1 301 Moved Permanently");
                 header("Location: $this->canonical");
             }
         }
