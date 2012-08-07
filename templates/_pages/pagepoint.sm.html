@@ -12,25 +12,27 @@
     <p><a href="." id="page_point_link_back" title="перейти к достопримечательностям {$city.pc_inwheretext}">&larr; достопримечательности {$city.pc_inwheretext}</a></p>
 </div>
 <div id="widget_photos" style=""></div>
-<hr style="clear:both;" />
+
 {if $object.pt_adress || $object.pt_worktime || $object.pt_website || $object.pt_email || $object.pt_phone}
-<ul id="object_contacts">
-    {if $object.pt_adress}
-    <li><img src="/img/ico/ico.house.png" alt="адрес" title="Адрес" class="textmarker" />{$object.pt_adress}</li>
-    {/if}
-    {if $object.pt_phone}
-    <li><img src="/img/ico/ico.phone.png" alt="телефон" title="Телефон" class="textmarker" />{$object.pt_phone}</li>
-    {/if}
-    {if $object.pt_worktime}
-    <li><img src="/img/ico/ico.clock.png" alt="часы работы" title="Часы работы" class="textmarker" />{$object.pt_worktime}</li>
-    {/if}
-    {if $object.pt_website}
-    <li><img src="/img/ico/ico.web.png" alt="сайт" title="Сайт" class="textmarker" />&nbsp;<a href="{$object.pt_website}">{$object.pt_website}</a></li>
-    {/if}
-    {if $object.pt_email}
-    <li><img src="/img/ico/ico.email.png" alt="e-mail" title="Электронная почта" class="textmarker" />&nbsp;<a href="mailto:{$object.pt_email}">{$object.pt_email}</a></li>
-    {/if}
-</ul>
+<div id="object_contacts_block">
+    <ul id="object_contacts">
+        {if $object.pt_adress}
+        <li><img src="/img/ico/ico.house.png" alt="адрес" title="Адрес" class="textmarker" />{$object.pt_adress}</li>
+        {/if}
+        {if $object.pt_phone}
+        <li><img src="/img/ico/ico.phone.png" alt="телефон" title="Телефон" class="textmarker" />{$object.pt_phone}</li>
+        {/if}
+        {if $object.pt_worktime}
+        <li><img src="/img/ico/ico.clock.png" alt="часы работы" title="Часы работы" class="textmarker" />{$object.pt_worktime}</li>
+        {/if}
+        {if $object.pt_website}
+        <li><img src="/img/ico/ico.web.png" alt="сайт" title="Сайт" class="textmarker" />&nbsp;<a href="{$object.pt_website}">{$object.pt_website}</a></li>
+        {/if}
+        {if $object.pt_email}
+        <li><img src="/img/ico/ico.email.png" alt="e-mail" title="Электронная почта" class="textmarker" />&nbsp;<a href="mailto:{$object.pt_email}">{$object.pt_email}</a></li>
+        {/if}
+    </ul>
+</div>
 {/if}
 {if $object.pt_latitude && $object.pt_longitude}
 <input type="hidden" id="mapobj_pt_latitude" value="{$object.pt_latitude}" />
@@ -49,3 +51,6 @@
     <script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
     <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="none" data-yashareQuickServices="yaru,vkontakte,facebook,twitter,odnoklassniki,moimir,lj,friendfeed,moikrug,gplus"></div> 
 </div>
+
+<div id="yandex_ad"></div>
+<script type="text/javascript" src="/js/adv_point.js"></script>
