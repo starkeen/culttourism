@@ -1,13 +1,13 @@
 <h1>{$object.pt_name}</h1>
 <div id="city_path">{$city.pc_pagepath}</div>
-
 {if $object.pt_latitude && $object.pt_longitude}
 <div id="map_container">
     <div id="city_map"></div>
     <div id="point_gps">GPS-координаты: {$object.gps_dec}</div>
 </div>
 {/if}
-<div>
+<div id="object_description">
+    <img id="object_icon" alt="{$object.tp_name}" title="{$object.tp_name}" src="/img/points/x32/{$object.tp_icon}" />
     {$object.pt_description}
     <p><a href="." id="page_point_link_back" title="перейти к достопримечательностям {$city.pc_inwheretext}">&larr; достопримечательности {$city.pc_inwheretext}</a></p>
 </div>
@@ -15,6 +15,7 @@
 
 {if $object.pt_adress || $object.pt_worktime || $object.pt_website || $object.pt_email || $object.pt_phone}
 <div id="object_contacts_block">
+    <div id="object_contacts_header">Контактная информация</div>
     <ul id="object_contacts">
         {if $object.pt_adress}
         <li><img src="/img/ico/ico.house.png" alt="адрес" title="Адрес" class="textmarker" />{$object.pt_adress}</li>
@@ -26,7 +27,7 @@
         <li><img src="/img/ico/ico.clock.png" alt="часы работы" title="Часы работы" class="textmarker" />{$object.pt_worktime}</li>
         {/if}
         {if $object.pt_website}
-        <li><img src="/img/ico/ico.web.png" alt="сайт" title="Сайт" class="textmarker" />&nbsp;<a href="{$object.pt_website}">{$object.pt_website}</a></li>
+        <li><img src="/img/ico/ico.web.png" alt="сайт" title="Сайт" class="textmarker" /><a href="{$object.pt_website}">{$object.pt_website}</a></li>
         {/if}
         {if $object.pt_email}
         <li><img src="/img/ico/ico.email.png" alt="e-mail" title="Электронная почта" class="textmarker" />&nbsp;<a href="mailto:{$object.pt_email}">{$object.pt_email}</a></li>

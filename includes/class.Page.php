@@ -410,7 +410,7 @@ class Page extends PageCommon {
         $this->addKeywords($object['esc_name']);
         if (isset($object['gps_dec']))
             $this->addKeywords('координаты GPS');
-
+        
         return $smarty->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.sm.html');
     }
 

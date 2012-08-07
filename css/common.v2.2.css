@@ -406,6 +406,41 @@ ul {
 #object_gps {
     text-align:center;
 }
+#object_description {
+    position:relative;
+}
+#object_icon {
+    float:left;
+    margin:5px;
+    margin-top:-15px;
+    padding:5px;
+    background-color: #fff;
+    border:1px solid #efefef;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+#object_contacts_block {
+    position:relative;
+    width:50%;
+    margin:1em 0 1em 0;
+    padding:1.5em 0 1em 1em;
+    border:1px solid #efefef;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+#object_contacts_header {
+    position:absolute;
+    top:0;
+    left:0;
+    padding:3px;
+    background-color:#efefef;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    border-bottom-right-radius: 5px;
+    font-size:80%;
+}
 #object_contacts {
     list-style: none;
 }
