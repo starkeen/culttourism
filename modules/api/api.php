@@ -13,19 +13,19 @@ class Page extends PageCommon {
             $id = substr($id, 0, strpos($id, '?'));
         $this->id = $id;
         $this->auth->setService('api');
-/*
-        include _DIR_INCLUDES . "/class.Identify.php";
-        $ident = new Identify('api');
-        $ident->check();
-*/
+        /*
+          include _DIR_INCLUDES . "/class.Identify.php";
+          $ident = new Identify('api');
+          $ident->check();
+         */
         //========================  I N D E X  ================================
-        if ($page_id == '0') {
+        if ($page_id == '0') {//карта
             $this->content = $this->getApi0($smarty);
             return true;
-        } elseif ($page_id == '1' && isset($_GET['center'])) {
+        } elseif ($page_id == '1' && isset($_GET['center'])) {//список
             $this->content = $this->getApi1($smarty);
             return true;
-        } elseif ($page_id == '2' && isset($_GET['id'])) {
+        } elseif ($page_id == '2' && isset($_GET['id'])) {//место
             $this->content = $this->getApi2($smarty, intval($_GET['id']));
             return true;
         } elseif ($page_id == '') {
@@ -51,6 +51,15 @@ class Page extends PageCommon {
         $c_lat = cut_trash_float($c_lat);
         $c_lon = cut_trash_float($c_lon);
 
+        if (isset($_GET['filter'])) {
+            if ($_GET['filter'] == "sights")
+                $filter = "AND rt.tr_sight = 1\n";
+            if ($_GET['filter'] == "useful")
+                $filter = "AND rt.tr_sight = 0\n";
+        } else {
+            $filter = '';
+        }
+
         $db->sql = "SELECT pt.*, rt.tp_name, rt.tp_icon,
                            ru.url,
                            ROUND(6371 * 1000 * acos(sin(RADIANS(pt.pt_latitude)) * sin(RADIANS($c_lat)) + cos(RADIANS(pt.pt_latitude)) * cos(RADIANS($c_lat)) * cos(RADIANS(pt.pt_longitude) - RADIANS($c_lon)))) AS dist_m
@@ -59,6 +68,7 @@ class Page extends PageCommon {
                     LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
                     LEFT JOIN $dpru ru ON ru.uid = pc.pc_url_id
                     WHERE pt.pt_active = 1
+                    $filter
                     AND pt.pt_latitude > 0 AND pt.pt_longitude > 0
                     ORDER BY dist_m
                     LIMIT 20";
@@ -107,7 +117,7 @@ class Page extends PageCommon {
         $smarty->assign('object', $pt);
         return $smarty->fetch(_DIR_TEMPLATES . '/api/api2.sm.html');
     }
-    
+
     private function calcGeodesicLine($lat1, $lon1, $lat2, $lon2) {
         return round(6371 * 1000 * acos(sin(deg2rad($lat1)) * sin(deg2rad($lat2)) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($lon1) - deg2rad($lon2))));
     }
