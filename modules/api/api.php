@@ -28,6 +28,9 @@ class Page extends PageCommon {
         } elseif ($page_id == '2' && isset($_GET['id'])) {//место
             $this->content = $this->getApi2($smarty, intval($_GET['id']));
             return true;
+        } elseif ($page_id == '3' && isset($_GET['center'])) {//адрес
+            $this->content = $this->getApi3($_GET['center']);
+            return true;
         } elseif ($page_id == '') {
             header("Location: /api/0/");
         }
@@ -84,16 +87,7 @@ class Page extends PageCommon {
             $points[] = $pt;
         }
 
-        $geocode_url = "http://geocode-maps.yandex.ru/1.x/?geocode=N$c_lat,+E$c_lon&lang=ru-RU&format=json&key=";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $geocode_url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $answer = curl_exec($ch);
-        curl_close($ch);
-        $json_response = json_decode($answer, true);
-
         $smarty->assign('points', $points);
-        $smarty->assign('geocoder_info', $json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['text']);
         return $smarty->fetch(_DIR_TEMPLATES . '/api/api1.sm.html');
     }
 
@@ -116,6 +110,22 @@ class Page extends PageCommon {
         $pt = $db->fetch();
         $smarty->assign('object', $pt);
         return $smarty->fetch(_DIR_TEMPLATES . '/api/api2.sm.html');
+    }
+    
+    private function getApi3($center) {
+        list($c_lat, $c_lon) = explode(',', cut_trash_string($center));
+        $c_lat = cut_trash_float($c_lat);
+        $c_lon = cut_trash_float($c_lon);
+        
+        $geocode_url = "http://geocode-maps.yandex.ru/1.x/?geocode=N$c_lat,+E$c_lon&lang=ru-RU&format=json&key=";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $geocode_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $answer = curl_exec($ch);
+        curl_close($ch);
+        $json_response = json_decode($answer, true);
+        
+        return $json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['text'];
     }
 
     private function calcGeodesicLine($lat1, $lon1, $lat2, $lon2) {
