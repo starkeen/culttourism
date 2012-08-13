@@ -174,6 +174,10 @@ class Page extends PageCommon {
             $pt['pt_short'] = trim(str_replace($remove_symbols, '', trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-")));
             $pt['pt_dist'] = $this->calcGeodesicLine($c_lat, $c_lon, $pt['pt_latitude'], $pt['pt_longitude']);
             $pt['pt_adress'] = trim(str_replace($remove_symbols, '', $pt['pt_adress']));
+            if (!$pt['pt_adress'])
+                $pt['pt_adress'] = ' ';
+            if (!$pt['pt_short'])
+                $pt['pt_short'] = ' ';
             $points[] = $pt;
         }
 
