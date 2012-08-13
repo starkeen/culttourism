@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<items>
+<objects-near current-location="{$current}">
     {foreach from=$points item=point}
-    <item>
-        <category_id>{$point.pt_type_id}</category_id>
-        <category_name>{$point.tp_name}</category_name>
-        <category_icon>{$point.tp_icon}</category_icon>
-        <category_sight>{$point.tr_sight}</category_sight>
+    <object-item id="{$point.pt_id}">
         <object_id>{$point.pt_id}</object_id>
         <object_latlon>{$point.pt_latitude},{$point.pt_longitude}</object_latlon>
         <object_name>{$point.pt_name}</object_name>
         <object_dist>{$point.pt_dist}</object_dist>
         <object_addr>{$point.pt_adress}</object_addr>
         <object_descr>{$point.pt_short}</object_descr>
-    </item>
+        <category_id>{$point.pt_type_id}</category_id>
+        <category_name>{$point.tp_name}</category_name>
+        <category_icon>{$point.tp_icon}</category_icon>
+        <category_sight>{$point.tr_sight}</category_sight>
+    </object-item>
     {/foreach}
-</items>
+</objects-near>

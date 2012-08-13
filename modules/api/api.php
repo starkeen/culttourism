@@ -182,6 +182,7 @@ class Page extends PageCommon {
             $points[] = $pt;
         }
 
+        $smarty->assign('current', $this->getApi3("$c_lat,$c_lon"));
         $smarty->assign('points', $points);
         header("Content-type: application/xml");
         echo $smarty->fetch(_DIR_TEMPLATES . '/api/api4.sm.xml');
