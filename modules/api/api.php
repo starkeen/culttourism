@@ -165,13 +165,15 @@ class Page extends PageCommon {
                     LIMIT 20";
         //$db->showSQL();
         $db->exec();
+        $remove_symbols = array("\n", "\t");
         $points = array();
         while ($pt = $db->fetch()) {
             $pt['pt_description'] = strip_tags($pt['pt_description']);
             $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
             $short_end = @mb_strpos($pt['pt_description'], ' ', 350, 'utf-8');
-            $pt['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
+            $pt['pt_short'] = trim(str_replace($remove_symbols, '', trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-")));
             $pt['pt_dist'] = $this->calcGeodesicLine($c_lat, $c_lon, $pt['pt_latitude'], $pt['pt_longitude']);
+            $pt['pt_adress'] = trim(str_replace($remove_symbols, '', $pt['pt_adress']));
             $points[] = $pt;
         }
 

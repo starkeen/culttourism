@@ -11,8 +11,7 @@
         <object_name>{$point.pt_name}</object_name>
         <object_dist>{$point.pt_dist}</object_dist>
         <object_addr>{$point.pt_adress}</object_addr>
-        <object_descr><!--CDATA[[{if $point.pt_short!=''}{$point.pt_short}{else}&nbsp;{/if}]]-->
-        </object_descr>
+        <object_descr>{$point.pt_short}</object_descr>
     </item>
     {/foreach}
 </items>
