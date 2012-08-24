@@ -34,6 +34,9 @@ class Page extends PageCommon {
         } elseif ($page_id == '4' && isset($_GET['center'])) {//список xml
             $this->content = $this->getApi4($smarty);
             return true;
+        } elseif ($page_id == '5' && isset($_GET['id'])) {//место xml
+            $this->content = $this->getApi5($smarty, intval($_GET['id']));
+            return true;
         } elseif ($page_id == '') {
             header("Location: /api/0/");
         }
@@ -174,7 +177,7 @@ class Page extends PageCommon {
             $pt['pt_short'] = trim(str_replace($remove_symbols, '', trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-")));
             $pt['pt_dist'] = $this->calcGeodesicLine($c_lat, $c_lon, $pt['pt_latitude'], $pt['pt_longitude']);
             $pt['pt_adress'] = trim(str_replace($remove_symbols, '', $pt['pt_adress']));
-            $pt['tp_icon'] = 'o_'.str_replace('.png', '', $pt['tp_icon']);
+            $pt['tp_icon'] = 'o_' . str_replace('.png', '', $pt['tp_icon']);
             if (!$pt['pt_adress'])
                 $pt['pt_adress'] = ' ';
             if (!$pt['pt_short'])
@@ -186,6 +189,31 @@ class Page extends PageCommon {
         $smarty->assign('points', $points);
         header("Content-type: application/xml");
         echo $smarty->fetch(_DIR_TEMPLATES . '/api/api4.sm.xml');
+        exit();
+    }
+
+    private function getApi5($smarty, $id) {
+        $db = $this->db;
+        $dbpt = $db->getTableName('pagepoints');
+        $dbpc = $db->getTableName('pagecity');
+        $dpru = $db->getTableName('region_url');
+        $dprt = $db->getTableName('ref_pointtypes');
+        $db->sql = "SELECT pt.*, rt.tp_name, rt.tp_icon,
+                           ru.url
+                    FROM $dbpt pt
+                    LEFT JOIN $dprt rt ON rt.tp_id = pt.pt_type_id
+                    LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
+                    LEFT JOIN $dpru ru ON ru.uid = pc.pc_url_id
+                    WHERE pt.pt_active = 1
+                    AND pt.pt_id = '$id'
+                    LIMIT 1";
+        $db->exec();
+        $pt = $db->fetch();
+        $line_breaks = array("<br/>", "<br>");
+        $pt['pt_description'] = trim(strip_tags(html_entity_decode(str_replace($line_breaks, "\n", $pt['pt_description']), ENT_QUOTES, "UTF-8")));
+        $smarty->assign('point', $pt);
+        header("Content-type: application/xml");
+        echo $smarty->fetch(_DIR_TEMPLATES . '/api/api5.sm.xml');
         exit();
     }
 
