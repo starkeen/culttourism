@@ -42,7 +42,8 @@ while ($row = $db->fetch()) {
 $db->sql = "SELECT concat(u.url,'/object',p.pt_id,'.html') url, DATE_FORMAT(p.pt_lastup_date, '%Y-%m-%dT%H:%i:%s+00:00') dateup
             FROM $dbp p
             LEFT JOIN $dbc c ON c.pc_id = p.pt_citypage_id
-            LEFT JOIN $dbr u ON u.uid = c.pc_url_id";
+            LEFT JOIN $dbr u ON u.uid = c.pc_url_id
+            WHERE pt_active = 1";
 $db->exec();
 while ($row = $db->fetch()) {
     $url['uri'] = $row['url'];
