@@ -13,11 +13,7 @@ class Page extends PageCommon {
             $id = substr($id, 0, strpos($id, '?'));
         $this->id = $id;
         $this->auth->setService('api');
-        /*
-          include _DIR_INCLUDES . "/class.Identify.php";
-          $ident = new Identify('api');
-          $ident->check();
-         */
+
         //========================  I N D E X  ================================
         if ($page_id == '0') {//карта
             $this->content = $this->getApi0($smarty);
@@ -144,17 +140,18 @@ class Page extends PageCommon {
         list($c_lat, $c_lon) = explode(',', cut_trash_string($_GET['center']));
         $c_lat = cut_trash_float($c_lat);
         $c_lon = cut_trash_float($c_lon);
+        $points = array();
+        if ($c_lat != 0 && $c_lon != 0) {
+            if (isset($_GET['filter'])) {
+                if ($_GET['filter'] == "sights")
+                    $filter = "AND rt.tr_sight = 1\n";
+                if ($_GET['filter'] == "useful")
+                    $filter = "AND rt.tr_sight = 0\n";
+            } else {
+                $filter = '';
+            }
 
-        if (isset($_GET['filter'])) {
-            if ($_GET['filter'] == "sights")
-                $filter = "AND rt.tr_sight = 1\n";
-            if ($_GET['filter'] == "useful")
-                $filter = "AND rt.tr_sight = 0\n";
-        } else {
-            $filter = '';
-        }
-
-        $db->sql = "SELECT pt.*, rt.tp_name, rt.tp_icon, rt.tr_sight,
+            $db->sql = "SELECT pt.*, rt.tp_name, rt.tp_icon, rt.tr_sight,
                            ru.url,
                            ROUND(6371 * 1000 * acos(sin(RADIANS(pt.pt_latitude)) * sin(RADIANS($c_lat)) + cos(RADIANS(pt.pt_latitude)) * cos(RADIANS($c_lat)) * cos(RADIANS(pt.pt_longitude) - RADIANS($c_lon)))) AS dist_m
                     FROM $dbpt pt
@@ -166,25 +163,25 @@ class Page extends PageCommon {
                     AND pt.pt_latitude > 0 AND pt.pt_longitude > 0
                     ORDER BY dist_m
                     LIMIT 20";
-        //$db->showSQL();
-        $db->exec();
-        $remove_symbols = array("\n", "\t");
-        $points = array();
-        while ($pt = $db->fetch()) {
-            $pt['pt_description'] = strip_tags($pt['pt_description']);
-            $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
-            $short_end = @mb_strpos($pt['pt_description'], ' ', 350, 'utf-8');
-            $pt['pt_short'] = trim(str_replace($remove_symbols, '', trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-")));
-            $pt['pt_dist'] = $this->calcGeodesicLine($c_lat, $c_lon, $pt['pt_latitude'], $pt['pt_longitude']);
-            $pt['pt_adress'] = trim(str_replace($remove_symbols, '', $pt['pt_adress']));
-            $pt['tp_icon'] = 'o_' . str_replace('.png', '', $pt['tp_icon']);
-            if (!$pt['pt_adress'])
-                $pt['pt_adress'] = ' ';
-            if (!$pt['pt_short'])
-                $pt['pt_short'] = ' ';
-            $points[] = $pt;
-        }
+            //$db->showSQL();
+            $db->exec();
+            $remove_symbols = array("\n", "\t");
 
+            while ($pt = $db->fetch()) {
+                $pt['pt_description'] = strip_tags($pt['pt_description']);
+                $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
+                $short_end = @mb_strpos($pt['pt_description'], ' ', 350, 'utf-8');
+                $pt['pt_short'] = trim(str_replace($remove_symbols, '', trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-")));
+                $pt['pt_dist'] = $this->calcGeodesicLine($c_lat, $c_lon, $pt['pt_latitude'], $pt['pt_longitude']);
+                $pt['pt_adress'] = trim(str_replace($remove_symbols, '', $pt['pt_adress']));
+                $pt['tp_icon'] = 'o_' . str_replace('.png', '', $pt['tp_icon']);
+                if (!$pt['pt_adress'])
+                    $pt['pt_adress'] = ' ';
+                if (!$pt['pt_short'])
+                    $pt['pt_short'] = ' ';
+                $points[] = $pt;
+            }
+        }
         $smarty->assign('current', $this->getApi3("$c_lat,$c_lon"));
         $smarty->assign('points', $points);
         header("Content-type: application/xml");
