@@ -7,7 +7,7 @@
             font_size: 0.9,
             type: "horizontal",
             border_type: "block",
-            limit: 3,
+            limit: 4,
             title_font_size: 2,
             border_radius: true,
             site_bg_color: "FFFFFF",
