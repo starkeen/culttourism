@@ -13,6 +13,10 @@ ymaps.ready(function() {
         iconImageOffset: [-27, -55] // смещение картинки
     });
     myMap.controls.add("zoomControl").add("mapTools").add(new ymaps.control.TypeSelector(["yandex#map", "yandex#hybrid"]));
+    $.getScript('/js/nmap-autoswitcher/nmap-autoswitcher.js', function () {
+        var autoSwitcher = new AutoSwitcher();
+        autoSwitcher.addToMap(myMap);
+    });
     // Добавление метки на карту
     myMap.geoObjects.add(myPlacemark);
 });
