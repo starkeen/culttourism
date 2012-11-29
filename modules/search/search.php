@@ -8,13 +8,94 @@ class Page extends PageCommon {
         parent::__construct($db, 'search');
         if ($id)
             $this->getError('404');
-        $this->content = $this->getSearch($db, $smarty);
+        $this->content = $this->getSearchYandex($db, $smarty);
     }
 
-    private function getSearch($db, $smarty) {
+    private function getSearchYandex($db, $smarty) {
+        $dbsc = $db->getTableName('search_cache');
+        if (isset($_GET['q'])) {
+            $query = cut_trash_string(trim($_GET['q']));
+
+            $db->sql = "INSERT INTO $dbsc SET
+                            sc_date = now(), sc_session = '" . $this->getUserHash() . "', sc_query = '$q', sc_sr_id = null";
+            $db->exec();
+
+            $error_text = '';
+            $result = array();
+            $result_meta = array();
+            $found = 0;
+            $result_meta['pages'] = 20;
+            $result_meta['query'] = htmlspecialchars($query);
+            $result_meta['page'] = array_key_exists('page', $_GET) ? intval($_GET['page']) : 0;
+
+            $doc = <<<DOC
+<?xml version='1.0' encoding='utf-8'?>
+<request>
+    <query>{$result_meta['query']} host:culttourism.ru</query>
+    <maxpassages>5</maxpassages>
+    <groupings>
+        <groupby attr="" mode="flat" groups-on-page="{$result_meta['pages']}"  docs-in-group="1" />
+    </groupings>
+    <page>{$result_meta['page']}</page>
+</request>
+DOC;
+            $context = stream_context_create(array(
+                'http' => array(
+                    'method' => "POST",
+                    'header' => "Content-type: application/xml\r\n" .
+                    "Content-length: " . strlen($doc),
+                    'content' => $doc
+                    )));
+            $response = file_get_contents('http://xmlsearch.yandex.ru/xmlsearch?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80', true, $context);
+            if ($response) {
+                $xmldoc = new SimpleXMLElement($response);
+                $error = $xmldoc->response->error;
+                $found = $xmldoc->xpath("response/results/grouping/group/doc");
+                if ($error) {
+                    $error_text = "Ошибка: " . $error[0];
+                } else {
+                    $result_meta['pages_all'] = $xmldoc->response->found;
+
+                    foreach ($found as $item) {
+                        $result_item = array(
+                            'url' => $item->url,
+                            'title' => $this->highlight_words($item->title),
+                            'descr' => '',
+                        );
+                        if ($item->passages) {
+                            foreach ($item->passages->passage as $passage) {
+                                $result_item['descr'] .= $this->highlight_words($passage) . "\n";
+                            }
+                        }
+                        $result[] = $result_item;
+                    }
+                }
+            } else {
+                $error_text = "Внутренняя ошибка сервера.\n";
+            }
+            $smarty->assign('search', $query);
+            $smarty->assign('error', $error_text);
+            $smarty->assign('result', $result);
+            $smarty->assign('meta', $result_meta);
+        } else {
+            $smarty->assign('search', '');
+            $smarty->assign('error', '');
+            $smarty->assign('result', '');
+            $smarty->assign('meta', array());
+        }
+        return $smarty->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
+    }
+
+    private function highlight_words($node) {
+        $stripped = preg_replace('/<\/?(title|passage)[^>]*>/', '', $node->asXML());
+        return str_replace('</hlword>', '</strong>', preg_replace('/<hlword[^>]*>/', '<strong>', $stripped));
+    }
+
+    private function getSearchInternal($db, $smarty) {
         if (isset($_GET['q'])) {
             $q = trim($q);
             $q = cut_trash_string($_GET['q']);
+
             $q = mysql_real_escape_string($q);
             $smarty->assign('search', $q);
             $this->addTitle($q);
@@ -116,5 +197,4 @@ class Page extends PageCommon {
     }
 
 }
-
 ?>
