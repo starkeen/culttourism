@@ -17,7 +17,7 @@ class Page extends PageCommon {
             $query = cut_trash_string(trim($_GET['q']));
 
             $db->sql = "INSERT INTO $dbsc SET
-                            sc_date = now(), sc_session = '" . $this->getUserHash() . "', sc_query = '$q', sc_sr_id = null";
+                            sc_date = now(), sc_session = '" . $this->getUserHash() . "', sc_query = '$query', sc_sr_id = null";
             $db->exec();
 
             $error_text = '';

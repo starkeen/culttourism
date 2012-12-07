@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ymaps:ymaps xmlns:ymaps="http://maps.yandex.ru/ymaps/1.x"
-             xmlns:repr="http://maps.yandex.ru/representation/1.x"
-             xmlns:gml="http://www.opengis.net/gml"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://maps.yandex.ru/schemas/ymaps/1.x/ymaps.xsd">
+       xmlns:repr="http://maps.yandex.ru/representation/1.x"
+       xmlns:gml="http://www.opengis.net/gml"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://maps.yandex.ru/schemas/ymaps/1.x/ymaps.xsd">
     <repr:Representation>
         <repr:Style gml:id="commonStyle">
             <repr:iconStyle>
@@ -15,14 +15,14 @@
                 <repr:template>#balloonTemplate</repr:template>
             </repr:balloonContentStyle>
         </repr:Style>
-        {foreach from=$ptypes item=ptype}
+{foreach from=$ptypes item=ptype}
         <repr:Style gml:id="style{$ptype.tp_id}">
             <repr:parentStyle>#commonStyle</repr:parentStyle>
             <repr:iconStyle>
                 <repr:href>http://culttourism.ru/img/points/map/{$ptype.tp_icon}</repr:href>
             </repr:iconStyle>
         </repr:Style>
-        {/foreach}
+{/foreach}
         <repr:Style gml:id="style_town">
             <repr:parentStyle>#commonStyle</repr:parentStyle>
             <repr:iconStyle>
@@ -54,15 +54,13 @@
         <ymaps:style>#points</ymaps:style>
         <gml:featureMembers>
 
-            {foreach from=$points item=point}
+{foreach from=$points item=point}
             <ymaps:GeoObject id="pt{$point.pt_id}">
                 <gml:name>{$point.pt_name}</gml:name>
                 <gml:metaDataProperty>
                     <ymaps:AnyMetaData>
-                        {if $point.pt_adress}
-                        <address>{$point.pt_adress}</address>{/if}
-                        {if $point.pt_website}
-                        <website>{$point.pt_website}</website>{/if}
+                        {if $point.pt_adress}<address>{$point.pt_adress}</address>{/if}
+                        {if $point.pt_website}<website>{$point.pt_website}</website>{/if}
                         <pid>{$point.pt_id}</pid>
                     </ymaps:AnyMetaData>
                 </gml:metaDataProperty>
@@ -71,8 +69,8 @@
                 </gml:Point>
                 <ymaps:style>#style{$point.pt_type_id}</ymaps:style>
             </ymaps:GeoObject>
-            {/foreach}
-            {foreach from=$city item=town}
+{/foreach}
+{foreach from=$city item=town}
             <ymaps:GeoObject id="pc{$town.pc_id}">
                 <gml:name>{$town.pc_title}</gml:name>
                 <gml:metaDataProperty>
@@ -86,7 +84,7 @@
                 </gml:Point>
                 <ymaps:style>#style_town</ymaps:style>
             </ymaps:GeoObject>
-            {/foreach}
+{/foreach}
             
         </gml:featureMembers>
     </ymaps:GeoObjectCollection>
