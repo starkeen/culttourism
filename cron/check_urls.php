@@ -8,6 +8,7 @@ $db->sql = "SELECT pt_id, pt_name, pt_citypage_id, pt_website, url.url
             WHERE pt_website != ''
             LIMIT 200";
 $db->exec();
+$errlog = array();
 while ($row = $db->fetch()) {
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $row['pt_website']);
@@ -18,8 +19,10 @@ while ($row = $db->fetch()) {
     curl_close($curl);
     $out = explode("\n", $out);
     $codes = explode(' ', $out[0]);
-    if (intval($codes[1]) != 200)
+    if (intval($codes[1]) != 200) {
         echo "Код ошибки $codes[1] в http://culttourism.ru{$row['url']}/object{$row['pt_id']}.html\n";
+        $errlog[] = "$codes[1] - http://culttourism.ru{$row['url']}/object{$row['pt_id']}.html";
+    }
     sleep(0.1);
 }
 ?>
