@@ -37,11 +37,11 @@ while ($row = $db->fetch()) {
     curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
     $out = curl_exec($curl);
     curl_close($curl);
-    $out = explode("\n", $out);
-    $codes = explode(' ', $out[0]);
+    $xout = explode("\n", $out);
+    $codes = explode(' ', $xout[0]);
     $code = intval($codes[1]);
     if (!in_array($code, $allow_codes)) {
-        $errlog[] = str_replace(array("\n", "\r", "\t"), '', "$codes[1]: {$row['pt_website']} - {$row['pt_name']} {$out[0]} (http://culttourism.ru{$row['url']}/)");
+        $errlog[] = str_replace(array("\n", "\r", "\t"), '', "$codes[1]: {$row['pt_website']} - {$row['pt_name']} {$xout[0]} (http://culttourism.ru{$row['url']}/)");
     }
 }
 
