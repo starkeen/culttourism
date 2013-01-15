@@ -1,18 +1,23 @@
 <?php
 
-ini_set('max_execution_time', 600);
+ini_set('max_execution_time', 1500);
 
 $allow_codes = array(0, 200, 301, 302, 303, 304, 400);
-$limit_once = 100;
+$limit_once = 50;
 
 $dbp = $db->getTableName('pagepoints');
 $dbu = $db->getTableName('region_url');
 $dbsp = $db->getTableName('siteprorerties');
 
+$db->sql = "SELECT count(*) AS cnt FROM $dbp WHERE pt_website != ''";
+$db->exec();
+$xrow = $db->fetch();
+$lim_total = intval($xrow['cnt']);
+
 $db->sql = "SELECT sp_value FROM $dbsp WHERE sp_id = 25";
 $db->exec();
 $row = $db->fetch();
-$lim_shift = $row['sp_value'];
+$lim_shift = intval($row['sp_value']);
 
 $db->sql = "SELECT pt_id, pt_name, pt_citypage_id, pt_website, url.url
             FROM $dbp p
@@ -28,6 +33,8 @@ while ($row = $db->fetch()) {
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($curl, CURLOPT_NOBODY, true);
     curl_setopt($curl, CURLOPT_HEADER, true);
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 2);
+    curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
     $out = curl_exec($curl);
     curl_close($curl);
     $out = explode("\n", $out);
@@ -38,14 +45,10 @@ while ($row = $db->fetch()) {
     }
 }
 
-$db->sql = "SELECT COUNT(*) AS cnt FROM $dbp WHERE pt_website != ''";
-$db->exec();
-$row = $db->fetch();
-$lim_total = intval($row['cnt']);
-
 $newshift = $lim_shift + $limit_once;
 if ($newshift >= $lim_total)
     $newshift = 0;
+
 $db->sql = "UPDATE $dbsp SET sp_value = '$newshift' WHERE sp_id = 25";
 $db->exec();
 
