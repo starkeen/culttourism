@@ -2,8 +2,8 @@
 
 ini_set('max_execution_time', 1500);
 
-$allow_codes = array(0, 200, 301, 302, 303, 304, 400);
-$limit_once = 50;
+$allow_codes = array(200, 301, 302, 303, 304);
+$limit_once = 80;
 
 $dbp = $db->getTableName('pagepoints');
 $dbu = $db->getTableName('region_url');
