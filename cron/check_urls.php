@@ -34,14 +34,13 @@ while ($row = $db->fetch()) {
     curl_setopt($curl, CURLOPT_NOBODY, true);
     curl_setopt($curl, CURLOPT_HEADER, true);
     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 2);
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
     curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
     $out = curl_exec($curl);
+    $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close($curl);
-    $xout = explode("\n", $out);
-    $codes = explode(' ', $xout[0]);
-    $code = intval($codes[1]);
-    if (!in_array($code, $allow_codes)) {
-        $errlog[] = str_replace(array("\n", "\r", "\t"), '', "$codes[1]: {$row['pt_website']} - {$row['pt_name']} {$xout[0]} (http://culttourism.ru{$row['url']}/)");
+    if (!in_array($http_status, $allow_codes)) {
+        $errlog[] = str_replace(array("\n", "\r", "\t"), '', "$http_status: {$row['pt_website']} - {$row['pt_name']} (http://culttourism.ru{$row['url']}/)");
     }
 }
 
