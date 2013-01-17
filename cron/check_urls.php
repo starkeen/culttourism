@@ -72,7 +72,6 @@ while ($row = $db->fetch()) {
     $states = array(200 => 0);
     foreach (json_decode($content) as $out) {
         $state = $out[0][3];
-        echo "$state - $url\n";
         if (!isset($states[$state]))
             $states[$state] = 0;
         //if ($state != '')
