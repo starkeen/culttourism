@@ -88,17 +88,22 @@ class Page extends PageCommon {
         $this->ymaps_ver = 2;
         $dburl = $db->getTableName('region_url');
         $dbpc = $db->getTableName('pagecity');
+        $dbpp = $db->getTableName('pagepoints');
         $dbsc = $db->getTableName('statcity');
         $dbpt = $db->getTableName('ref_pointtypes');
         $url = str_replace('/map.html', '', $url);
 
         $url = mysql_real_escape_string($url);
-        $db->sql = "SELECT city.*
+        $db->sql = "SELECT city.*,
+                            DATE_FORMAT(city.pc_lastup_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update1,
+                            (SELECT DATE_FORMAT(MAX(pt_lastup_date),'%a, %d %b %Y %H:%i:%s GMT') FROM $dbpp WHERE pt_citypage_id = city.pc_id) AS last_update2                           
                     FROM $dburl url
                     LEFT JOIN $dbpc city ON city.pc_id = url.citypage
                     WHERE url.url = '$url'";
         $db->exec();
+        //$db->showSQL();
         if ($row = $db->fetch()) {
+            $this->lastedit_timestamp = max(array(strtotime($row['last_update1']), strtotime($row['last_update2'])));
             $row['pc_zoom'] = ($row['pc_latlon_zoom']) ? $row['pc_latlon_zoom'] : 12;
             $row['pc_zoom']++;
 
@@ -143,6 +148,7 @@ class Page extends PageCommon {
             $this->isCounters = 1;
             $this->getCounters();
         }
+        $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
         $smarty->assign('city', $row);
         $smarty->assign('point_types', $point_types);
         $smarty->assign('points_sight', $pnts_sight);
@@ -246,7 +252,7 @@ class Page extends PageCommon {
 
             //----------------------  т о ч к и  ------------------------
             $db->sql = "SELECT pt.*, pt.pt_id, pt.pt_name, pt.pt_type_id, pt.pt_description,
-                                pt_latitude, pt_longitude, pt_latlon_zoom,
+                        pt_latitude, pt_longitude, pt_latlon_zoom,
                                 rp.tp_name, rp.tp_icon, rp.tp_short, rp.tr_sight, rp.tp_icon,
                                 DATE_FORMAT(pt.pt_lastup_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update
                         FROM $dbpt pt
