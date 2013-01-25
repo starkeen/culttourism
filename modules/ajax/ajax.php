@@ -188,7 +188,7 @@ class Page extends PageCommon {
         $db = $this->db;
         $dbpp = $db->getTableName('pagepoints');
 
-        $db->sql = "UPDATE $dbpp SET pt_lastup_user = '$uid',
+        $db->sql = "UPDATE $dbpp SET pt_lastup_user = '$uid', pt_lastup_date = now(),
                     pt_website = '$nwebsite', pt_email = '$nemail',
                     pt_phone = '$nphone', pt_worktime = '$nworktime',
                     pt_adress = '$nadress'
@@ -211,7 +211,7 @@ class Page extends PageCommon {
         $n_lon = str_replace(',', '.', $n_lon);
         $n_zoom = cut_trash_int($_POST['pc_zoom']);
 
-        $db->sql = "UPDATE $dbpc SET pc_latitude = '$n_lat', pc_longitude = '$n_lon', pc_latlon_zoom = '$n_zoom' WHERE pc_id = '$cid'";
+        $db->sql = "UPDATE $dbpc SET pc_latitude = '$n_lat', pc_longitude = '$n_lon', pc_latlon_zoom = '$n_zoom', pc_lastup_date = now() WHERE pc_id = '$cid'";
         if ($db->exec())
             return TRUE;
         else
@@ -261,7 +261,7 @@ class Page extends PageCommon {
         $state = cut_trash_int($_POST['nstate'] == "checked");
         $db = $this->db;
         $dbpp = $db->getTableName('pagepoints');
-        $db->sql = "UPDATE $dbpp SET pt_is_best = '$state' WHERE pt_id = '$pid'";
+        $db->sql = "UPDATE $dbpp SET pt_is_best = '$state', pt_lastup_date = now() WHERE pt_id = '$pid'";
         echo $db->sql;
         return $db->exec();
     }
@@ -278,7 +278,7 @@ class Page extends PageCommon {
         $n_lon = str_replace(',', '.', $n_lon);
         $n_zoom = cut_trash_int($_POST['pt_zoom']);
 
-        $db->sql = "UPDATE $dbpp SET pt_latitude = '$n_lat', pt_longitude = '$n_lon', pt_latlon_zoom = '$n_zoom' WHERE pt_id = '$pid'";
+        $db->sql = "UPDATE $dbpp SET pt_latitude = '$n_lat', pt_longitude = '$n_lon', pt_latlon_zoom = '$n_zoom', pt_lastup_date = now() WHERE pt_id = '$pid'";
         if ($db->exec()) {
             $point_lat_short = mb_substr($n_lat, 0, 8);
             $point_lon_short = mb_substr($n_lon, 0, 8);
@@ -616,7 +616,7 @@ class Page extends PageCommon {
         $db = $this->db;
         $dbpp = $db->getTableName('pagepoints');
         $dbpt = $db->getTableName('ref_pointtypes');
-        $db->sql = "UPDATE $dbpp SET pt_type_id = '$type' WHERE pt_id = '$ppid'";
+        $db->sql = "UPDATE $dbpp SET pt_type_id = '$type', pt_lastup_date = now() WHERE pt_id = '$ppid'";
         $db->exec();
         $db->sql = "SELECT tp_icon FROM $dbpt WHERE tp_id = '$type'";
         $db->exec();
@@ -653,7 +653,7 @@ class Page extends PageCommon {
             return $this->getError('403');
         $db = $this->db;
         $dbpp = $db->getTableName('pagepoints');
-        $db->sql = "UPDATE $dbpp SET pt_active = 0 WHERE pt_id = '$ppid'";
+        $db->sql = "UPDATE $dbpp SET pt_active = 0, pt_lastup_date = now() WHERE pt_id = '$ppid'";
         if ($db->exec())
             return $ppid;
         else
@@ -697,6 +697,7 @@ class Page extends PageCommon {
                 pt_phone = '$nphone',
                 pt_email = '$nmail',
                 pt_is_best = '$nbest',
+                pt_lastup_date = now(),
                 pt_rank = 0";
         if ($nlat > 0 && $nlon > 0) {
             $db->sql .= ", pt_latitude = '$nlat', pt_longitude = '$nlon'";
@@ -719,7 +720,7 @@ class Page extends PageCommon {
             return $this->getError('403');
         $db = $this->db;
         $dbpp = $db->getTableName('pagepoints');
-        $db->sql = "UPDATE $dbpp SET pt_name = '$nname', pt_lastup_user = '$uid' WHERE pt_id = '$nid'";
+        $db->sql = "UPDATE $dbpp SET pt_name = '$nname', pt_lastup_user = '$uid', pt_lastup_date = now() WHERE pt_id = '$nid'";
         if ($db->exec()) {
             $db->sql = "SELECT pt_name FROM $dbpp WHERE pt_id = '$nid'";
             $db->exec();
@@ -745,7 +746,7 @@ class Page extends PageCommon {
         $dbvp = $db->getTableName('verpoints');
         $db->sql = "INSERT INTO $dbvp (vp_point_id, vp_date, vp_text, vp_hash, vp_userid) SELECT $nid, now(), pt_description, md5(pt_description),'$uid' FROM $dbpp WHERE pt_id = '$nid'";
         $db->exec();
-        $db->sql = "UPDATE $dbpp SET pt_description = '$ndesc', pt_lastup_user = '$uid' WHERE pt_id = '$nid'";
+        $db->sql = "UPDATE $dbpp SET pt_description = '$ndesc', pt_lastup_user = '$uid', pt_lastup_date = now() WHERE pt_id = '$nid'";
         if ($db->exec()) {
             $db->sql = "SELECT pt_description FROM $dbpp WHERE pt_id = '$nid'";
             $db->exec();
@@ -767,7 +768,7 @@ class Page extends PageCommon {
             return $this->getError('403');
         $db = $this->db;
         $dbpc = $db->getTableName('pagecity');
-        $db->sql = "UPDATE $dbpc SET pc_title = '$ntitle' WHERE pc_id = '$nid'";
+        $db->sql = "UPDATE $dbpc SET pc_title = '$ntitle', pc_lastup_date = now() WHERE pc_id = '$nid'";
         if ($db->exec()) {
             $db->sql = "SELECT pc_title FROM $dbpc WHERE pc_id = '$nid'";
             $db->exec();
@@ -792,7 +793,7 @@ class Page extends PageCommon {
         $dbvc = $db->getTableName('vercity');
         $db->sql = "INSERT INTO $dbvc (vc_cityid, vc_datecreate, vc_text, vc_hash, vc_userid) SELECT $nid, now(), pc_text, md5(pc_text),1 FROM $dbpc WHERE pc_id = '$nid'";
         $db->exec();
-        $db->sql = "UPDATE $dbpc SET pc_text = '$ntitle' WHERE pc_id = '$nid'";
+        $db->sql = "UPDATE $dbpc SET pc_text = '$ntitle', pc_lastup_date = now() WHERE pc_id = '$nid'";
         if ($db->exec()) {
             $db->sql = "SELECT pc_text FROM $dbpc WHERE pc_id = '$nid'";
             $db->exec();
