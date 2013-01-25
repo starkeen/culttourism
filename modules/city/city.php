@@ -111,7 +111,7 @@ class Page extends PageCommon {
                         pc_title = '$city_name', pc_city_id = '$city_id', pc_region_id = '$region_id', pc_country_id = '$country_id',
                         pc_url_id = 0, pc_latitude = '$lat', pc_longitude = '$lon', pc_rank = 0,
                         pc_title_translit = '$translit', pc_title_english = '$translit', pc_inwheretext = '$city_name',
-                        pc_add_date = now(), pc_add_user = '$uid'";
+                        pc_add_date = now(), pc_add_user = '$uid', pc_lastup_date = now()";
             if ($db->exec()) {
                 $cid = $db->getLastInserted();
                 $nurl = strtolower(str_replace(' ', '_', $translit));
@@ -221,10 +221,11 @@ class Page extends PageCommon {
         $dbp = $db->getTableName('pagepoints');
         $where = (!$this->checkEdit()) ? "WHERE city.pc_text is not null" : '';
         $db->sql = "SELECT city.pc_id, city.pc_title, city.pc_latitude, city.pc_longitude,
-                    city.pc_city_id, city.pc_region_id, city.pc_country_id,
-                    url.url, char_length(city.pc_text) as len, city.pc_inwheretext,
-                    city.pc_pagepath,
-                    (SELECT count(pt_id) FROM $dbp WHERE pt_citypage_id = city.pc_id) as pts
+                            city.pc_city_id, city.pc_region_id, city.pc_country_id,
+                            url.url, char_length(city.pc_text) as len, city.pc_inwheretext,
+                            city.pc_pagepath,
+                            (SELECT count(pt_id) FROM $dbp WHERE pt_citypage_id = city.pc_id) as pts,
+                            DATE_FORMAT(city.pc_lastup_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update
                     FROM $dbc city
                     LEFT JOIN $dbr url ON url.uid = city.pc_url_id
                 $where
@@ -233,6 +234,8 @@ class Page extends PageCommon {
         while ($row = $db->fetch()) {
             $row['pc_pagepath'] = strip_tags($row['pc_pagepath']);
             $cities[] = $row;
+            if (strtotime($row['last_update']) > $this->lastedit_timestamp)
+                $this->lastedit_timestamp = strtotime($row['last_update']);
         }
         $smarty->assign('tcity', $cities);
         if (isset($this->user['userid']))

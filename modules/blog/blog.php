@@ -26,13 +26,15 @@ class Page extends PageCommon {
         $dbu = $db->getTableName('users');
         $show_full_admin = $this->checkEdit();
         $show_full_sql = "";
-        if (!$show_full_admin) $show_full_sql = "HAVING br_showed = 1\n";
+        if (!$show_full_admin)
+            $show_full_sql = "HAVING br_showed = 1\n";
         $db->sql = "SELECT bg.*, us.us_name,
-                    IF(bg.br_date < now(),1,0) as br_showed,
-                    DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month, 
-                    DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
-                    IF (bg.br_url != '', bg.br_url, DATE_FORMAT(bg.br_date,'%d')) as bg_day,
-                    IF (bg.br_url != '', CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'), CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/%d'),'.html')) as br_link
+                            DATE_FORMAT(bg.br_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update,
+                            IF(bg.br_date < now(),1,0) as br_showed,
+                            DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month, 
+                            DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
+                            IF (bg.br_url != '', bg.br_url, DATE_FORMAT(bg.br_date,'%d')) as bg_day,
+                            IF (bg.br_url != '', CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'), CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/%d'),'.html')) as br_link
                     FROM $dbb bg
                     LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
                     $show_full_sql
@@ -43,13 +45,15 @@ class Page extends PageCommon {
         $entry = array();
         while ($row = $db->fetch()) {
             $entry[$row['br_id']] = $row;
+            if (strtotime($row['last_update']) > $this->lastedit_timestamp)
+                $this->lastedit_timestamp = strtotime($row['last_update']);
         }
         $sm->assign('entries', $entry);
         $sm->assign('blogadmin', $show_full_admin);
         return $sm->fetch(_DIR_TEMPLATES . '/blog/blog.all.sm.html');
     }
 
-    private function getOneEntry($sm, $db, $id, $y=null, $m=null) {
+    private function getOneEntry($sm, $db, $id, $y = null, $m = null) {
         $id = urldecode($id);
         $id = substr($id, 0, strpos($id, '.html'));
         $year = intval($y);
@@ -68,7 +72,7 @@ class Page extends PageCommon {
         return $sm->fetch(_DIR_TEMPLATES . '/blog/blog.one.sm.html');
     }
 
-    private function getCalendar($sm, $db, $y, $m=null) {
+    private function getCalendar($sm, $db, $y, $m = null) {
         $year = intval($y);
         $month = intval($m);
         if ($year) {
