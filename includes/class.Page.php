@@ -188,7 +188,8 @@ class Page extends PageCommon {
             //----------------------  в н у т р и  ------------------------
             $row['region_in'] = array();
             if ($row['pc_region_id'] > 0 && $row['pc_city_id'] == 0) {
-                $db->sql = "SELECT pc.pc_title, url.url, pc.pc_inwheretext
+                $db->sql = "SELECT pc.pc_title, url.url, pc.pc_inwheretext,
+                                    DATE_FORMAT(pc.pc_add_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update
                             FROM $dbpc pc
                             LEFT JOIN $dburl url ON url.uid = pc.pc_url_id
                             WHERE pc.pc_region_id = '{$row['pc_region_id']}'
@@ -197,13 +198,16 @@ class Page extends PageCommon {
                 $db->exec();
                 while ($subcity = $db->fetch()) {
                     $row['region_in'][] = array('title' => $subcity['pc_title'], 'url' => $subcity['url'], 'where' => $subcity['pc_inwheretext']);
+                    if (strtotime($subcity['last_update']) > $this->lastedit_timestamp)
+                        $this->lastedit_timestamp = strtotime($subcity['last_update']);
                 }
             }
             //----------------------  р я д о м  ------------------------
             $row['region_near'] = array();
             if ($row['pc_region_id'] > 0 && $row['pc_city_id'] > 0) {
                 $db->sql = "SELECT pc.pc_title, url.url, pc.pc_inwheretext,
-                                    ROUND(1000 * (ABS(pc.pc_latitude - {$row['pc_latitude']}) + ABS(pc.pc_longitude - {$row['pc_longitude']}))) AS delta_sum
+                                    ROUND(1000 * (ABS(pc.pc_latitude - {$row['pc_latitude']}) + ABS(pc.pc_longitude - {$row['pc_longitude']}))) AS delta_sum,
+                                    DATE_FORMAT(pc.pc_add_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update
                             FROM $dbpc pc
                             LEFT JOIN $dburl url ON url.uid = pc.pc_url_id
                             WHERE pc.pc_city_id != 0
@@ -220,6 +224,8 @@ class Page extends PageCommon {
                         'url' => $subcity['url'],
                         'where' => $subcity['pc_inwheretext'],
                     );
+                    if (strtotime($subcity['last_update']) > $this->lastedit_timestamp)
+                        $this->lastedit_timestamp = strtotime($subcity['last_update']);
                 }
             }
             /*
@@ -240,8 +246,9 @@ class Page extends PageCommon {
 
             //----------------------  т о ч к и  ------------------------
             $db->sql = "SELECT pt.*, pt.pt_id, pt.pt_name, pt.pt_type_id, pt.pt_description,
-                        pt_latitude, pt_longitude, pt_latlon_zoom,
-                        rp.tp_name, rp.tp_icon, rp.tp_short, rp.tr_sight, rp.tp_icon
+                                pt_latitude, pt_longitude, pt_latlon_zoom,
+                                rp.tp_name, rp.tp_icon, rp.tp_short, rp.tr_sight, rp.tp_icon,
+                                DATE_FORMAT(pt.pt_lastup_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update
                         FROM $dbpt pt
                         LEFT JOIN $dbrp rp ON rp.tp_id = pt.pt_type_id
                         WHERE pt.pt_citypage_id = '{$row['pc_id']}'
@@ -286,7 +293,12 @@ class Page extends PageCommon {
                     $pnts_sight[] = $point;
                 else
                     $pnts_service[] = $point;
+
+                if (strtotime($point['last_update']) > $this->lastedit_timestamp)
+                    $this->lastedit_timestamp = strtotime($point['last_update']);
             }
+            $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
+
             $smarty->assign('city', $row);
             $smarty->assign('points', $points);
             $smarty->assign('points_sight', $pnts_sight);
@@ -340,9 +352,10 @@ class Page extends PageCommon {
         $url = implode('/', $uridata);
 
         $db->sql = "SELECT pt.pt_name, pt.pt_description, pt.pt_citypage_id,
-                    pt.pt_latitude, pt.pt_longitude, pt_latlon_zoom,
-                    pt.pt_website, pt.pt_adress, pt.pt_email, pt.pt_worktime, pt.pt_phone,
-                    rp.tp_name, rp.tr_sight, rp.tp_short, rp.tp_icon
+                            pt.pt_latitude, pt.pt_longitude, pt_latlon_zoom,
+                            pt.pt_website, pt.pt_adress, pt.pt_email, pt.pt_worktime, pt.pt_phone,
+                            rp.tp_name, rp.tr_sight, rp.tp_short, rp.tp_icon,
+                            DATE_FORMAT(pt.pt_lastup_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update
                     FROM $dbpt AS pt
                     LEFT JOIN $dbrp AS rp ON pt.pt_type_id = rp.tp_id
                     WHERE pt.pt_id = '$id'
@@ -367,6 +380,9 @@ class Page extends PageCommon {
             //$object['gps_deg'] = 0;
         }
         $smarty->assign('object', $object);
+
+        $this->lastedit_timestamp = strtotime($object['last_update']);
+        $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
 
         $db->sql = "SELECT pc.pc_title, pc.pc_inwheretext, pc.pc_pagepath, pc.pc_url_id
                     FROM $dbpc pc
@@ -410,7 +426,7 @@ class Page extends PageCommon {
         $this->addKeywords($object['esc_name']);
         if (isset($object['gps_dec']))
             $this->addKeywords('координаты GPS');
-        
+
         return $smarty->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.sm.html');
     }
 
