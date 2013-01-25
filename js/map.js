@@ -63,10 +63,6 @@ ymaps.ready(function() {
             res.mapState.applyToMap(map);
         var arr = [];
         res.geoObjects.each(function (obj) {
-            objid = obj.properties.get('metaDataProperty').AnyMetaData.pid;
-            //console.log(obj.properties.get('name'));
-            //console.log(obj.geometry.getCoordinates());
-            //map.panTo(item.geometry.getCoordinates());
             arr.push(obj);
         });
         $('#mapdata_points').text(arr.length);
@@ -87,7 +83,6 @@ ymaps.ready(function() {
         'rln='+bounds[1][0],
         'rlt='+bounds[1][1],
         ];
-        console.log(cluster);
         ymaps.geoXml.load("http://culttourism.ru/ajax/YMapsML/getcommonmap/?"+boundsparams.join('&')).then(function (res) {
             var arr = [];
             res.geoObjects.each(function (obj) {
