@@ -225,7 +225,7 @@ class Page extends PageCommon {
                             url.url, char_length(city.pc_text) as len, city.pc_inwheretext,
                             city.pc_pagepath,
                             (SELECT count(pt_id) FROM $dbp WHERE pt_citypage_id = city.pc_id) as pts,
-                            DATE_FORMAT(city.pc_lastup_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update
+                            UNIX_TIMESTAMP(city.pc_lastup_date) AS last_update
                     FROM $dbc city
                     LEFT JOIN $dbr url ON url.uid = city.pc_url_id
                 $where
@@ -234,8 +234,8 @@ class Page extends PageCommon {
         while ($row = $db->fetch()) {
             $row['pc_pagepath'] = strip_tags($row['pc_pagepath']);
             $cities[] = $row;
-            if (strtotime($row['last_update']) > $this->lastedit_timestamp)
-                $this->lastedit_timestamp = strtotime($row['last_update']);
+            if ($row['last_update'] > $this->lastedit_timestamp)
+                $this->lastedit_timestamp = $row['last_update'];
         }
         $smarty->assign('tcity', $cities);
         if (isset($this->user['userid']))
