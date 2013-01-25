@@ -88,6 +88,7 @@ class Page extends PageCommon {
         $dbb = $db->getTableName('blogentries');
         $dbu = $db->getTableName('users');
         $db->sql = "SELECT bg.br_id, bg.br_title, us.us_name,
+                    DATE_FORMAT(bg.br_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update,
                     DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month, 
                     IF (bg.br_url != '', bg.br_url, DATE_FORMAT(bg.br_date,'%d')) as bg_day,
                     IF (bg.br_url != '', CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'), CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/%d'),'.html')) as br_link,
@@ -104,6 +105,8 @@ class Page extends PageCommon {
         $entry = array();
         while ($row = $db->fetch()) {
             $entry[$row['bg_month']][$row['br_id']] = $row;
+            if (strtotime($row['last_update']) > $this->lastedit_timestamp)
+                $this->lastedit_timestamp = strtotime($row['last_update']);
         }
         $sm->assign('entries', $entry);
 
@@ -156,6 +159,7 @@ class Page extends PageCommon {
         $dbu = $db->getTableName('users');
         $id = intval($id);
         $db->sql = "SELECT bg.*, us.us_name,
+                    DATE_FORMAT(bg.br_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update,
                     DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
                     DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month
                     FROM $dbb bg
@@ -174,6 +178,7 @@ class Page extends PageCommon {
         $this->addKeywords($out['br_url']);
         $this->addKeywords('месяц ' . $out['bg_month']);
         $this->addKeywords($out['bg_year'] . ' год');
+        $this->lastedit_timestamp = strtotime($out['last_update']);
         return $out;
     }
 
