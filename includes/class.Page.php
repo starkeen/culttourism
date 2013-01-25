@@ -95,15 +95,15 @@ class Page extends PageCommon {
 
         $url = mysql_real_escape_string($url);
         $db->sql = "SELECT city.*,
-                            DATE_FORMAT(city.pc_lastup_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update1,
-                            (SELECT DATE_FORMAT(MAX(pt_lastup_date),'%a, %d %b %Y %H:%i:%s GMT') FROM $dbpp WHERE pt_citypage_id = city.pc_id) AS last_update2                           
+                            UNIX_TIMESTAMP(city.pc_lastup_date) AS last_update1,
+                            (SELECT UNIX_TIMESTAMP(MAX(pt_lastup_date)) FROM $dbpp WHERE pt_citypage_id = city.pc_id) AS last_update2                           
                     FROM $dburl url
                     LEFT JOIN $dbpc city ON city.pc_id = url.citypage
                     WHERE url.url = '$url'";
         $db->exec();
         //$db->showSQL();
         if ($row = $db->fetch()) {
-            $this->lastedit_timestamp = max(array(strtotime($row['last_update1']), strtotime($row['last_update2'])));
+            $this->lastedit_timestamp = max(array($row['last_update1'], $row['last_update2']));
             $row['pc_zoom'] = ($row['pc_latlon_zoom']) ? $row['pc_latlon_zoom'] : 12;
             $row['pc_zoom']++;
 
@@ -195,7 +195,7 @@ class Page extends PageCommon {
             $row['region_in'] = array();
             if ($row['pc_region_id'] > 0 && $row['pc_city_id'] == 0) {
                 $db->sql = "SELECT pc.pc_title, url.url, pc.pc_inwheretext,
-                                    DATE_FORMAT(pc.pc_add_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update
+                                    UNIX_TIMESTAMP(pc.pc_add_date) AS last_update
                             FROM $dbpc pc
                             LEFT JOIN $dburl url ON url.uid = pc.pc_url_id
                             WHERE pc.pc_region_id = '{$row['pc_region_id']}'
@@ -204,8 +204,8 @@ class Page extends PageCommon {
                 $db->exec();
                 while ($subcity = $db->fetch()) {
                     $row['region_in'][] = array('title' => $subcity['pc_title'], 'url' => $subcity['url'], 'where' => $subcity['pc_inwheretext']);
-                    if (strtotime($subcity['last_update']) > $this->lastedit_timestamp)
-                        $this->lastedit_timestamp = strtotime($subcity['last_update']);
+                    if ($subcity['last_update'] > $this->lastedit_timestamp)
+                        $this->lastedit_timestamp = $subcity['last_update'];
                 }
             }
             //----------------------  р я д о м  ------------------------
@@ -213,7 +213,7 @@ class Page extends PageCommon {
             if ($row['pc_region_id'] > 0 && $row['pc_city_id'] > 0) {
                 $db->sql = "SELECT pc.pc_title, url.url, pc.pc_inwheretext,
                                     ROUND(1000 * (ABS(pc.pc_latitude - {$row['pc_latitude']}) + ABS(pc.pc_longitude - {$row['pc_longitude']}))) AS delta_sum,
-                                    DATE_FORMAT(pc.pc_add_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update
+                                    UNIX_TIMESTAMP(pc.pc_add_date) AS last_update
                             FROM $dbpc pc
                             LEFT JOIN $dburl url ON url.uid = pc.pc_url_id
                             WHERE pc.pc_city_id != 0
@@ -230,8 +230,8 @@ class Page extends PageCommon {
                         'url' => $subcity['url'],
                         'where' => $subcity['pc_inwheretext'],
                     );
-                    if (strtotime($subcity['last_update']) > $this->lastedit_timestamp)
-                        $this->lastedit_timestamp = strtotime($subcity['last_update']);
+                    if ($subcity['last_update'] > $this->lastedit_timestamp)
+                        $this->lastedit_timestamp = $subcity['last_update'];
                 }
             }
             /*
@@ -254,7 +254,7 @@ class Page extends PageCommon {
             $db->sql = "SELECT pt.*, pt.pt_id, pt.pt_name, pt.pt_type_id, pt.pt_description,
                         pt_latitude, pt_longitude, pt_latlon_zoom,
                                 rp.tp_name, rp.tp_icon, rp.tp_short, rp.tr_sight, rp.tp_icon,
-                                DATE_FORMAT(pt.pt_lastup_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update
+                                UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update
                         FROM $dbpt pt
                         LEFT JOIN $dbrp rp ON rp.tp_id = pt.pt_type_id
                         WHERE pt.pt_citypage_id = '{$row['pc_id']}'
@@ -300,8 +300,8 @@ class Page extends PageCommon {
                 else
                     $pnts_service[] = $point;
 
-                if (strtotime($point['last_update']) > $this->lastedit_timestamp)
-                    $this->lastedit_timestamp = strtotime($point['last_update']);
+                if ($point['last_update'] > $this->lastedit_timestamp)
+                    $this->lastedit_timestamp = $point['last_update'];
             }
             $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
 
@@ -361,7 +361,7 @@ class Page extends PageCommon {
                             pt.pt_latitude, pt.pt_longitude, pt_latlon_zoom,
                             pt.pt_website, pt.pt_adress, pt.pt_email, pt.pt_worktime, pt.pt_phone,
                             rp.tp_name, rp.tr_sight, rp.tp_short, rp.tp_icon,
-                            DATE_FORMAT(pt.pt_lastup_date,'%a, %d %b %Y %H:%i:%s GMT') AS last_update
+                            UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update
                     FROM $dbpt AS pt
                     LEFT JOIN $dbrp AS rp ON pt.pt_type_id = rp.tp_id
                     WHERE pt.pt_id = '$id'
@@ -387,7 +387,7 @@ class Page extends PageCommon {
         }
         $smarty->assign('object', $object);
 
-        $this->lastedit_timestamp = strtotime($object['last_update']);
+        $this->lastedit_timestamp = $object['last_update'];
         $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
 
         $db->sql = "SELECT pc.pc_title, pc.pc_inwheretext, pc.pc_pagepath, pc.pc_url_id

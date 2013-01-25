@@ -42,7 +42,7 @@ $smarty->assign('page', $page);
 
 header('X-Powered-By: html');
 header('Content-Type: text/html; charset=utf-8');
-//echo date('d.m.Y H:i:s', $page->lastedit_timestamp);
+
 if (_CACHE_DAYS != 0) {
     header('Expires: ' . $page->expiredate);
     header('Last-Modified: ' . $page->lastedit);
