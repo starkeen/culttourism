@@ -32,6 +32,7 @@ abstract class Core {
     public $custom_css = null;
     public $robots_indexing = 'index,follow';
     public $lastedit = null;
+    public $lastedit_timestamp = 0;
     public $expiredate = null;
     public $smarty = null;
     protected $auth = null;
@@ -93,6 +94,7 @@ abstract class Core {
                 $this->custom_css = $row['md_css'];
                 $this->robots_indexing = $row['md_robots'];
                 $this->lastedit = $row['md_timestamp'];
+                $this->lastedit_timestamp = strtotime($row['md_timestamp']);
                 $this->expiredate = $row['md_expiredate'];
                 $this->getCounters();
 
