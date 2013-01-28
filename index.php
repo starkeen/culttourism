@@ -62,7 +62,7 @@ if (_CACHE_DAYS != 0) {
             exit();
         }
     }
-} elseif ($page->lastedit_timestamp > 0) {
+} elseif ($page->lastedit_timestamp > 0 && $module_id != 'ajax') {
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp) . ' GMT');
     header("Cache-control: public");
     header("Pragma: cache");
@@ -86,9 +86,9 @@ if (_ER_REPORT || isset($_GET['debug']))
 else
     $smarty->assign('debug_info', '');
 
-if ($module_id == 'ajax')
+if ($module_id == 'ajax') {
     $smarty->display(_DIR_TEMPLATES . '/_main/empty.sm.html');
-elseif ($module_id == 'api')
+} elseif ($module_id == 'api')
     $smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
 else
     $smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');

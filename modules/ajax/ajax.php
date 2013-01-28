@@ -12,7 +12,7 @@ class Page extends PageCommon {
             $id = substr($id, 0, strpos($id, '?'));
         $this->id = $id;
         $this->auth->setService('ajax');
-        
+
         if ($page_id == 'forms' && $id == 'commonlogin')
             $this->content = $this->getFormLogin($smarty);
         elseif ($page_id == 'point') {
@@ -36,6 +36,7 @@ class Page extends PageCommon {
                 $this->content = $this->setFormPointGPS(intval($_GET['pid']), $smarty);
             elseif ($id == 'savebest')
                 $this->content = $this->setFormPointBest(intval($_GET['pid']), $smarty);
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
         }
         elseif ($page_id == 'city') {
             if ($id == 'savetitle' && isset($_GET['id']) && intval($_GET['id']))
@@ -46,6 +47,7 @@ class Page extends PageCommon {
                 $this->content = $this->getFormCityGPS(intval($_GET['cid']), $smarty);
             elseif ($id == 'saveformGPS')
                 $this->content = $this->setFormCityGPS(intval($_GET['cid']), $smarty);
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
         }
         elseif ($page_id == 'pointtype') {
             if ($id == 'getform')
@@ -54,6 +56,7 @@ class Page extends PageCommon {
                 $this->content = $this->setPointType(intval($_POST['pid']));
         }
         elseif ($page_id == 'blog') {
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             if ($id == 'addform')
                 $this->content = $this->getFormBlog($smarty);
             elseif ($id == 'editform' && intval($_GET['brid']))
@@ -62,6 +65,7 @@ class Page extends PageCommon {
                 $this->content = $this->saveFormBlog();
             elseif ($id == 'delentry' && intval($_GET['bid']))
                 $this->content = $this->deleteBlogEntry(intval($_GET['bid']));
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
         }
         elseif ($page_id == 'page') {
             if ($id == 'gps')
@@ -128,11 +132,13 @@ class Page extends PageCommon {
             $db->exec();
             $entry = $db->fetch();
             $smarty->assign('entry', $entry);
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             return $smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.sm.html');
         } else {
             $entry = array('br_day' => date('d.m.Y'), 'br_time' => date('H:i'),
                 'bg_year' => date('Y'), 'bg_month' => date('m'), 'br_url' => date('d'));
             $smarty->assign('entry', $entry);
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             return $smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.sm.html');
         }
     }
