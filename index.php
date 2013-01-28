@@ -63,12 +63,18 @@ if (_CACHE_DAYS != 0) {
         }
     }
 } elseif ($page->lastedit_timestamp > 0) {
-    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) &&
-            strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $page->lastedit_timestamp) {
-        header('HTTP/1.1 304 Not Modified');
-        exit();
+    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp) . ' GMT');
+    header("Cache-control: public");
+    header("Pragma: cache");
+    header('Expires: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp + 60 * 60 * 24 * 7) . ' GMT');
+    $headers = getallheaders();
+    if (isset($headers['If-Modified-Since'])) {
+        $modifiedSince = explode(';', $headers['If-Modified-Since']);
+        if (strtotime($modifiedSince[0]) >= $page->lastedit_timestamp) {
+            header('HTTP/1.1 304 Not Modified');
+            exit();
+        }
     }
-    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp));
 } else {
     header("Cache-Control: no-store, no-cache, must-revalidate");
     header("Expires: " . date("r"));
