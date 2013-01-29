@@ -74,6 +74,7 @@ class Page extends PageCommon {
                 $this->getError('404');
         }
         elseif ($page_id == 'weather') {
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
             if ($id == 'getbycoords')
                 $this->content = $this->getWeatherBlockCoord($_GET['lat'], $_GET['lon'], $smarty);
             else
@@ -102,6 +103,7 @@ class Page extends PageCommon {
 
 //------------------------------------------------------- WEATHER BLOCK --------
     private function getWeatherBlockCoord($lat, $lon, $smarty) {
+        $out = array('state' => false, 'content' => '');
         $weather_data = array(
             'temperature' => 0,
             'temp_range' => '',
@@ -168,9 +170,10 @@ class Page extends PageCommon {
             else
                 $weather_data['winddirect'] = 'сев';
             $smarty->assign('weather_data', $weather_data);
-            return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/weather.block.sm.html');
-        } else
-            return '';
+            $out['state'] = true;
+            $out['content'] = $smarty->fetch(_DIR_TEMPLATES . '/_ajax/weather.block.sm.html');
+        }
+        return json_encode($out);
     }
 
     private function getWeaterConditionsByCode($code) {

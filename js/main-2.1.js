@@ -12,7 +12,23 @@ $(document).ready(function() {
         });
         return false;
     });
-    $(".city_weather").load('/ajax/weather/getbycoords/?lat='+$("#city_map_weather").data("lat")+'&lon='+$("#city_map_weather").data("lon")).removeAttr("title");
+    $(".city_weather").each(function() {
+        var that = this;
+        $.get("/ajax/weather/getbycoords/", {
+            lat:$(that).data("lat"),
+            lon:$(that).data("lon")
+        }, function(data) {
+            var dobj = $.parseJSON(data);
+            if (dobj.state) {
+                $(that).html(dobj.content).removeAttr("title");
+            } else {
+                $(that).html('загрузить погоду не удалось');
+            }
+        });
+        
+    }); 
+
+    
 
     //=============================---------------------- CITY EDIT ------------------------
     $(".hiddenedit").live("click",function(){
