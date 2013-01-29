@@ -348,7 +348,6 @@ ul {
     background-image: -webkit-gradient(linear,left top,left bottom,from(rgba(255, 255, 255, 0)),to(rgba(255, 255, 255, 1.0)));
     background-image: -moz-linear-gradient(top center,rgba(255, 255, 255, 0) 20%,rgba(255, 255, 255, 1.0) 95%);
     filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0,startColorStr='#00ffffff',endColorStr='#ffffffff');
-
 }
 .obj_additional {
     text-align:center;
@@ -567,10 +566,26 @@ input.dogo {
     background-repeat: no-repeat;
     cursor:pointer;
 }
+/*------------------------------------- WEATHER --------------------------*/
+.city_weather {
+    border: 1px solid #99B099;
+    width:200px;
+    height:65px;
+    float:right;
+    margin:5px auto;
+    text-align:center;
+    position:relative;
+    background-color:#DDF4FF;
+}
+.weatherblock_icon {float:left;}
+.weatherblock_temperature {font-size:120%;font-weight:bold;width:100px;margin-left:55px;}
+.weatherblock_elements {font-size:80%;text-align:left;text-align:right;margin-right: 2px}
+.weatherblock_legal {clear:both;font-size:70%;text-align:center;}
 /*------------------------------------- MAPS --------------------------*/
 #map_container {
     float:right;
     position:relative;
+    text-align: center;
 }
 #city_map {
     border:1px solid #99B099;

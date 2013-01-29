@@ -12,6 +12,8 @@ $(document).ready(function() {
         });
         return false;
     });
+    $(".city_weather").load('/ajax/weather/getbycoords/?lat='+$("#city_map_weather").data("lat")+'&lon='+$("#city_map_weather").data("lon")).removeAttr("title");
+
     //=============================---------------------- CITY EDIT ------------------------
     $(".hiddenedit").live("click",function(){
         $(this).addClass("hiddenedit_active");

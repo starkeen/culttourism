@@ -73,6 +73,13 @@ class Page extends PageCommon {
             else
                 $this->getError('404');
         }
+        elseif ($page_id == 'weather') {
+            if ($id == 'getbycoords')
+                $this->content = $this->getWeatherBlockCoord($_GET['lat'], $_GET['lon'], $smarty);
+            else
+                $this->getError('404');
+        }
+
         elseif ($page_id == 'YMapsML') {
             if ($id == 'getcitypoints' && isset($_GET['cid']) && intval($_GET['cid']))
                 $this->content = $this->getCityPointsYMapsML($smarty, intval($_GET['cid']));
@@ -91,6 +98,92 @@ class Page extends PageCommon {
 
     public static function getInstance($db, $mod = null) {
         return self::getInstanceOf(__CLASS__, $db, $mod);
+    }
+
+//------------------------------------------------------- WEATHER BLOCK --------
+    private function getWeatherBlockCoord($lat, $lon, $smarty) {
+        $weather_data = array(
+            'temperature' => 0,
+            'temp_range' => '',
+            'pressure' => 0,
+            'humidity' => 0,
+            'windspeed' => 0,
+            'winddirect' => '',
+            'winddeg' => 0,
+            'clouds' => 0,
+            'weather_id' => 800,
+            'weather_icon' => '01d',
+            'weather_text' => '',
+            'weather_descr' => '',
+            'weather_full' => '',
+        );
+        $url = "http://openweathermap.org/data/2.1/find/city?lat=$lat&lon=$lon&cnt=1&lang=ru&cluster=no";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $response = json_decode($result);
+        if ($response->cod == 200) {
+            $weather_data['temperature'] = round($response->list[0]->main->temp - 273.15);
+            if (isset($response->list[0]->main->temp_min) && isset($response->list[0]->main->temp_max))
+                $weather_data['temp_range'] = round($response->list[0]->main->temp_min - 273.15) . '...' . round($response->list[0]->main->temp_max - 273.15);
+            $weather_data['pressure'] = round($response->list[0]->main->pressure / 10);
+            $weather_data['humidity'] = round($response->list[0]->main->humidity);
+            $weather_data['windspeed'] = round($response->list[0]->wind->speed, 1);
+            $weather_data['winddeg'] = $response->list[0]->wind->deg;
+            $weather_data['clouds'] = $response->list[0]->clouds->all;
+            if (isset($response->list[0]->weather[0])) {
+                $weather_data['weather_id'] = $response->list[0]->weather[0]->id;
+                $weather_data['weather_text'] = $response->list[0]->weather[0]->main;
+                $weather_data['weather_descr'] = $response->list[0]->weather[0]->description;
+                $weather_data['weather_icon'] = $response->list[0]->weather[0]->icon;
+                $cond = $this->getWeaterConditionsByCode($weather_data['weather_id']);
+                if ($cond) {
+                    $weather_data['weather_text'] = $cond['main'];
+                    $weather_data['weather_descr'] = $cond['description'];
+                }
+                $weather_data['weather_full'] = $weather_data['weather_text'];
+                if ($weather_data['weather_descr'])
+                    $weather_data['weather_full'] .= ', ' . $weather_data['weather_descr'];
+            }
+            if ($weather_data['winddeg'] >= 0 && $weather_data['winddeg'] <= 22.5)
+                $weather_data['winddirect'] = 'сев';
+            elseif ($weather_data['winddeg'] >= 22.5 && $weather_data['winddeg'] <= 67.5)
+                $weather_data['winddirect'] = 'с-в';
+            elseif ($weather_data['winddeg'] >= 67.5 && $weather_data['winddeg'] <= 112.5)
+                $weather_data['winddirect'] = 'вост';
+            elseif ($weather_data['winddeg'] >= 112.5 && $weather_data['winddeg'] <= 157.5)
+                $weather_data['winddirect'] = 'ю-в';
+            elseif ($weather_data['winddeg'] >= 157.5 && $weather_data['winddeg'] <= 202.5)
+                $weather_data['winddirect'] = 'юж';
+            elseif ($weather_data['winddeg'] >= 202.5 && $weather_data['winddeg'] <= 247.5)
+                $weather_data['winddirect'] = 'ю-3';
+            elseif ($weather_data['winddeg'] >= 247.5 && $weather_data['winddeg'] <= 292.5)
+                $weather_data['winddirect'] = 'зап';
+            elseif ($weather_data['winddeg'] >= 292.5 && $weather_data['winddeg'] <= 67.5)
+                $weather_data['winddirect'] = 'с-з';
+            else
+                $weather_data['winddirect'] = 'сев';
+            $smarty->assign('weather_data', $weather_data);
+            return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/weather.block.sm.html');
+        } else
+            return '';
+    }
+
+    private function getWeaterConditionsByCode($code) {
+        $code = cut_trash_int($code);
+        $db = $this->db;
+        $dbwc = $db->getTableName('weather_codes');
+        $db->sql = "SELECT * FROM $dbwc WHERE wc_id = '$code'";
+        $db->exec();
+        $row = $db->fetch();
+        if ($row['wc_id'] != 0)
+            return array('main' => $row['wc_main'], 'description' => $row['wc_description']);
+        else
+            return false;
     }
 
 //--------------------------------------------------------- TEXT PAGES ---------
