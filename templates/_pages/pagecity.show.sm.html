@@ -11,6 +11,7 @@
     {if $city.pc_city_id > 0}
     <a id="city_map_link" href="map.html" title="Большая карта достопримечательностей {$city.pc_inwheretext}">на весь экран</a>
     {/if}
+    <div id="city_map_weather" data-lat="{$city.pc_latitude}" data-lon="{$city.pc_longitude}"></div>
 </div>
 {/if}
 <div id="citytext">{$city.pc_text}</div>
