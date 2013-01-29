@@ -130,8 +130,10 @@ class Page extends PageCommon {
         $response = json_decode($result);
         if ($response->cod == 200) {
             $weather_data['temperature'] = round($response->list[0]->main->temp - 273.15);
-            if (isset($response->list[0]->main->temp_min) && isset($response->list[0]->main->temp_max))
-                $weather_data['temp_range'] = round($response->list[0]->main->temp_min - 273.15) . '...' . round($response->list[0]->main->temp_max - 273.15);
+            if (isset($response->list[0]->main->temp_min) && isset($response->list[0]->main->temp_max)) {
+                if (round($response->list[0]->main->temp_min) != round($response->list[0]->main->temp_max))
+                    $weather_data['temp_range'] = round($response->list[0]->main->temp_min - 273.15) . '...' . round($response->list[0]->main->temp_max - 273.15);
+            }
             $weather_data['pressure'] = round($response->list[0]->main->pressure / 10);
             $weather_data['humidity'] = round($response->list[0]->main->humidity);
             $weather_data['windspeed'] = round($response->list[0]->wind->speed, 1);
