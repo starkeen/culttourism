@@ -103,7 +103,7 @@ class Page extends PageCommon {
 
 //------------------------------------------------------- WEATHER BLOCK --------
     private function getWeatherBlockCoord($lat, $lon, $smarty) {
-        $out = array('state' => false, 'content' => '');
+        $out = array('state' => false, 'content' => '', 'color' => '');
         $weather_data = array(
             'temperature' => 0,
             'temp_range' => '',
