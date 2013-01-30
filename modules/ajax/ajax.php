@@ -105,7 +105,9 @@ class Page extends PageCommon {
     private function getWeatherBlockCoord($lat, $lon, $smarty) {
         $out = array('state' => false, 'content' => '', 'color' => '');
         $weather_data = array(
-            'temperature' => 0,
+            'temperature' => '',
+            'temperature_min' => '',
+            'temperature_max' => '',
             'temp_range' => '',
             'pressure' => 0,
             'humidity' => 0,
@@ -130,9 +132,18 @@ class Page extends PageCommon {
         $response = json_decode($result);
         if ($response->cod == 200) {
             $weather_data['temperature'] = round($response->list[0]->main->temp - 273.15);
+            if ($weather_data['temperature'] > 0)
+                $weather_data['temperature'] = '+' . $weather_data['temperature'];
             if (isset($response->list[0]->main->temp_min) && isset($response->list[0]->main->temp_max)) {
-                if (round($response->list[0]->main->temp_min) != round($response->list[0]->main->temp_max))
-                    $weather_data['temp_range'] = round($response->list[0]->main->temp_min - 273.15) . '...' . round($response->list[0]->main->temp_max - 273.15);
+                if (round($response->list[0]->main->temp_min) != round($response->list[0]->main->temp_max)) {
+                    $weather_data['temperature_min'] = round($response->list[0]->main->temp_min - 273.15);
+                    $weather_data['temperature_max'] = round($response->list[0]->main->temp_max - 273.15);
+                    if ($weather_data['temperature_min'] > 0)
+                        $weather_data['temperature_min'] = '+' . $weather_data['temperature_min'];
+                    if ($weather_data['temperature_max'] > 0)
+                        $weather_data['temperature_max'] = '+' . $weather_data['temperature_max'];
+                    $weather_data['temp_range'] = $weather_data['temperature_min'] . '&hellip;' . $weather_data['temperature_max'];
+                }
             }
             $weather_data['pressure'] = round($response->list[0]->main->pressure / 10);
             $weather_data['humidity'] = round($response->list[0]->main->humidity);
