@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tags>
+    {foreach from=$entries item=tag}
+    <a href="{$tag.url}/" class="{$tag.class}" title="{$tag.title}" rel="tag" style="font-size: {$tag.fontsize};" color="{$tag.color}" hicolor="{$tag.hicolor}">{$tag.title}</a>
+    {/foreach}
+</tags>

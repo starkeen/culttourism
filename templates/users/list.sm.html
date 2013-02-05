@@ -1,0 +1,6 @@
+<p>список участников проекта</p>
+<ul>
+    {foreach from=$list item=user key=us_id}
+    <li><a href="../users/{$user.us_id}/">{$user.us_name}</a></li>
+    {/foreach}
+</ul>

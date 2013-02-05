@@ -1,0 +1,48 @@
+<h3>Заполните, пожалуйста, все поля формы</h3>
+<form method="post" id="feedform">
+    <table class="feedtable">
+        <tr>
+            <td style="width:20%"><label for="fname">Ваше имя</label></td>
+            <td colspan="3">
+                <input type="text" id="fname" name="fname" class="feedinput" value="{$fname}" />
+                {if $error=='fname'}<span class="feedhighlight">Вы не ввели имя</span>{/if}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <label for="ftext">Текст сообщения</label>
+                {if $error=='ftext'}<span class="feedhighlight">Вы не ввели текст сообщения</span>{/if}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <textarea name="ftext" id="ftext" class="feedinput">{$ftext}</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">Если вы хотите, чтобы мы связались с вами, оставьте свои контактные данные</td>
+        </tr>
+        <tr>
+            <td><label for="fmail">Электронная&nbsp;почта</label></td>
+            <td colspan="3"><input type="text" id="fmail" name="fmail" class="feedinput" value="{$fmail}" style="width:50%" /></td>
+        </tr>
+    </table>
+    <table class="feedtable">
+        <tr>
+            <td rowspan="3"><img id="norobotpic" src="../../../feedback/getcapt/" width="120" height="60" alt="Подтвердите, что вы не робот" /></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                {if $error=='fcapt'}<span class="feedhighlight">Вы ошиблись при вводе.</span>&nbsp;{/if}
+                Пожалуйста, введите изображенные на картинке символы. Регистр значения не имеет. <a id="captchahelp" title="Нажать для перезагрузки картинки" href="#">Другую картинку</a>?
+            </td>
+        </tr>
+        <tr>
+            <td style="width:20%">Код с картинки</td>
+            <td><input type="text" id="fcapt" name="fcapt" class="feedinput" style="height:20px;width:60%" /></td>
+        </tr>
+        <tr>
+            <td colspan="3"><input type="submit" value="Отправить" class="feedinput" /></td>
+        </tr>
+    </table>
+</form>

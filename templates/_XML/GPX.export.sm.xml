@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" creator="culttourism.ru" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+    {foreach from=$points item=point}
+    <wpt lat="{$point.pt_latitude}" lon="{$point.pt_longitude}">
+        <ele>0.000000</ele>
+        <name>{$point.pt_name}</name>
+        <time>{$point.pt_date}</time>
+        <desc>{$point.pt_adress}</desc>
+        <link href="http://culttourism.ru{$region.url}/object{$point.pt_id}.html" />
+    </wpt>
+    {/foreach}
+</gpx>

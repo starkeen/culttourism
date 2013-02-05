@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary identification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/sitemap.sm.dtd
+
+-->
+
+<!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE urlset SYSTEM "sitemap.sm.dtd">
+
+    <urlset>
+    ...
+    </urlset>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT urlset (#PCDATA|url)*>
+<!ATTLIST urlset
+    xsi:schemaLocation CDATA #IMPLIED
+    xmlns:xsi CDATA #IMPLIED
+    xmlns CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT url (priority|changefreq|lastmod|loc)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT loc (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT lastmod (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT changefreq (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT priority (#PCDATA)>

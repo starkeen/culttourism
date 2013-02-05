@@ -1,0 +1,13 @@
+User-agent: *
+Disallow: /sign/
+Disallow: /cgi-bin/
+Disallow: /ajax/
+Disallow: /city/detail/
+Sitemap: http://culttourism.ru/sitemap.xml
+
+User-agent: Yandex
+Disallow: /sign/
+Disallow: /cgi-bin/
+Disallow: /ajax/
+Disallow: /city/detail/
+Host: culttourism.ru

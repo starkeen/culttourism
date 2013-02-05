@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-info>
+    <object_id>{$point.pt_id}</object_id>
+    <object_lat>{$point.pt_latitude}</object_lat>
+    <object_lon>{$point.pt_longitude}</object_lon>
+    <object_name>{$point.pt_name}</object_name>
+    <object_descr>{$point.pt_description}</object_descr>
+    <data_addr>{$point.pt_adress}</data_addr>
+    <data_worktime>{$point.pt_worktime}</data_worktime>
+    <data_website>{$point.pt_website}</data_website>
+    <data_phone>{$point.pt_phone}</data_phone>
+    <data_email>{$point.pt_email}</data_email>
+    <category_id>{$point.pt_type_id}</category_id>
+    <category_name>{$point.tp_name}</category_name>
+    <category_icon>{$point.tp_icon}</category_icon>
+    <category_sight>{$point.tr_sight}</category_sight>
+    <location_lat></location_lat>
+    <location_lon></location_lon>
+    <dist></dist>
+</object-info>
