@@ -13,7 +13,7 @@ class mySmarty extends Smarty {
 
         $this->caching = FALSE;
         $this->cache_lifetime = 3600;
-        $this->compile_check = true;
+        $this->compile_check = FALSE;
 
         $this->debugging = FALSE;
     }

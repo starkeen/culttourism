@@ -423,7 +423,7 @@ ul {
 #object_contacts_block {
     position:relative;
     width:50%;
-    margin:1em 0 1em 0;
+    margin:1em;
     padding:1.5em 0 1em 1em;
     border:1px solid #efefef;
     -webkit-border-radius: 5px;
