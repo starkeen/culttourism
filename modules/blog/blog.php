@@ -26,8 +26,9 @@ class Page extends PageCommon {
         $dbu = $db->getTableName('users');
         $show_full_admin = $this->checkEdit();
         $show_full_sql = "";
-        if (!$show_full_admin)
+        if (!$show_full_admin) {
             $show_full_sql = "HAVING br_showed = 1\n";
+        }
         $db->sql = "SELECT bg.*, us.us_name,
                             UNIX_TIMESTAMP(bg.br_date) AS last_update,
                             IF(bg.br_date < now(),1,0) as br_showed,
@@ -47,6 +48,9 @@ class Page extends PageCommon {
             $entry[$row['br_id']] = $row;
             if ($row['last_update'] > $this->lastedit_timestamp)
                 $this->lastedit_timestamp = $row['last_update'];
+        }
+        if ($show_full_admin) {
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
         }
         $sm->assign('entries', $entry);
         $sm->assign('blogadmin', $show_full_admin);

@@ -13,7 +13,12 @@
     {/if}
 </div>
 {/if}
-<div id="citytext">{$city.pc_text}</div>
+<div id="citytext">
+    <div class="city_weather" data-lat="{$city.pc_latitude}" data-lon="{$city.pc_longitude}" title="погодные условия">
+        <img src="/img/preloader/horizontal.gif" title="идет загрузка погоды" alt="идет загрузка" style="vertical-align: middle" />
+    </div>
+    {$city.pc_text}
+</div>
 
 {if $city.region_in}
 <div id="city_inners" class="city_nearmenu">

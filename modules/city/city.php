@@ -76,6 +76,7 @@ class Page extends PageCommon {
         $db->sql = "SELECT c.pc_id, c.pc_title, c.pc_keywords, c.pc_description,
                     c.pc_latitude, c.pc_longitude, c.pc_inwheretext, c.pc_title_translit, c.pc_title_english,
                     c.pc_title_synonym, c.pc_website,
+                    UNIX_TIMESTAMP(c.pc_lastup_date) AS last_update,
                     u.url
                     FROM $dbc c
                     LEFT JOIN $dbu u ON u.uid = c.pc_url_id
@@ -85,6 +86,8 @@ class Page extends PageCommon {
 
         $smarty->assign('city', $citypage);
         $smarty->assign('baseurl', $this->basepath);
+
+        $this->lastedit_timestamp = $row['last_update'];
 
         if (isset($this->user['userid']))
             $smarty->assign('adminlogined', $this->getUserId());

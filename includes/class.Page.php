@@ -32,6 +32,8 @@ class Page extends PageCommon {
                 return $this->getPageObject($db, $smarty, intval($regs[1]));
             elseif (array_pop(explode('/', $url)) == 'map.html')
                 return $this->getPageMap($db, $smarty, $url);
+            elseif (array_pop(explode('/', $url)) == 'index.html')
+                return $this->getPageCity($db, $smarty, $url);
             else
                 return $this->getPageCity($db, $smarty, $url);
         }
@@ -164,6 +166,12 @@ class Page extends PageCommon {
         $dbpt = $db->getTableName('pagepoints');
         $dbrp = $db->getTableName('ref_pointtypes');
 
+        if (array_pop(explode('/', $url)) == 'index.html') {
+            header("HTTP/1.1 301 Moved Permanently");
+            header("Location: " . str_replace("index.html", '', $url));
+            exit();
+        }
+
         $url = mysql_real_escape_string($url);
 
         $db->sql = "SELECT city.*
@@ -184,9 +192,9 @@ class Page extends PageCommon {
             if ($canonical_url['url'] != '') {
                 $this->canonical = $canonical_url['url'] . '/';
                 if ($canonical_url['url'] != $url) {
-                    //$this->getError('301', "{$canonical_url['url']}/");
                     header("HTTP/1.1 301 Moved Permanently");
                     header("Location: {$canonical_url['url']}/");
+                    exit();
                 }
             }
 
