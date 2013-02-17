@@ -1,56 +1,68 @@
-<h1>{$object.pt_name}</h1>
-<div id="city_path">{$city.pc_pagepath}</div>
-{if $object.pt_latitude && $object.pt_longitude}
-<div id="map_container">
-    <div id="city_map"></div>
-    <div id="point_gps">GPS-координаты: {$object.gps_dec}</div>
-</div>
-{/if}
-<div id="object_description">
-    <img id="object_icon" alt="{$object.tp_name}" title="{$object.tp_name}" src="/img/points/x32/{$object.tp_icon}" />
-    {$object.pt_description}
-    <p><a href="." id="page_point_link_back" title="перейти к достопримечательностям {$city.pc_inwheretext}">&larr; достопримечательности {$city.pc_inwheretext}</a></p>
-</div>
-<div id="widget_photos"></div>
+<div class="vcard">
+    <h1 class="fn org">{$object.pt_name}</h1>
+    <div id="city_path" class="category">{$city.pc_pagepath}</div>
+    {if $object.pt_latitude && $object.pt_longitude}
+    <span class="geo">
+        <span class="latitude">
+            <span class="value-title" title="{$object.pt_latitude}"> </span>
+        </span>
+        <span class="longitude">
+            <span class="value-title" title="{$object.pt_longitude}"> </span>
+        </span>
+    </span>
+    <div id="map_container">
+        <div id="city_map"></div>
+        <div id="point_gps">GPS-координаты: {$object.gps_dec}</div>
+    </div>
+    {/if}
+    <div id="object_description">
+        <img id="object_icon" alt="{$object.tp_name}" title="{$object.tp_name}" src="/img/points/x32/{$object.tp_icon}" />
+        {$object.pt_description}
+        <p><a href="." id="page_point_link_back" title="перейти к достопримечательностям {$city.pc_inwheretext}">&larr; достопримечательности {$city.pc_inwheretext}</a></p>
+    </div>
+    <div id="widget_photos"></div>
 
-{if $object.pt_adress || $object.pt_worktime || $object.pt_website || $object.pt_email || $object.pt_phone}
-<div id="object_contacts_block">
-    <div id="object_contacts_header">Контактная информация</div>
-    <ul id="object_contacts">
-        {if $object.pt_adress}
-        <li><img src="/img/ico/ico.house.png" alt="адрес" title="Адрес" class="textmarker" />{$object.pt_adress}</li>
-        {/if}
-        {if $object.pt_phone}
-        <li><img src="/img/ico/ico.phone.png" alt="телефон" title="Телефон" class="textmarker" />{$object.pt_phone}</li>
-        {/if}
-        {if $object.pt_worktime}
-        <li><img src="/img/ico/ico.clock.png" alt="часы работы" title="Часы работы" class="textmarker" />{$object.pt_worktime}</li>
-        {/if}
-        {if $object.pt_website}
-        <li><img src="/img/ico/ico.web.png" alt="сайт" title="Сайт" class="textmarker" /><a href="{$object.pt_website}">{$object.pt_website}</a></li>
-        {/if}
-        {if $object.pt_email}
-        <li><img src="/img/ico/ico.email.png" alt="e-mail" title="Электронная почта" class="textmarker" />&nbsp;<a href="mailto:{$object.pt_email}">{$object.pt_email}</a></li>
-        {/if}
-    </ul>
-</div>
-{/if}
-{if $object.pt_latitude && $object.pt_longitude}
-<input type="hidden" id="mapobj_pt_latitude" value="{$object.pt_latitude}" />
-<input type="hidden" id="mapobj_pt_longitude" value="{$object.pt_longitude}" />
-<input type="hidden" id="mapobj_pt_zoom" value="{$object.map_zoom}" />
-<input type="hidden" id="mapobj_pt_name" value="{$object.pt_name}" />
-<input type="hidden" id="mapobj_pt_type_pic" value="{$object.tp_icon}" />
-<input type="hidden" id="pan_sw_lat" value="{$object.sw_ne.sw.lat}" />
-<input type="hidden" id="pan_sw_lon" value="{$object.sw_ne.sw.lon}" />
-<input type="hidden" id="pan_ne_lat" value="{$object.sw_ne.ne.lat}" />
-<input type="hidden" id="pan_ne_lon" value="{$object.sw_ne.ne.lon}" />
-<script type="text/javascript" src="/js/map_page_point.js"></script>
-<script type="text/javascript" src="/js/panoramio_page_point.js"></script>
-{/if}
-<div style="height:25px;overflow:hidden;margin: 10px;">
-    <script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
-    <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="none" data-yashareQuickServices="yaru,vkontakte,facebook,twitter,odnoklassniki,moimir,lj,friendfeed,moikrug,gplus"></div> 
+    {if $object.pt_adress || $object.pt_worktime || $object.pt_website || $object.pt_email || $object.pt_phone}
+    <div id="object_contacts_block">
+        <div id="object_contacts_header">Контактная информация</div>
+        <ul id="object_contacts">
+            {if $object.pt_adress}
+            <li><img src="/img/ico/ico.house.png" alt="адрес" title="Адрес" class="textmarker" />
+                <span class="adr">{$object.pt_adress}</span>
+            </li>
+            {/if}
+            {if $object.pt_phone}
+            <li><img src="/img/ico/ico.phone.png" alt="телефон" title="Телефон" class="textmarker" /><span class="tel">{$object.pt_phone}</span></li>
+            {/if}
+            {if $object.pt_worktime}
+            <li><img src="/img/ico/ico.clock.png" alt="часы работы" title="Часы работы" class="textmarker" /><span class="workhours">{$object.pt_worktime}</span></li>
+            {/if}
+            {if $object.pt_website}
+            <li><img src="/img/ico/ico.web.png" alt="сайт" title="Сайт" class="textmarker" /><a href="{$object.pt_website}" class="url">{$object.pt_website}</a></li>
+            {/if}
+            {if $object.pt_email}
+            <li><img src="/img/ico/ico.email.png" alt="e-mail" title="Электронная почта" class="textmarker" />&nbsp;<a href="mailto:{$object.pt_email}"><span class="email">{$object.pt_email}</span></a></li>
+            {/if}
+        </ul>
+    </div>
+    {/if}
+    {if $object.pt_latitude && $object.pt_longitude}
+    <input type="hidden" id="mapobj_pt_latitude" value="{$object.pt_latitude}" />
+    <input type="hidden" id="mapobj_pt_longitude" value="{$object.pt_longitude}" />
+    <input type="hidden" id="mapobj_pt_zoom" value="{$object.map_zoom}" />
+    <input type="hidden" id="mapobj_pt_name" value="{$object.pt_name}" />
+    <input type="hidden" id="mapobj_pt_type_pic" value="{$object.tp_icon}" />
+    <input type="hidden" id="pan_sw_lat" value="{$object.sw_ne.sw.lat}" />
+    <input type="hidden" id="pan_sw_lon" value="{$object.sw_ne.sw.lon}" />
+    <input type="hidden" id="pan_ne_lat" value="{$object.sw_ne.ne.lat}" />
+    <input type="hidden" id="pan_ne_lon" value="{$object.sw_ne.ne.lon}" />
+    <script type="text/javascript" src="/js/map_page_point.js"></script>
+    <script type="text/javascript" src="/js/panoramio_page_point.js"></script>
+    {/if}
+    <div style="height:25px;overflow:hidden;margin: 10px;">
+        <script type="text/javascript" src="//yandex.st/share/share.js" charset="utf-8"></script>
+        <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="none" data-yashareQuickServices="yaru,vkontakte,facebook,twitter,odnoklassniki,moimir,lj,friendfeed,moikrug,gplus"></div> 
+    </div>
 </div>
 
 <div id="yandex_ad"></div>
