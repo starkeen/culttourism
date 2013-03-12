@@ -10,6 +10,8 @@ class Page extends PageCommon {
 
         $dbb = $db->getTableName('blogentries');
         $dbu = $db->getTableName('users');
+        $dbns = $db->getTableName('news_sourses');
+        $dbni = $db->getTableName('news_items');
 
         $db->sql = "SELECT bg.*, us.us_name,
                            UNIX_TIMESTAMP(bg.br_date) AS last_update,
@@ -21,11 +23,35 @@ class Page extends PageCommon {
                         LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
                     WHERE bg.br_date < now()
                     ORDER BY bg.br_date DESC
-                    LIMIT 3";
+                    LIMIT 5";
         $db->exec();
         $blogentries = array();
+        $patern = "/(.*?)<\/p>/i";
         while ($row = $db->fetch()) {
+            $matches = array();
+            preg_match_all($patern, $row['br_text'], $matches);
+            $row['br_text'] = $matches[0][0];
             $blogentries[$row['br_id']] = $row;
+            if ($row['last_update'] > $this->lastedit_timestamp)
+                $this->lastedit_timestamp = $row['last_update'];
+        }
+
+        $db->sql = "SELECT *,
+                        UNIX_TIMESTAMP(ni.ni_pubdate) AS last_update,
+                        DATE_FORMAT(ni.ni_pubdate,'%d.%m.%Y') as datex
+                    FROM $dbni ni
+                        LEFT JOIN $dbns ns ON ns.ns_id = ni.ni_ns_id
+                    GROUP BY ni_ns_id
+                    ORDER BY ni_pubdate DESC
+                    LIMIT 5";
+        $db->exec();
+        $agrnewsentries = array();
+        while ($row = $db->fetch()) {
+            $row['ni_text'] = strip_tags(html_entity_decode($row['ni_text'], ENT_QUOTES));
+            $row['ni_text'] = trim(mb_substr($row['ni_text'], 0, mb_strrpos(mb_substr($row['ni_text'], 0, 350, 'utf-8'), '.', 'utf-8'), 'utf-8'), '\,');
+            $sourse_url = parse_url($row['ns_web']);
+            $row['ns_host'] = $sourse_url['host'];
+            $agrnewsentries[] = $row;
             if ($row['last_update'] > $this->lastedit_timestamp)
                 $this->lastedit_timestamp = $row['last_update'];
         }
@@ -33,6 +59,7 @@ class Page extends PageCommon {
         $smarty->assign('hello_text', $this->content);
         $smarty->assign('stat', $this->globalsettings['stat_text']);
         $smarty->assign('blogentries', $blogentries);
+        $smarty->assign('agrnewsentries', $agrnewsentries);
 
         $this->content = $smarty->fetch(_DIR_TEMPLATES . '/index.html/index.sm.html');
     }

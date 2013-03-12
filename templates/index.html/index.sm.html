@@ -7,7 +7,7 @@
 </p>
 <div style="width:49%;float:left;">
     <h3>Записи в блоге</h3>
-    {foreach from=$blogentries key=beid item=entry}
+    {foreach from=$blogentries item=entry}
     <div class="index-blog-record">
         <h4 class="index-blog-title">
             <img src="/img/ico/ico.calendar.gif" class="textmarker" />
@@ -20,7 +20,19 @@
 </div>
 <div style="width:49%;float:right;">
     <h3>Новости</h3>
-    --
+    {foreach from=$agrnewsentries item=entry}
+    <div class="index-blog-record">
+        <h4 class="index-blog-title">
+            <img src="http://favicon.yandex.ru/favicon/{$entry.ns_host}" class="textmarker" />
+            {$entry.datex}
+            <a href="{$entry.ni_url}" target="_blanc">{$entry.ni_title}</a>
+        </h4>
+        {$entry.ni_text}
+        <p class="index-blog-attrs">
+            <a href="{$entry.ns_web}">{$entry.ns_title}</a>
+        </p>
+    </div>
+    {/foreach}
 </div>
 <hr style="clear:both" />
 <style>
@@ -35,14 +47,18 @@
         margin:.3em;
     }
     .index-blog-title {
-        font-size:110%;
+        font-size:120%;
         background-color:#efefef;
     }
     .index-blog-title .textmarker {
-        vertical-align: middle;
-        margin-right:0em;
+        vertical-align: top;
+        margin:1px;
     }
     .index-blog-title a {
         font-weight: bold;
+    }
+    .index-blog-attrs {
+        color:#777;
+        text-align:right;
     }
 </style>
