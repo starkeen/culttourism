@@ -1,9 +1,10 @@
 <?php
 
 session_start();
-require_once('config/configuration.php');
+include('config/configuration.php');
 if (_ER_REPORT)
-    error_reporting(E_ALL); else
+    error_reporting(E_ALL);
+else
     error_reporting(0);
 include('includes/functions.php');
 if (_ER_REPORT)
