@@ -41,6 +41,7 @@ class Page extends PageCommon {
                         DATE_FORMAT(ni.ni_pubdate,'%d.%m.%Y') as datex
                     FROM $dbni ni
                         LEFT JOIN $dbns ns ON ns.ns_id = ni.ni_ns_id
+                    WHERE ni.ni_active = 1
                     GROUP BY ni_ns_id
                     ORDER BY ni_pubdate DESC
                     LIMIT 5";
