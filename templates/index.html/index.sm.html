@@ -1,4 +1,48 @@
 <h2>Справочник культурно-исторических достопримечательностей</h2>
 <div>{$hello_text}</div>
 <hr style="clear:both" />
-<p>Собранная на нашем сайте интересная информация о более чем {$stat} поможет выбрать именно тот туристический маршрут, который вам принесет наибольшее удовлетворение.</p>
+<p>
+    Собранная на нашем сайте интересная информация о более чем {$stat}
+    поможет выбрать именно тот туристический маршрут, который вам принесет наибольшее удовлетворение.
+</p>
+<div style="width:49%;float:left;">
+    <h3>Записи в блоге</h3>
+    {foreach from=$blogentries key=beid item=entry}
+    <div class="index-blog-record">
+        <h4 class="index-blog-title">
+            <img src="/img/ico/ico.calendar.gif" class="textmarker" />
+            {$entry.bg_datex}
+            <a href="/blog/{$entry.bg_year}/{$entry.bg_month}/{$entry.bg_day}.html">{$entry.br_title}</a>
+        </h4>
+        {$entry.br_text}
+    </div>
+    {/foreach}
+</div>
+<div style="width:49%;float:right;">
+    <h3>Новости</h3>
+    --
+</div>
+<hr style="clear:both" />
+<style>
+    h3 {
+        color:#fff;
+    }
+    .index-blog-record {
+        border-bottom:1px solid #777;
+        font-size:80%;
+    }
+    .index-blog-record p {
+        margin:.3em;
+    }
+    .index-blog-title {
+        font-size:110%;
+        background-color:#efefef;
+    }
+    .index-blog-title .textmarker {
+        vertical-align: middle;
+        margin-right:0em;
+    }
+    .index-blog-title a {
+        font-weight: bold;
+    }
+</style>
