@@ -42,7 +42,7 @@ class Page extends PageCommon {
                     FROM $dbni ni
                         LEFT JOIN $dbns ns ON ns.ns_id = ni.ni_ns_id
                     WHERE ni.ni_active = 1
-                    GROUP BY ni_ns_id
+                    GROUP BY ni_title
                     ORDER BY ni_pubdate DESC
                     LIMIT 5";
         $db->exec();
