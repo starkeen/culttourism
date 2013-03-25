@@ -71,7 +71,7 @@ while ($row = $db->fetch()) {
             $reps[] = $rep;
         }
     } else {
-        echo "Error2:\n";
+        echo "Error2 in {$row['ws_rep_id']}:\n";
         print_r($res);
     }
 }
