@@ -8,6 +8,8 @@ $tables = array(
     $db->getTableName('statpoints'),
     $db->getTableName('statcity'),
     $db->getTableName('siteprorerties'),
+    $db->getTableName('news_items'),
+    $db->getTableName('wordstat'),
 );
 
 foreach ($tables as $table) {
