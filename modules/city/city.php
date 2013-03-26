@@ -13,8 +13,48 @@ class Page extends PageCommon {
             return $this->addCity($db, $smarty);
         elseif ($page_id[1] == 'detail')
             return $this->detailCity($db, $smarty);
+        elseif ($page_id[1] == 'meta')
+            return $this->metaCity($db);
         else
             return $this->getError('404');
+    }
+
+    private function metaCity($db) {
+        $dbcd = $db->getTableName('city_data');
+        $dbcf = $db->getTableName('city_fields');
+        if (isset($_POST['act'])) {
+            switch ($_POST['act']) {
+                case 'add':
+                    $cf_id = cut_trash_int($_POST['cf']);
+                    $value = cut_trash_text($_POST['val']);
+                    $city_id = cut_trash_int($_POST['cpid']);
+                    $db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = '$city_id' AND cd_cf_id = '$cf_id'";
+                    $db->exec();
+                    $db->sql = "INSERT INTO $dbcd SET cd_pc_id = '$city_id', cd_cf_id = '$cf_id', cd_value = '$value'";
+                    $db->exec();
+                    $db->sql = "SELECT * FROM  $dbcf WHERE cf_id = '$cf_id'";
+                    $db->exec();
+                    $row = $db->fetch();
+                    echo $row['cf_title'];
+                    break;
+                case 'del':
+                    $cf_id = cut_trash_int($_POST['cf']);
+                    $city_id = cut_trash_int($_POST['cpid']);
+                    $db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = '$city_id' AND cd_cf_id = '$cf_id'";
+                    $db->exec();
+                    echo 'ok';
+                    break;
+                case 'edit':
+                    $cf_id = cut_trash_int($_POST['cf']);
+                    $city_id = cut_trash_int($_POST['cpid']);
+                    $value = cut_trash_text($_POST['val']);
+                    $db->sql = "UPDATE $dbcd SET cd_value = '$value' WHERE cd_pc_id = '$city_id' AND cd_cf_id = '$cf_id'";
+                    $db->exec();
+                    echo 'ok';
+                    break;
+            }
+        }
+        exit();
     }
 
     private function detailCity($db, $smarty) {
@@ -30,6 +70,8 @@ class Page extends PageCommon {
         $uid = $this->getUserId();
         $dbc = $db->getTableName('pagecity');
         $dbu = $db->getTableName('region_url');
+        $dbcd = $db->getTableName('city_data');
+        $dbcf = $db->getTableName('city_fields');
 
         if (isset($_POST) && !empty($_POST)) {
             //print_x($_POST);
@@ -84,8 +126,31 @@ class Page extends PageCommon {
         $db->exec();
         $citypage = $db->fetch();
 
+        $db->sql = "SELECT *
+                    FROM $dbcd cd
+                        LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
+                    WHERE cd.cd_pc_id = '$city_id'
+                    ORDER BY cf_order";
+        $db->exec();
+        $meta = array();
+        while ($row = $db->fetch()) {
+            $meta[] = $row;
+        }
+
+        $db->sql = "SELECT *
+                    FROM $dbcf
+                    WHERE cf_id NOT IN (SELECT cd_cf_id FROM $dbcd WHERE cd_pc_id = '$city_id')
+                    ORDER BY cf_order";
+        $db->exec();
+        $ref_meta = array();
+        while ($row = $db->fetch()) {
+            $ref_meta[] = $row;
+        }
+
         $smarty->assign('city', $citypage);
         $smarty->assign('baseurl', $this->basepath);
+        $smarty->assign('meta', $meta);
+        $smarty->assign('ref_meta', $ref_meta);
 
         $this->lastedit_timestamp = $row['last_update'];
 
@@ -222,12 +287,14 @@ class Page extends PageCommon {
         $dbc = $db->getTableName('pagecity');
         $dbr = $db->getTableName('region_url');
         $dbp = $db->getTableName('pagepoints');
+        $dbcd = $db->getTableName('city_data');
         $where = (!$this->checkEdit()) ? "WHERE city.pc_text is not null" : '';
         $db->sql = "SELECT city.pc_id, city.pc_title, city.pc_latitude, city.pc_longitude,
                             city.pc_city_id, city.pc_region_id, city.pc_country_id,
                             url.url, char_length(city.pc_text) as len, city.pc_inwheretext,
                             city.pc_pagepath,
                             (SELECT count(pt_id) FROM $dbp WHERE pt_citypage_id = city.pc_id) as pts,
+                            (SELECT count(cd_id) FROM $dbcd WHERE cd_pc_id = city.pc_id) as meta,
                             UNIX_TIMESTAMP(city.pc_lastup_date) AS last_update
                     FROM $dbc city
                     LEFT JOIN $dbr url ON url.uid = city.pc_url_id

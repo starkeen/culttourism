@@ -1,55 +1,98 @@
 <h2>{$city.pc_title}</h2>
 <hr />
+<form method="post">
+    <div style="width:70%;margin:0 auto;border:1px solid #777;">
+        <table>
+            <tr>
+                <td nowrap>ключевые слова</td>
+                <td colspan="3" style="width:100%"><input type="text" name="keywds" id="city_keywds" value="{$city.pc_keywords}" style="width:99%" /></td>
+                <td><span class="city_form_hint" id="city_sign_keywds"></span></td>
+            </tr>
+            <tr>
+                <td nowrap>краткое описание (до 200 знаков)</td>
+                <td colspan="3"><textarea name="descr" id="city_descr" style="width:99%">{$city.pc_description}</textarea></td>
+                <td><span class="city_form_hint" id="city_sign_descr"></span></td>
+            </tr>
+            <tr>
+                <td nowrap>координаты</td>
+                <td colspan="4">
+                    широта (latitude): <input type="text" name="latitude" id="pc_latitude" value="{$city.pc_latitude}" style="width: 60pt" />,
+                    долгота (longitude): <input type="text" name="longitude" id="pc_longitude" value="{$city.pc_longitude}" style="width: 60pt" />
+                    <a id="citymap_finder" href="#" style="font-size:smaller;">[на&nbsp;карте]</a>
+                </td>
+            </tr>
+            <tr>
+                <td nowrap>рейтинг</td>
+                <td colspan="4">{$city.pc_rank}</td>
+            </tr>
+            <tr>
+                <td nowrap>родительный падеж... (чего?) </td>
+                <td><input type="text" name="inwhere" value="{$city.pc_inwheretext}" style="width: 100%" /></td>
+                <td>транслит</td>
+                <td><input type="text" name="translit" value="{$city.pc_title_translit}" style="width: 100%" /></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td nowrap>англоязычное название</td>
+                <td><input type="text" name="title_eng" value="{$city.pc_title_english}" style="width: 100%" /></td>
+                <td>синонимы</td>
+                <td><input type="text" name="synonym" value="{$city.pc_title_synonym}" style="width: 100%" /></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td nowrap>официальный сайт города (региона)</td>
+                <td colspan="4"><input type="text" name="web" value="{$city.pc_website}" /></td>
+            </tr>
+            <tr>
+                <td nowrap>URL страницы</td>
+                <td colspan="4" style="width:100%">http://{$baseurl}<input type="text" name="url" value="{$city.url}" style="width: 50%" /></td>
+            </tr>
+        </table>
+    </div>
+    <hr />
+    <input type="submit" value="сохранить" />
+</form>
+<hr />
+<div style="width:400px;margin:0 auto;border:1px solid #777;">
+    <input type="hidden" id="city_meta_pcid" value="{$city.pc_id}" />
+    <table id="city_meta_table">
+        {foreach from=$meta item=item}
+        <tr id="city_meta_row_{$item.cf_id}">
+            <td>{$item.cf_title}</td>
+            <td>
+                <input type="text" id="city_meta_value_{$item.cf_id}" value="{$item.cd_value}" />
+            </td>
+            <td>
+                <img src="/img/btn/btn.tick.png" class="button_active" data-act="edit" data-cfid="{$item.cf_id}" />
+                <img src="/img/btn/btn.delete.png" class="button_active" data-act="del" data-cfid="{$item.cf_id}" />
+            </td>
+        </tr>
+        {/foreach}
+        <tr>
+            <td>
+                <select id="city_meta_add_cf">
+                    {foreach from=$ref_meta item=ritem}
+                    <option value="{$ritem.cf_id}">{$ritem.cf_title}</option>
+                    {/foreach}
+                </select>
+            </td>
+            <td><input type="text" id="city_meta_add_value" value="" /></td>
+            <td><img src="/img/btn/btn.add.png" class="button_active" data-act="add" /></td>
+        </tr>
+    </table>
+</div>
 {literal}
 <style>
     td {
         vertical-align: top;
+        padding:1px;
+    }
+    .city_form_hint {
+        color:#777;
+        font-size:80%;
+    }
+    .button_active {
+        cursor:pointer;
     }
 </style>
 {/literal}
-<form method="post">
-    <table style="width: 70%">
-        <tr>
-            <td nowrap>ключевые слова</td>
-            <td colspan="3" style="width:100%"><input type="text" name="keywds" value="{$city.pc_keywords}" style="width: 100%" /></td>
-        </tr>
-        <tr>
-            <td nowrap>краткое описание (до 200 знаков)</td>
-            <td colspan="3"><textarea name="descr" style="width: 100%">{$city.pc_description}</textarea></td>
-        </tr>
-        <tr>
-            <td nowrap>координаты</td>
-            <td colspan="3">
-                широта (latitude): <input type="text" name="latitude" id="pc_latitude" value="{$city.pc_latitude}" style="width: 60pt" />,
-                долгота (longitude):<input type="text" name="longitude" id="pc_longitude" value="{$city.pc_longitude}" style="width: 60pt" />
-                <a id="citymap_finder" href="#" style="font-size:smaller;">[на&nbsp;карте]</a>
-            </td>
-        </tr>
-        <tr>
-            <td nowrap>рейтинг</td>
-            <td colspan="3">{$city.pc_rank}</td>
-        </tr>
-        <tr>
-            <td nowrap>родительный падеж... (чего?) </td>
-            <td><input type="text" name="inwhere" value="{$city.pc_inwheretext}" style="width: 100%" /></td>
-            <td>транслит</td>
-            <td><input type="text" name="translit" value="{$city.pc_title_translit}" style="width: 100%" /></td>
-        </tr>
-        <tr>
-            <td nowrap>англоязычное название</td>
-            <td><input type="text" name="title_eng" value="{$city.pc_title_english}" style="width: 100%" /></td>
-            <td>синонимы</td>
-            <td><input type="text" name="synonym" value="{$city.pc_title_synonym}" style="width: 100%" /></td>
-        </tr>
-        <tr>
-            <td nowrap>официальный сайт города (региона)</td>
-            <td colspan="3" style="width:100%"><input type="text" name="web" value="{$city.pc_website}" style="width: 100%" /></td>
-        </tr>
-        <tr>
-            <td nowrap>URL страницы</td>
-            <td colspan="3" style="width:100%">http://{$baseurl}<input type="text" name="url" value="{$city.url}" style="width: 50%" /></td>
-        </tr>
-    </table>
-    <hr />
-    <input type="submit" value="сохранить" />
-</form>

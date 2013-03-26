@@ -16,6 +16,7 @@
             <th>Название</th>
             <th>URL</th>
             <th>Описание</th>
+            <th>Мета</th>
             <th>Точки</th>
             <th>GPS</th>
             <th>Достопримечательности</th>
@@ -37,6 +38,7 @@
                    ><b>{$city.pc_title}</b></a></td>
             <td>{$city.url}</td>
             <td>{$city.len} знаков</td>
+            <td>{$city.meta}</td>
             <td>{$city.pts} точек</td>
             <td><div style="font-size:x-small;background-color: #eee;">{$city.pc_latitude}<br>{$city.pc_longitude}</div></td>
             <td><a href="detail/?city_id={$city.pc_id}" title="детально...">детально {$city.pc_title}</a></td>
