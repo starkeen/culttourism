@@ -25,9 +25,8 @@ $(document).ready(function() {
                 $(that).html('загрузить погоду не удалось');
             }
         });
-
     });
-
+    $(".city_metadata").load("/city/meta/?id=" + $(".city_metadata").data("pcid"));
     //=============================---------------------- CITY EDIT ------------------------
     $(".hiddenedit").live("click", function() {
         $(this).addClass("hiddenedit_active");

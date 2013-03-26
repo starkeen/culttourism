@@ -14,15 +14,18 @@ class Page extends PageCommon {
         elseif ($page_id[1] == 'detail')
             return $this->detailCity($db, $smarty);
         elseif ($page_id[1] == 'meta')
-            return $this->metaCity($db);
+            return $this->metaCity($db, $smarty);
         else
             return $this->getError('404');
     }
 
-    private function metaCity($db) {
+    private function metaCity($db, $smarty) {
         $dbcd = $db->getTableName('city_data');
         $dbcf = $db->getTableName('city_fields');
+
         if (isset($_POST['act'])) {
+            if (!$this->checkEdit())
+                return $this->getError('403');
             switch ($_POST['act']) {
                 case 'add':
                     $cf_id = cut_trash_int($_POST['cf']);
@@ -31,7 +34,8 @@ class Page extends PageCommon {
                     $db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = '$city_id' AND cd_cf_id = '$cf_id'";
                     $db->exec();
                     $db->sql = "INSERT INTO $dbcd SET cd_pc_id = '$city_id', cd_cf_id = '$cf_id', cd_value = '$value'";
-                    $db->exec();
+                    if ($value != '')
+                        $db->exec();
                     $db->sql = "SELECT * FROM  $dbcf WHERE cf_id = '$cf_id'";
                     $db->exec();
                     $row = $db->fetch();
@@ -49,10 +53,29 @@ class Page extends PageCommon {
                     $city_id = cut_trash_int($_POST['cpid']);
                     $value = cut_trash_text($_POST['val']);
                     $db->sql = "UPDATE $dbcd SET cd_value = '$value' WHERE cd_pc_id = '$city_id' AND cd_cf_id = '$cf_id'";
+                    if ($value != '')
+                        $db->exec();
                     $db->exec();
                     echo 'ok';
                     break;
             }
+        } else {
+            $id = cut_trash_int($_GET['id']);
+            $db->sql = "SELECT cf_title, cd_value
+                        FROM $dbcd cd
+                            LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
+                        WHERE cd.cd_pc_id = '$id'
+                            AND cd.cd_value != ''
+                            AND cf.cf_active = 1
+                        ORDER BY cf_order";
+            $db->exec();
+            $metas = array();
+            while ($row = $db->fetch()) {
+                $metas[] = $row;
+            }
+            $smarty->assign('metas', $metas);
+            header('Content-Type: text/html; charset=utf-8');
+            $smarty->display(_DIR_TEMPLATES . '/city/meta.sm.html');
         }
         exit();
     }
