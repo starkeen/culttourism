@@ -31,7 +31,8 @@ while ($row = $db->fetch()) {
             foreach ($res['data'] as $data) {
                 $rep = array('word' => $data['Phrase'], 'weight' => 0, 'rep_id' => $row['ws_rep_id']);
                 foreach ($data['SearchedWith'] as $item) {
-                    $rep['weight'] += $item['Shows'];
+                    if ($item['Shows'] >= $rep['weight'])
+                        $rep['weight'] = $item['Shows'];
                 }
                 $reps[] = $rep;
             }
