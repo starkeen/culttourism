@@ -4,33 +4,6 @@ $dbrc = $db->getTableName('ref_city');
 $dbpc = $db->getTableName('pagecity');
 $dbws = $db->getTableName('wordstat');
 
-$db->sql = "SELECT * FROM $dbws
-            WHERE ws_rep_id = 0
-            LIMIT 10";
-$db->exec();
-$_ids = array();
-$request = array(
-    'method' => 'CreateNewWordstatReport',
-    'param' => array(
-        'Phrases' => array(),
-        'GeoID' => array(0),
-    ),
-);
-while ($row = $db->fetch()) {
-    $request['param']['Phrases'][] = iconv('ISO-8859-1', 'utf-8', $row['ws_city_title'] . ' достопримечательности');
-    $_ids[] = $row['ws_id'];
-}
-$res = yandex_req($request);
-if (isset($res['data'])) {
-    $res_id = intval($res['data']);
-    $db->sql = "UPDATE $dbws SET ws_rep_id = '$res_id' WHERE ws_id IN (" . implode(', ', $_ids) . ")";
-    $db->exec();
-} else {
-    echo "Error1:\n";
-    print_r($res);
-}
-
-
 $request = array(
     'method' => 'GetWordstatReportList',
 );
@@ -82,6 +55,45 @@ foreach ($reps_to_del as $repdel) {
         'method' => 'DeleteWordstatReport',
         'param' => $repdel,
     ));
+}
+
+$new_reps_cnt = 5;
+$request = array(
+    'method' => 'GetWordstatReportList',
+);
+$res = yandex_req($request);
+foreach ($res['data'] as $rep) {
+    $new_reps_cnt += -1;
+}
+
+if ($new_reps_cnt > 0) {
+    for ($i = 1; $i <= $new_reps_cnt; $i++) {
+        $db->sql = "SELECT * FROM $dbws
+            WHERE ws_rep_id = 0
+            LIMIT 10";
+        $db->exec();
+        $_ids = array();
+        $request = array(
+            'method' => 'CreateNewWordstatReport',
+            'param' => array(
+                'Phrases' => array(),
+                'GeoID' => array(0),
+            ),
+        );
+        while ($row = $db->fetch()) {
+            $request['param']['Phrases'][] = iconv('ISO-8859-1', 'utf-8', $row['ws_city_title'] . ' достопримечательности');
+            $_ids[] = $row['ws_id'];
+        }
+        $res = yandex_req($request);
+        if (isset($res['data'])) {
+            $res_id = intval($res['data']);
+            $db->sql = "UPDATE $dbws SET ws_rep_id = '$res_id' WHERE ws_id IN (" . implode(', ', $_ids) . ")";
+            $db->exec();
+        } else {
+            echo "Error1:\n";
+            print_r($res);
+        }
+    }
 }
 
 function yandex_req($request) {
