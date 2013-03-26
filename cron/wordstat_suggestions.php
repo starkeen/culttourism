@@ -4,26 +4,6 @@ $dbrc = $db->getTableName('ref_city');
 $dbpc = $db->getTableName('pagecity');
 $dbws = $db->getTableName('wordstat');
 
-$db->sql = "INSERT INTO $dbws (ws_city_id, ws_city_title, ws_rep_id, ws_weight)
-                        (SELECT id, name, 0, 0 FROM $dbrc rc
-                            LEFT JOIN $dbpc pc ON pc.pc_city_id = rc.id
-                        WHERE rc.country_id IN (3159, 9908, 248)
-                            AND pc.pc_id IS NULL)";
-/*
-//удаление отчетов
-$request = array(
-    'method' => 'GetWordstatReportList',
-);
-$res = yandex_req($request);
-foreach ($res['data'] as $rep) {
-    yandex_req(array(
-        'method' => 'DeleteWordstatReport',
-        'param' => $rep['ReportID'],
-    ));
-    $db->sql = "UPDATE $dbws SET ws_weight = -1 WHERE ws_rep_id = '{$rep['ReportID']}'";
-    $db->exec();
-}
-*/
 $db->sql = "SELECT * FROM $dbws
             WHERE ws_rep_id = 0
             LIMIT 10";
@@ -50,6 +30,17 @@ if (isset($res['data'])) {
     print_r($res);
 }
 
+
+$request = array(
+    'method' => 'GetWordstatReportList',
+);
+$res = yandex_req($request);
+$open_reports = array();
+foreach ($res['data'] as $rep) {
+    if ($rep['StatusReport'] == 'Done')
+        $open_reports[] = $rep['ReportID'];
+}
+
 $db->sql = "SELECT ws_rep_id FROM $dbws
             WHERE ws_rep_id != 0
                 AND ws_weight = -1
@@ -57,22 +48,24 @@ $db->sql = "SELECT ws_rep_id FROM $dbws
 $db->exec();
 $reps = array();
 while ($row = $db->fetch()) {
-    $request = array(
-        'method' => 'GetWordstatReport',
-        'param' => $row['ws_rep_id'],
-    );
-    $res = yandex_req($request);
-    if (isset($res['data'])) {
-        foreach ($res['data'] as $data) {
-            $rep = array('word' => $data['Phrase'], 'weight' => 0, 'rep_id' => $row['ws_rep_id']);
-            foreach ($data['SearchedWith'] as $item) {
-                $rep['weight'] += $item['Shows'];
+    if (in_array($row['ws_rep_id'], $open_reports)) {
+        $request = array(
+            'method' => 'GetWordstatReport',
+            'param' => $row['ws_rep_id'],
+        );
+        $res = yandex_req($request);
+        if (isset($res['data'])) {
+            foreach ($res['data'] as $data) {
+                $rep = array('word' => $data['Phrase'], 'weight' => 0, 'rep_id' => $row['ws_rep_id']);
+                foreach ($data['SearchedWith'] as $item) {
+                    $rep['weight'] += $item['Shows'];
+                }
+                $reps[] = $rep;
             }
-            $reps[] = $rep;
+        } else {
+            echo "Error2 in {$row['ws_rep_id']}:\n";
+            print_r($res);
         }
-    } else {
-        echo "Error2 in {$row['ws_rep_id']}:\n";
-        print_r($res);
     }
 }
 $reps_to_del = array();
