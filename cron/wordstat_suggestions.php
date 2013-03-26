@@ -13,7 +13,7 @@ $request = array(
     'method' => 'CreateNewWordstatReport',
     'param' => array(
         'Phrases' => array(),
-        'GeoID' => array(213),
+        'GeoID' => array(0),
     ),
 );
 while ($row = $db->fetch()) {
