@@ -4,8 +4,8 @@
         <meta charset="utf-8" />
         <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
         <title>{$page->title}</title>
-        <meta name="keywords" content="{$page->keywords}" />
-        <meta name="description" content="{$page->description}" />
+        <meta name="keywords" content="{$page->keywords|escape:"html"}" />
+        <meta name="description" content="{$page->description|escape:"html"}" />
         <meta name="robots" content="index, follow" />
         <meta name="revisit-after" content="7 days" />
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
