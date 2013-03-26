@@ -165,6 +165,8 @@ class Page extends PageCommon {
         $dbpc = $db->getTableName('pagecity');
         $dbpt = $db->getTableName('pagepoints');
         $dbrp = $db->getTableName('ref_pointtypes');
+        $dbcd = $db->getTableName('city_data');
+        $dbcf = $db->getTableName('city_fields');
 
         if (array_pop(explode('/', $url)) == 'index.html') {
             header("HTTP/1.1 301 Moved Permanently");
@@ -242,21 +244,20 @@ class Page extends PageCommon {
                         $this->lastedit_timestamp = $subcity['last_update'];
                 }
             }
-            /*
-              if ($row['pc_region_id'] > 0 && $row['pc_city_id'] > 0) {
-              $db->sql = "SELECT pc.pc_title, url.url, pc.pc_inwheretext
-              FROM $dbpc pc
-              LEFT JOIN $dburl url ON url.uid = pc.pc_url_id
-              WHERE pc.pc_region_id = '{$row['pc_region_id']}'
-              AND pc.pc_city_id != 0
-              AND pc.pc_title != '{$row['pc_title']}'
-              ORDER BY RAND()";
-              $db->exec();
-              while ($subcity = $db->fetch()) {
-              $row['region_near'][] = array('title' => $subcity['pc_title'], 'url' => $subcity['url'], 'where' => $subcity['pc_inwheretext']);
-              }
-              }
-             */
+
+            //-----------------------  м е т а  -------------------------
+            $db->sql = "SELECT cf_title, cd_value
+                        FROM $dbcd cd
+                            LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
+                        WHERE cd.cd_pc_id = '{$row['pc_id']}'
+                            AND cd.cd_value != ''
+                            AND cf.cf_active = 1
+                        ORDER BY cf_order";
+            $db->exec();
+            $row['metas'] = array();
+            while ($mrow = $db->fetch()) {
+                $row['metas'][] = $mrow;
+            }
 
             //----------------------  т о ч к и  ------------------------
             $db->sql = "SELECT pt.*, pt.pt_id, pt.pt_name, pt.pt_type_id, pt.pt_description,
