@@ -22,6 +22,14 @@
 {/if}
 
 <div id="citytext">
+    <div id="city_float">
+        <div class="city_weather" data-lat="{$city.pc_latitude}" data-lon="{$city.pc_longitude}" title="погодные условия">
+            <img src="/img/preloader/horizontal.gif" title="идет загрузка погоды" alt="идет загрузка" style="vertical-align: middle" />
+        </div>
+        <div class="city_metadata" title="информация" data-pcid="{$city.pc_id}">
+            <img src="/img/preloader/horizontal.gif" title="идет загрузка" alt="идет загрузка" style="vertical-align: middle" />
+        </div>
+    </div>
     <div id="pc_text_hidd" class="hiddenedit">{$city.pc_text}</div>
     <textarea id="pc_text_edit" class="hiddenedit_active" style="width:100%;display:none;"></textarea>
     <div class="formhandler" id="pc_text_handler">
