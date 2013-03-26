@@ -41,6 +41,16 @@ if (isset($_POST) && !empty($_POST)) {
     }
 }
 
+$new_reps_cnt = 5;
+$request = array(
+    'method' => 'GetWordstatReportList',
+);
+$res = yandex_req($request);
+$reports = array();
+foreach ($res['data'] as $rep) {
+    $reports[] = $rep;
+}
+
 
 $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name, ws_weight
             FROM $dbws ws
@@ -58,6 +68,7 @@ while ($row = $db->fetch()) {
     $stat[] = $row;
 }
 $smarty->assign('stat', $stat);
+$smarty->assign('reports', $reports);
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/stat_yandex.sm.html'));
 
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
