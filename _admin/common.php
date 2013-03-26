@@ -36,6 +36,7 @@ $adm_menu_items[] = array('link' => 'blog.php', 'title' => 'Записи в бл
 $adm_menu_items[] = array('link' => 'counters.php', 'title' => 'Счетчики', 'ico' => 'ico.a_counters.gif');
 $adm_menu_items[] = array('link' => 'nogps.php', 'title' => 'Точки без координат', 'ico' => 'ico.a_modules.gif');
 $adm_menu_items[] = array('link' => 'stat_search.php', 'title' => 'Статистика поиска', 'ico' => 'ico.a_modules.gif');
+$adm_menu_items[] = array('link' => 'stat_yandex.php', 'title' => 'Статистика Яндекса', 'ico' => 'ico.a_modules.gif');
 if ($isAdmin) {
     $adm_menu_items[] = array('link' => 'users.php', 'title' => 'Пользователи', 'ico' => 'ico.a_users.gif');
     $adm_menu_items[] = array('link' => 'settings.php', 'title' => 'Настройки сайта', 'ico' => 'ico.a_refs.gif');

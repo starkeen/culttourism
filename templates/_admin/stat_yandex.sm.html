@@ -1,0 +1,32 @@
+<img class="pageicon" src="/img/admin/ico.a_refs.gif" />
+<h3>{$title}</h3>
+
+<div style="width:200px;float:right;text-align:center">
+    <form method="post">
+        <input type="submit" name="do_reload_full" value="Перезапуск полный" />
+        <input type="submit" name="do_reload_stat" value="Сброс статистики" />
+        <input type="submit" name="do_stack_empty" value="Сброс очереди отчётов" />
+    </form>
+</div>
+
+<table style="background-color:teal; margin:10px;" cellpadding="3" cellspacing="1">
+    <tr style="background-color:#DCDCDC;">
+        <th>#</th>
+        <th>Страна</th>
+        <th>Регион</th>
+        <th>Город</th>
+        <th>Запросы</th>
+    </tr>
+    {foreach from=$stat item=item}
+    <tr style="background-color:#fff;">
+        <td>{counter}</td>
+        <td>{$item.country_name}</td>
+        <td>{$item.region_name}</td>
+        <td>
+            {$item.city_name}
+            <a href="http://wordstat.yandex.ru/?cmd=words&page=1&t={$item.city_name}+достопримечательности&geo=&text_geo="><img src="/img/new-window.png" /></a>
+        </td>
+        <td align="center">{$item.ws_weight}</td>
+    </tr>
+    {/foreach}
+</table>
