@@ -22,10 +22,12 @@ class Page extends PageCommon {
     private function metaCity($db, $smarty) {
         $dbcd = $db->getTableName('city_data');
         $dbcf = $db->getTableName('city_fields');
+        $dbpc = $db->getTableName('pagecity');
 
         if (isset($_POST['act'])) {
             if (!$this->checkEdit())
                 return $this->getError('403');
+            $uid = $this->getUserId();
             switch ($_POST['act']) {
                 case 'add':
                     $cf_id = cut_trash_int($_POST['cf']);
@@ -39,12 +41,16 @@ class Page extends PageCommon {
                     $db->sql = "SELECT * FROM  $dbcf WHERE cf_id = '$cf_id'";
                     $db->exec();
                     $row = $db->fetch();
+                    $db->sql = "UPDATE $dbpc SET pc_lastup_date = now(), pc_lastup_user = '$uid' WHERE pc_id = '$city_id'";
+                    $db->exec();
                     echo $row['cf_title'];
                     break;
                 case 'del':
                     $cf_id = cut_trash_int($_POST['cf']);
                     $city_id = cut_trash_int($_POST['cpid']);
                     $db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = '$city_id' AND cd_cf_id = '$cf_id'";
+                    $db->exec();
+                    $db->sql = "UPDATE $dbpc SET pc_lastup_date = now(), pc_lastup_user = '$uid' WHERE pc_id = '$city_id'";
                     $db->exec();
                     echo 'ok';
                     break;
@@ -55,6 +61,7 @@ class Page extends PageCommon {
                     $db->sql = "UPDATE $dbcd SET cd_value = '$value' WHERE cd_pc_id = '$city_id' AND cd_cf_id = '$cf_id'";
                     if ($value != '')
                         $db->exec();
+                    $db->sql = "UPDATE $dbpc SET pc_lastup_date = now(), pc_lastup_user = '$uid' WHERE pc_id = '$city_id'";
                     $db->exec();
                     echo 'ok';
                     break;
