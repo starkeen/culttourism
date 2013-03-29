@@ -27,7 +27,14 @@
             <img src="/img/preloader/horizontal.gif" title="идет загрузка погоды" alt="идет загрузка" style="vertical-align: middle" />
         </div>
         <div class="city_metadata" title="информация" data-pcid="{$city.pc_id}">
-            <img src="/img/preloader/horizontal.gif" title="идет загрузка" alt="идет загрузка" style="vertical-align: middle" />
+            <table>
+                {foreach from=$city.metas item=meta}
+                <tr>
+                    <th>{$meta.cf_title}:</th>
+                    <td>{$meta.cd_value}</td>
+                </tr>
+                {/foreach}
+            </table>
         </div>
     </div>
     <div id="pc_text_hidd" class="hiddenedit">{$city.pc_text}</div>

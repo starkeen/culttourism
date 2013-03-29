@@ -596,8 +596,10 @@ input.dogo {
 .city_metadata table td {
     vertical-align:top;
 }
-.city_metadata table tr td:first-child {
+.city_metadata table th {
     font-weight:bold;
+    text-align:left;
+    vertical-align:top;
 }
 /*------------------------------------- MAPS --------------------------*/
 #map_container {

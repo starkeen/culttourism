@@ -26,7 +26,7 @@ $(document).ready(function() {
             }
         });
     });
-    $(".city_metadata").load("/city/meta/?id=" + $(".city_metadata").data("pcid"));
+    //$(".city_metadata").load("/city/meta/?id=" + $(".city_metadata").data("pcid"));
     //=============================---------------------- CITY EDIT ------------------------
     $(".hiddenedit").live("click", function() {
         $(this).addClass("hiddenedit_active");
@@ -43,12 +43,13 @@ $(document).ready(function() {
             $(this).hide();
             $("#pc_text_handler input").show();
             $("#map_container").hide();
-            $(document).css("cursor", "default")
+            $("#city_float").hide();
+            $(document).css("cursor", "default");
         }
         if (this.id == "pt_name_hidd") {//-------- название точки ------
             $(this).hide();
             $("#pt_name_edit").show().focus().addClass("hiddenedit_active").val($(this).html());
-            $("div#pt_name_handler input").show()
+            $("div#pt_name_handler input").show();
         }
         if (this.id == "pt_description_hidd") {//---------- описание точки -----
             $(document).css("cursor", "progress");
@@ -75,7 +76,7 @@ $(document).ready(function() {
                 $("div#pc_title_handler input").hide();
                 $("#pc_title_edit").removeClass("hiddenedit_active").val(data);
             });
-            $(document).css("cursor", "default")
+            $(document).css("cursor", "default");
         }
 
         if ($(this).parent().attr("id") == "pc_text_handler") {//--- описание города
@@ -86,13 +87,14 @@ $(document).ready(function() {
                 ntext: $("#pc_text_edit").val()
             }, function(a) {
                 $("#pc_text_edit").ckeditor(function() {
-                    this.destroy()
+                    this.destroy();
                 });
                 $("#pc_text_edit").css("height", "0").removeClass("hiddenedit_active").hide();
                 $("#pc_text_hidd").html(a).show().removeClass("hiddenedit_active");
-                $("#map_container").show()
+                $("#map_container").show();
+                $("#city_float").show();
             });
-            $(document).css("cursor", "default")
+            $(document).css("cursor", "default");
         }
         if ($(this).parent().attr("id") == "pt_name_handler") {//--- название точки
             $(document).css("cursor", "progress");
@@ -104,9 +106,9 @@ $(document).ready(function() {
                 $("div#pt_name_handler input").hide();
                 $("#pt_name_edit").removeClass("hiddenedit_active").hide();
                 $("#pt_name_hidd").text(a).show().removeClass("hiddenedit_active");
-                $("#object_id_" + $("#pt_id").val()).text(a)
+                $("#object_id_" + $("#pt_id").val()).text(a);
             });
-            $(document).css("cursor", "default")
+            $(document).css("cursor", "default");
         }
         if ($(this).parent().attr("id") == "pt_description_handler") {//--- описание точки
             $("div#pt_description_handler input").hide();
@@ -116,12 +118,12 @@ $(document).ready(function() {
                 ndesc: $("#pt_description_edit").val()
             }, function(a) {
                 $("#pt_description_edit").ckeditor(function() {
-                    this.destroy()
+                    this.destroy();
                 });
                 $("#pt_description_edit").css("height", "0").removeClass("hiddenedit_active").hide();
                 $("#pt_description_hidd").html(a).show().removeClass("hiddenedit_active")
             });
-            $(document).css("cursor", "default")
+            $(document).css("cursor", "default");
         }
         if ($(this).parent().attr("id") == "pt_add_handler") {//--- добавление точки
             $(document).css("cursor", "progress");
@@ -151,7 +153,7 @@ $(document).ready(function() {
                 $('#whatseelist').append('<tr><td><img class="point_typer" id="type_' + data + '" src="/img/points/x32/star.png" alt="другое" /></td><td><a href="object' + data + '.html" id="object_id_' + data + '" class="objlink" title="подробно: ' + $('#pt_name_add').val() + '">' + $('#pt_name_add').val() + '</a></td><td><a href="#" id="gps_' + data + '" class="point_latlon">' + latlontext + '</a></td><td><img class="point_deleter" id="del_' + data + '" src="/img/btn/ico.delete.gif" /></td></tr>');
                 $.modal.close();
             });
-            $(document).css("cursor", "default")
+            $(document).css("cursor", "default");
         }
         if ($(this).parent().attr("id") == "pt_contacts_handler") {//--- сохранение контактов
             $(document).css("cursor", "progress");
@@ -173,7 +175,7 @@ $(document).ready(function() {
                     $(".edit_cont").show();
                     $("div#pt_contacts_handler input").hide();
                     $(".hiddenedit_cont").hide();
-                    $("#do_cont_edit").show()
+                    $("#do_cont_edit").show();
                 }
             });
             $(document).css("cursor", "default")
@@ -190,7 +192,7 @@ $(document).ready(function() {
             }, function(data) {
                 if (data) {
                     $("#eblog_text").ckeditor(function() {
-                        this.destroy()
+                        this.destroy();
                     });
                     $.modal.close();
                     document.location = "/blog/"
@@ -202,33 +204,34 @@ $(document).ready(function() {
     $(".formhandler input.doesc").live("click", function() {
         if ($(this).parent().attr("id") == "pc_title_handler") {
             $("#pc_title_edit").val($("#pc_title_hidd").val()).removeClass("hiddenedit_active");
-            $("div#pc_title_handler input").hide()
+            $("div#pc_title_handler input").hide();
         }
         if ($(this).parent().attr("id") == "pc_text_handler") {//------ описание города
             $("#pc_text_edit").ckeditor(function() {
-                this.destroy()
+                this.destroy();
             });
             $("#pc_text_edit").css("height", "0").hide();
             $("#pc_text_hidd").show().removeClass("hiddenedit_active");
             $("div#pc_text_handler input").hide();
-            $("#map_container").show()
+            $("#map_container").show();
+            $("#city_float").show();
         }
         if ($(this).parent().attr("id") == "pt_name_handler") {//------ имя точки
             $("#pt_name_edit").hide().removeClass("hiddenedit_active");
             $("#pt_name_hidd").show().removeClass("hiddenedit_active");
-            $("div#pt_name_handler input").hide()
+            $("div#pt_name_handler input").hide();
         }
         if ($(this).parent().attr("id") == "pt_description_handler") {//------ описание точки
             $("#pt_description_edit").ckeditor(function() {
-                this.destroy()
+                this.destroy();
             });
             $("#pt_description_edit").hide().removeClass("hiddenedit_active");
             $("#pt_description_hidd").show().removeClass("hiddenedit_active");
-            $("#pt_description_handler input").hide()
+            $("#pt_description_handler input").hide();
         }
         if ($(this).parent().attr("id") == "pt_add_handler") {//------ добавление точки
             $("#pt_description_add").ckeditor(function() {
-                this.destroy()
+                this.destroy();
             });
             $("#pt_description_add").live("mouseover", function() {
                 $("#pt_description_add").die("mouseover").ckeditor(function() {
@@ -236,19 +239,19 @@ $(document).ready(function() {
                     customConfig: "/config/config.cke.js"
                 })
             });
-            $.modal.close()
+            $.modal.close();
         }
         if ($(this).parent().attr("id") == "pt_contacts_handler") {//------ сохранение контактов
             $(".edit_cont").show();
             $("div#pt_contacts_handler input").hide();
             $(".hiddenedit_cont").hide();
-            $("#do_cont_edit").show()
+            $("#do_cont_edit").show();
         }
         if ($(this).parent().attr("id") == "br_save_handler") {//------ запись в блоге
             $("#eblog_text").ckeditor(function() {
-                this.destroy()
+                this.destroy();
             });
-            $.modal.close()
+            $.modal.close();
         }
     });
     $("#pt_is_best_edit").live("change", function() {
@@ -268,7 +271,7 @@ $(document).ready(function() {
         $("div#pt_contacts_handler input").show();
         $(this).hide();
         $(".edit_cont").hide();
-        $(".hiddenedit_cont").show()
+        $(".hiddenedit_cont").show();
     });
     //----------------------------- / POINT CONTACTS ---------------------------------
     //--------------------------------- POINT ADD ------------------------------------
@@ -282,10 +285,10 @@ $(document).ready(function() {
             $("#pt_description_add").ckeditor(function() {
             }, {
                 customConfig: "/config/config.cke.js"
-            })
+            });
         });
         $(document).css("cursor", "default");
-        return false
+        return false;
     });
     //---------------------------------------- /  POINT ADD --------------------------
     //------------------------------------------- POINT DEL --------------------------
@@ -294,7 +297,7 @@ $(document).ready(function() {
         confirm('Действительно удалить точку?') && $.post("/ajax/point/delpoint/?pid=" + a[1], {
             pid: a[1]
         }, function(i) {
-            i && $(g).remove()
+            i && $(g).remove();
         })
     });
     //---------------------------------------- /  POINT DEL --------------------------
@@ -311,27 +314,27 @@ $(document).ready(function() {
             ntype: a[1]
         }, function(i) {
             $("img#type_" + g + ".point_typer").attr("src", "/img/points/x32/" + i);
-            $.modal.close()
-        })
+            $.modal.close();
+        });
     });
     $("a.check_all").click(function() {
         $("input.export_check").attr("checked", "true");
-        return false
+        return false;
     });
     $("a.check_not").click(function() {
         $("input.export_check").removeAttr("checked");
-        return false
+        return false;
     });
     $("a.export_about").click(function() {
         showWindByURL("/ajax/page/gps/", {});
-        return false
+        return false;
     });
     //--------------------------------------- /  POINT TYPE --------------------------
     //------------------------------------------ FEEDBACK --------------------------
     $("#captchahelp").click(function() {
         stamp = new Date;
         $("#norobotpic").attr("src", "/feedback/getcapt/" + stamp.getTime());
-        return false
+        return false;
     });
     //--------------------------------------- POINT GPS ------------------------------
     $(".point_latlon").live("click", function() {
@@ -354,7 +357,7 @@ $(document).ready(function() {
         })
     });
     $("#pt_latlon_handler input.doesc").live("click", function() {//------------ escape
-        $.modal.close()
+        $.modal.close();
     });
     //------------------------------------- / POINT GPS ------------------------------
     //------------------------------------ CITY GPS ----------------------------------
@@ -362,7 +365,7 @@ $(document).ready(function() {
         showWindByURL("/ajax/city/getformGPS/", {
             cid: document.location.search.split("city_id=")[1]
         });
-        return false
+        return false;
     });
     $("#pc_latlon_handler input.dosave").live("click", function() {//----------- save
         $.post("/ajax/city/saveformGPS/?cid=" + $("#city_id").val(), {
@@ -374,12 +377,12 @@ $(document).ready(function() {
             if (a) {
                 $("#pc_latitude").val($("#city_lat").val());
                 $("#pc_longitude").val($("#city_lon").val());
-                $.modal.close()
+                $.modal.close();
             }
         })
     });
     $("#pc_latlon_handler input.doesc").live("click", function() {//------------ escape
-        $.modal.close()
+        $.modal.close();
     });
     //---------------------------------- / CITY GPS ----------------------------------
     //----------------------------------- POINTS FILTER ------------------------------
@@ -396,14 +399,14 @@ $(document).ready(function() {
         if ($(this).parent('li').parent('ul').attr('id') == "menu_type2") {
             if (a != "all") {
                 $("#whatservlist tr").hide();
-                $("#whatservlist tr.obj_type_" + a).show()
+                $("#whatservlist tr.obj_type_" + a).show();
             } else
                 $("#whatservlist tr").show();
         }
         if ($(this).parent('li').parent('ul').attr('id') == "menu_type1") {
             if (a != "all") {
                 $("#whatseelist tr").hide();
-                $("#whatseelist tr.obj_type_" + a).show()
+                $("#whatseelist tr.obj_type_" + a).show();
             } else
                 $("#whatseelist tr").show();
         }
@@ -423,15 +426,15 @@ $(document).ready(function() {
             });
             $("#eblog_date").datepicker({
                 dateFormat: "dd.mm.yy"
-            })
+            });
         });
         $("#eblog_date").live("click",
                 function() {
                     $(this).datepicker({
                         dateFormat: "dd.mm.yy"
-                    })
+                    });
                 });
-        return false
+        return false;
     });
     $("#blog_entry_add").live("click", function() {
         showWindByURL("/ajax/blog/addform/", null);
@@ -442,14 +445,14 @@ $(document).ready(function() {
             });
             $("#eblog_date").datepicker({
                 dateFormat: "dd.mm.yy"
-            })
+            });
         });
         $("#eblog_date").live("click", function() {
             $(this).datepicker({
                 dateFormat: "dd.mm.yy"
-            })
+            });
         });
-        return false
+        return false;
     });
     $(".blog_entry_delete").live("click",
             function() {
@@ -458,10 +461,10 @@ $(document).ready(function() {
                     brid: a[2]
                 }, function(g) {
                     if (g)
-                        document.location = "/blog/"
+                        document.location = "/blog/";
                 });
-                return false
-            })
+                return false;
+            });
 //--------------------------------- / BLOG AJAX ----------------------------------
 //---------------------------------  CITY AJAX  ----------------------------------
     $("#city_sign_keywds").text($("#city_keywds").val().length);
@@ -534,7 +537,7 @@ function showWindByURL(url, get) {
         console.log($("#object_container h2").position().top + $("#object_container h2").height());
         $("#object_text_container").css("bottom", $("#object_additional").height()).css("top", 2.7 * ($("#object_container h2").position().top + $("#object_container h2").height()));
     });
-    $(document).css("cursor", "default")
+    $(document).css("cursor", "default");
 }
 
 function showMap(c_lat, c_lon, c_zoom, f_point) {
@@ -607,7 +610,7 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
                 $("#obj_zoom").val(map.getZoom());
                 $("#city_lat").val(coords[1]);
                 $("#city_lon").val(coords[0]);
-                $("#city_zoom").val(map.getZoom())
+                $("#city_zoom").val(map.getZoom());
             });
             map.geoObjects.add(myPlacemark);
         }
