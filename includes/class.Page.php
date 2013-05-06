@@ -270,7 +270,7 @@ class Page extends PageCommon {
                         WHERE pt.pt_citypage_id = '{$row['pc_id']}'\n";
             if (!$this->checkEdit())
                 $db->sql .= "AND pt.pt_active = 1\n";
-            $db->sql .= "ORDER BY rp.tr_sight desc, pt.pt_rank desc, rp.tr_order, pt.pt_name";
+            $db->sql .= "ORDER BY pt.pt_active DESC, rp.tr_sight desc, pt.pt_rank desc, rp.tr_order, pt.pt_name";
             //$db->showSQL();
             $db->exec();
             $points = array();
