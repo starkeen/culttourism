@@ -261,14 +261,16 @@ class Page extends PageCommon {
 
             //----------------------  т о ч к и  ------------------------
             $db->sql = "SELECT pt.*, pt.pt_id, pt.pt_name, pt.pt_type_id, pt.pt_description,
-                        pt_latitude, pt_longitude, pt_latlon_zoom,
+                                pt_latitude, pt_longitude, pt_latlon_zoom,
+                                pt.pt_active,
                                 rp.tp_name, rp.tp_icon, rp.tp_short, rp.tr_sight, rp.tp_icon,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update
                         FROM $dbpt pt
                         LEFT JOIN $dbrp rp ON rp.tp_id = pt.pt_type_id
-                        WHERE pt.pt_citypage_id = '{$row['pc_id']}'
-                        AND pt.pt_active = 1
-                        ORDER BY rp.tr_sight desc, pt.pt_rank desc, rp.tr_order, pt.pt_name";
+                        WHERE pt.pt_citypage_id = '{$row['pc_id']}'\n";
+            if (!$this->checkEdit())
+                $db->sql .= "AND pt.pt_active = 1\n";
+            $db->sql .= "ORDER BY rp.tr_sight desc, pt.pt_rank desc, rp.tr_order, pt.pt_name";
             //$db->showSQL();
             $db->exec();
             $points = array();
@@ -311,6 +313,8 @@ class Page extends PageCommon {
 
                 if ($point['last_update'] > $this->lastedit_timestamp)
                     $this->lastedit_timestamp = $point['last_update'];
+                if ($this->checkEdit())
+                    $this->lastedit_timestamp = 0;
             }
             $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
 
