@@ -100,7 +100,7 @@
                 {/if}
             </td>
             <td>
-                <a href="object{$item.pt_id}.html" id="object_id_{$item.pt_id}" class="objlink" title="подробно: {$item.pt_name}"  {if !$item.pt_active}style="color:#777;"{/if}>
+                <a href="object{$item.pt_id}.html" id="object_id_{$item.pt_id}" class="objlink" title="подробно: {$item.pt_name}" {if !$item.pt_active}style="color:#777;"{/if}>
                     {$item.pt_name}
                 </a>
             </td>
@@ -148,7 +148,9 @@
                 {/if}
             </td>
             <td>
-                <a href="object{$item.pt_id}.html" id="object_id_{$item.pt_id}" class="objlink" title="подробно: {$item.pt_name}">{$item.pt_name}</a>
+                <a href="object{$item.pt_id}.html" id="object_id_{$item.pt_id}" class="objlink" title="подробно: {$item.pt_name}" {if !$item.pt_active}style="color:#777;"{/if}>
+                    {$item.pt_name}
+            </a>
             </td>
             <td>
                 {if $item.gps_dec}<a href="#" id="gps_{$item.pt_id}" class="point_latlon">{$item.gps_dec}</a>{else}<a href="#" id="gps_{$item.pt_id}" class="point_latlon">указать</a>{/if}
