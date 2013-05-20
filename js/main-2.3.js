@@ -467,7 +467,8 @@ $(document).ready(function() {
             });
 //--------------------------------- / BLOG AJAX ----------------------------------
 //---------------------------------  CITY AJAX  ----------------------------------
-    $("#city_sign_keywds").text($("#city_keywds").val().length);
+    if ($("#city_keywds").val())
+        $("#city_sign_keywds").text($("#city_keywds").val().length);
     $("#city_sign_descr").text($("#city_descr").text().length);
     $(document).on("keyup", "#city_keywds", function() {
         $("#city_sign_keywds").text($("#city_keywds").val().length);
@@ -517,7 +518,23 @@ $(document).ready(function() {
         }
     });
 //--------------------------------- / CITY AJAX ----------------------------------
+//----------------------------   SEARCH AUTOCOMPLETE  ----------------------------
+    $('#searchform_input').autocomplete({
+        serviceUrl: "/search/suggest/",
+        paramName: "query",
+        onSelect: function(suggestion) {
+            document.location.href = suggestion.url;
+        }
+    });
+    $('#search_mainform_q').autocomplete({
+        serviceUrl: "/search/suggest/",
+        paramName: "query",
+        onSelect: function(suggestion) {
+            document.location.href = suggestion.url;
+        }
+    });
 });
+//---------------------------- / SEARCH AUTOCOMPLETE  ----------------------------
 
 
 //======================= FUNCTIONS ==============================================

@@ -5,73 +5,74 @@
         <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
         <title>{$page->title}</title>
         <meta name="keywords" content="{$page->keywords|escape:"html"}" />
-        <meta name="description" content="{$page->description|escape:"html"}" />
-        <meta name="robots" content="index, follow" />
-        <meta name="revisit-after" content="7 days" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="search" href="/search/" />
-        <link rel="copyright" href="/about/" />
-        <link rel="start" href="http://{$page->basepath}/" />
-        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans&amp;subset=latin,cyrillic-ext,cyrillic" type="text/css"/>
-        <link rel="stylesheet" href="/css/{$page->mainfile_css}" type="text/css" media="screen, projection, print"/>
-        <!--[if lte IE 6]><link rel="stylesheet" href="/css/style_ie.css" type="text/css" media="screen, projection, print" /><![endif]-->
-        <script type="text/javascript" src="http://yandex.st/jquery/1.7.2/jquery.min.js"></script>
-        <script type="text/javascript" src="http://{$page->basepath}/js/jquery.simplemodal.1.4.min.js"></script>
-        <script type="text/javascript" src="http://www.panoramio.com/wapi/wapi.js?v=1&amp;hl=ru"></script>
-        {if $page->canonical}
-        <link rel="canonical" href="http://{$page->basepath}{$page->canonical}" />
-        {/if}
-        {if $page->user.userid}
-        <script type="text/javascript" src="http://{$page->basepath}/addons/ckeditor/ckeditor.js"></script>
-        <script type="text/javascript" src="http://{$page->basepath}/addons/ckeditor/adapters/jquery.js"></script>
-        <script src="http://{$page->basepath}/js/jquery.ui.core.js"></script>
-        <script src="http://{$page->basepath}/js/jquery.ui.datepicker.js"></script>
-        <script src="http://{$page->basepath}/js/jquery.ui.datepicker-ru.js"></script>
-        <link type="text/css" rel="stylesheet" href="http://{$page->basepath}/css/ui-lightness/jquery-ui-1.8.2.custom.css" />
-        {/if}
-        <script type="text/javascript" src="http://{$page->basepath}/js/{$page->mainfile_js}"></script>
-        {if $page->module_id == 'index.html'}
-        {if $page->globalsettings.key_google}<meta name="google-site-verification" content="{$page->globalsettings.key_google}" />{/if}
-        {if $page->globalsettings.key_yandex}<meta name="yandex-verification" content="{$page->globalsettings.key_yandex}" />{/if}
-        {if $page->globalsettings.key_bing}<meta name="msvalidate.01" content="{$page->globalsettings.key_bing}" />{/if}
-        {if $page->globalsettings.key_yahoo}<meta name="y_key" content="{$page->globalsettings.key_yahoo}" />{/if}
-        {/if}
-        <script src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&amp;load=package.full&amp;wizard=constructor&amp;lang=ru-RU" type="text/javascript"></script>
-        <link rel="alternate" type="application/rss+xml" title="RSS blog" href="{$page->globalsettings.main_rss}" />
-    </head>
-    <body>
-        <div id="wrapper">
-            <header id="header">
-                <a href="/" title="Достопримечательности России">
-                    <img src="/img/header/logotype.png" alt="Культурный туризм" title="Достопримечательности России" />
-                </a>
-                <ul id="mainmenu" class="menu_common">
-                    <li class="navigate"><a href="http://{$page->basepath}/" title="Главная страница">Главная</a></li>
-                    <li class="navigate"><a href="/city/" title="Города">Города</a></li>
-                    <li class="navigate"><a href="/blog/" title="Блог проекта">Блог</a></li>
-                    <li class="navigate"><a href="/feedback/" title="Обратная связь">Отзыв</a></li>
-                    <li class="navigate"><a href="/about/" title="О проекте">О проекте</a></li>
-                    <li>
-                        <form method="get" action="/search/">
-                            <input type="text" id="search_mainform_q" name="q" value="" placeholder="Поиск" />
-                        </form>
-                    </li>
-                    <li><a id="show_auth_form" href="/sign/in/" title="Вход">&#x25bc;</a></li>
-                </ul>
-            </header><!-- #header-->
-            <div id="content">
-                {if $page->h1}<h1>{$page->h1}</h1>{/if}
-                {$page->content}
-            </div><!-- #content-->
-        </div><!-- #wrapper -->
-        <footer id="footer">
-            <div id="footer_conters">
-                <!--noindex-->{$page->counters}<!--/noindex-->
-            </div>
-            <div id="footer_debug">
-                {$debug_info}
-            </div>
-        </footer><!-- #footer -->
-    </body>
-</html>
+              <meta name="description" content="{$page->description|escape:"html"}" />
+              <meta name="robots" content="index, follow" />
+                <meta name="revisit-after" content="7 days" />
+                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+                <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+                <link rel="search" href="/search/" />
+                <link rel="copyright" href="/about/" />
+                <link rel="start" href="http://{$page->basepath}/" />
+                <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans&amp;subset=latin,cyrillic-ext,cyrillic" type="text/css"/>
+                <link rel="stylesheet" href="/css/{$page->mainfile_css}" type="text/css" media="screen, projection, print"/>
+                <!--[if lte IE 6]><link rel="stylesheet" href="/css/style_ie.css" type="text/css" media="screen, projection, print" /><![endif]-->
+                <script type="text/javascript" src="http://yandex.st/jquery/1.7.2/jquery.min.js"></script>
+                <script type="text/javascript" src="http://{$page->basepath}/js/jquery.simplemodal.1.4.min.js"></script>
+                <script type="text/javascript" src="http://www.panoramio.com/wapi/wapi.js?v=1&amp;hl=ru"></script>
+                <script src="http://{$page->basepath}/js/jquery.autocomplete.min.js"></script>
+                {if $page->canonical}
+                <link rel="canonical" href="http://{$page->basepath}{$page->canonical}" />
+                {/if}
+                {if $page->user.userid}
+                <script type="text/javascript" src="http://{$page->basepath}/addons/ckeditor/ckeditor.js"></script>
+                <script type="text/javascript" src="http://{$page->basepath}/addons/ckeditor/adapters/jquery.js"></script>
+                <script src="http://{$page->basepath}/js/jquery.ui.core.js"></script>
+                <script src="http://{$page->basepath}/js/jquery.ui.datepicker.js"></script>
+                <script src="http://{$page->basepath}/js/jquery.ui.datepicker-ru.js"></script>
+                <link type="text/css" rel="stylesheet" href="http://{$page->basepath}/css/ui-lightness/jquery-ui-1.8.2.custom.css" />
+                {/if}
+                <script type="text/javascript" src="http://{$page->basepath}/js/{$page->mainfile_js}"></script>
+                {if $page->module_id == 'index.html'}
+                {if $page->globalsettings.key_google}<meta name="google-site-verification" content="{$page->globalsettings.key_google}" />{/if}
+                {if $page->globalsettings.key_yandex}<meta name="yandex-verification" content="{$page->globalsettings.key_yandex}" />{/if}
+                {if $page->globalsettings.key_bing}<meta name="msvalidate.01" content="{$page->globalsettings.key_bing}" />{/if}
+                {if $page->globalsettings.key_yahoo}<meta name="y_key" content="{$page->globalsettings.key_yahoo}" />{/if}
+                {/if}
+                <script src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&amp;load=package.full&amp;wizard=constructor&amp;lang=ru-RU" type="text/javascript"></script>
+                <link rel="alternate" type="application/rss+xml" title="RSS blog" href="{$page->globalsettings.main_rss}" />
+                </head>
+                <body>
+                    <div id="wrapper">
+                        <header id="header">
+                            <a href="/" title="Достопримечательности России">
+                                <img src="/img/header/logotype.png" alt="Культурный туризм" title="Достопримечательности России" />
+                            </a>
+                            <ul id="mainmenu" class="menu_common">
+                                <li class="navigate"><a href="http://{$page->basepath}/" title="Главная страница">Главная</a></li>
+                                <li class="navigate"><a href="/city/" title="Города">Города</a></li>
+                                <li class="navigate"><a href="/blog/" title="Блог проекта">Блог</a></li>
+                                <li class="navigate"><a href="/feedback/" title="Обратная связь">Отзыв</a></li>
+                                <li class="navigate"><a href="/about/" title="О проекте">О проекте</a></li>
+                                <li>
+                                    <form method="get" action="/search/">
+                                        <input type="text" id="search_mainform_q" name="q" value="" placeholder="Поиск" />
+                                    </form>
+                                </li>
+                                <li><a id="show_auth_form" href="/sign/in/" title="Вход">&#x25bc;</a></li>
+                            </ul>
+                        </header><!-- #header-->
+                        <div id="content">
+                            {if $page->h1}<h1>{$page->h1}</h1>{/if}
+                            {$page->content}
+                        </div><!-- #content-->
+                    </div><!-- #wrapper -->
+                    <footer id="footer">
+                        <div id="footer_conters">
+                            <!--noindex-->{$page->counters}<!--/noindex-->
+                        </div>
+                        <div id="footer_debug">
+                            {$debug_info}
+                        </div>
+                    </footer><!-- #footer -->
+                </body>
+                </html>

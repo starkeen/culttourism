@@ -6,9 +6,36 @@ class Page extends PageCommon {
         list($module_id, $page_id, $id) = $mod;
         global $smarty;
         parent::__construct($db, 'search');
+        if ($page_id == 'suggest' && isset($_GET['query']))
+            $this->getSuggests($db, $smarty);
         if ($id)
             $this->getError('404');
         $this->content = $this->getSearchYandex($db, $smarty);
+    }
+
+    private function getSuggests($db, $smarty) {
+        $out = array('query' => '', 'suggestions' => array());
+        $out['query'] = cut_trash_string($_GET['query']);
+
+        $dbc = $db->getTableName('pagecity');
+        $dbu = $db->getTableName('region_url');
+        $db->sql = "SELECT pc_id, pc_title, url
+                    FROM $dbc c
+                        LEFT JOIN $dbu u ON u.uid = c.pc_url_id
+                    WHERE pc_title LIKE '%{$out['query']}%'
+                    ORDER BY pc_title";
+        $db->exec();
+        while ($row = $db->fetch()) {
+            $out['suggestions'][] = array(
+                'value' => "{$row['pc_title']}",
+                'data' => $row['pc_id'],
+                'url' => $row['url'] . '/',
+            );
+        }
+
+        header('Content-type: application/json');
+        echo json_encode($out);
+        exit();
     }
 
     private function getSearchYandex($db, $smarty) {
@@ -45,7 +72,7 @@ DOC;
                     'header' => "Content-type: application/xml\r\n" .
                     "Content-length: " . strlen($doc),
                     'content' => $doc
-                    )));
+            )));
             $response = file_get_contents('http://xmlsearch.yandex.ru/xmlsearch?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80', true, $context);
             if ($response) {
                 $xmldoc = new SimpleXMLElement($response);
@@ -197,4 +224,5 @@ DOC;
     }
 
 }
+
 ?>
