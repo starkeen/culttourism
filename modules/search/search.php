@@ -17,12 +17,15 @@ class Page extends PageCommon {
         $out = array('query' => '', 'suggestions' => array());
         $out['query'] = cut_trash_string($_GET['query']);
 
+        $query_add = Helper::getQwerty($out['query']);
+
         $dbc = $db->getTableName('pagecity');
         $dbu = $db->getTableName('region_url');
         $db->sql = "SELECT pc_id, pc_title, url
                     FROM $dbc c
                         LEFT JOIN $dbu u ON u.uid = c.pc_url_id
                     WHERE pc_title LIKE '%{$out['query']}%'
+                        OR pc_title LIKE '%$query_add%'
                     ORDER BY pc_title";
         $db->exec();
         while ($row = $db->fetch()) {
