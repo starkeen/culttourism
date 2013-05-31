@@ -39,6 +39,11 @@ if (isset($_POST) && !empty($_POST)) {
             $db->exec();
         }
     }
+    if (isset($_POST['do_delete_town'])) {
+        $town_id = cut_trash_int($_POST['town_id']);
+        $db->sql = "DELETE FROM $dbws WHERE ws_city_id = '$town_id'";
+        $db->exec();
+    }
 }
 
 $new_reps_cnt = 5;
@@ -51,8 +56,28 @@ foreach ($res['data'] as $rep) {
     $reports[] = $rep;
 }
 
+$towns = array('all' => 0, 'worked' => 0, 'remain' => 0);
 
-$db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name, ws_weight
+$db->sql = "SELECT count(*) AS cnt
+            FROM $dbws ws
+                LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
+            WHERE pc_id IS NULL";
+$db->exec();
+$row = $db->fetch();
+$towns['all'] = $row['cnt'];
+
+$db->sql = "SELECT count(*) AS cnt
+            FROM $dbws ws
+                LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
+            WHERE pc_id IS NULL
+                AND ws_weight = -1";
+$db->exec();
+$row = $db->fetch();
+$towns['remain'] = $row['cnt'];
+$towns['worked'] = $towns['all'] - $row['cnt'];
+
+
+$db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name, ws_city_id, ws_weight
             FROM $dbws ws
                 LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
                 LEFT JOIN $dbrc rc ON rc.id = ws.ws_city_id
@@ -69,6 +94,7 @@ while ($row = $db->fetch()) {
 }
 $smarty->assign('stat', $stat);
 $smarty->assign('reports', $reports);
+$smarty->assign('towns', $towns);
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/stat_yandex.sm.html'));
 
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');

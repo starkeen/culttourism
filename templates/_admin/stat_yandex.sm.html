@@ -2,7 +2,13 @@
 <h3>{$title}</h3>
 
 <div style="width:200px;float:right;text-align:center">
-    <p>Отчёты в кэше</p>
+    <p><b>Города</b></p>
+    <ul style="text-align:left;">
+        <li>всего: {$towns.all}</li>
+        <li>обработано: {$towns.worked}</li>
+        <li>осталось: {$towns.remain}</li>
+    </ul>
+    <p><b>Отчёты в кэше</b></p>
     <ol style="text-align:left;">
         {foreach from=$reports item=rep}
         <li>{$rep.ReportID}: {$rep.StatusReport}</li>
@@ -22,6 +28,7 @@
         <th>Регион</th>
         <th>Город</th>
         <th>Запросы</th>
+        <th>&nbsp;</th>
     </tr>
     {foreach from=$stat item=item}
     <tr style="background-color:#fff;">
@@ -29,10 +36,16 @@
         <td>{$item.country_name}</td>
         <td>{$item.region_name}</td>
         <td>
-            {$item.city_name}
+            <a href="/city/add/?cityname={$item.city_name}">{$item.city_name}</a>
             <a href="http://wordstat.yandex.ru/?cmd=words&page=1&t={$item.city_name}+достопримечательности&geo=&text_geo="><img src="/img/new-window.png" /></a>
         </td>
         <td align="center">{$item.ws_weight}</td>
+        <td align="center">
+            <form method="post">
+                <input type="hidden" name="town_id" value="{$item.ws_city_id}" />
+                <input type="submit" name="do_delete_town" value="удалить" />
+            </form>
+        </td>
     </tr>
     {/foreach}
 </table>
