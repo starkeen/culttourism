@@ -17,14 +17,17 @@ class Page extends PageCommon {
         $referer = $_SESSION['feedback_referer'];
 
         if (isset($_POST) && !empty($_POST)) {
-            $fname = (string) trim($_POST['fname']);
-            $fmail = $_POST['fmail'];
-            $ftext = trim($_POST['ftext']);
+            $fname = cut_trash_text($_POST['fname']);
+            $fmail = cut_trash_text($_POST['fmail']);
+            $ftext = cut_trash_text($_POST['ftext']);
             $fcapt = $_POST['fcapt'];
+            $ftextcheck = cut_trash_text($_POST['ftextcheck']);
             $error = null;
 
 
             if (isset($_SESSION['captcha_keystring']) && $fcapt != $_SESSION['captcha_keystring'])
+                $error = 'fcapt';
+            if ($ftextcheck != '')
                 $error = 'fcapt';
             if ($ftext == null)
                 $error = 'ftext';
@@ -42,10 +45,16 @@ class Page extends PageCommon {
                 $browser = $_SERVER['HTTP_USER_AGENT'];
 
                 $dbf = $db->getTableName('feedback');
+                $fname = mysql_real_escape_string($fname);
+                $ftext = mysql_real_escape_string($ftext);
+                $fmail = mysql_real_escape_string($fmail);
+                $referer = mysql_real_escape_string($referer);
+
                 $db->sql = "INSERT INTO $dbf
                             SET fb_date=now(), fb_name = '$fname', fb_text='$ftext',
                             fb_referer = '$referer',
                             fb_sendermail='$fmail', fb_ip='$fip', fb_browser='$browser'";
+
                 if ($db->exec()) {
                     $smarty->assign('messtext', $ftext);
                     $smarty->assign('messname', $fname);

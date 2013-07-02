@@ -1,10 +1,11 @@
 <h3>Заполните, пожалуйста, все поля формы</h3>
 <form method="post" id="feedform">
-    <table class="feedtable">
+    <input type="text" name="ftextcheck" id="ftextcheck" value="" />
+    <table class="feedtable" style="margin:10px auto;">
         <tr>
             <td style="width:20%"><label for="fname">Ваше имя</label></td>
             <td colspan="3">
-                <input type="text" id="fname" name="fname" class="feedinput" value="{$fname}" />
+                <input type="text" id="fname" name="fname" class="feedinput" value="{$fname}" placeholder="Иван Иванов" style="width:98%" />
                 {if $error=='fname'}<span class="feedhighlight">Вы не ввели имя</span>{/if}
             </td>
         </tr>
@@ -16,7 +17,7 @@
         </tr>
         <tr>
             <td colspan="4">
-                <textarea name="ftext" id="ftext" class="feedinput">{$ftext}</textarea>
+                <textarea name="ftext" id="ftext" class="feedinput" style="width:98%;margin:0 10px;">{$ftext}</textarea>
             </td>
         </tr>
         <tr>
@@ -24,25 +25,32 @@
         </tr>
         <tr>
             <td><label for="fmail">Электронная&nbsp;почта</label></td>
-            <td colspan="3"><input type="text" id="fmail" name="fmail" class="feedinput" value="{$fmail}" style="width:50%" /></td>
-        </tr>
-    </table>
-    <table class="feedtable">
-        <tr>
-            <td rowspan="3"><img id="norobotpic" src="../../../feedback/getcapt/" width="120" height="60" alt="Подтвердите, что вы не робот" /></td>
+            <td colspan="3"><input type="text" id="fmail" name="fmail" class="feedinput" value="{$fmail}" placeholder="ivan@ivanov.ru" style="width:50%" /></td>
         </tr>
         <tr>
-            <td colspan="2">
+            <td colspan="4"><hr/></td>
+        </tr>
+        <tr>
+            <td rowspan="3" style="text-align: center;"><img id="norobotpic" src="/feedback/getcapt/" width="160" height="80" alt="Подтвердите, что вы не робот" /></td>
+            <td colspan="3">
                 {if $error=='fcapt'}<span class="feedhighlight">Вы ошиблись при вводе.</span>&nbsp;{/if}
-                Пожалуйста, введите изображенные на картинке символы. Регистр значения не имеет. <a id="captchahelp" title="Нажать для перезагрузки картинки" href="#">Другую картинку</a>?
+                Пожалуйста, введите символы изображенные на картинке слева. Регистр значения не имеет.
+                <br />
+                <a id="captchahelp" title="Нажать для перезагрузки картинки" href="#" style="text-decoration: none; border-bottom: 1px dotted #009FD4">Другую картинку?</a>
             </td>
         </tr>
         <tr>
             <td style="width:20%">Код с картинки</td>
             <td><input type="text" id="fcapt" name="fcapt" class="feedinput" style="height:20px;width:60%" /></td>
+            <td>&nbsp;</td>
         </tr>
         <tr>
-            <td colspan="3"><input type="submit" value="Отправить" class="feedinput" /></td>
+            <td colspan="3" style="text-align:center; padding: 5px">
+                <input type="submit" value="Отправить" class="feedinput" id="searchform_submit" style="width:auto" />
+            </td>
         </tr>
     </table>
 </form>
+<style>
+    #ftextcheck { display:none;}
+</style>
