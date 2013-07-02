@@ -6,7 +6,7 @@ class Page extends PageCommon {
         list($module_id, $page_id, $id) = $mod;
         if ($page_id == 'getcapt') {
             include(_DIR_ADDONS . '/kcaptcha/kcaptcha.php');
-            $captcha = new KCAPTCHA(); 
+            $captcha = new KCAPTCHA();
             exit();
         }
         global $smarty;
