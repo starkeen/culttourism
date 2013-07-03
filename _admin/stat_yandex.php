@@ -52,8 +52,10 @@ $request = array(
 );
 $res = yandex_req($request);
 $reports = array();
-foreach ($res['data'] as $rep) {
-    $reports[] = $rep;
+if (isset($res['data']) && !empty($res['data'])) {
+    foreach ($res['data'] as $rep) {
+        $reports[] = $rep;
+    }
 }
 
 $towns = array('all' => 0, 'worked' => 0, 'remain' => 0);
