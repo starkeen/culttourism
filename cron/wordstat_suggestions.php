@@ -9,11 +9,12 @@ $request = array(
 );
 $res = yandex_req($request);
 $open_reports = array();
-foreach ($res['data'] as $rep) {
-    if ($rep['StatusReport'] == 'Done')
-        $open_reports[] = $rep['ReportID'];
+if (isset($res['data']) && !empty($res['data'])) {
+    foreach ($res['data'] as $rep) {
+        if ($rep['StatusReport'] == 'Done')
+            $open_reports[] = $rep['ReportID'];
+    }
 }
-
 $db->sql = "SELECT ws_rep_id FROM $dbws
             WHERE ws_rep_id != 0
                 AND ws_weight = -1
@@ -63,10 +64,11 @@ $request = array(
     'method' => 'GetWordstatReportList',
 );
 $res = yandex_req($request);
-foreach ($res['data'] as $rep) {
-    $new_reps_cnt += -1;
+if (isset($res['data']) && !empty($res['data'])) {
+    foreach ($res['data'] as $rep) {
+        $new_reps_cnt += -1;
+    }
 }
-
 if ($new_reps_cnt > 0) {
     for ($i = 1; $i <= $new_reps_cnt; $i++) {
         $db->sql = "SELECT * FROM $dbws
