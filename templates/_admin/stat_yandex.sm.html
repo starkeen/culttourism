@@ -74,6 +74,7 @@
                     <th>Страна</th>
                     <th>Регион</th>
                     <th>Город</th>
+                    <th>Добавлено</th>
                     <th>Запросы</th>
                     <th>Позиция</th>
                 </tr>
@@ -82,6 +83,7 @@
                     <td>{$item.country_name}</td>
                     <td>{$item.region_name}</td>
                     <td>{$item.city_name}</td>
+                    <td align="center">{$item.pc_add_date|date_format:"%d.%m.%Y"}</td>
                     <td align="center">
                         <a href="http://wordstat.yandex.ru/?cmd=words&page=1&t={$item.city_name}+достопримечательности&geo=&text_geo=">{$item.ws_weight}</a>
                     </td>
