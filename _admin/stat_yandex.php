@@ -143,7 +143,9 @@ $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS coun
                     LEFT JOIN $dbco co ON co.id = rc.country_id
             WHERE ws_weight > 0
                 AND pc_id IS NOT NULL
+                AND ws_position IS NOT NULL
                 AND (ws_position > 5 OR ws_position = 0)
+            GROUP BY ws_city_id
             ORDER BY weight_x DESC, position_x DESC
             LIMIT 50";
 $db->exec();
