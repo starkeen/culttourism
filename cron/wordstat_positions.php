@@ -9,8 +9,7 @@ $limit_sites_per_answer = 90;
 $db->sql = "SELECT ws_id, ws_city_title
             FROM $dbws ws
                 LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
-            WHERE ws_position IS NULL
-                AND pc.pc_id IS NOT NULL
+            WHERE pc.pc_id IS NOT NULL
             ORDER BY ws_position_date, pc_rank DESC
             LIMIT $limit_cities_per_time";
 $db->exec();
