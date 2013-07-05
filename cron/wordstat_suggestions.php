@@ -48,7 +48,7 @@ foreach ($reps as $rep) {
     $city = trim(str_replace(' достопримечательности', '', $rep['word']));
     $weight = intval($rep['weight']);
     $repid = intval($rep['rep_id']);
-    $db->sql = "UPDATE $dbws SET ws_weight = '$weight' WHERE ws_rep_id = '$repid' AND ws_city_title = '$city'";
+    $db->sql = "UPDATE $dbws SET ws_weight = '$weight', ws_weight_date = now() WHERE ws_rep_id = '$repid' AND ws_city_title = '$city'";
     $db->exec();
     $reps_to_del[$repid] = $repid;
 }
