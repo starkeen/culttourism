@@ -14,11 +14,10 @@ if (isset($_POST) && !empty($_POST)) {
     if (isset($_POST['do_reload_full'])) {
         $db->sql = "TRUNCATE TABLE $dbws";
         $db->exec();
-        $db->sql = "INSERT INTO $dbws (ws_city_id, ws_city_title, ws_rep_id, ws_weight)
-                        (SELECT id, name, 0, -1 FROM $dbrc rc
-                            LEFT JOIN $dbpc pc ON pc.pc_city_id = rc.id
-                        WHERE rc.country_id IN (3159, 9908, 248)
-                            AND pc.pc_id IS NULL)";
+        $db->sql = "INSERT INTO $dbws (ws_city_id, ws_city_title, ws_rep_id, ws_weight, ws_position, ws_position_date)
+                        (SELECT id, name, 0, -1, null, null
+                         FROM $dbrc rc
+                         WHERE rc.country_id IN (3159, 9908, 248))";
         $db->exec();
     }
     if (isset($_POST['do_reload_stat'])) {
