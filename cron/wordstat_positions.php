@@ -3,6 +3,8 @@
 $dbpc = $db->getTableName('pagecity');
 $dbws = $db->getTableName('wordstat');
 
+$limit_cities_per_time = 15;
+$limit_sites_per_answer = 90;
 
 $db->sql = "SELECT ws_id, ws_city_title
             FROM $dbws ws
@@ -10,7 +12,7 @@ $db->sql = "SELECT ws_id, ws_city_title
             WHERE ws_position IS NULL
                 AND pc.pc_id IS NOT NULL
             ORDER BY ws_position_date, pc_rank DESC
-            LIMIT 10";
+            LIMIT $limit_cities_per_time";
 $db->exec();
 $cities = array();
 while ($row = $db->fetch()) {
@@ -21,7 +23,7 @@ foreach ($cities as $city) {
     $result = array();
     $result_meta = array();
     $found = array();
-    $result_meta['pages'] = 90;
+    $result_meta['pages'] = $limit_sites_per_answer;
     $result_meta['page'] = 0;
     $result_meta['page_all'] = 0;
     $doc = <<<DOC
