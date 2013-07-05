@@ -40,9 +40,7 @@ $adm_menu_items[] = array('link' => 'stat_yandex.php', 'title' => 'Статис�
 if ($isAdmin) {
     $adm_menu_items[] = array('link' => 'users.php', 'title' => 'Пользователи', 'ico' => 'ico.a_users.gif');
     $adm_menu_items[] = array('link' => 'settings.php', 'title' => 'Настройки сайта', 'ico' => 'ico.a_refs.gif');
-    $adm_menu_items[] = array('link' => 'cron.php', 'title' => 'Задачи по расписанию', 'ico' => 'ico.a_refs.gif');
 }
-$adm_menu_items[] = array('link' => 'log_error.php', 'title' => 'Журнал ошибок', 'ico' => 'ico.a_logs.gif');
 
 $smarty = new mySmarty();
 
