@@ -14,6 +14,15 @@
         <li>{$rep.ReportID}: {$rep.StatusReport}</li>
         {/foreach}
     </ol>
+    <p><b>SEO</b></p>
+    <ul style="text-align:left;">
+        <li>всего городов: {$towns.seo_all}</li>
+        <li>обработано: {$towns.seo_worked}</li>
+        <li>в топ-10: {$towns.seo_top_10}</li>
+        <li>в топ-20: {$towns.seo_top_20}</li>
+        <li>в топ-50: {$towns.seo_top_50}</li>
+        <li>нет: {$towns.seo_top_none}</li>
+    </ul>
     <form method="post">
         <input type="submit" name="do_reload_full" value="Перезапуск полный" />
         <input type="submit" name="do_reload_stat" value="Сброс статистики" />
@@ -21,31 +30,68 @@
     </form>
 </div>
 
-<table style="background-color:teal; margin:10px;" cellpadding="3" cellspacing="1">
-    <tr style="background-color:#DCDCDC;">
-        <th>#</th>
-        <th>Страна</th>
-        <th>Регион</th>
-        <th>Город</th>
-        <th>Запросы</th>
-        <th>&nbsp;</th>
-    </tr>
-    {foreach from=$stat item=item}
-    <tr style="background-color:#fff;">
-        <td>{counter}</td>
-        <td>{$item.country_name}</td>
-        <td>{$item.region_name}</td>
-        <td>
-            <a href="/city/add/?cityname={$item.city_name}">{$item.city_name}</a>
-            <a href="http://wordstat.yandex.ru/?cmd=words&page=1&t={$item.city_name}+достопримечательности&geo=&text_geo="><img src="/img/new-window.png" /></a>
+<table>
+    <tr>
+        <td style="vertical-align: top;">
+            <p><b>Рекомендации по добавлению</b></p>
+
+            <table style="background-color:teal; margin:10px;" cellpadding="3" cellspacing="1">
+                <tr style="background-color:#DCDCDC;">
+                    <th>#</th>
+                    <th>Страна</th>
+                    <th>Регион</th>
+                    <th>Город</th>
+                    <th>Запросы</th>
+                    <th>&nbsp;</th>
+                </tr>
+                {foreach from=$stat item=item}
+                <tr style="background-color:#fff;">
+                    <td>{counter}</td>
+                    <td>{$item.country_name}</td>
+                    <td>{$item.region_name}</td>
+                    <td>
+                        <a href="/city/add/?cityname={$item.city_name}">{$item.city_name}</a>
+                        <a href="http://wordstat.yandex.ru/?cmd=words&page=1&t={$item.city_name}+достопримечательности&geo=&text_geo="><img src="/img/new-window.png" /></a>
+                    </td>
+                    <td align="center">{$item.ws_weight}</td>
+                    <td align="center">
+                        <form method="post">
+                            <input type="hidden" name="town_id" value="{$item.ws_city_id}" />
+                            <input type="submit" name="do_delete_town" value="удалить" />
+                        </form>
+                    </td>
+                </tr>
+                {/foreach}
+            </table>
+
+
         </td>
-        <td align="center">{$item.ws_weight}</td>
-        <td align="center">
-            <form method="post">
-                <input type="hidden" name="town_id" value="{$item.ws_city_id}" />
-                <input type="submit" name="do_delete_town" value="удалить" />
-            </form>
+        <td style="vertical-align: top;">
+            <p><b>Рекомендации по продвижению</b></p>
+
+            <table style="background-color:teal; margin:10px;" cellpadding="3" cellspacing="1">
+                <tr style="background-color:#DCDCDC;">
+                    <th>Страна</th>
+                    <th>Регион</th>
+                    <th>Город</th>
+                    <th>Запросы</th>
+                    <th>Позиция</th>
+                </tr>
+                {foreach from=$seo item=item}
+                <tr style="background-color:#fff;">
+                    <td>{$item.country_name}</td>
+                    <td>{$item.region_name}</td>
+                    <td>{$item.city_name}</td>
+                    <td align="center">
+                        <a href="http://wordstat.yandex.ru/?cmd=words&page=1&t={$item.city_name}+достопримечательности&geo=&text_geo=">{$item.ws_weight}</a>
+                    </td>
+                    <td align="center">
+                        <a href="http://yandex.ru/yandsearch?text={$item.city_name}+достопримечательности&lr=213">{$item.ws_position}</a>
+                    </td>
+                </tr>
+                {/foreach}
+            </table>
         </td>
     </tr>
-    {/foreach}
 </table>
+

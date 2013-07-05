@@ -57,7 +57,9 @@ if (isset($res['data']) && !empty($res['data'])) {
     }
 }
 
-$towns = array('all' => 0, 'worked' => 0, 'remain' => 0);
+$towns = array('all' => 0, 'worked' => 0, 'remain' => 0,
+    'seo_all' => 0, 'seo_worked' => 0,
+    'seo_top_10' => 0, 'seo_top_20' => 0, 'seo_top_50' => 0, 'seo_top_none' => 0,);
 
 $db->sql = "SELECT count(*) AS cnt
             FROM $dbws ws
@@ -77,6 +79,40 @@ $row = $db->fetch();
 $towns['remain'] = $row['cnt'];
 $towns['worked'] = $towns['all'] - $row['cnt'];
 
+$db->sql = "SELECT count(*) AS cnt
+            FROM $dbws ws
+                LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
+            WHERE pc_id IS NOT NULL";
+$db->exec();
+$row = $db->fetch();
+$towns['seo_all'] = $row['cnt'];
+$db->sql = "SELECT count(*) AS cnt
+            FROM $dbws ws
+                LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
+            WHERE pc_id IS NOT NULL
+                AND ws_position IS NOT NULL";
+$db->exec();
+$row = $db->fetch();
+$towns['seo_worked'] = $row['cnt'];
+$db->sql = "SELECT count(*) AS cnt, 
+                IF(ws_position = 0, 0, IF(ws_position > 50, 0, IF(ws_position > 20, 50, IF(ws_position > 10, 20, 10)))) AS xtop
+            FROM $dbws ws
+                LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
+            WHERE pc_id IS NOT NULL
+                AND ws_position IS NOT NULL
+            GROUP BY xtop";
+$db->exec();
+while ($row = $db->fetch()) {
+    if ($row['xtop'] == 0)
+        $towns['seo_top_none'] += $row['cnt'];
+    if ($row['xtop'] == 10)
+        $towns['seo_top_10'] += $row['cnt'];
+    if ($row['xtop'] == 20)
+        $towns['seo_top_20'] += $row['cnt'];
+    if ($row['xtop'] == 50)
+        $towns['seo_top_50'] += $row['cnt'];
+}
+
 
 $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name, ws_city_id, ws_weight
             FROM $dbws ws
@@ -93,7 +129,28 @@ $stat = array();
 while ($row = $db->fetch()) {
     $stat[] = $row;
 }
+
+$db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name, ws_city_id,
+                ws_weight, ws_position,
+                100*ROUND(ws_weight/100) AS weight_x,
+                IF(ws_position = 0, 100, IF(ws_position > 50, 100, IF(ws_position > 20, 50, IF(ws_position > 10, 20, 10)))) AS position_x
+            FROM $dbws ws
+                LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
+                LEFT JOIN $dbrc rc ON rc.id = ws.ws_city_id
+                    LEFT JOIN $dbrr rr ON rr.id = rc.region_id
+                    LEFT JOIN $dbco co ON co.id = rc.country_id
+            WHERE ws_weight > 0
+                AND pc_id IS NOT NULL
+            ORDER BY weight_x DESC, position_x DESC
+            LIMIT 50";
+$db->exec();
+$seo = array();
+while ($row = $db->fetch()) {
+    $seo[] = $row;
+}
+
 $smarty->assign('stat', $stat);
+$smarty->assign('seo', $seo);
 $smarty->assign('reports', $reports);
 $smarty->assign('towns', $towns);
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/stat_yandex.sm.html'));
