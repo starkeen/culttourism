@@ -71,9 +71,12 @@ if (isset($res['data']) && !empty($res['data'])) {
 }
 if ($new_reps_cnt > 0) {
     for ($i = 1; $i <= $new_reps_cnt; $i++) {
-        $db->sql = "SELECT * FROM $dbws
-            WHERE ws_rep_id = 0
-            LIMIT 10";
+        $db->sql = "SELECT ws.*
+                    FROM $dbws ws
+                        LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
+                    WHERE ws_rep_id = 0
+                    ORDER BY pc_rank DESC
+                    LIMIT 10";
         $db->exec();
         $_ids = array();
         $request = array(
