@@ -1,34 +1,46 @@
 <img class="pageicon" src="/img/admin/ico.a_refs.gif" />
 <h3>{$title}</h3>
 
-<div style="width:200px;float:right;text-align:center">
-    <p><b>Города</b></p>
-    <ul style="text-align:left;">
-        <li>всего: {$towns.all}</li>
-        <li>обработано: {$towns.worked}</li>
-        <li>осталось: {$towns.remain}</li>
-    </ul>
-    <p><b>Отчёты в кэше</b></p>
-    <ol style="text-align:left;">
-        {foreach from=$reports item=rep}
-        <li>{$rep.ReportID}: {$rep.StatusReport}</li>
-        {/foreach}
-    </ol>
-    <p><b>SEO</b></p>
-    <ul style="text-align:left;">
-        <li>всего городов: {$towns.seo_all}</li>
-        <li>обработано: {$towns.seo_worked}</li>
-        <li>в топ-10: {$towns.seo_top_10}</li>
-        <li>в топ-20: {$towns.seo_top_20}</li>
-        <li>в топ-50: {$towns.seo_top_50}</li>
-        <li>нет: {$towns.seo_top_none}</li>
-    </ul>
-    <form method="post">
-        <input type="submit" name="do_reload_full" value="Перезапуск полный" />
-        <input type="submit" name="do_reload_stat" value="Сброс статистики" />
-        <input type="submit" name="do_stack_empty" value="Сброс очереди отчётов" />
-    </form>
-</div>
+<table style="width:70%;margin:0 auto;vertical-align: top">
+    <tr>
+        <td style="vertical-align: top;">
+            <p><b>Города</b></p>
+            <ul style="text-align:left;">
+                <li>всего: {$towns.all}</li>
+                <li>обработано: {$towns.worked}</li>
+                <li>осталось: {$towns.remain}</li>
+            </ul>
+        </td>
+        <td style="vertical-align: top;">
+            <p><b>Отчёты в кэше</b></p>
+            <ol style="text-align:left;">
+                {foreach from=$reports item=rep}
+                <li>{$rep.ReportID}: {$rep.StatusReport}</li>
+                {/foreach}
+            </ol>
+        </td>
+        <td style="vertical-align: top;">
+            <p><b>SEO</b></p>
+            <ul style="text-align:left;">
+                <li>всего городов: {$towns.seo_all}</li>
+                <li>обработано: {$towns.seo_worked}</li>
+                <li>в топ-10: {$towns.seo_top_10}</li>
+                <li>в топ-20: {$towns.seo_top_20}</li>
+                <li>в топ-50: {$towns.seo_top_50}</li>
+                <li>нет: {$towns.seo_top_none}</li>
+            </ul>
+        </td>
+        <td style="vertical-align: top;">
+            <form method="post">
+                <input type="submit" name="do_reload_full" value="Перезапуск полный" />
+                <br />
+                <input type="submit" name="do_reload_stat" value="Сброс статистики" />
+                <br />
+                <input type="submit" name="do_stack_empty" value="Сброс очереди отчётов" />
+            </form>
+        </td>
+    </tr>
+</table>
 
 <table>
     <tr>
@@ -71,6 +83,7 @@
 
             <table style="background-color:teal; margin:10px;" cellpadding="3" cellspacing="1">
                 <tr style="background-color:#DCDCDC;">
+                    <th>#</th>
                     <th>Страна</th>
                     <th>Регион</th>
                     <th>Город</th>
@@ -78,8 +91,10 @@
                     <th>Запросы</th>
                     <th>Позиция</th>
                 </tr>
+
                 {foreach from=$seo item=item}
                 <tr style="background-color:#fff;">
+                    <td>{counter name="seo"}</td>
                     <td>{$item.country_name}</td>
                     <td>{$item.region_name}</td>
                     <td>{$item.city_name}</td>

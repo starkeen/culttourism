@@ -133,7 +133,8 @@ while ($row = $db->fetch()) {
 $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name,
                 pc.pc_add_date,
                 ws_city_id, ws_weight, ws_position,
-                100*ROUND(ws_weight/100) AS weight_x,
+                100*ROUND(ws_weight/100) AS weight_x100,
+                10*ROUND(ws_weight/10) AS weight_x10,
                 IF(ws_position = 0, '&mdash;', ws_position) AS ws_position,
                 IF(ws_position = 0, 100, IF(ws_position > 50, 100, IF(ws_position > 20, 50, IF(ws_position > 10, 20, 10)))) AS position_x
             FROM $dbws ws
@@ -144,9 +145,9 @@ $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS coun
             WHERE ws_weight > 0
                 AND pc_id IS NOT NULL
                 AND ws_position IS NOT NULL
-                AND (ws_position > 5 OR ws_position = 0)
+                AND (ws_position > 8 OR ws_position = 0)
             GROUP BY ws_city_id
-            ORDER BY weight_x DESC, position_x DESC
+            ORDER BY weight_x100 DESC, weight_x10 DESC, position_x DESC
             LIMIT 50";
 $db->exec();
 $seo = array();
