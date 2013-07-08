@@ -57,17 +57,23 @@ if (isset($res['data']) && !empty($res['data'])) {
     }
 }
 
-$towns = array('all' => 0, 'worked' => 0, 'remain' => 0,
+$towns = array('all' => 0, 'base' => 0, 'worked' => 0, 'remain' => 0,
     'seo_all' => 0, 'seo_worked' => 0,
     'seo_top_10' => 0, 'seo_top_20' => 0, 'seo_top_50' => 0, 'seo_top_none' => 0,);
 
 $db->sql = "SELECT count(*) AS cnt
-            FROM $dbws ws
-                LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
-            WHERE pc_id IS NULL";
+            FROM $dbws ws";
 $db->exec();
 $row = $db->fetch();
 $towns['all'] = $row['cnt'];
+
+$db->sql = "SELECT count(*) AS cnt
+            FROM $dbws ws
+                LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
+            WHERE pc_id IS NOT NULL";
+$db->exec();
+$row = $db->fetch();
+$towns['base'] = $row['cnt'];
 
 $db->sql = "SELECT count(*) AS cnt
             FROM $dbws ws
