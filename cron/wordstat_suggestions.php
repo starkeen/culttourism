@@ -17,7 +17,6 @@ if (isset($res['data']) && !empty($res['data'])) {
 }
 $db->sql = "SELECT ws_rep_id FROM $dbws
             WHERE ws_rep_id != 0
-                AND ws_weight = -1
             GROUP BY ws_rep_id";
 $db->exec();
 $reps = array();
@@ -48,7 +47,8 @@ foreach ($reps as $rep) {
     $city = trim(str_replace(' достопримечательности', '', $rep['word']));
     $weight = intval($rep['weight']);
     $repid = intval($rep['rep_id']);
-    $db->sql = "UPDATE $dbws SET ws_weight = '$weight', ws_weight_date = now() WHERE ws_rep_id = '$repid' AND ws_city_title = '$city'";
+    $db->sql = "UPDATE $dbws SET ws_weight = '$weight', ws_weight_date = now(), ws_rep_id = 0
+                WHERE ws_rep_id = '$repid' AND ws_city_title = '$city'";
     $db->exec();
     $reps_to_del[$repid] = $repid;
 }
@@ -69,13 +69,14 @@ if (isset($res['data']) && !empty($res['data'])) {
         $new_reps_cnt += -1;
     }
 }
+
 if ($new_reps_cnt > 0) {
     for ($i = 1; $i <= $new_reps_cnt; $i++) {
         $db->sql = "SELECT ws.*
                     FROM $dbws ws
                         LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
                     WHERE ws_rep_id = 0
-                    ORDER BY pc_rank DESC
+                    ORDER BY ws_weight_date, pc_rank DESC
                     LIMIT 10";
         $db->exec();
         $_ids = array();
@@ -101,6 +102,9 @@ if ($new_reps_cnt > 0) {
         }
     }
 }
+
+$db->sql = "OPTIMIZE TABLE $dbws)";
+$db->exec();
 
 function yandex_req($request) {
     //$url = "https://api-sandbox.direct.yandex.ru/json-api/v4/";
