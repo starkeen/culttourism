@@ -109,46 +109,50 @@ class Page extends PageCommon {
             $row['pc_zoom'] = ($row['pc_latlon_zoom']) ? $row['pc_latlon_zoom'] : 12;
             $row['pc_zoom']++;
 
-            //--------------------  c a n o n i c a l  -------------------------
-            $db->sql = "SELECT url FROM $dburl WHERE uid = '{$row['pc_url_id']}'";
-            $db->exec();
-            $canonical_url = $db->fetch();
-            if ($canonical_url['url'] != '')
-                $this->canonical = $canonical_url['url'] . '/map.html';
+            header("Location: /map/#center={$row['pc_longitude']},{$row['pc_latitude']}&zoom={$row['pc_zoom']}");
+            exit();
+            /*
+              //--------------------  c a n o n i c a l  -------------------------
+              $db->sql = "SELECT url FROM $dburl WHERE uid = '{$row['pc_url_id']}'";
+              $db->exec();
+              $canonical_url = $db->fetch();
+              if ($canonical_url['url'] != '')
+              $this->canonical = $canonical_url['url'] . '/map.html';
 
-            //----------------------  l e g e n d   ----------------------------
-            $db->sql = "SELECT * FROM $dbpt ORDER BY tr_order";
-            $db->exec();
-            $point_types = array();
-            while ($pts = $db->fetch()) {
-                $point_types[] = $pts;
-            }
+              //----------------------  l e g e n d   ----------------------------
+              $db->sql = "SELECT * FROM $dbpt ORDER BY tr_order";
+              $db->exec();
+              $point_types = array();
+              while ($pts = $db->fetch()) {
+              $point_types[] = $pts;
+              }
 
-            //--------------------  s t a t i s t i c s  -----------------------
-            $hash = $this->getUserHash();
-            $db->sql = "INSERT INTO $dbsc (sc_citypage_id, sc_date, sc_hash) VALUES ('{$row['pc_id']}', now(), '$hash')
-                        ON DUPLICATE KEY UPDATE sc_date = now()";
-            $db->exec();
+              //--------------------  s t a t i s t i c s  -----------------------
+              $hash = $this->getUserHash();
+              $db->sql = "INSERT INTO $dbsc (sc_citypage_id, sc_date, sc_hash) VALUES ('{$row['pc_id']}', now(), '$hash')
+              ON DUPLICATE KEY UPDATE sc_date = now()";
+              $db->exec();
 
-            //---------------------  m e t a   k e y s   -----------------------
-            $this->addTitle("Карта достопримечательностей {$row['pc_inwheretext']}");
-            if ($row['pc_description'])
-                $this->addDescription($row['pc_description']);
-            $this->addDescription('Карта и схема расположения достопримечательностей ' . $row['pc_inwheretext']);
-            if ($row['pc_keywords'])
-                $this->addKeywords($row['pc_keywords']);
-            $this->addKeywords('достопримечательности ' . $row['pc_inwheretext']);
-            $this->addKeywords('Координаты GPS');
-            $this->addKeywords($row['pc_title_translit']);
-            if ($row['pc_title_english'] && $row['pc_title_english'] != $row['pc_title_translit'])
-                $this->addKeywords($row['pc_title_english']);
-            if ($row['pc_title_synonym'])
-                $this->addKeywords($row['pc_title_synonym']);
-            $this->addKeywords('карта');
-            $this->addKeywords('схема');
+              //---------------------  m e t a   k e y s   -----------------------
+              $this->addTitle("Карта достопримечательностей {$row['pc_inwheretext']}");
+              if ($row['pc_description'])
+              $this->addDescription($row['pc_description']);
+              $this->addDescription('Карта и схема расположения достопримечательностей ' . $row['pc_inwheretext']);
+              if ($row['pc_keywords'])
+              $this->addKeywords($row['pc_keywords']);
+              $this->addKeywords('достопримечательности ' . $row['pc_inwheretext']);
+              $this->addKeywords('Координаты GPS');
+              $this->addKeywords($row['pc_title_translit']);
+              if ($row['pc_title_english'] && $row['pc_title_english'] != $row['pc_title_translit'])
+              $this->addKeywords($row['pc_title_english']);
+              if ($row['pc_title_synonym'])
+              $this->addKeywords($row['pc_title_synonym']);
+              $this->addKeywords('карта');
+              $this->addKeywords('схема');
 
-            $this->isCounters = 1;
-            $this->getCounters();
+              $this->isCounters = 1;
+              $this->getCounters();
+             */
         }
         $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
         $smarty->assign('city', $row);
