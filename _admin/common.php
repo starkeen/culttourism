@@ -15,11 +15,14 @@ $ticket = new Auth($db);
 $ticket->checkSession('admin');
 
 $script = explode('/', $_SERVER['PHP_SELF']);
+$requesturi = isset($_SERVER['REQUEST_URI']) ? urlencode(array_pop(explode('/', $_SERVER['REQUEST_URI']))) : '';
 
 if (isset($_SESSION['auth']) && $ticket->checkKey($_SESSION['auth']))
     $ticket->refreshKey($_SESSION['auth']);
-elseif (!in_array('login.php', $script))
-    header('Location: login.php');
+elseif (!in_array('login.php', $script)) {
+    header("Location: login.php?r=$requesturi");
+    exit();
+}
 
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
