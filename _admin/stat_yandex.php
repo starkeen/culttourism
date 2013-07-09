@@ -120,7 +120,8 @@ while ($row = $db->fetch()) {
 }
 
 
-$db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name, ws_city_id, ws_weight
+$db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name,
+                ws_city_id, ws_weight, ws.ws_weight_date
             FROM $dbws ws
                 LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
                 LEFT JOIN $dbrc rc ON rc.id = ws.ws_city_id
@@ -137,7 +138,7 @@ while ($row = $db->fetch()) {
 }
 
 $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name,
-                pc.pc_add_date,
+                pc.pc_add_date, ws.ws_weight_date, ws.ws_position_date,
                 ws_city_id, ws_weight, ws_position,
                 100*ROUND(ws_weight/100) AS weight_x100,
                 10*ROUND(ws_weight/10) AS weight_x10,

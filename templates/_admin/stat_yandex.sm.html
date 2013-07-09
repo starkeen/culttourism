@@ -66,7 +66,7 @@
                         <a href="/city/add/?cityname={$item.city_name}">{$item.city_name}</a>
                         <a href="http://wordstat.yandex.ru/?cmd=words&page=1&t={$item.city_name}+достопримечательности&geo=&text_geo="><img src="/img/new-window.png" /></a>
                     </td>
-                    <td align="center">{$item.ws_weight}</td>
+                    <td align="center" title="{$item.ws_weight_date}">{$item.ws_weight}</td>
                     <td align="center">
                         <form method="post">
                             <input type="hidden" name="town_id" value="{$item.ws_city_id}" />
@@ -100,10 +100,10 @@
                     <td>{$item.region_name}</td>
                     <td>{$item.city_name}</td>
                     <td align="center">{$item.pc_add_date|date_format:"%d.%m.%Y"}</td>
-                    <td align="center">
+                    <td align="center" title="{$item.ws_weight_date}">
                         <a href="http://wordstat.yandex.ru/?cmd=words&page=1&t={$item.city_name}+достопримечательности&geo=&text_geo=">{$item.ws_weight}</a>
                     </td>
-                    <td align="center">
+                    <td align="center" title="{$item.ws_position_date}">
                         <a href="http://yandex.ru/yandsearch?text={$item.city_name}+достопримечательности&lr=213">{$item.ws_position}</a>
                     </td>
                 </tr>
