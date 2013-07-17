@@ -152,7 +152,7 @@ $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS coun
             WHERE ws_weight > 0
                 AND pc_id IS NOT NULL
                 AND ws_position IS NOT NULL
-                AND (ws_position > 8 OR ws_position = 0)
+                AND (ws_position > 10 OR ws_position = 0)
             GROUP BY ws_city_id
             ORDER BY weight_x100 DESC, weight_x10 DESC, position_x DESC
             LIMIT 50";
