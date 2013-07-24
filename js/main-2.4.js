@@ -539,22 +539,21 @@ $(document).ready(function() {
 
 //======================= FUNCTIONS ==============================================
 function showWindByURL(url, get) {
-    /*функция показа модального окна с контентом по URL*/
-    $(document).css("cursor", "progress");
+    //*функция показа модального окна с контентом по URL*/
+    var xdata = '<div style="text-align:center;height:200px;padding-top:100px;color:#5478E4"><img src="/img/preloader/horizontal.gif" /><br/>загрузка</div>';
+    $.modal(xdata, {
+        overlayClose: true,
+        opacity: 80,
+        width: 600,
+        height: 200,
+        overlayCss: {
+            backgroundColor: "#ddd"
+        }
+    });
     $.get(url, get, function(data) {
-        $.modal(data, {
-            overlayClose: true,
-            opacity: 80,
-            width: 600,
-            height: 200,
-            overlayCss: {
-                backgroundColor: "#ddd"
-            }
-        });
-        console.log($("#object_container h2").position().top + $("#object_container h2").height());
+        $("#simplemodal-data").html(data);
         $("#object_text_container").css("bottom", $("#object_additional").height()).css("top", 2.7 * ($("#object_container h2").position().top + $("#object_container h2").height()));
     });
-    $(document).css("cursor", "default");
 }
 
 function showMap(c_lat, c_lon, c_zoom, f_point) {
