@@ -40,14 +40,20 @@ foreach ($sourses as $sourse) {
 
 function rss_to_array($tag, $array, $url) {
     $doc = new DOMdocument();
-    $doc->load($url);
     $rss_array = array();
     $items = array();
-    foreach ($doc->getElementsByTagName($tag) AS $node) {
-        foreach ($array AS $key => $value) {
-            $items[$value] = $node->getElementsByTagName($value)->item(0)->nodeValue;
+    try {
+        if (!@$doc->load($url)) {
+            throw new Exception("HTTP error [$url]");
         }
-        array_push($rss_array, $items);
+        foreach ($doc->getElementsByTagName($tag) AS $node) {
+            foreach ($array AS $key => $value) {
+                $items[$value] = $node->getElementsByTagName($value)->item(0)->nodeValue;
+            }
+            array_push($rss_array, $items);
+        }
+    } catch (Exception $e) {
+        echo 'Ошибка: ', $e->getMessage(), "\n";
     }
     return $rss_array;
 }
