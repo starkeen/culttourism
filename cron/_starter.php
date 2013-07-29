@@ -6,6 +6,7 @@ header('Content-Type: text/html; charset=utf-8');
 require_once('/home/s/starkeen/culttourism.ru/public_html/config/configuration.php');
 require_once(_DIR_ROOT . '/includes/class.myDB.php');
 require_once(_DIR_ROOT . '/includes/class.mySmarty.php');
+require_once(_DIR_ROOT . '/includes/class.Logging.php');
 require_once(_DIR_ROOT . '/includes/debug.php');
 
 $db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
