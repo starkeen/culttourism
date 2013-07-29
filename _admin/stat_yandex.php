@@ -17,7 +17,7 @@ if (isset($_POST) && !empty($_POST)) {
         $db->sql = "INSERT INTO $dbws (ws_city_id, ws_city_title, ws_rep_id, ws_weight, ws_position, ws_position_date)
                         (SELECT id, name, 0, -1, null, null
                          FROM $dbrc rc
-                         WHERE rc.country_id IN (3159, 9908, 248))";
+                         WHERE rc.country_id IN (3159, 9908, 248, 1280))";
         $db->exec();
     }
     if (isset($_POST['do_reload_stat'])) {
