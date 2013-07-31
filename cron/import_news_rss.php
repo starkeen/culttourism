@@ -53,7 +53,8 @@ function rss_to_array($tag, $array, $url) {
             array_push($rss_array, $items);
         }
     } catch (Exception $e) {
-        echo 'Ошибка: ', $e->getMessage(), "\n";
+        //echo 'Ошибка: ', $e->getMessage(), "\n";
+        Logging::addHistory('cron', 'Ошибка получения новостей', $e->getMessage());
     }
     return $rss_array;
 }
