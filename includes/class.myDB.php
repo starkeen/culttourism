@@ -22,15 +22,15 @@ class MyDB {
     public function __construct($db_host, $db_user, $db_pwd, $db_base, $db_prefix = null) {
         if (myDB::$instances === 0) {
             try {
-                $this->link = mysql_connect($db_host, $db_user, $db_pwd);
+                $this->link = @mysql_connect($db_host, $db_user, $db_pwd);
                 if ($this->link) {
                     try {
-                        if (!mysql_select_db($db_base, $this->link)) {
+                        if (!@mysql_select_db($db_base, $this->link)) {
                             throw new Exception('Нет доступа к указанной БД');
                             $this->link = null;
                             return $this;
                         } else {
-                            mysql_query("/*!40101 SET NAMES 'utf8' */");
+                            @mysql_query("/*!40101 SET NAMES 'utf8' */");
                             $this->prefix = $db_prefix;
                             MyDB::$instances = 1;
                         }
