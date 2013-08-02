@@ -21,19 +21,30 @@ class MyDB {
 
     public function __construct($db_host, $db_user, $db_pwd, $db_base, $db_prefix = null) {
         if (myDB::$instances === 0) {
-            $this->link = @mysql_connect($db_host, $db_user, $db_pwd);
-            if ($this->link) {
-                if (!@mysql_select_db($db_base, $this->link)) {
-                    $this->link = null;
+            try {
+                $this->link = mysql_connect($db_host, $db_user, $db_pwd);
+                if ($this->link) {
+                    try {
+                        if (!mysql_select_db($db_base, $this->link)) {
+                            throw new Exception('Нет доступа к указанной БД');
+                            $this->link = null;
+                            return $this;
+                        } else {
+                            mysql_query("/*!40101 SET NAMES 'utf8' */");
+                            $this->prefix = $db_prefix;
+                            MyDB::$instances = 1;
+                        }
+                    } catch (Exception $e) {
+                        //echo 'Выброшено исключение: ', $e->getMessage(), "\n";
+                    }
+                } else {
+                    throw new Exception('Нет связи с сервером БД');
                     return $this;
                 }
-                @mysql_query("/*!40101 SET NAMES 'utf8' */");
-                $this->prefix = $db_prefix;
-                MyDB::$instances = 1;
-            } else {
-                return $this;
+                //$this->timer_start = microtime(true);
+            } catch (Exception $e) {
+                //echo 'Выброшено исключение: ', $e->getMessage(), "\n";
             }
-            //$this->timer_start = microtime(true);
         } else {
             return $this;
         }
