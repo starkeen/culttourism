@@ -97,7 +97,7 @@ if ($new_reps_cnt > 0) {
             $db->sql = "UPDATE $dbws SET ws_rep_id = '$res_id' WHERE ws_id IN (" . implode(', ', $_ids) . ")";
             $db->exec();
         } else {
-            echo "Error1:\n";
+            echo "Error1 (invalid sert?):\n";
             print_r($res);
         }
     }
