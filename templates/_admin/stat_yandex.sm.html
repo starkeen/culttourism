@@ -101,7 +101,7 @@
                     <td>{$item.city_name}</td>
                     <td align="center">{$item.pc_add_date|date_format:"%d.%m.%Y"}</td>
                     <td align="center" title="{$item.ws_weight_date}">
-                        <a href="http://wordstat.yandex.ru/?cmd=words&page=1&t={$item.city_name}+достопримечательности&geo=&text_geo=">{$item.ws_weight}</a>
+                        <a href="http://wordstat.yandex.ru/#!/?words={$item.city_name} достопримечательности">{$item.ws_weight}</a>
                     </td>
                     <td align="center" title="{$item.ws_position_date}">
                         <a href="http://yandex.ru/yandsearch?text={$item.city_name}+достопримечательности&lr=213">{$item.ws_position}</a>
