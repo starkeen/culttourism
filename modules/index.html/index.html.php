@@ -30,7 +30,7 @@ class Page extends PageCommon {
         while ($row = $db->fetch()) {
             $matches = array();
             preg_match_all($patern, $row['br_text'], $matches);
-            $row['br_text'] = $matches[0][0];
+            $row['br_text'] = strip_tags($matches[0][0], '<p><a>');
             $blogentries[$row['br_id']] = $row;
             if ($row['last_update'] > $this->lastedit_timestamp)
                 $this->lastedit_timestamp = $row['last_update'];
