@@ -13,6 +13,9 @@ class Page extends PageCommon {
         $dbns = $db->getTableName('news_sourses');
         $dbni = $db->getTableName('news_items');
 
+        $limit_blogs = intval($this->globalsettings['index_cnt_blogs']);
+        $limit_news = intval($this->globalsettings['index_cnt_news']);
+
         $db->sql = "SELECT bg.*, us.us_name,
                            UNIX_TIMESTAMP(bg.br_date) AS last_update,
                            DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month,
@@ -23,7 +26,7 @@ class Page extends PageCommon {
                         LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
                     WHERE bg.br_date < now()
                     ORDER BY bg.br_date DESC
-                    LIMIT 5";
+                    LIMIT $limit_blogs";
         $db->exec();
         $blogentries = array();
         $patern = "/(.*?)<\/p>/i";
@@ -32,8 +35,9 @@ class Page extends PageCommon {
             preg_match_all($patern, $row['br_text'], $matches);
             $row['br_text'] = strip_tags($matches[0][0], '<p><a>');
             $blogentries[$row['br_id']] = $row;
-            if ($row['last_update'] > $this->lastedit_timestamp)
+            if ($row['last_update'] > $this->lastedit_timestamp) {
                 $this->lastedit_timestamp = $row['last_update'];
+            }
         }
 
         $db->sql = "SELECT *,
@@ -44,7 +48,7 @@ class Page extends PageCommon {
                     WHERE ni.ni_active = 1
                     GROUP BY ni_title
                     ORDER BY ni_pubdate DESC
-                    LIMIT 5";
+                    LIMIT $limit_news";
         $db->exec();
         $agrnewsentries = array();
         while ($row = $db->fetch()) {
@@ -53,8 +57,9 @@ class Page extends PageCommon {
             $sourse_url = parse_url($row['ns_web']);
             $row['ns_host'] = $sourse_url['host'];
             $agrnewsentries[] = $row;
-            if ($row['last_update'] > $this->lastedit_timestamp)
+            if ($row['last_update'] > $this->lastedit_timestamp) {
                 $this->lastedit_timestamp = $row['last_update'];
+            }
         }
 
         $smarty->assign('hello_text', $this->content);
