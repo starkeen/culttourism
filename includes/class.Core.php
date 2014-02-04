@@ -60,9 +60,10 @@ abstract class Core {
         $dbm = $this->db->getTableName('modules');
         $dbs = $this->db->getTableName('siteprorerties');
         $db->sql = "SELECT sp_name, sp_value FROM $dbs";
-        $res = $db->exec();
-        while ($row = $db->fetch())
+        $db->exec();
+        while ($row = $db->fetch()) {
             $this->globalsettings[$row['sp_name']] = $row['sp_value'];
+        }
 
         $db->sql = "SELECT dbm.*,
                         DATE_FORMAT(dbm.md_lastedit,'%a, %d %b %Y %H:%i:%s GMT') AS md_timestamp,
@@ -74,12 +75,14 @@ abstract class Core {
         $this->basepath = _URL_ROOT;
         while ($row = mysql_fetch_assoc($res)) {
             if ($row['md_url'] == $mod_id) {
-                if ($row['md_redirect'] !== null)
+                if ($row['md_redirect'] !== null) {
                     $this->getError('301', $row['md_redirect']);
+                }
                 $this->url = $row['md_url'];
                 $this->title = $this->globalsettings['default_pagetitle'];
-                if ($row['md_title'])
+                if ($row['md_title']) {
                     $this->addTitle($row['md_title']);
+                }
                 $this->h1 = $row['md_title'];
                 $this->keywords = $this->globalsettings['default_pagekeywords'];
                 $this->addKeywords($row['md_keywords']);
@@ -98,8 +101,9 @@ abstract class Core {
                 $this->expiredate = $row['md_expiredate'];
                 $this->getCounters();
 
-                if (isset($_SESSION['user']))
+                if (isset($_SESSION['user'])) {
                     $this->user['object'] = $_SESSION['user'];
+                }
                 if (isset($_SESSION['user_name'])) {
                     $this->user['username'] = $_SESSION['user_name'];
                     $this->user['userid'] = $_SESSION['user_id'];
@@ -107,10 +111,11 @@ abstract class Core {
                 break;
             }
         }
-        if (!$this->url)
+        if (!$this->url) {
             return FALSE;
-        else
+        } else {
             return TRUE;
+        }
     }
 
     public function getCounters() {
@@ -129,9 +134,11 @@ abstract class Core {
         if ($err_code != '301') {
             $css_dir = scandir(_DIR_ROOT . '/css', true);
             $_css_files = array();
-            foreach ($css_dir as $css_file)
-                if (substr($css_file, 0, 6) == 'common')
+            foreach ($css_dir as $css_file) {
+                if (substr($css_file, 0, 6) == 'common') {
                     $_css_files[] = $css_file;
+                }
+            }
             $this->globalsettings['mainfile_css'] = $_css_files[0];
             $this->globalsettings['mainfile_js'] = '';
             $this->globalsettings['key_yandexmaps'] = '';
@@ -143,8 +150,9 @@ abstract class Core {
             $this->basepath = _URL_ROOT;
             $this->mainfile_css = $this->globalsettings['mainfile_css'];
             $smarty = $err_data;
-            if (!$smarty)
+            if (!$smarty) {
                 global $smarty;
+            }
             $smarty->assign('page', $this);
             $smarty->assign('debug_info', '');
         }
@@ -192,12 +200,13 @@ abstract class Core {
                 }
                 break;
         }
-        if ($this->module_id == 'api')
+        if ($this->module_id == 'api') {
             $smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
-        elseif ($this->module_id == 'ajax')
+        } elseif ($this->module_id == 'ajax') {
             $smarty->display(_DIR_TEMPLATES . '/_main/empty.sm.html');
-        else
+        } else {
             $smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
+        }
         exit();
     }
 
