@@ -91,19 +91,7 @@ class Auth {
                     $this->db->exec();
                     $this->db->sql = "UPDATE $dba SET au_us_id = '{$row['us_id']}' WHERE au_key = '$this->key'";
                     $this->db->exec();
-                    /*
-                      $this->getKey();
-                      $session = session_id();
-                      $host = @$_SERVER['REMOTE_HOST'];
-                      $ip = $_SERVER['REMOTE_ADDR'];
-                      $last_act_script = $_SERVER['REQUEST_URI'];
-                      $browser = $_SERVER['HTTP_USER_AGENT'];
-                      $db->sql = "INSERT INTO $dba
-                      (au_us_id, au_key, au_date_login, au_date_last_act, au_date_expire, au_host, au_browser, au_last_act, au_ip, au_session)
-                      VALUES
-                      ('{$row['us_id']}', '$this->key', now(), now(), DATE_ADD(now(),INTERVAL " . _AUTH_EXPIRE_HOURS . " HOUR), '$host', '$browser', '$last_act_script', '$ip', '$session')";
-                      $db->exec();
-                     */
+
                     $this->user_id = $row['us_id'];
                     $this->username = $row['us_name'];
                     $_SESSION['user_id'] = $row['us_id'];
@@ -129,19 +117,6 @@ class Auth {
                     $this->db->exec();
                     $this->db->sql = "UPDATE $dba SET au_us_id = '{$row['us_id']}' WHERE au_key = '$this->key'";
                     $this->db->exec();
-                    /*
-                      $this->key = uniqid();
-                      $session = session_id();
-                      $host = (isset($_SERVER['REMOTE_HOST'])) ? $_SERVER['REMOTE_HOST'] : 'undefined';
-                      $ip = $_SERVER['REMOTE_ADDR'];
-                      $last_act_script = $_SERVER['PHP_SELF'];
-                      $browser = $_SERVER['HTTP_USER_AGENT'];
-                      $db->sql = "INSERT INTO $dba
-                      (au_us_id, au_key, au_date_login, au_date_last_act, au_date_expire, au_host, au_browser, au_last_act, au_ip, au_session)
-                      VALUES
-                      ('{$row['us_id']}', '$this->key', now(), now(), DATE_ADD(now(),INTERVAL " . _AUTH_EXPIRE_HOURS . " HOUR), '$host', '$browser', '$last_act_script', '$ip', '$session')";
-                      $db->exec();
-                     */
                     $this->user_id = $row['us_id'];
                     $this->username = $row['us_name'];
                     $_SESSION['user_id'] = $row['us_id'];
