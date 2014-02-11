@@ -74,6 +74,7 @@ class Auth {
             $this->db->sql = "INSERT INTO $dba
                                 SET au_date_last_act = now(), au_date_login = now(),
                                 au_date_expire = DATE_ADD(now(),INTERVAL $this->key_lifetime_hours SECOND),
+                                au_us_id = '0',
                                 au_last_act = '{$this->meta['uri']}', au_service = '$service', au_browser = '{$this->meta['browser']}', au_ip = '{$this->meta['ip']}',
                                 au_session = '$this->session', au_key = '$this->key'";
             $this->db->exec();
