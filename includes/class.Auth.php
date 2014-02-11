@@ -17,10 +17,11 @@ class Auth {
     private $secretstring = 'И вновь продолжается бой. И гёл. Если очень захотеть, можно в космос полететь, и на Марсе будут яблони цвести';
 
     public function __construct($db = null) {
-        if ($db === null)
+        if ($db === null) {
             $this->db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
-        else
+        } else {
             $this->db = $db;
+        }
         $this->session = session_id();
         $this->getKey();
         $this->meta['uri'] = $this->db->getEscapedString($_SERVER['REQUEST_URI']);
