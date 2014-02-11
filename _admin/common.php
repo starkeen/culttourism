@@ -17,9 +17,9 @@ $ticket->checkSession('admin');
 $script = explode('/', $_SERVER['PHP_SELF']);
 $requesturi = isset($_SERVER['REQUEST_URI']) ? urlencode(array_pop(explode('/', $_SERVER['REQUEST_URI']))) : '';
 
-if (isset($_SESSION['auth']) && $ticket->checkKey($_SESSION['auth']))
+if (isset($_SESSION['auth']) && $ticket->checkKey($_SESSION['auth'])) {
     $ticket->refreshKey($_SESSION['auth']);
-elseif (!in_array('login.php', $script)) {
+} elseif (!in_array('login.php', $script)) {
     header("Location: login.php?r=$requesturi");
     exit();
 }
@@ -31,8 +31,9 @@ header("Pragma: no-cache");
 header("Content-type: text/html; charset=utf-8");
 
 $isAdmin = false;
-if (isset($_SESSION['user_admin']) && $_SESSION['user_admin'] == 1)
+if (isset($_SESSION['user_admin']) && $_SESSION['user_admin'] == 1) {
     $isAdmin = true;
+}
 
 $adm_menu_items[] = array('link' => 'modules.php', 'title' => 'Страницы и модули', 'ico' => 'ico.a_modules.gif');
 $adm_menu_items[] = array('link' => 'blog.php', 'title' => 'Записи в блоге', 'ico' => 'ico.a_modules.gif');
@@ -48,9 +49,10 @@ if ($isAdmin) {
 $smarty = new mySmarty();
 
 $smarty->assign('adm_menu', $adm_menu_items);
-if (isset($_SESSION['user_name']))
+if (isset($_SESSION['user_name'])) {
     $smarty->assign('adm_user', $_SESSION['user_name']);
-else
+} else {
     $smarty->assign('adm_user', '');
+}
 $smarty->assign('site_url', _URL_ROOT);
 ?>
