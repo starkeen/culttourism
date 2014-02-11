@@ -19,8 +19,7 @@ function getGUID() {
 }
 
 function cut_trash_int($data) {
-    $numeric = intval($data);
-    return $numeric;
+    return intval($data);
 }
 
 function cut_trash_string($data) {
