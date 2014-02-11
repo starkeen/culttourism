@@ -16,6 +16,7 @@ $dbru = $db->getTableName('region_url');
 
 $filter = array(
     'oid' => null,
+    'title' => null,
     'country' => null,
     'region' => null,
     'city' => null,
@@ -38,6 +39,9 @@ $refs = array(
 if (isset($_GET['oid']) && intval($_GET['oid']) > 0) {
     $filter['oid'] = intval($_GET['oid']);
 }
+if (isset($_GET['title']) && strlen($_GET['title']) > 0) {
+    $filter['title'] = cut_trash_text($_GET['title']);
+}
 if (isset($_GET['country']) && intval($_GET['country']) > 0) {
     $filter['country'] = intval($_GET['country']);
 }
@@ -46,6 +50,9 @@ if (isset($_GET['region']) && intval($_GET['region']) > 0) {
 }
 if (isset($_GET['city']) && intval($_GET['city']) > 0) {
     $filter['city'] = intval($_GET['city']);
+}
+if (isset($_GET['type']) && intval($_GET['type']) > 0) {
+    $filter['type'] = intval($_GET['type']);
 }
 if (isset($_GET['addr']) && strlen($_GET['addr']) > 0) {
     $filter['addr'] = cut_trash_text($_GET['addr']);
@@ -78,6 +85,9 @@ $db->sql = "SELECT pp.*,
 if ($filter['oid'] > 0) {
     $db->sql .= "AND pp.pt_id = '{$filter['oid']}'\n";
 }
+if ($filter['title'] != '') {
+    $db->sql .= "AND pp.pt_name LIKE '%{$filter['title']}%'\n";
+}
 if ($filter['country'] > 0) {
     $db->sql .= "AND pc.pc_country_id = '{$filter['country']}'\n";
 }
@@ -86,6 +96,9 @@ if ($filter['region'] > 0) {
 }
 if ($filter['city'] > 0) {
     $db->sql .= "AND pc.pc_city_id = '{$filter['city']}'\n";
+}
+if ($filter['type'] > 0) {
+    $db->sql .= "AND pp.pt_type_id = '{$filter['type']}'\n";
 }
 if ($filter['addr'] != '') {
     $db->sql .= "AND pp.pt_adress LIKE '%{$filter['addr']}%'\n";
@@ -97,10 +110,12 @@ if ($filter['web'] != '') {
     $db->sql .= "AND pp.pt_website LIKE '%{$filter['web']}%'\n";
 }
 if ($filter['gps']['lat'] != 0) {
-    $db->sql .= "AND pp.pt_latitude >= '{$filter['gps']['lat']}'\n";
+    $lat_max = floatval(($filter['gps']['lat']) + 0.5);
+    $db->sql .= "AND pp.pt_latitude >= '{$filter['gps']['lat']}' AND pp.pt_latitude < '$lat_max'\n";
 }
 if ($filter['gps']['lon'] != 0) {
-    $db->sql .= "AND pp.pt_longitude >= '{$filter['gps']['lon']}'\n";
+    $lon_max = floatval(($filter['gps']['lon']) + 0.5);
+    $db->sql .= "AND pp.pt_longitude >= '{$filter['gps']['lon']}' AND pp.pt_longitude < '$lon_max'\n";
 }
 $db->exec();
 while ($row = $db->fetch()) {

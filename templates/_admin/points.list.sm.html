@@ -8,6 +8,8 @@
             <tr>
                 <td>ID</td>
                 <td><input type="text" name="oid" value="{$filter.oid}" style="width: 30px;" /></td>
+                <td>Название</td>
+                <td><input type="text" name="title" value="{$filter.title}" style="width: 200px;" /></td>
                 <td>Страна</td>
                 <td>
                     <select name="country" onchange="form.submit();">
@@ -35,6 +37,8 @@
                         {/foreach}
                     </select>
                 </td>
+            </tr>
+            <tr>
                 <td>Тип</td>
                 <td>
                     <select name="type" onchange="form.submit();">
@@ -44,8 +48,6 @@
                         {/foreach}
                     </select>
                 </td>
-            </tr>
-            <tr>
                 <td>Адрес</td>
                 <td><input type="text" name="addr" value="{$filter.addr}" style="width: 200px;" /></td>
                 <td>Телефон</td>
