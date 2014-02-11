@@ -13,6 +13,7 @@ if (isset($_GET['out'])) {
     unset($_SESSION['user_admin']);
     unset($_SESSION['user_id']);
     header('Location: login.php');
+    exit();
 }
 
 if (isset($_POST) && !empty($_POST)) {
@@ -23,6 +24,7 @@ if (isset($_POST) && !empty($_POST)) {
     if ($ticket->checkPassword($login, $pwd)) {
         $_SESSION['auth'] = $ticket->key;
         header("Location: $retpath");
+        exit();
     } else {
         $error = 'Авторизация не удалась. Попробуйте еще раз';
     }

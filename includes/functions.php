@@ -19,9 +19,6 @@ function getGUID() {
 }
 
 function cut_trash_int($data) {
-    $data = ereg_replace("[[:space:]]", "", $data);
-    $data = ereg_replace("[[:punct:]]", "", $data);
-    $data = ereg_replace("[[:alpha:]]", "", $data);
     $numeric = intval($data);
     return $numeric;
 }
@@ -32,8 +29,6 @@ function cut_trash_string($data) {
 }
 
 function cut_trash_word($data) {
-    $data = ereg_replace("[[:space:]]", "", $data);
-    $data = ereg_replace("[[:punct:]]", "", $data);
     $string = (string) $data;
     return trim($string);
 }
@@ -49,7 +44,7 @@ function cut_trash_html($data) {
 }
 
 function cut_trash_float($data) {
-    $text = trim($data);
+    $text = str_replace(',', '.', trim($data));
     return floatval($text);
 }
 
@@ -61,16 +56,18 @@ function normSQLdate($dateSQL) {
 function transSQLdate($date) {
     //приводит дату к виду "2008-02-15" из нормального
     list($d, $m, $y) = explode('.', $date);
-    if (strlen($y) == 2)
+    if (strlen($y) == 2) {
         $y = "20$y";
+    }
     return "$y-$m-$d";
 }
 
 function substr_x($str, $start, $length = null, $encoding = null) {
-    if (function_exists(mb_substr))
+    if (function_exists(mb_substr)) {
         return mb_substr($str, $start, $length, $encoding);
-    else
+    } else {
         return substr($str, $start, $length);
+    }
 }
 
 function translit($word, $space = ' ') {
