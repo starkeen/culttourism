@@ -21,39 +21,53 @@ class MyDB {
 
     public function __construct($db_host, $db_user, $db_pwd, $db_base, $db_prefix = null) {
         if (myDB::$instances === 0) {
-            $this->link = @mysql_connect($db_host, $db_user, $db_pwd);
-            if ($this->link) {
-                if (!@mysql_select_db($db_base, $this->link)) {
-                    $this->link = null;
+            try {
+                $this->link = mysql_connect($db_host, $db_user, $db_pwd);
+                if ($this->link) {
+                    try {
+                        if (!mysql_select_db($db_base, $this->link)) {
+                            throw new Exception('Нет доступа к указанной БД');
+                            $this->link = null;
+                            return $this;
+                        } else {
+                            mysql_query("/*!40101 SET NAMES 'utf8' */");
+                            $this->prefix = $db_prefix;
+                            MyDB::$instances = 1;
+                        }
+                    } catch (Exception $e) {
+                        //echo 'Выброшено исключение: ', $e->getMessage(), "\n";
+                    }
+                } else {
+                    throw new Exception('Нет связи с сервером БД');
                     return $this;
                 }
-                @mysql_query("/*!40101 SET NAMES 'utf8' */");
-                $this->prefix = $db_prefix;
-                MyDB::$instances = 1;
-            } else {
-                return $this;
+                //$this->timer_start = microtime(true);
+            } catch (Exception $e) {
+                //echo 'Выброшено исключение: ', $e->getMessage(), "\n";
             }
-            //$this->timer_start = microtime(true);
         } else {
             return $this;
         }
     }
 
     public function getTableName($alias) {
-        if ($this->prefix === null)
+        if ($this->prefix === null) {
             return '`' . $alias . '`';
-        else
+        } else {
             return '`' . $this->prefix . '_' . $alias . '`';
+        }
     }
 
     public function exec($sql = null) {
         $this->timer_start = microtime(true);
-        if ($sql !== null)
+        if ($sql !== null) {
             $this->sql = $sql;
-        if (_ER_REPORT)
+        }
+        if (_ER_REPORT) {
             $this->res = mysql_query($this->sql) or die(mysql_error() . ' # ' . $this->sql);
-        else
+        } else {
             $this->res = mysql_query($this->sql);
+        }
         $this->last_inserted_id = mysql_insert_id($this->link);
         $this->affected_rows = mysql_affected_rows($this->link);
         $this->cnt_queries++;
@@ -63,12 +77,14 @@ class MyDB {
     }
 
     public function fetch($res = null) {
-        if ($res)
+        if ($res) {
             $this->res = $res;
-        if (_ER_REPORT)
+        }
+        if (_ER_REPORT) {
             return mysql_fetch_assoc($this->res) or die(mysql_error() . ' # ' . $this->sql);
-        else
+        } else {
             return mysql_fetch_assoc($this->res);
+        }
     }
 
     public function getLastInserted() {
@@ -84,10 +100,11 @@ class MyDB {
     }
 
     public function showSQL($sql = null) {
-        if ($sql !== null)
+        if ($sql !== null) {
             $nsql = $sql;
-        else
+        } else {
             $nsql = $this->sql . '';
+        }
         $colors = array('SELECT' => 'green', 'FROM' => 'green', 'WHERE' => 'green', 'AND' => 'green',
             'ORDER BY' => 'blue', 'GROUP BY' => 'green',
             'LIKE' => 'yellow', 'JOIN' => 'yellow', 'LEFT' => 'yellow',
