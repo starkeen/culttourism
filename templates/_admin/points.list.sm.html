@@ -1,13 +1,105 @@
 <img class="pageicon" src="/img/admin/ico.a_refs.gif" />
 <h3>{$title}</h3>
 
-<table style="background-color:teal; margin:10px;" cellpadding="3" cellspacing="1">
+<fieldset>
+    <legend>Фильтр</legend>
+    <form method="get">
+        <table style="margin:0 auto; font-size: 80%;">
+            <tr>
+                <td>ID</td>
+                <td><input type="text" name="oid" value="{$filter.oid}" style="width: 30px;" /></td>
+                <td>Страна</td>
+                <td>
+                    <select name="country" onchange="form.submit();">
+                        <option value="-1">-- все --</option>
+                        {foreach from=$refs.countries item=opt}
+                        <option value="{$opt.id}" {if $opt.id == $filter.country}selected{/if}>{$opt.title}</option>
+                        {/foreach}
+                    </select>
+                </td>
+                <td>Регион</td>
+                <td>
+                    <select name="region" onchange="form.submit();">
+                        <option value="-1">-- все --</option>
+                        {foreach from=$refs.regions item=opt}
+                        <option value="{$opt.id}" {if $opt.id == $filter.region}selected{/if}>{$opt.title}</option>
+                        {/foreach}
+                    </select>
+                </td>
+                <td>Город</td>
+                <td>
+                    <select name="city" onchange="form.submit();">
+                        <option value="-1">-- все --</option>
+                        {foreach from=$refs.cities item=opt}
+                        <option value="{$opt.id}" {if $opt.id == $filter.city}selected{/if}>{$opt.title}</option>
+                        {/foreach}
+                    </select>
+                </td>
+                <td>Тип</td>
+                <td>
+                    <select name="type" onchange="form.submit();">
+                        <option value="-1">-- все --</option>
+                        {foreach from=$refs.types item=opt}
+                        <option value="{$opt.id}" {if $opt.id == $filter.type}selected{/if}>{$opt.title}</option>
+                        {/foreach}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Адрес</td>
+                <td><input type="text" name="addr" value="{$filter.addr}" style="width: 200px;" /></td>
+                <td>Телефон</td>
+                <td><input type="text" name="phone" value="{$filter.phone}" style="width: 100px;" /></td>
+                <td>Web</td>
+                <td><input type="text" name="web" value="{$filter.web}" style="width: 100px;" /></td>
+                <td>GPS</td>
+                <td>
+                    N<input type="text" name="gps_lat" value="{$filter.gps.lat}" style="width: 80px;" />
+                    E<input type="text" name="gps_lon" value="{$filter.gps.lon}" style="width: 80px;" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="10" style="text-align: center;">
+                    <input type="submit" value="Искать" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</fieldset>
+
+<p>В выборке: {$points_cnt}</p>
+
+{$pager}
+<table style="background-color:teal; margin:10px auto; font-size: 80%;" cellpadding="3" cellspacing="1">
     <tr style="background-color:#DCDCDC;">
         <th>ID</th>
         <th>Страна</th>
         <th>Регион</th>
         <th>Город</th>
-        <th>Запросы</th>
         <th>&nbsp;</th>
+        <th>Название</th>
+        <th>Адрес</th>
+        <th>Телефон</th>
+        <th>Web</th>
+        <th>GPS</th>
     </tr>
+    {foreach from = $points item=point}
+    <tr style="background-color:#fff;">
+        <td style="text-align: center;"><a href="{$point.url}/object{$point.pt_id}.html" target="_blank">{$point.pt_id}</a></td>
+        <td>{$point.country_name}</td>
+        <td>{$point.region_name}</td>
+        <td><a href="{$point.url}/" target="_blank">{$point.pc_title}</a></td>
+        <td><img src="/img/points/x16/{$point.tp_icon}"></td>
+        <td>{$point.pt_name}</td>
+        <td>{$point.pt_adress}</td>
+        <td>{$point.pt_phone}</td>
+        <td>{$point.pt_website}</td>
+        <td style="font-size:80%;">
+            <a href="http://toolserver.org/~geohack/geohack.php?language=ru&params={$point.pt_latitude}_N_{$point.pt_longitude}_E" target="_blank">
+                {$point.pt_latitude}<br>{$point.pt_longitude}
+            </a>
+        </td>
+    </tr>
+    {/foreach}
 </table>
+{$pager}
