@@ -1,6 +1,8 @@
 <?php
 
 error_reporting(E_ALL);
+ini_set("display_errors", "On");
+ini_set("memory_limit", "512M");
 session_start();
 /* Общие функции и опции */
 require_once('../config/configuration.php');

@@ -163,6 +163,7 @@ if ($filter['gps']['lon'] != 0) {
     $lon_max = floatval(($filter['gps']['lon']) + 0.5);
     $db->sql .= "AND pp.pt_longitude >= '{$filter['gps']['lon']}' AND pp.pt_longitude < '$lon_max'\n";
 }
+$db->sql .= "LIMIT 10000";
 $db->exec();
 while ($row = $db->fetch()) {
     $points[] = $row;
