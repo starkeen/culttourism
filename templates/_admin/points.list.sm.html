@@ -90,11 +90,13 @@
         <td style="text-align: center;"><a href="{$point.url}/object{$point.pt_id}.html" target="_blank">{$point.pt_id}</a></td>
         <td>{$point.country_name}</td>
         <td>{$point.region_name}</td>
-        <td><a href="{$point.url}/" target="_blank">{$point.pc_title}</a></td>
         <td>
+            <a href="{$point.url}/" target="_blank" id="points-pctitle-{$point.pt_id}">{$point.pc_title}</a>
+        </td>
+        <td style="text-align: center;">
             <input type="button" class="points-moveto" data-oid="{$point.pt_id}" value=">" title="Переместить" />
         </td>
-        <td><img src="/img/points/x16/{$point.tp_icon}"></td>
+        <td><img src="/img/points/x16/{$point.tp_icon}" alt="" title=""></td>
         <td>
             <a href="#" class="points-editprop" data-prop="pt_name" data-oid="{$point.pt_id}">
                 {$point.pt_name}

@@ -36,6 +36,23 @@ if (isset($_GET['act'])) {
             $data['out'] = $val;
             $data['state'] = true;
             break;
+        case 'getcity':
+            $db->sql = "SELECT pt_citypage_id FROM $dbpp WHERE pt_id = '$oid'";
+            $db->exec();
+            $row = $db->fetch();
+            $citypage = $row['pt_citypage_id'];
+            $data['out'] = array();
+            $db->sql = "SELECT pc_id AS id, pc_title AS title, pc_region_id FROM $dbpc WHERE pc_id = '$citypage'";
+            $db->exec();
+            $row = $db->fetch();
+            $data['out'][] = $row;
+            $db->sql = "SELECT pc_id AS id, pc_title AS title FROM $dbpc WHERE pc_region_id = '{$row['pc_region_id']}' AND pc_id != '$citypage'";
+            $db->exec();
+            while ($row = $db->fetch()) {
+                $data['out'][] = $row;
+            }
+            $data['state'] = true;
+            break;
     }
     header('Content-type: application/json');
     echo json_encode($data);
