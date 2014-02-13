@@ -77,13 +77,13 @@
         <th>ID</th>
         <th>Страна</th>
         <th>Регион</th>
-        <th>Город</th>
-        <th>&nbsp;</th>
+        <th colspan="2">Город</th>
+        <th>Т</th>
         <th>Название</th>
         <th>Адрес</th>
         <th>Телефон</th>
         <th>Web</th>
-        <th>GPS</th>
+        <th colspan="2">GPS</th>
     </tr>
     {foreach from = $points item=point}
     <tr style="background-color:#fff;">
@@ -91,17 +91,79 @@
         <td>{$point.country_name}</td>
         <td>{$point.region_name}</td>
         <td><a href="{$point.url}/" target="_blank">{$point.pc_title}</a></td>
+        <td><input type="button" class="points-moveto" data-oid="{$point.pt_id}" value=">" title="Переместить" /></td>
         <td><img src="/img/points/x16/{$point.tp_icon}"></td>
-        <td>{$point.pt_name}</td>
-        <td>{$point.pt_adress}</td>
-        <td>{$point.pt_phone}</td>
-        <td>{$point.pt_website}</td>
+        <td>
+            <a href="#" class="points-editprop" data-prop="pt_name" data-oid="{$point.pt_id}">
+                {$point.pt_name}
+            </a>
+        </td>
+        <td>
+            <a href="#" class="points-editprop" data-prop="pt_adress" data-oid="{$point.pt_id}">
+                {$point.pt_adress}
+            </a>
+        </td>
+        <td>
+            <a href="#" class="points-editprop" data-prop="pt_phone" data-oid="{$point.pt_id}">
+                {$point.pt_phone}
+            </a>
+        </td>
+        <td>
+            <a href="#" class="points-editprop" data-prop="pt_website" data-oid="{$point.pt_id}">
+                {$point.pt_website}
+            </a>
+            &nbsp;
+            {if $point.pt_website != ''}
+            <a href="{$point.pt_website}" target="_blank">
+                <img src="/img/new-window.png" />
+            </a>
+            {/if}
+        </td>
         <td style="font-size:80%;">
-            <a href="http://toolserver.org/~geohack/geohack.php?language=ru&params={$point.pt_latitude}_N_{$point.pt_longitude}_E" target="_blank">
+            <a href="/map/#center={$point.pt_longitude},{$point.pt_latitude}&zoom=14" target="_blank">
                 {$point.pt_latitude}<br>{$point.pt_longitude}
+            </a>
+        </td>
+        <td>
+            <a href="http://toolserver.org/~geohack/geohack.php?language=ru&params={$point.pt_latitude}_N_{$point.pt_longitude}_E" target="_blank">
+                >>>
             </a>
         </td>
     </tr>
     {/foreach}
 </table>
 {$pager}
+
+<script>
+    $(document).ready(function() {
+        $(".points-moveto").click(function() {
+            var oid = $(this).data("oid");
+            alert(oid);
+            return false;
+        });
+        $(".points-editprop").click(function() {
+            var that = this;
+            var oid = $(that).data("oid");
+            var prop = $(that).data("prop");
+            $.get("points.php", {
+                act: "getprop",
+                oid: oid,
+                prop: prop
+            }, function(data) {
+                if (data.state) {
+                    var newval = prompt('Новое значение:', data.out);
+                    if (newval !== data.out) {
+                        $.post("points.php?act=setprop&oid=" + oid + "&prop=" + prop, {
+                            value: newval
+                        }, function(pdata) {
+                            if (pdata.state) {
+                                $(that).text(pdata.out);
+                            }
+                        });
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>

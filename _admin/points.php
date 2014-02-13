@@ -14,6 +14,34 @@ $dbco = $db->getTableName('ref_country');
 $dbpt = $db->getTableName('ref_pointtypes');
 $dbru = $db->getTableName('region_url');
 
+if (isset($_GET['act'])) {
+    $data = array(
+        'state' => false,
+        'out' => null,
+    );
+    $oid = intval($_GET['oid']);
+    $prop = mysql_real_escape_string($_GET['prop']);
+    switch ($_GET['act']) {
+        case 'getprop':
+            $db->sql = "SELECT $prop FROM $dbpp WHERE pt_id = '$oid'";
+            $db->exec();
+            $row = $db->fetch();
+            $data['out'] = $row[$prop];
+            $data['state'] = true;
+            break;
+        case 'setprop':
+            $val = mysql_real_escape_string($_POST['value']);
+            $db->sql = "UPDATE $dbpp SET $prop = '$val' WHERE pt_id = '$oid'";
+            $db->exec();
+            $data['out'] = $val;
+            $data['state'] = true;
+            break;
+    }
+    header('Content-type: application/json');
+    echo json_encode($data);
+    exit();
+}
+
 $filter = array(
     'oid' => null,
     'title' => null,
