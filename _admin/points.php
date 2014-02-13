@@ -117,7 +117,8 @@ if (isset($_GET['gps_lon']) && strlen($_GET['gps_lon']) > 0) {
 
 $points = array();
 $db->sql = "SELECT pp.*,
-                pt.tp_icon,
+                CHAR_LENGTH(TRIM(pt_description)) AS descr_len,
+                pt.tp_icon, pt.tp_short, pt.tp_name,
                 pc.pc_title, url.url,
                 co.name AS country_name, rr.name AS region_name
             FROM $dbpp pp
