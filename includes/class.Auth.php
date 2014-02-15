@@ -17,10 +17,11 @@ class Auth {
     private $secretstring = 'И вновь продолжается бой. И гёл. Если очень захотеть, можно в космос полететь, и на Марсе будут яблони цвести';
 
     public function __construct($db = null) {
-        if ($db === null)
+        if ($db === null) {
             $this->db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
-        else
+        } else {
             $this->db = $db;
+        }
         $this->session = session_id();
         $this->getKey();
         $this->meta['uri'] = $this->db->getEscapedString($_SERVER['REQUEST_URI']);
@@ -73,6 +74,7 @@ class Auth {
             $this->db->sql = "INSERT INTO $dba
                                 SET au_date_last_act = now(), au_date_login = now(),
                                 au_date_expire = DATE_ADD(now(),INTERVAL $this->key_lifetime_hours SECOND),
+                                au_us_id = '0',
                                 au_last_act = '{$this->meta['uri']}', au_service = '$service', au_browser = '{$this->meta['browser']}', au_ip = '{$this->meta['ip']}',
                                 au_session = '$this->session', au_key = '$this->key'";
             $this->db->exec();
@@ -91,19 +93,7 @@ class Auth {
                     $this->db->exec();
                     $this->db->sql = "UPDATE $dba SET au_us_id = '{$row['us_id']}' WHERE au_key = '$this->key'";
                     $this->db->exec();
-                    /*
-                      $this->getKey();
-                      $session = session_id();
-                      $host = @$_SERVER['REMOTE_HOST'];
-                      $ip = $_SERVER['REMOTE_ADDR'];
-                      $last_act_script = $_SERVER['REQUEST_URI'];
-                      $browser = $_SERVER['HTTP_USER_AGENT'];
-                      $db->sql = "INSERT INTO $dba
-                      (au_us_id, au_key, au_date_login, au_date_last_act, au_date_expire, au_host, au_browser, au_last_act, au_ip, au_session)
-                      VALUES
-                      ('{$row['us_id']}', '$this->key', now(), now(), DATE_ADD(now(),INTERVAL " . _AUTH_EXPIRE_HOURS . " HOUR), '$host', '$browser', '$last_act_script', '$ip', '$session')";
-                      $db->exec();
-                     */
+
                     $this->user_id = $row['us_id'];
                     $this->username = $row['us_name'];
                     $_SESSION['user_id'] = $row['us_id'];
@@ -129,19 +119,6 @@ class Auth {
                     $this->db->exec();
                     $this->db->sql = "UPDATE $dba SET au_us_id = '{$row['us_id']}' WHERE au_key = '$this->key'";
                     $this->db->exec();
-                    /*
-                      $this->key = uniqid();
-                      $session = session_id();
-                      $host = (isset($_SERVER['REMOTE_HOST'])) ? $_SERVER['REMOTE_HOST'] : 'undefined';
-                      $ip = $_SERVER['REMOTE_ADDR'];
-                      $last_act_script = $_SERVER['PHP_SELF'];
-                      $browser = $_SERVER['HTTP_USER_AGENT'];
-                      $db->sql = "INSERT INTO $dba
-                      (au_us_id, au_key, au_date_login, au_date_last_act, au_date_expire, au_host, au_browser, au_last_act, au_ip, au_session)
-                      VALUES
-                      ('{$row['us_id']}', '$this->key', now(), now(), DATE_ADD(now(),INTERVAL " . _AUTH_EXPIRE_HOURS . " HOUR), '$host', '$browser', '$last_act_script', '$ip', '$session')";
-                      $db->exec();
-                     */
                     $this->user_id = $row['us_id'];
                     $this->username = $row['us_name'];
                     $_SESSION['user_id'] = $row['us_id'];
