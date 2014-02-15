@@ -25,14 +25,18 @@ class Page extends PageCommon {
             $error = null;
 
 
-            if (isset($_SESSION['captcha_keystring']) && $fcapt != $_SESSION['captcha_keystring'])
+            if (isset($_SESSION['captcha_keystring']) && $fcapt != $_SESSION['captcha_keystring']) {
                 $error = 'fcapt';
-            if ($ftextcheck != '')
+            }
+            if ($ftextcheck != '') {
                 $error = 'fcapt';
-            if ($ftext == null)
+            }
+            if ($ftext == null) {
                 $error = 'ftext';
-            if ($fname == null)
+            }
+            if ($fname == null) {
                 $error = 'fname';
+            }
 
             $smarty->assign('error', $error);
             $smarty->assign('fname', $fname);
@@ -41,26 +45,26 @@ class Page extends PageCommon {
             unset($_SESSION['captcha_keystring']);
 
             if (!$error) {
-                $fip = $_SERVER['REMOTE_ADDR'];
-                $browser = $_SERVER['HTTP_USER_AGENT'];
+                $xfip = $_SERVER['REMOTE_ADDR'];
+                $xbrowser = $_SERVER['HTTP_USER_AGENT'];
 
                 $dbf = $db->getTableName('feedback');
-                $fname = mysql_real_escape_string($fname);
-                $ftext = mysql_real_escape_string($ftext);
-                $fmail = mysql_real_escape_string($fmail);
-                $referer = mysql_real_escape_string($referer);
+                $xfname = mysql_real_escape_string($fname);
+                $xftext = mysql_real_escape_string($ftext);
+                $xfmail = mysql_real_escape_string($fmail);
+                $xreferer = mysql_real_escape_string($referer);
 
                 $db->sql = "INSERT INTO $dbf
-                            SET fb_date=now(), fb_name = '$fname', fb_text='$ftext',
-                            fb_referer = '$referer',
-                            fb_sendermail='$fmail', fb_ip='$fip', fb_browser='$browser'";
+                            SET fb_date=now(), fb_name = '$xfname', fb_text='$xftext',
+                            fb_referer = '$xreferer',
+                            fb_sendermail='$xfmail', fb_ip='$xfip', fb_browser='$xbrowser'";
 
                 if ($db->exec()) {
                     $smarty->assign('messtext', $ftext);
                     $smarty->assign('messname', $fname);
                     $smarty->assign('messmail', $fmail);
                     $smarty->assign('messdate', date('d.m.Y H:i:s'));
-                    $smarty->assign('messageip', $fip);
+                    $smarty->assign('messageip', $xfip);
                     $smarty->assign('url_root', _URL_ROOT);
                     $smarty->assign('referer', $referer);
                     $mailtext = $smarty->fetch(_DIR_TEMPLATES . '/feedback/mailtome.sm.html');
@@ -69,14 +73,15 @@ class Page extends PageCommon {
                     if (Mailing::sendImmediately($db, _FEEDBACK_MAIL, $mailtext, 'Новое сообщение с сайта ' . _URL_ROOT)) {
                         $_SESSION['feedback_referer'] = null;
                         unset($_SESSION['feedback_referer']);
-                        header('Location: ../');
+                        header('Location: /');
+                        exit();
+                    } else {
+                        header('Location: /feedback/');
+                        exit();
                     }
-                    else
-                        header('Location: ../feedback/');
                 }
             }
-        }
-        else {
+        } else {
             $smarty->assign('error', NULL);
             $smarty->assign('fname', NULL);
             $smarty->assign('ftext', NULL);

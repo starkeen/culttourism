@@ -24,22 +24,22 @@ function cut_trash_int($data) {
 
 function cut_trash_string($data) {
     $string = (string) $data;
-    return trim($string);
+    return htmlentities(trim($string), ENT_QUOTES | ENT_HTML5, "UTF-8");
 }
 
 function cut_trash_word($data) {
     $string = (string) $data;
-    return trim($string);
+    return htmlentities(trim($string), ENT_QUOTES | ENT_HTML5, "UTF-8");
 }
 
 function cut_trash_text($data) {
     $text = trim(strip_tags($data, '<b><i><strong><em>'));
-    return $text;
+    return htmlentities($text, ENT_QUOTES | ENT_HTML5, "UTF-8");
 }
 
 function cut_trash_html($data) {
     $text = trim($data);
-    return (string) $text;
+    return htmlentities($text, ENT_QUOTES | ENT_HTML5, "UTF-8");
 }
 
 function cut_trash_float($data) {

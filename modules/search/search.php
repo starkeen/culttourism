@@ -6,10 +6,12 @@ class Page extends PageCommon {
         list($module_id, $page_id, $id) = $mod;
         global $smarty;
         parent::__construct($db, 'search');
-        if ($page_id == 'suggest' && isset($_GET['query']))
+        if ($page_id == 'suggest' && isset($_GET['query'])) {
             $this->getSuggests($db, $smarty);
-        if ($id)
+        }
+        if ($id) {
             $this->getError('404');
+        }
         $this->content = $this->getSearchYandex($db, $smarty);
     }
 
@@ -44,7 +46,7 @@ class Page extends PageCommon {
     private function getSearchYandex($db, $smarty) {
         $dbsc = $db->getTableName('search_cache');
         if (isset($_GET['q'])) {
-            $query = cut_trash_string(trim($_GET['q']));
+            $query = cut_trash_string(strip_tags($_GET['q']));
 
             $db->sql = "INSERT INTO $dbsc SET
                             sc_date = now(), sc_session = '" . $this->getUserHash() . "', sc_query = '$query', sc_sr_id = null";
@@ -55,7 +57,7 @@ class Page extends PageCommon {
             $result_meta = array();
             $found = 0;
             $result_meta['pages'] = 20;
-            $result_meta['query'] = htmlspecialchars($query);
+            $result_meta['query'] = ($query);
             $result_meta['page'] = array_key_exists('page', $_GET) ? intval($_GET['page']) : 0;
 
             $doc = <<<DOC
@@ -155,9 +157,11 @@ DOC;
                     array('field' => 'c.pc_title_synonym', 'weight' => 60,),
                 );
                 $_where = array();
-                foreach ($_query as $word)
-                    foreach ($fields as $field)
+                foreach ($_query as $word) {
+                    foreach ($fields as $field) {
                         $_where[$field['field']][] = "({$field['field']} LIKE '%$word%')";
+                    }
+                }
 
                 $db->sql = "INSERT INTO $dbsc SET
                             sc_date = now(), sc_session = '" . $this->getUserHash() . "', sc_query = '$q', sc_sr_id = null";
@@ -172,8 +176,9 @@ DOC;
                             FROM $dbc c
                             LEFT JOIN $dbu u ON c.pc_url_id = u.uid
                             WHERE ";
-                foreach ($fields as $field)
+                foreach ($fields as $field) {
                     $_where_x[] = "({$field['field']} LIKE '%$q%')";
+                }
                 $db->sql .= implode(' OR ', $_where_x);
                 $db->sql .= "\n
                             UNION \n\n";
