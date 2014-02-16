@@ -6,18 +6,18 @@ class Page extends PageCommon {
         list($module_id, $page_id, $id) = $mod;
         global $smarty;
         parent::__construct($db, 'search');
-        if ($page_id == 'suggest' && isset($_GET['query'])) {
-            $this->getSuggests($db, $smarty);
-        }
         if ($id) {
             $this->getError('404');
+        }
+        if ($page_id == 'suggest' && isset($_GET['query'])) {
+            $this->getSuggests($db, $smarty);
         }
         $this->content = $this->getSearchYandex($db, $smarty);
     }
 
     private function getSuggests($db, $smarty) {
         $out = array('query' => '', 'suggestions' => array());
-        $out['query'] = cut_trash_string($_GET['query']);
+        $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES | ENT_HTML5, "UTF-8");
 
         $query_add = Helper::getQwerty($out['query']);
 
@@ -46,7 +46,7 @@ class Page extends PageCommon {
     private function getSearchYandex($db, $smarty) {
         $dbsc = $db->getTableName('search_cache');
         if (isset($_GET['q'])) {
-            $query = cut_trash_string(strip_tags($_GET['q']));
+            $query = htmlentities(cut_trash_string(strip_tags($_GET['q'])), ENT_QUOTES | ENT_HTML5, "UTF-8");
 
             $db->sql = "INSERT INTO $dbsc SET
                             sc_date = now(), sc_session = '" . $this->getUserHash() . "', sc_query = '$query', sc_sr_id = null";

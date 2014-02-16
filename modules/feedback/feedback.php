@@ -7,6 +7,7 @@ class Page extends PageCommon {
         if ($page_id == 'getcapt') {
             include(_DIR_ADDONS . '/kcaptcha/kcaptcha.php');
             $captcha = new KCAPTCHA();
+            $_SESSION['captcha_keystring'] = $captcha->getKeyString();
             exit();
         }
         global $smarty;
@@ -24,17 +25,16 @@ class Page extends PageCommon {
             $ftextcheck = cut_trash_text($_POST['ftextcheck']);
             $error = null;
 
-
             if (isset($_SESSION['captcha_keystring']) && $fcapt != $_SESSION['captcha_keystring']) {
                 $error = 'fcapt';
             }
             if ($ftextcheck != '') {
                 $error = 'fcapt';
             }
-            if ($ftext == null) {
+            if ($ftext == '') {
                 $error = 'ftext';
             }
-            if ($fname == null) {
+            if ($fname == '') {
                 $error = 'fname';
             }
 
@@ -44,7 +44,7 @@ class Page extends PageCommon {
             $smarty->assign('fmail', $fmail);
             unset($_SESSION['captcha_keystring']);
 
-            if (!$error) {
+            if ($error == null) {
                 $xfip = $_SERVER['REMOTE_ADDR'];
                 $xbrowser = $_SERVER['HTTP_USER_AGENT'];
 
@@ -58,7 +58,6 @@ class Page extends PageCommon {
                             SET fb_date=now(), fb_name = '$xfname', fb_text='$xftext',
                             fb_referer = '$xreferer',
                             fb_sendermail='$xfmail', fb_ip='$xfip', fb_browser='$xbrowser'";
-
                 if ($db->exec()) {
                     $smarty->assign('messtext', $ftext);
                     $smarty->assign('messname', $fname);
