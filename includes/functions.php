@@ -34,7 +34,7 @@ function cut_trash_word($data) {
 
 function cut_trash_text($data) {
     $text = trim(strip_tags($data));
-    return htmlspecialchars($text, ENT_QUOTES | ENT_HTML5, "UTF-8");
+    return htmlspecialchars($text, ENT_QUOTES, "UTF-8");
 }
 
 function cut_trash_html($data) {
