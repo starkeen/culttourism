@@ -31,6 +31,9 @@ if (isset($_GET['act'])) {
             break;
         case 'setprop':
             $val = mysql_real_escape_string($_POST['value']);
+            if (substr($val, 0, 4) != 'http') {
+                $val = "http://$val";
+            }
             $db->sql = "UPDATE $dbpp SET $prop = '$val' WHERE pt_id = '$oid'";
             $db->exec();
             $data['out'] = $val;
