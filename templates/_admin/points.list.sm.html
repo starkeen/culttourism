@@ -100,28 +100,40 @@
         <td><img src="/img/points/x16/{$point.tp_icon}" alt="{$point.tp_short}" title="{$point.tp_name}"></td>
         <td>
             <a href="#" class="points-editprop" data-prop="pt_name" data-oid="{$point.pt_id}">
-                {$point.pt_name}
+                {if $point.pt_active == 0}<s>{$point.pt_name}</s>{else}{$point.pt_name}{/if}
             </a>
         </td>
-        <td style="text-align: right;">{$point.descr_len}</td>
+        <td style="text-align: right; background-color:{if $point.descr_len < 100}#FF4500{elseif $point.descr_len < 200}#FFA583{elseif $point.descr_len < 500}#FFA583{else}#CCE4CC{/if};">
+            {$point.descr_len}
+        </td>
         <td>
             <a href="#" class="points-editprop" data-prop="pt_adress" data-oid="{$point.pt_id}">
                 {$point.pt_adress}
             </a>
         </td>
         <td>
+            {if $point.pt_phone != ''}
             <a href="#" class="points-editprop" data-prop="pt_phone" data-oid="{$point.pt_id}">
                 {$point.pt_phone}
             </a>
+            {else}
+            <a href="#" class="points-editprop" data-prop="pt_phone" data-oid="{$point.pt_id}">
+                +
+            </a>
+            {/if}
         </td>
         <td>
+            {if $point.pt_website != ''}
             <a href="#" class="points-editprop" data-prop="pt_website" data-oid="{$point.pt_id}">
                 {$point.pt_website}
             </a>
             &nbsp;
-            {if $point.pt_website != ''}
             <a href="{$point.pt_website}" target="_blank">
                 <img src="/img/new-window.png" />
+            </a>
+            {else}
+            <a href="#" class="points-editprop" data-prop="pt_website" data-oid="{$point.pt_id}">
+                +
             </a>
             {/if}
         </td>
