@@ -34,7 +34,7 @@ if (isset($_GET['act'])) {
             if ($prop == 'pt_website' && substr($val, 0, 4) != 'http') {
                 $val = "http://$val";
             }
-            $db->sql = "UPDATE $dbpp SET $prop = '$val' WHERE pt_id = '$oid'";
+            $db->sql = "UPDATE $dbpp SET $prop = '$val', pt_lastup_date = now() WHERE pt_id = '$oid'";
             $db->exec();
             $data['out'] = $val;
             $data['state'] = true;
@@ -166,7 +166,8 @@ if ($filter['gps']['lon'] != 0) {
     $lon_max = floatval(($filter['gps']['lon']) + 0.5);
     $db->sql .= "AND pp.pt_longitude >= '{$filter['gps']['lon']}' AND pp.pt_longitude < '$lon_max'\n";
 }
-$db->sql .= "LIMIT 10000";
+$db->sql .= "ORDER BY pp.pt_create_date
+            LIMIT 10000";
 $db->exec();
 while ($row = $db->fetch()) {
     $points[] = $row;
