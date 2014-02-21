@@ -30,7 +30,7 @@ if (isset($_GET['act'])) {
             $data['state'] = true;
             break;
         case 'setprop':
-            $val = mysql_real_escape_string($_POST['value']);
+            $val = mysql_real_escape_string(trim($_POST['value']));
             if (substr($val, 0, 4) != 'http') {
                 $val = "http://$val";
             }
