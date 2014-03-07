@@ -20,7 +20,7 @@ if (isset($_GET['act'])) {
         'out' => null,
     );
     $oid = intval($_GET['oid']);
-    $prop = mysql_real_escape_string($_GET['prop']);
+    $prop = isset($_GET['prop']) ? mysql_real_escape_string($_GET['prop']) : null;
     switch ($_GET['act']) {
         case 'getprop':
             $db->sql = "SELECT $prop FROM $dbpp WHERE pt_id = '$oid'";
