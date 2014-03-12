@@ -169,26 +169,27 @@ h1, .h1 {
     padding: 4pt 0 0 8pt;
 }
 h2, .h2 {
-    display:block;
+    display: block;
+    clear: both;
+    padding: 2pt 0 2pt 8pt;
+    margin-right: -4px;
     font-size: 16pt;
     font-weight: bold;
     background: #292929;
-    border-top:1px solid #373737;
-    border-bottom:1px solid #373737;
-    color:#bbbbbb;
-    clear:both;
-    padding: 2pt 0 2pt 8pt;
+    border-top: 1px solid #373737;
+    border-bottom: 1px solid #373737;
+    color: #bbbbbb;
 }
 h3 {
     display:block;
+    clear:both;
+    padding: 2pt 0 2pt 8pt;
     font-size: 14pt;
     font-weight: bold;
     background: #a1a1a1;
-    border-top:1px solid #373737;
-    border-bottom:1px solid #373737;
-    color:#bbbbbb;
-    clear:both;
-    padding: 2pt 0 2pt 8pt;
+    border-top: 1px solid #373737;
+    border-bottom: 1px solid #373737;
+    color: #bbbbbb;
 }
 h3 a {
     color:#393939;
@@ -258,10 +259,11 @@ ol {
     clear:both;
 }
 .points_selector {
-    position:relative;
     display:block;
-    width:76px;
+    position:relative;
     float:left;
+    width:76px;
+    margin: 0;
     background:#393939;
 }
 .points_selector li {
@@ -295,8 +297,8 @@ ol {
 
 .citypoints_list {
     position:relative;
-    top:4px;
-    left:10px;
+    top:2px;
+    left:4px;
     border-collapse:collapse;
     border-top:1px solid #000;
 }
