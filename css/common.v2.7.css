@@ -196,12 +196,12 @@ h3 a {
 ul {
     list-style:disc;
     list-style-position:inside;
-    margin: 0 0 18px;
+    margin: 0 3em 18px;
 }
 ol {
     list-style:decimal;
     list-style-position:inside;
-    margin: 0 0 18px;
+    margin: 0 3em 18px;
 }
 
 
