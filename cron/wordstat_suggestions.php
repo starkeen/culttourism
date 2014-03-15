@@ -11,8 +11,9 @@ $res = yandex_req($request);
 $open_reports = array();
 if (isset($res['data']) && !empty($res['data'])) {
     foreach ($res['data'] as $rep) {
-        if ($rep['StatusReport'] == 'Done')
+        if ($rep['StatusReport'] == 'Done') {
             $open_reports[] = $rep['ReportID'];
+        }
     }
 }
 $db->sql = "SELECT ws_rep_id FROM $dbws
@@ -31,8 +32,9 @@ while ($row = $db->fetch()) {
             foreach ($res['data'] as $data) {
                 $rep = array('word' => $data['Phrase'], 'weight' => 0, 'rep_id' => $row['ws_rep_id']);
                 foreach ($data['SearchedWith'] as $item) {
-                    if ($item['Shows'] >= $rep['weight'])
+                    if ($item['Shows'] >= $rep['weight']) {
                         $rep['weight'] = $item['Shows'];
+                    }
                 }
                 $reps[] = $rep;
             }
@@ -47,11 +49,19 @@ foreach ($reps as $rep) {
     $city = trim(str_replace(' достопримечательности', '', $rep['word']));
     $weight = intval($rep['weight']);
     $repid = intval($rep['rep_id']);
-    $db->sql = "UPDATE $dbws SET ws_weight = '$weight', ws_weight_date = now(), ws_rep_id = 0
-                WHERE ws_rep_id = '$repid' AND ws_city_title = '$city'";
+    $db->sql = "UPDATE $dbws
+                    SET ws_weight = '$weight', ws_weight_date = now(), ws_rep_id = 0
+                WHERE ws_rep_id = '$repid'
+                    AND ws_city_title = '$city'";
     $db->exec();
     $reps_to_del[$repid] = $repid;
 }
+
+$db->sql = "UPDATE $dbws
+                    SET ws_weight_max = ws_weight, ws_weight_max_date = now()
+                WHERE ws_weight > ws_weight_max";
+$db->exec();
+
 foreach ($reps_to_del as $repdel) {
     yandex_req(array(
         'method' => 'DeleteWordstatReport',
@@ -121,20 +131,6 @@ function yandex_req($request) {
     $result = @file_get_contents($url, 0, $context);
 
     return json_decode($result, true);
-
-    /*
-      print_r($request);
-      $ch = curl_init($url);
-      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8'));
-      curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($request));
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-      //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-      $response = curl_exec($ch);
-      curl_close($ch);
-      print_r($response);
-     */
 }
 
 ?>
