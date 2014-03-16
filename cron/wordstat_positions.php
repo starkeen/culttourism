@@ -60,7 +60,7 @@ DOC;
     }
     $founded = array_search('culttourism.ru', $result);
     if ($founded) {
-        $position = $founded + 1;
+        $position = $founded;
     } else {
         $position = 0;
     }
