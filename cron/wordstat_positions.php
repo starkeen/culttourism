@@ -20,6 +20,7 @@ while ($row = $db->fetch()) {
 
 foreach ($cities as $city) {
     $result = array();
+    $result[0] = 'null';
     $result_meta = array();
     $found = array();
     $result_meta['pages'] = $limit_sites_per_answer;
@@ -58,10 +59,11 @@ DOC;
         }
     }
     $founded = array_search('culttourism.ru', $result);
-    if ($founded)
+    if ($founded) {
         $position = $founded + 1;
-    else
+    } else {
         $position = 0;
+    }
 
     $db->sql = "UPDATE $dbws SET ws_position = '$position', ws_position_date = now() WHERE ws_id = '{$city['ws_id']}'";
     $db->exec();
