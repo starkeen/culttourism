@@ -3,7 +3,7 @@
 $dbns = $db->getTableName('news_sourses');
 $dbni = $db->getTableName('news_items');
 
-$db->sql = "SELECT * FROM $dbns WHERE ns_active = 1 ORDER BY ns_last_read LIMIT 5";
+$db->sql = "SELECT * FROM $dbns WHERE ns_active = 1 ORDER BY ns_last_read LIMIT 2";
 $db->exec();
 $sourses = array();
 while ($row = $db->fetch()) {
