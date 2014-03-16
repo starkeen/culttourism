@@ -66,7 +66,11 @@
                         <a href="/city/add/?cityname={$item.city_name}">{$item.city_name}</a>
                         <a href="http://wordstat.yandex.ru/#!/?words={$item.city_name} достопримечательности"><img src="/img/new-window.png" /></a>
                     </td>
-                    <td align="center" title="{$item.ws_weight_date}">{$item.ws_weight}</td>
+                    <td align="center">
+                        <span title="{$item.ws_weight_date}">{$item.ws_weight}</span>
+                        /
+                        <span title="{$item.ws_weight_max_date}">{$item.ws_weight_max}</span>
+                    </td>
                     <td align="center">
                         <form method="post">
                             <input type="hidden" name="town_id" value="{$item.ws_city_id}" />
@@ -100,8 +104,10 @@
                     <td>{$item.region_name}</td>
                     <td>{$item.city_name}</td>
                     <td align="center">{$item.pc_add_date|date_format:"%d.%m.%Y"}</td>
-                    <td align="center" title="{$item.ws_weight_date}">
-                        <a href="http://wordstat.yandex.ru/#!/?words={$item.city_name} достопримечательности">{$item.ws_weight}</a>
+                    <td align="center" nowrap>
+                        <a href="http://wordstat.yandex.ru/#!/?words={$item.city_name} достопримечательности" title="{$item.ws_weight_date}">{$item.ws_weight}</a>
+                        /
+                        <span title="{$item.ws_weight_max_date}">{$item.ws_weight_max}</span>
                     </td>
                     <td align="center" title="{$item.ws_position_date}">
                         <a href="http://yandex.ru/yandsearch?text={$item.city_name}+достопримечательности&lr=213">{$item.ws_position}</a>

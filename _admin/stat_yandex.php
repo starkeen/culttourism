@@ -109,19 +109,23 @@ $db->sql = "SELECT count(*) AS cnt,
             GROUP BY xtop";
 $db->exec();
 while ($row = $db->fetch()) {
-    if ($row['xtop'] == 0)
+    if ($row['xtop'] == 0) {
         $towns['seo_top_none'] += $row['cnt'];
-    if ($row['xtop'] == 10)
+    }
+    if ($row['xtop'] == 10) {
         $towns['seo_top_10'] += $row['cnt'];
-    if ($row['xtop'] == 20)
+    }
+    if ($row['xtop'] == 20) {
         $towns['seo_top_20'] += $row['cnt'];
-    if ($row['xtop'] == 50)
+    }
+    if ($row['xtop'] == 50) {
         $towns['seo_top_50'] += $row['cnt'];
+    }
 }
 
 
 $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name,
-                ws_city_id, ws_weight, ws.ws_weight_date
+                ws_city_id, ws_weight, ws.ws_weight_date, ws_weight_max, ws.ws_weight_max_date
             FROM $dbws ws
                 LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
                 LEFT JOIN $dbrc rc ON rc.id = ws.ws_city_id
@@ -129,7 +133,7 @@ $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS coun
                     LEFT JOIN $dbco co ON co.id = rc.country_id
             WHERE ws_weight > 0
                 AND pc_id IS NULL
-            ORDER BY ws_weight DESC
+            ORDER BY ws_weight_max DESC, ws_weight DESC
             LIMIT 50";
 $db->exec();
 $stat = array();
@@ -138,8 +142,11 @@ while ($row = $db->fetch()) {
 }
 
 $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name,
-                pc.pc_add_date, ws.ws_weight_date, ws.ws_position_date,
-                ws_city_id, ws_weight, ws_position,
+                pc.pc_add_date,
+                ws_city_id, ws_weight, ws.ws_weight_date,
+                ws_position, ws.ws_position_date,
+                ws_weight_max, ws.ws_weight_max_date,
+                1000*ROUND(ws_weight/1000) AS weight_x1000,
                 100*ROUND(ws_weight/100) AS weight_x100,
                 10*ROUND(ws_weight/10) AS weight_x10,
                 IF(ws_position = 0, '&mdash;', ws_position) AS ws_position,
@@ -154,7 +161,7 @@ $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS coun
                 AND ws_position IS NOT NULL
                 AND (ws_position > 10 OR ws_position = 0)
             GROUP BY ws_city_id
-            ORDER BY weight_x100 DESC, weight_x10 DESC, position_x DESC
+            ORDER BY weight_x1000 DESC, weight_x100 DESC, weight_x10 DESC, position_x DESC
             LIMIT 50";
 $db->exec();
 $seo = array();
