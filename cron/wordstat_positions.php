@@ -59,10 +59,10 @@ DOC;
         }
     }
     $founded = array_search('culttourism.ru', $result);
-    if ($founded) {
-        $position = $founded;
-    } else {
+    if ($founded === false) {
         $position = 0;
+    } else {
+        $position = $founded;
     }
 
     $db->sql = "UPDATE $dbws SET ws_position = '$position', ws_position_date = now() WHERE ws_id = '{$city['ws_id']}'";
