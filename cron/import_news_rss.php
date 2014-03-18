@@ -48,7 +48,12 @@ function rss_to_array($tag, $array, $url) {
         }
         foreach ($doc->getElementsByTagName($tag) AS $node) {
             foreach ($array as $key => $value) {
-                $items[$value] = $node->getElementsByTagName($value)->item(0)->nodeValue;
+                $no = $node->getElementsByTagName($value);
+                if (isset($no) && is_object($no)) {
+                    if (is_object($no->item(0))) {
+                        $items[$value] = $no->item(0)->nodeValue;
+                    }
+                }
             }
             array_push($rss_array, $items);
         }
