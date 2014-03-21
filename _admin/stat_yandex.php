@@ -142,13 +142,13 @@ while ($row = $db->fetch()) {
 }
 
 $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name,
-                pc.pc_add_date,
-                ws_city_id, ws_weight, ws.ws_weight_date,
+                pc.pc_add_date, ws_city_id,
+                ws_weight, ws.ws_weight_date,
                 ws_position, ws.ws_position_date,
                 ws_weight_max, ws.ws_weight_max_date,
-                1000*ROUND(ws_weight/1000) AS weight_x1000,
-                100*ROUND(ws_weight/100) AS weight_x100,
-                10*ROUND(ws_weight/10) AS weight_x10,
+                ROUND(ws_weight_max/1000) AS weight_x1000,
+                ROUND(ws_weight_max/100) AS weight_x100,
+                IF(ws_position = 0, 101, ws_position) AS ws_position_real,
                 IF(ws_position = 0, '&mdash;', ws_position) AS ws_position,
                 IF(ws_position = 0, 100, IF(ws_position > 50, 100, IF(ws_position > 20, 50, IF(ws_position > 10, 20, 10)))) AS position_x
             FROM $dbws ws
@@ -161,8 +161,9 @@ $db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS coun
                 AND ws_position IS NOT NULL
                 AND (ws_position > 10 OR ws_position = 0)
             GROUP BY ws_city_id
-            ORDER BY weight_x1000 DESC, weight_x100 DESC, weight_x10 DESC, position_x DESC
-            LIMIT 50";
+            ORDER BY ws_weight_max DESC, ws_position_real DESC
+            LIMIT 65";
+//$db->showSQL();
 $db->exec();
 $seo = array();
 while ($row = $db->fetch()) {
