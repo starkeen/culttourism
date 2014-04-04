@@ -17,7 +17,7 @@ if (isset($_POST) && !empty($_POST)) {
         $db->sql = "INSERT INTO $dbws (ws_city_id, ws_city_title, ws_rep_id, ws_weight, ws_position, ws_position_date)
                         (SELECT id, name, 0, -1, null, null
                          FROM $dbrc rc
-                         WHERE rc.country_id IN (3159, 9908, 248, 1280))";
+                         WHERE rc.country_id IN (3159, 9908, 248, 1280, 2788, 245))";
         $db->exec();
     }
     if (isset($_POST['do_reload_stat'])) {
@@ -57,9 +57,11 @@ if (isset($res['data']) && !empty($res['data'])) {
     }
 }
 
-$towns = array('all' => 0, 'base' => 0, 'worked' => 0, 'remain' => 0,
+$towns = array(
+    'all' => 0, 'base' => 0, 'worked' => 0, 'remain' => 0,
     'seo_all' => 0, 'seo_worked' => 0,
-    'seo_top_10' => 0, 'seo_top_20' => 0, 'seo_top_50' => 0, 'seo_top_none' => 0,);
+    'seo_top_10' => 0, 'seo_top_20' => 0, 'seo_top_50' => 0, 'seo_top_none' => 0,
+);
 
 $db->sql = "SELECT count(*) AS cnt
             FROM $dbws ws";
@@ -124,7 +126,7 @@ while ($row = $db->fetch()) {
 }
 
 
-$db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name,
+$db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name AS country_name,
                 ws_city_id, ws_weight, ws.ws_weight_date, ws_weight_max, ws.ws_weight_max_date
             FROM $dbws ws
                 LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
@@ -141,7 +143,7 @@ while ($row = $db->fetch()) {
     $stat[] = $row;
 }
 
-$db->sql = "SELECT rc.name AS city_name, rr.name AS region_name, co.name AS country_name,
+$db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name AS country_name,
                 pc.pc_add_date, ws_city_id,
                 ws_weight, ws.ws_weight_date,
                 ws_position, ws.ws_position_date,
