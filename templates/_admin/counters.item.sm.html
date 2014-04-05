@@ -1,13 +1,14 @@
 {literal}
 <script>
     $(document).ready(function() {
-        $('#btn_delcnt').click(function(){
-            if (!confirm('Действительно удалить из базы?')) return false;
+        $('#btn_delcnt').click(function() {
+            if (!confirm('Действительно удалить из базы?'))
+                return false;
         });
     });
 </script>
 {/literal}
-<img class="pageicon" src="../img/admin/ico.a_counters.gif">
+<img class="pageicon" src="/img/admin/ico.a_counters.gif">
 <h3>
     Редактирование счетчика
 </h3>
@@ -35,7 +36,7 @@
             <th>Активность</th>
             <td><input type="hidden" name="cnt_active" value="0">
                 <input type="checkbox" id="cnt_active" name="cnt_active" value="1" {if $cnt.cnt_active == 1}checked{/if}>
-                <label for="cnt_active">- вкл показ на сайте</label>
+                       <label for="cnt_active">- вкл показ на сайте</label>
             </td>
         </tr>
         <tr>
