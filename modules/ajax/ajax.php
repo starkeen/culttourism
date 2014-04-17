@@ -274,8 +274,7 @@ class Page extends PageCommon {
             $db->sql = "UPDATE $dbb SET
                         br_title='$ntitle', br_text='$ntext', br_date = '$ndate $ntime', br_active = '$nact', br_url='$nurl'
                         WHERE br_id = '$brid'";
-        }
-        else
+        } else
             return $this->getError('404');
 
         return $db->exec();
@@ -406,8 +405,7 @@ class Page extends PageCommon {
             else
                 $point_lon_w = "W$point_lon_short";
             return "$point_lat_w $point_lon_w";
-        }
-        else
+        } else
             return false;
     }
 
@@ -643,8 +641,9 @@ class Page extends PageCommon {
     }
 
     private function getCityPointsYMapsML($smarty, $cid) {
-        if (!$cid)
+        if (!$cid) {
             $this->getError('404');
+        }
         $db = $this->db;
         $dbpr = $db->getTableName('ref_pointtypes');
         $dbpp = $db->getTableName('pagepoints');
@@ -681,19 +680,39 @@ class Page extends PageCommon {
 
         $db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude, CONCAT(ru.url, '/') AS url
                     FROM $dbpc pc
-                    LEFT JOIN $dbpc pc2 ON pc2.pc_region_id = pc.pc_region_id AND pc2.pc_id != pc.pc_id
-                    LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
+                        LEFT JOIN $dbpc pc2 ON pc2.pc_region_id = pc.pc_region_id AND pc2.pc_id != pc.pc_id
+                            LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
                     WHERE pc.pc_id = '$cid'
-                    AND pc2.pc_city_id != 0";
+                        AND pc2.pc_city_id != 0";
         $db->exec();
         $city = array();
         while ($pc = $db->fetch()) {
             $city[] = $pc;
         }
 
+        $db->sql = "SELECT pc.*
+                    FROM $dbpc pc
+                    WHERE pc.pc_id = '$cid'";
+        $db->exec();
+        $this_city = $db->fetch();
+
+        if ($this_city['pc_region_id'] == 0) {
+            $db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude, CONCAT(ru.url, '/') AS url
+                        FROM $dbpc pc2
+                            LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
+                        WHERE pc2.pc_country_id = '{$this_city['pc_country_id']}'
+                            AND pc2.pc_city_id != 0";
+            $db->exec();
+            while ($pc = $db->fetch()) {
+                $city[] = $pc;
+            }
+        }
+
         $smarty->assign('points', $points);
         $smarty->assign('city', $city);
         header("Content-type: application/xml");
+        header("Cache-Control: no-store, no-cache, must-revalidate");
+        header("Expires: " . date("r"));
         echo $smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML1.sm.xml');
         exit();
     }
@@ -753,8 +772,7 @@ class Page extends PageCommon {
             }
             $smarty->assign('city_title', $city_title);
             return $smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.sm.html');
-        }
-        else
+        } else
             return $this->getError('403');
     }
 
@@ -841,8 +859,7 @@ class Page extends PageCommon {
             $db->exec();
             $row = $db->fetch();
             return $row['pt_name'];
-        }
-        else
+        } else
             return $this->getError('404');
     }
 
@@ -867,8 +884,7 @@ class Page extends PageCommon {
             $db->exec();
             $row = $db->fetch();
             return $row['pt_description'];
-        }
-        else
+        } else
             return $this->getError('404');
     }
 
@@ -889,8 +905,7 @@ class Page extends PageCommon {
             $db->exec();
             $row = $db->fetch();
             return $row['pc_title'];
-        }
-        else
+        } else
             return $this->getError('404');
     }
 
@@ -914,8 +929,7 @@ class Page extends PageCommon {
             $db->exec();
             $row = $db->fetch();
             return $row['pc_text'];
-        }
-        else
+        } else
             return $this->getError('404');
     }
 
