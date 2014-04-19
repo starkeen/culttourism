@@ -12,6 +12,7 @@ $dbco = $db->getTableName('ref_country');
 
 if (isset($_POST) && !empty($_POST)) {
     if (isset($_POST['do_reload_full'])) {
+        /*
         $db->sql = "TRUNCATE TABLE $dbws";
         $db->exec();
         $db->sql = "INSERT INTO $dbws (ws_city_id, ws_city_title, ws_rep_id, ws_weight, ws_position, ws_position_date)
@@ -19,6 +20,7 @@ if (isset($_POST) && !empty($_POST)) {
                          FROM $dbrc rc
                          WHERE rc.country_id IN (3159, 9908, 248, 1280, 2788, 245))";
         $db->exec();
+        */
     }
     if (isset($_POST['do_reload_stat'])) {
         $db->sql = "UPDATE $dbws SET ws_weight = -1, ws_rep_id = 0";
@@ -162,7 +164,7 @@ $db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name A
                 AND pc_id IS NOT NULL
                 AND ws_position IS NOT NULL
                 AND (ws_position > 10 OR ws_position = 0)
-            GROUP BY ws_city_id
+            GROUP BY city_name
             ORDER BY ws_weight_max DESC, ws_position_real DESC
             LIMIT 65";
 //$db->showSQL();
