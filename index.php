@@ -2,42 +2,47 @@
 
 session_start();
 include('config/configuration.php');
-if (_ER_REPORT)
+if (_ER_REPORT) {
     error_reporting(E_ALL);
-else
+} else {
     error_reporting(0);
+}
 include('includes/functions.php');
-if (_ER_REPORT)
+if (_ER_REPORT) {
     include('includes/debug.php');
+}
 
 include(_DIR_INCLUDES . '/class.Helper.php');
 spl_autoload_register('Helper::autoloader');
 
 $server_request_uri = urldecode($_SERVER['REQUEST_URI']);
-if (strpos($server_request_uri, '?'))
+if (strpos($server_request_uri, '?')) {
     $server_request_uri = mb_substr($server_request_uri, 0, strpos($server_request_uri, '?'), 'utf-8');
-
+}
 $request_uri_arr = explode('/', $server_request_uri);
 if ($_SERVER['HTTP_HOST'] != _URL_ROOT) {
     $request_suburi_arr = explode('/', _URL_ROOT);
-    if ($request_suburi_arr[1] == $request_uri_arr[1])
+    if ($request_suburi_arr[1] == $request_uri_arr[1]) {
         array_shift($request_uri_arr);
+    }
 }
 @list($host_id, $module_id, $page_id, $id, $id2) = $request_uri_arr;
 
 $module_id = (isset($module_id) && strlen($module_id) != 0) ? urldecode($module_id) : _INDEXPAGE_URI;
-if ($module_id == 'index')
+if ($module_id == 'index') {
     $module_id = _INDEXPAGE_URI;
+}
 $page_id = isset($page_id) ? urlencode($page_id) : null;
 $id = isset($id) ? urlencode($id) : null;
 $id2 = isset($id) ? urlencode($id2) : null;
 
 $smarty = new mySmarty($module_id);
 $db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
-if (file_exists(_DIR_MODULES . "/$module_id/$module_id.php"))
+if (file_exists(_DIR_MODULES . "/$module_id/$module_id.php")) {
     include(_DIR_MODULES . "/$module_id/$module_id.php");
-else
+} else {
     include(_DIR_INCLUDES . '/class.Page.php');
+}
 $page = Page::getInstance($db, array($module_id, $page_id, $id, $id2));
 $smarty->assign('page', $page);
 
@@ -82,16 +87,18 @@ if (_CACHE_DAYS != 0) {
     $page->lastedit = null;
 }
 $smarty->caching = false;
-if (_ER_REPORT || isset($_GET['debug']))
+if (_ER_REPORT || isset($_GET['debug'])) {
     $smarty->assign('debug_info', $db->getDebugInfoText());
-else
+} else {
     $smarty->assign('debug_info', '');
+}
 
 if ($module_id == 'ajax') {
     $smarty->display(_DIR_TEMPLATES . '/_main/empty.sm.html');
-} elseif ($module_id == 'api')
+} elseif ($module_id == 'api') {
     $smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
-else
+} else {
     $smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
+}
 exit();
 ?>
