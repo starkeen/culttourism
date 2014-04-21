@@ -5,10 +5,11 @@ class Helper {
     public static function autoloader($className) {
         $path1 = _DIR_INCLUDES . "/class.$className.php";
         $path2 = _DIR_MODELS . "/class.$className.php";
-        if (file_exists($path1))
+        if (file_exists($path1)) {
             include $path1;
-        elseif (file_exists($path2))
+        } elseif (file_exists($path2)) {
             include $path2;
+        }
         return false;
     }
 
@@ -69,7 +70,7 @@ class Helper {
             'у' => 'u', 'У' => 'U',
             'ф' => 'f', 'Ф' => 'F',
             'х' => 'h', 'Х' => 'H',
-            'ц' => 'c', 'Ц' => 'C',
+            'ц' => 'ts', 'Ц' => 'Ts',
             'ч' => 'ch', 'Ч' => 'Ch',
             'ш' => 'sh', 'Ш' => 'Sh',
             'щ' => 'sсh', 'Щ' => 'Sch',
@@ -128,10 +129,12 @@ class Helper {
             '.' => 'ю',
             '/' => '.',
         );
-        foreach ($transtable as $k => $v)
+        foreach ($transtable as $k => $v) {
             $transtable[mb_strtoupper($k, 'UTF-8')] = mb_strtoupper($v, 'UTF-8');
-        if (!$latrus)
+        }
+        if (!$latrus) {
             $transtable = array_flip($transtable);
+        }
         return strtr($text, $transtable);
     }
 
