@@ -13,14 +13,14 @@ $dbco = $db->getTableName('ref_country');
 if (isset($_POST) && !empty($_POST)) {
     if (isset($_POST['do_reload_full'])) {
         /*
-        $db->sql = "TRUNCATE TABLE $dbws";
-        $db->exec();
-        $db->sql = "INSERT INTO $dbws (ws_city_id, ws_city_title, ws_rep_id, ws_weight, ws_position, ws_position_date)
-                        (SELECT id, name, 0, -1, null, null
-                         FROM $dbrc rc
-                         WHERE rc.country_id IN (3159, 9908, 248, 1280, 2788, 245))";
-        $db->exec();
-        */
+          $db->sql = "TRUNCATE TABLE $dbws";
+          $db->exec();
+          $db->sql = "INSERT INTO $dbws (ws_city_id, ws_city_title, ws_rep_id, ws_weight, ws_position, ws_position_date)
+          (SELECT id, name, 0, -1, null, null
+          FROM $dbrc rc
+          WHERE rc.country_id IN (3159, 9908, 248, 1280, 2788, 245))";
+          $db->exec();
+         */
     }
     if (isset($_POST['do_reload_stat'])) {
         $db->sql = "UPDATE $dbws SET ws_weight = -1, ws_rep_id = 0";
@@ -63,6 +63,7 @@ $towns = array(
     'all' => 0, 'base' => 0, 'worked' => 0, 'remain' => 0,
     'seo_all' => 0, 'seo_worked' => 0,
     'seo_top_10' => 0, 'seo_top_20' => 0, 'seo_top_50' => 0, 'seo_top_none' => 0,
+    'date_positions' => '-', 'date_weights' => '-',
 );
 
 $db->sql = "SELECT count(*) AS cnt
@@ -126,6 +127,15 @@ while ($row = $db->fetch()) {
         $towns['seo_top_50'] += $row['cnt'];
     }
 }
+
+$db->sql = "SELECT DATE_FORMAT(MIN(ws_weight_date), '%d.%m.%Y') AS min_weight,
+                DATE_FORMAT(MIN(ws_position_date), '%d.%m.%Y') AS min_position
+            FROM $dbws ws";
+$db->exec();
+$row = $db->fetch();
+$towns['date_weights'] = $row['min_weight'];
+$towns['date_positions'] = $row['min_position'];
+
 
 
 $db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name AS country_name,
