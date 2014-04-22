@@ -7,16 +7,17 @@ class Page extends PageCommon {
         global $smarty;
         parent::__construct($db, 'city', $page_id);
 
-        if ($page_id[1] == '')
+        if ($page_id[1] == '') {
             return $this->pageCity($db, $smarty);
-        elseif ($page_id[1] == 'add')
+        } elseif ($page_id[1] == 'add') {
             return $this->addCity($db, $smarty);
-        elseif ($page_id[1] == 'detail')
+        } elseif ($page_id[1] == 'detail') {
             return $this->detailCity($db, $smarty);
-        elseif ($page_id[1] == 'meta')
+        } elseif ($page_id[1] == 'meta') {
             return $this->metaCity($db, $smarty);
-        else
+        } else {
             return $this->getError('404');
+        }
     }
 
     private function metaCity($db, $smarty) {
@@ -25,8 +26,9 @@ class Page extends PageCommon {
         $dbpc = $db->getTableName('pagecity');
 
         if (isset($_POST['act'])) {
-            if (!$this->checkEdit())
+            if (!$this->checkEdit()) {
                 return $this->getError('403');
+            }
             $uid = $this->getUserId();
             switch ($_POST['act']) {
                 case 'add':
@@ -36,8 +38,9 @@ class Page extends PageCommon {
                     $db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = '$city_id' AND cd_cf_id = '$cf_id'";
                     $db->exec();
                     $db->sql = "INSERT INTO $dbcd SET cd_pc_id = '$city_id', cd_cf_id = '$cf_id', cd_value = '$value'";
-                    if ($value != '')
+                    if ($value != '') {
                         $db->exec();
+                    }
                     $db->sql = "SELECT * FROM  $dbcf WHERE cf_id = '$cf_id'";
                     $db->exec();
                     $row = $db->fetch();
@@ -59,8 +62,9 @@ class Page extends PageCommon {
                     $city_id = cut_trash_int($_POST['cpid']);
                     $value = cut_trash_text($_POST['val']);
                     $db->sql = "UPDATE $dbcd SET cd_value = '$value' WHERE cd_pc_id = '$city_id' AND cd_cf_id = '$cf_id'";
-                    if ($value != '')
+                    if ($value != '') {
                         $db->exec();
+                    }
                     $db->sql = "UPDATE $dbpc SET pc_lastup_date = now(), pc_lastup_user = '$uid' WHERE pc_id = '$city_id'";
                     $db->exec();
                     echo 'ok';
@@ -89,13 +93,16 @@ class Page extends PageCommon {
 
     private function detailCity($db, $smarty) {
         //**************************************** РЕДАКТИРОВАНИЕ ******************
-        if (!$this->checkEdit())
+        if (!$this->checkEdit()) {
             return $this->getError('403');
-        if (!isset($_GET['city_id']))
+        }
+        if (!isset($_GET['city_id'])) {
             return $this->getError('404');
+        }
         $city_id = cut_trash_int($_GET['city_id']);
-        if (!$city_id)
+        if (!$city_id) {
             return $this->getError('404');
+        }
 
         $uid = $this->getUserId();
         $dbc = $db->getTableName('pagecity');
@@ -129,8 +136,9 @@ class Page extends PageCommon {
             $aurl = explode('/', $url);
             $nurl = '';
             foreach ($aurl as $u) {
-                if ($u != '')
+                if ($u != '') {
                     $nurl .= '/' . strtolower(str_replace(' ', '_', translit($u)));
+                }
             }
             if ($nurl != '/') {
                 $db->sql = "SELECT pc_url_id FROM $dbc WHERE pc_id = '$city_id'";
@@ -143,6 +151,7 @@ class Page extends PageCommon {
             $db->exec();
             $url = $db->fetch();
             header("Location: {$url['url']}");
+            exit();
         }
 
         $db->sql = "SELECT c.pc_id, c.pc_title, c.pc_keywords, c.pc_description,
@@ -184,8 +193,9 @@ class Page extends PageCommon {
 
         $this->lastedit_timestamp = $row['last_update'];
 
-        if (isset($this->user['userid']))
+        if (isset($this->user['userid'])) {
             $smarty->assign('adminlogined', $this->getUserId());
+        }
         $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/details.sm.html');
     }
 
@@ -226,6 +236,7 @@ class Page extends PageCommon {
                 $db->sql = "UPDATE $dbc SET pc_url_id = '$nuid' WHERE pc_id = '$cid'";
                 $db->exec();
                 header("location: /city/detail/?city_id=$cid");
+                exit();
             }
         } elseif (isset($_GET['cityname'])) {
             $newcity = cut_trash_string($_GET['cityname']);
@@ -246,8 +257,9 @@ class Page extends PageCommon {
             while ($row = $db->fetch()) {
                 $already[$row['url']] = $row['pc_title'];
             }
-            if (isset($already))
+            if (isset($already)) {
                 $smarty->assign('already', $already);
+            }
             //------------------- поиск в справочнике регионов --------------
             $db->sql = "SELECT rc.name as name, rc.id as city_id, rr.name as region, rr.id as region_id,
                             rs.name as country, rs.id as country_id,
@@ -293,8 +305,9 @@ class Page extends PageCommon {
                         $latitude = $latitude . abs($row['ll_lat']);
                         $lolgitude = $row['ll_lon'] >= 0 ? 'E' : 'W';
                         $lolgitude = $lolgitude . abs($row['ll_lon']);
-                        if ($latitude != 'N0' && $lolgitude != 'E0')
+                        if ($latitude != 'N0' && $lolgitude != 'E0') {
                             $inbase[$id]['latlon'] = "{$row['ll_name']}: $latitude, $lolgitude";
+                        }
                     }
                 }
                 $smarty->assign('inbase', $inbase);
@@ -307,8 +320,9 @@ class Page extends PageCommon {
         }
 
         $smarty->assign('addregion', $newcity);
-        if (isset($this->user['userid']))
+        if (isset($this->user['userid'])) {
             $smarty->assign('adminlogined', $this->user['userid']);
+        }
         $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/add.sm.html');
     }
 
@@ -318,33 +332,40 @@ class Page extends PageCommon {
         $dbr = $db->getTableName('region_url');
         $dbp = $db->getTableName('pagepoints');
         $dbcd = $db->getTableName('city_data');
+        $dbrc = $db->getTableName('ref_country');
+        $dbrr = $db->getTableName('ref_region');
         $where = (!$this->checkEdit()) ? "WHERE city.pc_text is not null" : '';
         $db->sql = "SELECT city.pc_id, city.pc_title, city.pc_latitude, city.pc_longitude,
                             city.pc_city_id, city.pc_region_id, city.pc_country_id,
-                            url.url, char_length(city.pc_text) as len, city.pc_inwheretext,
+                            url.url, CHAR_LENGTH(city.pc_text) as len, city.pc_inwheretext,
                             city.pc_pagepath,
                             (SELECT count(pt_id) FROM $dbp WHERE pt_citypage_id = city.pc_id) as pts,
                             (SELECT count(cd_id) FROM $dbcd WHERE cd_pc_id = city.pc_id) as meta,
                             UNIX_TIMESTAMP(city.pc_lastup_date) AS last_update
                     FROM $dbc city
-                    LEFT JOIN $dbr url ON url.uid = city.pc_url_id
+                        LEFT JOIN $dbr url ON url.uid = city.pc_url_id
+                        LEFT JOIN $dbrc rc ON rc.id = city.pc_country_id
+                        LEFT JOIN $dbrr rr ON rr.id = city.pc_region_id
                 $where
-                    ORDER BY  city.pc_country_id, city.pc_region_id, city.pc_city_id, url.url, city.pc_title";
+                    ORDER BY rc.ordering, rc.name, rr.ordering, rr.name, url.url, city.pc_title";
         $res = $db->exec();
         while ($row = $db->fetch()) {
             $row['pc_pagepath'] = strip_tags($row['pc_pagepath']);
-            $cities[] = $row;
-            if ($row['last_update'] > $this->lastedit_timestamp)
+            if ($row['last_update'] > $this->lastedit_timestamp) {
                 $this->lastedit_timestamp = $row['last_update'];
+            }
+            $cities[] = $row;
         }
         $smarty->assign('tcity', $cities);
-        if (isset($this->user['userid']))
+        if (isset($this->user['userid'])) {
             $smarty->assign('adminlogined', $this->user['userid']);
+        }
 
-        if ($this->checkEdit())
+        if ($this->checkEdit()) {
             $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html');
-        else
+        } else {
             $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html');
+        }
     }
 
     public static function getInstance($db, $mod) {
