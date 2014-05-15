@@ -80,7 +80,24 @@ class MyDB {
         if ($res) {
             $this->res = $res;
         }
-        return mysql_fetch_assoc($this->res);
+        if (is_resource($this->res)) {
+            return mysql_fetch_assoc($this->res);
+        } else {
+            return false;
+        }
+    }
+
+    public function fetchAll($res = null) {
+        if ($res) {
+            $this->res = $res;
+        }
+        $out = array();
+        if (is_resource($this->res)) {
+            while ($row = $this->fetch()) {
+                $out[] = $row;
+            }
+        }
+        return $out;
     }
 
     public function getLastInserted() {
