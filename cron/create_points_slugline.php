@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 
 $pts = new Points($db);
 
-foreach ($pts->getUnslug() as $point) {
+foreach ($pts->getUnslug(30) as $point) {
     $pts->createSluglineById($point['pt_id']);
 }
 
