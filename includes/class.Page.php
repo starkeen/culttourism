@@ -6,12 +6,13 @@ class Page extends PageCommon {
         parent::__construct($db, $mod[0]); //встроеные модули
         //if ($mod[1]!=null) $this->getSubContent($this->md_id, $mod[1]);
         //$this->navibar = $this->getNavigation($this->md_id, $mod[1]);
-        if ($this->content)
-            ;
-        elseif ($this->content = $this->getPageByURL($mod))
-            ;
-        else
+        if ($this->content) {
+            //
+        } elseif ($this->content = $this->getPageByURL($mod)) {
+            //
+        } else {
             $this->getError('404');
+        }
     }
 
     public static function getInstance($db, $mod = null) {
@@ -21,21 +22,24 @@ class Page extends PageCommon {
     public function getPageByURL($aurl) {
         global $db;
         $url = '';
-        foreach ($aurl as $w)
-            if ($w != '')
+        foreach ($aurl as $w) {
+            if ($w != '') {
                 $url .= '/' . $w;
-        if ($url == '')
+            }
+        }
+        if ($url == '') {
             return FALSE;
-        else {
+        } else {
             global $smarty;
-            if (ereg('^object([[:digit:]]+).html$', array_pop(explode('/', $url)), $regs))
+            if (ereg('^object([[:digit:]]+).html$', array_pop(explode('/', $url)), $regs)) {
                 return $this->getPageObject($db, $smarty, intval($regs[1]));
-            elseif (array_pop(explode('/', $url)) == 'map.html')
+            } elseif (array_pop(explode('/', $url)) == 'map.html') {
                 return $this->getPageMap($db, $smarty, $url);
-            elseif (array_pop(explode('/', $url)) == 'index.html')
+            } elseif (array_pop(explode('/', $url)) == 'index.html') {
                 return $this->getPageCity($db, $smarty, $url);
-            else
+            } else {
                 return $this->getPageCity($db, $smarty, $url);
+            }
         }
     }
 
@@ -45,8 +49,9 @@ class Page extends PageCommon {
         $db->sql = "SELECT md_url, md_title, md_keywords, md_description, md_pagecontent
                     FROM $dbm WHERE md_active = '1' AND md_pid = '$pid'";
         $res = $db->exec();
-        if (!$res)
+        if (!$res) {
             $this->getError('404');
+        }
         while ($row = mysql_fetch_assoc($res)) {
             if ($row['md_url'] == $p_url) {
                 $this->h1 .= ' ' . $this->globalsettings['title_delimiter'] . ' ' . $row['md_title'];
@@ -107,52 +112,10 @@ class Page extends PageCommon {
         if ($row = $db->fetch()) {
             $this->lastedit_timestamp = max(array($row['last_update1'], $row['last_update2']));
             $row['pc_zoom'] = ($row['pc_latlon_zoom']) ? $row['pc_latlon_zoom'] : 12;
-            $row['pc_zoom']++;
+            $row['pc_zoom'] ++;
 
             header("Location: /map/#center={$row['pc_longitude']},{$row['pc_latitude']}&zoom={$row['pc_zoom']}");
             exit();
-            /*
-              //--------------------  c a n o n i c a l  -------------------------
-              $db->sql = "SELECT url FROM $dburl WHERE uid = '{$row['pc_url_id']}'";
-              $db->exec();
-              $canonical_url = $db->fetch();
-              if ($canonical_url['url'] != '')
-              $this->canonical = $canonical_url['url'] . '/map.html';
-
-              //----------------------  l e g e n d   ----------------------------
-              $db->sql = "SELECT * FROM $dbpt ORDER BY tr_order";
-              $db->exec();
-              $point_types = array();
-              while ($pts = $db->fetch()) {
-              $point_types[] = $pts;
-              }
-
-              //--------------------  s t a t i s t i c s  -----------------------
-              $hash = $this->getUserHash();
-              $db->sql = "INSERT INTO $dbsc (sc_citypage_id, sc_date, sc_hash) VALUES ('{$row['pc_id']}', now(), '$hash')
-              ON DUPLICATE KEY UPDATE sc_date = now()";
-              $db->exec();
-
-              //---------------------  m e t a   k e y s   -----------------------
-              $this->addTitle("Карта достопримечательностей {$row['pc_inwheretext']}");
-              if ($row['pc_description'])
-              $this->addDescription($row['pc_description']);
-              $this->addDescription('Карта и схема расположения достопримечательностей ' . $row['pc_inwheretext']);
-              if ($row['pc_keywords'])
-              $this->addKeywords($row['pc_keywords']);
-              $this->addKeywords('достопримечательности ' . $row['pc_inwheretext']);
-              $this->addKeywords('Координаты GPS');
-              $this->addKeywords($row['pc_title_translit']);
-              if ($row['pc_title_english'] && $row['pc_title_english'] != $row['pc_title_translit'])
-              $this->addKeywords($row['pc_title_english']);
-              if ($row['pc_title_synonym'])
-              $this->addKeywords($row['pc_title_synonym']);
-              $this->addKeywords('карта');
-              $this->addKeywords('схема');
-
-              $this->isCounters = 1;
-              $this->getCounters();
-             */
         }
         $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
         $smarty->assign('city', $row);
@@ -186,8 +149,9 @@ class Page extends PageCommon {
                     WHERE url.url = '$url'";
 
         $res = $db->exec();
-        if (!$res)
+        if (!$res) {
             return FALSE;
+        }
         if ($row = $db->fetch()) {
             $row['pc_zoom'] = ($row['pc_latlon_zoom']) ? $row['pc_latlon_zoom'] : 12;
 
@@ -218,8 +182,9 @@ class Page extends PageCommon {
                 $db->exec();
                 while ($subcity = $db->fetch()) {
                     $row['region_in'][] = array('title' => $subcity['pc_title'], 'url' => $subcity['url'], 'where' => $subcity['pc_inwheretext']);
-                    if ($subcity['last_update'] > $this->lastedit_timestamp)
+                    if ($subcity['last_update'] > $this->lastedit_timestamp) {
                         $this->lastedit_timestamp = $subcity['last_update'];
+                    }
                 }
             }
             //----------------------  р я д о м  ------------------------
@@ -244,8 +209,9 @@ class Page extends PageCommon {
                         'url' => $subcity['url'],
                         'where' => $subcity['pc_inwheretext'],
                     );
-                    if ($subcity['last_update'] > $this->lastedit_timestamp)
+                    if ($subcity['last_update'] > $this->lastedit_timestamp) {
                         $this->lastedit_timestamp = $subcity['last_update'];
+                    }
                 }
             }
 
@@ -272,8 +238,9 @@ class Page extends PageCommon {
                         FROM $dbpt pt
                         LEFT JOIN $dbrp rp ON rp.tp_id = pt.pt_type_id
                         WHERE pt.pt_citypage_id = '{$row['pc_id']}'\n";
-            if (!$this->checkEdit())
+            if (!$this->checkEdit()) {
                 $db->sql .= "AND pt.pt_active = 1\n";
+            }
             $db->sql .= "ORDER BY pt.pt_active DESC, rp.tr_sight desc, pt.pt_rank desc, rp.tr_order, pt.pt_name";
             //$db->showSQL();
             $db->exec();
@@ -287,8 +254,9 @@ class Page extends PageCommon {
                 $short_lenght = 300;
                 $point['short'] = html_entity_decode(strip_tags($point['pt_description']), ENT_QUOTES, 'utf-8');
                 $short_end = @mb_strpos($point['short'], '.', $short_lenght, 'utf-8');
-                if (mb_strlen($point['short']) >= $short_lenght && $short_end)
+                if (mb_strlen($point['short']) >= $short_lenght && $short_end) {
                     $point['short'] = mb_substr($point['short'], 0, $short_end, 'utf-8') . '&hellip;';
+                }
 
                 $point['pt_name'] = htmlentities($point['pt_name'], ENT_QUOTES, 'UTF-8', false);
 
@@ -297,28 +265,33 @@ class Page extends PageCommon {
                 if ($point_lat && $point_lon) {
                     $point_lat_short = mb_substr($point_lat, 0, 8);
                     $point_lon_short = mb_substr($point_lon, 0, 8);
-                    if ($point_lat >= 0)
+                    if ($point_lat >= 0) {
                         $point_lat_w = "N$point_lat_short";
-                    else
+                    } else {
                         $point_lat_w = "S$point_lat_short";
-                    if ($point_lon >= 0)
+                    }
+                    if ($point_lon >= 0) {
                         $point_lon_w = "E$point_lon_short";
-                    else
+                    } else {
                         $point_lon_w = "W$point_lon_short";
+                    }
                     $point['gps_dec'] = "$point_lat_w $point_lon_w";
                 } else {
                     $point['gps_dec'] = null;
                 }
                 $points[] = $point;
-                if ($point['tr_sight'] == 1)
+                if ($point['tr_sight'] == 1) {
                     $pnts_sight[] = $point;
-                else
+                } else {
                     $pnts_service[] = $point;
+                }
 
-                if ($point['last_update'] > $this->lastedit_timestamp)
+                if ($point['last_update'] > $this->lastedit_timestamp) {
                     $this->lastedit_timestamp = $point['last_update'];
-                if ($this->checkEdit())
+                }
+                if ($this->checkEdit()) {
                     $this->lastedit_timestamp = 0;
+                }
             }
             $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
 
@@ -337,33 +310,39 @@ class Page extends PageCommon {
             $db->exec();
 
             $this->addTitle($row['pc_title'] . ': достопримечательности');
-            if ($row['pc_description'])
+            if ($row['pc_description']) {
                 $this->addDescription($row['pc_description']);
+            }
             $this->addDescription('Достопримечательности ' . $row['pc_inwheretext'] . ' с GPS-координатами');
-            if ($row['pc_keywords'])
+            if ($row['pc_keywords']) {
                 $this->addKeywords($row['pc_keywords']);
+            }
             $this->addKeywords('достопримечательности ' . $row['pc_inwheretext']);
             $this->addKeywords('Координаты GPS');
             $this->addKeywords($row['pc_title_translit']);
-            if ($row['pc_title_english'] && $row['pc_title_english'] != $row['pc_title_translit'])
+            if ($row['pc_title_english'] && $row['pc_title_english'] != $row['pc_title_translit']) {
                 $this->addKeywords($row['pc_title_english']);
-            if ($row['pc_title_synonym'])
+            }
+            if ($row['pc_title_synonym']) {
                 $this->addKeywords($row['pc_title_synonym']);
+            }
             $this->isCounters = 1;
             $this->getCounters();
 
-            if ($this->checkEdit())
+            if ($this->checkEdit()) {
                 return $smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.edit.sm.html');
-            else
+            } else {
                 return $smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.show.sm.html');
-        }
-        else
+            }
+        } else {
             return FALSE;
+        }
     }
 
     private function getPageObject($db, $smarty, $id) {
-        if (!$id)
+        if (!$id) {
             return false;
+        }
         $dbpt = $db->getTableName('pagepoints');
         $dbpc = $db->getTableName('pagecity');
         $dbsp = $db->getTableName('statpoints');
@@ -385,8 +364,9 @@ class Page extends PageCommon {
                     AND pt.pt_active = 1";
         $db->exec();
         $object = $db->fetch();
-        if (!$object)
+        if (!$object) {
             return false;
+        }
         $short = strip_tags($object['pt_description']);
         $short = mb_strlen($short) >= 100 ? mb_substr($short, 0, mb_strpos($short, ' ', 100), 'utf-8') : $short;
         $object['esc_name'] = htmlentities($object['pt_name'], ENT_QUOTES, 'utf-8');
@@ -438,17 +418,20 @@ class Page extends PageCommon {
 
         $this->addTitle($city['pc_title']);
         $this->addTitle($object['esc_name']);
-        if ($object['tr_sight'])
+        if ($object['tr_sight']) {
             $this->addDescription('Достопримечательности ' . $city['pc_inwheretext']);
-        if (isset($object['gps_dec']))
+        }
+        if (isset($object['gps_dec'])) {
             $this->addDescription('GPS-координаты');
+        }
         $this->addDescription("{$object['tp_short']} {$city['pc_inwheretext']}");
         $this->addDescription($object['esc_name']);
         $this->addDescription($short);
         $this->addKeywords($city['pc_title']);
         $this->addKeywords($object['esc_name']);
-        if (isset($object['gps_dec']))
+        if (isset($object['gps_dec'])) {
             $this->addKeywords('координаты GPS');
+        }
 
         return $smarty->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.sm.html');
     }
