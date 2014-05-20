@@ -17,4 +17,13 @@ class Statpoints extends Model {
         parent::__construct($db);
     }
 
+    public function add($point_id, $hash) {
+        $this->insert(array(
+            'sp_pagepoint_id' => $point_id,
+            'sp_date' => date('Y-m-d H:i:s'),
+            'sp_hash' => $hash,
+        ));
+        return true;
+    }
+
 }

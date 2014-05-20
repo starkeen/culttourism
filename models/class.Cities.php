@@ -37,6 +37,88 @@ class Cities extends Model {
         parent::__construct($db);
     }
 
+    public function getCityByUrl($url) {
+        $dbu = $this->_db->getTableName('region_url');
+        $dbcd = $this->_db->getTableName('city_data');
+        $dbcf = $this->_db->getTableName('city_fields');
+
+        $xurl = $this->_db->getEscapedString($url);
+
+        $out = array();
+
+        $this->_db->sql = "SELECT *,
+                                UNIX_TIMESTAMP(pc.pc_lastup_date) AS last_update,
+                                CONCAT(uc.url, '/') AS url_canonical
+                            FROM $dbu url
+                                LEFT JOIN $this->_table_name pc ON pc.pc_id = url.citypage
+                                    LEFT JOIN $dbu uc ON uc.uid = pc.pc_url_id
+                            WHERE url.url = '$xurl'";
+        $this->_db->exec();
+        $out = $this->_db->fetch();
+
+        $out['region_in'] = array();
+        $out['region_near'] = array();
+        $out['metas'] = array();
+
+        //----------------------  в н у т р и  ------------------------
+        if ($out['pc_region_id'] > 0 && $out['pc_city_id'] == 0) {
+            $this->_db->sql = "SELECT pc.pc_title, url.url, pc.pc_inwheretext,
+                                    UNIX_TIMESTAMP(pc.pc_add_date) AS last_update
+                                FROM $this->_table_name pc
+                                    LEFT JOIN $dbu url ON url.uid = pc.pc_url_id
+                                WHERE pc.pc_region_id = '{$out['pc_region_id']}'
+                                    AND pc.pc_city_id != 0
+                                ORDER BY pc.pc_rank DESC, pc.pc_title";
+            $this->_db->exec();
+            while ($subcity = $this->_db->fetch()) {
+                $out['region_in'][] = array('title' => $subcity['pc_title'], 'url' => $subcity['url'], 'where' => $subcity['pc_inwheretext']);
+                if ($subcity['last_update'] > $out['last_update']) {
+                    $out['last_update'] = $subcity['last_update'];
+                }
+            }
+        }
+
+        //----------------------  р я д о м  ------------------------
+        if ($out['pc_region_id'] > 0 && $out['pc_city_id'] > 0) {
+            $this->_db->sql = "SELECT pc.pc_title, url.url, pc.pc_inwheretext,
+                                    ROUND(1000 * (ABS(pc.pc_latitude - {$out['pc_latitude']}) + ABS(pc.pc_longitude - {$out['pc_longitude']}))) AS delta_sum,
+                                    UNIX_TIMESTAMP(pc.pc_add_date) AS last_update
+                                FROM $this->_table_name pc
+                                    LEFT JOIN $dbu url ON url.uid = pc.pc_url_id
+                                WHERE pc.pc_city_id != 0
+                                    AND pc.pc_title != '{$out['pc_title']}'
+                                    AND pc.pc_latitude > 0 AND pc.pc_longitude > 0
+                                HAVING delta_sum < 5000
+                                ORDER BY delta_sum
+                                LIMIT 10";
+            //$db->showSQL();
+            $this->_db->exec();
+            while ($subcity = $this->_db->fetch()) {
+                $out['region_near'][] = array(
+                    'title' => $subcity['pc_title'],
+                    'url' => $subcity['url'],
+                    'where' => $subcity['pc_inwheretext'],
+                );
+                if ($subcity['last_update'] > $out['last_update']) {
+                    $out['last_update'] = $subcity['last_update'];
+                }
+            }
+        }
+
+        //-----------------------  м е т а  -------------------------
+        $this->_db->sql = "SELECT cf_title, cd_value
+                        FROM $dbcd cd
+                            LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
+                        WHERE cd.cd_pc_id = '{$out['pc_id']}'
+                            AND cd.cd_value != ''
+                            AND cf.cf_active = 1
+                        ORDER BY cf_order";
+        $this->_db->exec();
+        $out['metas'] = $this->_db->fetchAll();
+
+        return $out;
+    }
+
     public function updateByPk($id, $values = array(), $files = array()) {
         if (isset($values['pc_latitude'])) {
             $values['pc_latitude'] = floatval(str_replace(',', '.', trim($values['pc_latitude'])));

@@ -37,6 +37,70 @@ class Points extends Model {
         parent::__construct($db);
     }
 
+    public function getPointsByCity($city_id, $show_all = false) {
+        $out = array(
+            'points' => array(),
+            'points_sight' => array(),
+            'points_service' => array(),
+            'types' => array(),
+            'last_update' => 0,
+        );
+        $dbrt = $this->_db->getTableName('ref_pointtypes');
+        $this->_db->sql = "SELECT *,
+                                UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update
+                            FROM $this->_table_name pt
+                                LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
+                            WHERE pt.pt_citypage_id = '$city_id'\n";
+        if (!$show_all) {
+            $this->_db->sql .= "AND pt.pt_active = 1\n";
+        }
+        $this->_db->sql .= "ORDER BY pt.pt_active DESC, rt.tr_sight desc, pt.pt_rank desc, rt.tr_order, pt.pt_name";
+        $this->_db->exec();
+        while ($point = $this->_db->fetch()) {
+            $out['types'][$point['tr_sight']][$point['pt_type_id']] = array('short' => $point['tp_short'], 'full' => $point['tp_name'], 'icon' => $point['tp_icon']);
+
+            $short_lenght = 300;
+            $point['short'] = html_entity_decode(strip_tags($point['pt_description']), ENT_QUOTES, 'utf-8');
+            $short_end = @mb_strpos($point['short'], '.', $short_lenght, 'utf-8');
+            if (mb_strlen($point['short']) >= $short_lenght && $short_end) {
+                $point['short'] = mb_substr($point['short'], 0, $short_end, 'utf-8') . '&hellip;';
+            }
+
+            $point['pt_name'] = htmlentities($point['pt_name'], ENT_QUOTES, 'UTF-8', false);
+
+            $point_lat = $point['pt_latitude'];
+            $point_lon = $point['pt_longitude'];
+            if ($point_lat && $point_lon) {
+                $point_lat_short = mb_substr($point_lat, 0, 8);
+                $point_lon_short = mb_substr($point_lon, 0, 8);
+                if ($point_lat >= 0) {
+                    $point_lat_w = "N$point_lat_short";
+                } else {
+                    $point_lat_w = "S$point_lat_short";
+                }
+                if ($point_lon >= 0) {
+                    $point_lon_w = "E$point_lon_short";
+                } else {
+                    $point_lon_w = "W$point_lon_short";
+                }
+                $point['gps_dec'] = "$point_lat_w $point_lon_w";
+            } else {
+                $point['gps_dec'] = null;
+            }
+
+            $out['points'][] = $point;
+            if ($point['tr_sight'] == 1) {
+                $out['points_sight'][] = $point;
+            } else {
+                $out['points_service'][] = $point;
+            }
+            if ($point['last_update'] > $out['last_update']) {
+                $out['last_update'] = $point['last_update'];
+            }
+        }
+        return $out;
+    }
+
     public function getUnslug($limit = 10) {
         $dbpc = $this->_db->getTableName('pagecity');
         $dbrt = $this->_db->getTableName('ref_pointtypes');
