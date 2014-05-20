@@ -121,6 +121,7 @@ class Points extends Model {
         $dbrt = $this->_db->getTableName('ref_pointtypes');
         $dbru = $this->_db->getTableName('region_url');
         $this->_db->sql = "SELECT *,
+                                UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical
                             FROM $this->_table_name pt
                                 LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
@@ -200,9 +201,13 @@ class Points extends Model {
         $id = intval($id);
         $dbpc = $this->_db->getTableName('pagecity');
         $dbrt = $this->_db->getTableName('ref_pointtypes');
-        $this->_db->sql = "SELECT *
+        $dbru = $this->_db->getTableName('region_url');
+        $this->_db->sql = "SELECT *,
+                                CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical,
+                                UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update
                             FROM $this->_table_name pt
                                 LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
+                                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
                                 LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
                             WHERE $this->_table_pk = '$id'";
         $this->_db->exec();

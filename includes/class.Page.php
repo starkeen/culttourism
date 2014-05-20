@@ -58,7 +58,7 @@ class Page extends PageCommon {
             return false;
         }
         $this->canonical = $object['url_canonical'];
-        if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $this->canonical) {
+        if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != $this->canonical) {
             header("HTTP/1.1 301 Moved Permanently");
             header("Location: $this->canonical ");
             exit();
@@ -278,6 +278,19 @@ class Page extends PageCommon {
         if (!$id) {
             return false;
         }
+
+        $pts = new Points($this->db);
+        $object = $pts->getItemByPk($id);
+        if (!$object || $object['pt_active'] == 0) {
+            return false;
+        }
+        $this->canonical = $object['url_canonical'];
+        if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != $this->canonical) {
+            header("HTTP/1.1 301 Moved Permanently");
+            header("Location: $this->canonical");
+            exit();
+        }
+
         $dbpt = $db->getTableName('pagepoints');
         $dbpc = $db->getTableName('pagecity');
         $dbsp = $db->getTableName('statpoints');
@@ -288,20 +301,7 @@ class Page extends PageCommon {
         array_pop($uridata);
         $url = implode('/', $uridata);
 
-        $db->sql = "SELECT pt.pt_name, pt.pt_description, pt.pt_citypage_id,
-                            pt.pt_latitude, pt.pt_longitude, pt_latlon_zoom,
-                            pt.pt_website, pt.pt_adress, pt.pt_email, pt.pt_worktime, pt.pt_phone,
-                            rp.tp_name, rp.tr_sight, rp.tp_short, rp.tp_icon,
-                            UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update
-                    FROM $dbpt AS pt
-                    LEFT JOIN $dbrp AS rp ON pt.pt_type_id = rp.tp_id
-                    WHERE pt.pt_id = '$id'
-                    AND pt.pt_active = 1";
-        $db->exec();
-        $object = $db->fetch();
-        if (!$object) {
-            return false;
-        }
+
         $short = strip_tags($object['pt_description']);
         $short = mb_strlen($short) >= 100 ? mb_substr($short, 0, mb_strpos($short, ' ', 100), 'utf-8') : $short;
         $object['esc_name'] = htmlentities($object['pt_name'], ENT_QUOTES, 'utf-8');
@@ -328,20 +328,6 @@ class Page extends PageCommon {
         $db->exec();
         $city = $db->fetch();
         $smarty->assign('city', $city);
-
-        //--------------------  c a n o n i c a l  ------------------------
-        $db->sql = "SELECT url FROM $dburl WHERE uid = '{$city['pc_url_id']}'";
-        $db->exec();
-        $canonical_url = $db->fetch();
-        if ($canonical_url['url'] != '') {
-            $this->canonical = $canonical_url['url'] . "/object$id.html";
-            if ($canonical_url['url'] != $url) {
-                //$this->getError('301', "$this->canonical");
-                header("HTTP/1.1 301 Moved Permanently");
-                header("Location: $this->canonical");
-                exit();
-            }
-        }
 
         //------------------  s t a t i s t i c s  ------------------------
         $hash = $this->getUserHash();
