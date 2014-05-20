@@ -21,6 +21,7 @@ abstract class Core {
     public $counters = '';
     public $isIndex = 0;
     public $isCounters = 0;
+    public $isAjax = false;
     public $module_id = _INDEXPAGE_URI;
     public $md_id = null; //id of module in database
     public $page_id = '';
@@ -46,13 +47,18 @@ abstract class Core {
 
     protected function __construct($db, $mod) {
         $this->db = $db;
+        $this->smarty = new mySmarty();
         if (!$this->db->link) {
             $this->module_id = $mod;
-            return $this->getError('503', $smarty);
+            return $this->getError('503', $this->smarty);
         }
         $mod_id = $mod;
         $page_id = null;
         $id = null;
+
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            $this->isAjax = true;
+        }
 
         $this->auth = new Auth($this->db);
         $this->auth->checkSession('web');
