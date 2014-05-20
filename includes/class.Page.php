@@ -57,11 +57,14 @@ class Page extends PageCommon {
         if (!$object) {
             return false;
         }
-        $city = $pcs->getItemByPk($object['pt_citypage_id']);
+        $this->canonical = $object['url_canonical'];
+        if ($_SERVER['REQUEST_URI'] && $_SERVER['REQUEST_URI'] != $this->canonical) {
+            header("HTTP/1.1 301 Moved Permanently");
+            header("Location: $this->canonical ");
+            exit();
+        }
 
-        $uridata = explode('/', $_SERVER['REQUEST_URI']);
-        array_pop($uridata);
-        $url = implode('/', $uridata);
+        $city = $pcs->getItemByPk($object['pt_citypage_id']);
 
         $short = strip_tags($object['pt_description']);
         $short = mb_strlen($short) >= 100 ? mb_substr($short, 0, mb_strpos($short, ' ', 100), 'utf-8') : $short;
@@ -478,6 +481,7 @@ class Page extends PageCommon {
                 //$this->getError('301', "$this->canonical");
                 header("HTTP/1.1 301 Moved Permanently");
                 header("Location: $this->canonical");
+                exit();
             }
         }
 

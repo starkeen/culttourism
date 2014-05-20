@@ -54,9 +54,12 @@ class Points extends Model {
     public function searchSlugline($slugline) {
         $dbpc = $this->_db->getTableName('pagecity');
         $dbrt = $this->_db->getTableName('ref_pointtypes');
-        $this->_db->sql = "SELECT *
+        $dbru = $this->_db->getTableName('region_url');
+        $this->_db->sql = "SELECT *,
+                                CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical
                             FROM $this->_table_name pt
                                 LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
+                                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
                                 LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
                             WHERE TRIM(pt.pt_slugline) = TRIM('$slugline')
                             ORDER BY pt.pt_rank DESC";
