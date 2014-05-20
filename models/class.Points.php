@@ -47,6 +47,7 @@ class Points extends Model {
         );
         $dbrt = $this->_db->getTableName('ref_pointtypes');
         $this->_db->sql = "SELECT *,
+                                CONCAT(pt.pt_slugline, '.html') AS url_canonical,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update
                             FROM $this->_table_name pt
                                 LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
