@@ -20,27 +20,101 @@ class Page extends PageCommon {
     }
 
     public function getPageByURL($aurl) {
-        global $db;
         $url = '';
         foreach ($aurl as $w) {
             if ($w != '') {
                 $url .= '/' . $w;
             }
         }
-        if ($url == '') {
-            return FALSE;
-        } else {
-            global $smarty;
-            if (ereg('^object([[:digit:]]+).html$', array_pop(explode('/', $url)), $regs)) {
-                return $this->getPageObject($db, $smarty, intval($regs[1]));
-            } elseif (array_pop(explode('/', $url)) == 'map.html') {
-                return $this->getPageMap($db, $smarty, $url);
+        if ($url != '') {
+            $regs = array();
+            if (array_pop(explode('/', $url)) == 'map.html') {
+                return $this->getPageMap($this->db, $this->smarty, $url);
             } elseif (array_pop(explode('/', $url)) == 'index.html') {
-                return $this->getPageCity($db, $smarty, $url);
+                return $this->getPageCity($this->db, $this->smarty, $url);
+            } elseif (preg_match('/([a-z0-9_-]+)\.html/i', array_pop(explode('/', $url)), $regs)) {
+                return $this->getPageObjectBySlug($regs[1]);
+            } elseif (ereg('^object([[:digit:]]+).html$', array_pop(explode('/', $url)), $regs)) {
+                return $this->getPageObject($this->db, $this->smarty, intval($regs[1]));
             } else {
-                return $this->getPageCity($db, $smarty, $url);
+                return $this->getPageCity($this->db, $this->smarty, $url);
             }
+        } else {
+            return FALSE;
         }
+    }
+
+    private function getPageObjectBySlug($slugline) {
+        if (!$slugline) {
+            return false;
+        }
+
+        $pts = new Points($this->db);
+        $pcs = new Cities($this->db);
+
+        $objects = $pts->searchSlugline($slugline);
+        $object = isset($objects[0]) ? $objects[0] : false;
+        if (!$object) {
+            return false;
+        }
+        $city = $pcs->getItemByPk($object['pt_citypage_id']);
+
+        $uridata = explode('/', $_SERVER['REQUEST_URI']);
+        array_pop($uridata);
+        $url = implode('/', $uridata);
+
+        $short = strip_tags($object['pt_description']);
+        $short = mb_strlen($short) >= 100 ? mb_substr($short, 0, mb_strpos($short, ' ', 100), 'utf-8') : $short;
+        $object['esc_name'] = htmlentities($object['pt_name'], ENT_QUOTES, 'utf-8');
+        $object['map_zoom'] = ($object['pt_latlon_zoom']) ? $object['pt_latlon_zoom'] : 14;
+        if ($object['pt_latitude'] && $object['pt_longitude']) {
+            $object_lat_short = mb_substr($object['pt_latitude'], 0, 8);
+            $object_lon_short = mb_substr($object['pt_longitude'], 0, 8);
+            $object['gps_dec'] = (($object_lat_short >= 0) ? 'N' : 'S') . abs($object_lat_short) . ' ' . (($object_lon_short >= 0) ? 'E' : 'W') . abs($object_lon_short);
+            $object['sw_ne_delta'] = 0.01;
+            $object['sw_ne'] = array(
+                'sw' => array('lat' => $object['pt_latitude'] - $object['sw_ne_delta'], 'lon' => $object['pt_longitude'] - $object['sw_ne_delta']),
+                'ne' => array('lat' => $object['pt_latitude'] + $object['sw_ne_delta'], 'lon' => $object['pt_longitude'] + $object['sw_ne_delta']),
+            );
+            //$object['gps_deg'] = 0;
+        }
+
+
+        $this->lastedit_timestamp = $object['last_update'];
+        $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
+
+        //------------------  s t a t i s t i c s  ------------------------
+        $sp = new Statpoints($this->db);
+        $sp->insert(array(
+            'sp_pagepoint_id' => $object['pt_id'],
+            'sp_date' => date('Y-m-d H:i:s'),
+            'sp_hash' => $this->getUserHash(),
+        ));
+
+        $this->isCounters = 1;
+        $this->getCounters();
+
+        $this->addTitle($city['pc_title']);
+        $this->addTitle($object['esc_name']);
+        if ($object['tr_sight']) {
+            $this->addDescription('Достопримечательности ' . $city['pc_inwheretext']);
+        }
+        if (isset($object['gps_dec'])) {
+            $this->addDescription('GPS-координаты');
+        }
+        $this->addDescription("{$object['tp_short']} {$city['pc_inwheretext']}");
+        $this->addDescription($object['esc_name']);
+        $this->addDescription($short);
+        $this->addKeywords($city['pc_title']);
+        $this->addKeywords($object['esc_name']);
+        if (isset($object['gps_dec'])) {
+            $this->addKeywords('координаты GPS');
+        }
+
+        $this->smarty->assign('object', $object);
+        $this->smarty->assign('city', $city);
+
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.sm.html');
     }
 
     public function getSubContent($pid, $p_url) {
