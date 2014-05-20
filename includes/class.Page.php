@@ -32,10 +32,10 @@ class Page extends PageCommon {
                 return $this->getPageMap($this->db, $this->smarty, $url);
             } elseif (array_pop(explode('/', $url)) == 'index.html') {
                 return $this->getPageCity($this->db, $this->smarty, $url);
-            } elseif (preg_match('/([a-z0-9_-]+)\.html/i', array_pop(explode('/', $url)), $regs)) {
-                return $this->getPageObjectBySlug($regs[1]);
             } elseif (ereg('^object([[:digit:]]+).html$', array_pop(explode('/', $url)), $regs)) {
                 return $this->getPageObject($this->db, $this->smarty, intval($regs[1]));
+            } elseif (preg_match('/([a-z0-9_-]+)\.html/i', array_pop(explode('/', $url)), $regs)) {
+                return $this->getPageObjectBySlug($regs[1]);
             } else {
                 return $this->getPageCity($this->db, $this->smarty, $url);
             }
