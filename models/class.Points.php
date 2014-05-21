@@ -120,6 +120,9 @@ class Points extends Model {
         $dbpc = $this->_db->getTableName('pagecity');
         $dbrt = $this->_db->getTableName('ref_pointtypes');
         $dbru = $this->_db->getTableName('region_url');
+
+        $slugline = $this->_db->getEscapedString($slugline);
+
         $this->_db->sql = "SELECT *,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical

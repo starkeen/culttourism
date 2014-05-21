@@ -18,7 +18,9 @@ class Page extends PageCommon {
             $this->content = $this->getFormLogin($smarty);
         } elseif ($page_id == 'point') {
             if ($id == '' && isset($_GET['id']) && intval($_GET['id'])) {
-                $this->content = $this->getPoint(intval($_GET['id']), $smarty);
+                $this->content = $this->getPoint(intval($_GET['id']));
+            } elseif ($id == 's' && isset($_GET['id'])) {
+                $this->content = $this->getPointBySlugline(str_replace('.html', '', $_GET['id']));
             } elseif ($id == 'savetitle' && isset($_GET['id']) && intval($_GET['id'])) {
                 $this->content = $this->savePointTitle(intval($_GET['id']), $smarty);
             } elseif ($id == 'savedescr' && isset($_GET['id']) && intval($_GET['id'])) {
@@ -945,53 +947,58 @@ class Page extends PageCommon {
             return $this->getError('404');
     }
 
-    private function getPoint($id, $smarty) {
-        if (!$id)
+    private function getPoint($id) {
+        if (!$id) {
             return $this->getError('404');
-        $db = $this->db;
-        $dbpt = $db->getTableName('pagepoints');
-        $db->sql = "SELECT pt.pt_id, pt.pt_name, pt.pt_description,
-                    pt.pt_latitude, pt.pt_longitude, pt.pt_is_best,
-                    pt.pt_citypage_id,
-                    pt.pt_website, pt.pt_adress, pt.pt_worktime, pt.pt_phone, pt.pt_email
-                    FROM $dbpt pt
-                    WHERE pt.pt_id = '$id'";
-        $db->exec();
-        $object = $db->fetch();
-        if (!$object)
-            return false;
-
-        $object['gps_dec'] = null;
-        if ($object['pt_latitude'] && $object['pt_longitude']) {
-            $object_lat_short = mb_substr($object['pt_latitude'], 0, 8);
-            $object_lon_short = mb_substr($object['pt_longitude'], 0, 8);
-            $object_lat_w = (($object_lat_short >= 0) ? 'N' : 'S') . abs($object_lat_short);
-            $object_lon_w = (($object_lon_short >= 0) ? 'E' : 'W') . abs($object_lon_short);
-            $object['gps_dec'] = "$object_lat_w $object_lon_w";
-            //$object['gps_deg'] = 0;
         }
 
-        $db->sql = "SELECT CONCAT('http://', '" . _URL_ROOT . "', ru.url, '/') AS url
-                    FROM $dbpc pc
-                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
-                    WHERE pc.pc_id = '{$object['pt_citypage_id']}'
-                    LIMIT 1";
-        $db->exec();
-        $canonical_link = $db->fetch();
-        $object['page_link'] = $canonical_link['url'] . "object$id.html";
+        $pts = new Points($this->db);
+        $object = $pts->getItemByPk($id);
 
-        $dbsp = $db->getTableName('statpoints');
-        $hash = $this->getUserHash();
-        $db->sql = "INSERT INTO $dbsp (sp_pagepoint_id, sp_date, sp_hash) VALUES ('$id', now(), '$hash')
-                        ON DUPLICATE KEY UPDATE sp_date = now()";
-        $db->exec();
+        if (!$object) {
+            return false;
+        }
 
-        $smarty->assign('object', $object);
+        $object['page_link'] = $object['url_canonical'];
 
-        if ($this->checkEdit())
-            return $smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
-        else
-            return $smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
+        $sp = new Statpoints($this->db);
+        $sp->add($object['pt_id'], $this->getUserHash());
+
+
+        $this->smarty->assign('object', $object);
+
+        if ($this->checkEdit()) {
+            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
+        } else {
+            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
+        }
+    }
+
+    private function getPointBySlugline($slugline) {
+        if (!$slugline) {
+            return $this->getError('404');
+        }
+
+        $pts = new Points($this->db);
+        $objects = $pts->searchSlugline($slugline);
+        $object = isset($objects[0]) ? $objects[0] : false;
+        if (!$object) {
+            return false;
+        }
+
+        $object['page_link'] = $object['url_canonical'];
+
+        $sp = new Statpoints($this->db);
+        $sp->add($object['pt_id'], $this->getUserHash());
+
+
+        $this->smarty->assign('object', $object);
+
+        if ($this->checkEdit()) {
+            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
+        } else {
+            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
+        }
     }
 
 }
