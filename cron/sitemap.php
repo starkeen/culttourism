@@ -17,8 +17,9 @@ $db->exec();
 while ($row = $db->fetch()) {
     $url['uri'] = $row['md_url'];
     $url['full'] = "http://$baseurl/{$row['md_url']}";
-    if ($row['md_url'] != 'index.html')
+    if ($row['md_url'] != 'index.html') {
         $url['full'] .= '/';
+    }
     $url['lastmod'] = $basedate;
     $url['freq'] = 'daily';
     $url['priority'] = ($row['md_url'] != 'index.html') ? '0.90' : '1.00';
@@ -26,7 +27,7 @@ while ($row = $db->fetch()) {
 }
 $db->sql = "SELECT u.url, DATE_FORMAT(c.pc_lastup_date, '%Y-%m-%dT%H:%i:%s+00:00') dateup
             FROM $dbr u
-            LEFT JOIN $dbc c ON c.pc_id = u.citypage
+                LEFT JOIN $dbc c ON c.pc_id = u.citypage
             WHERE c.pc_text is not null";
 //$db->showSQL();
 $db->exec();
@@ -39,10 +40,10 @@ while ($row = $db->fetch()) {
     $urls[] = $url;
 }
 
-$db->sql = "SELECT concat(u.url,'/object',p.pt_id,'.html') url, DATE_FORMAT(p.pt_lastup_date, '%Y-%m-%dT%H:%i:%s+00:00') dateup
+$db->sql = "SELECT concat(u.url, '/', p.pt_slugline, '.html') url, DATE_FORMAT(p.pt_lastup_date, '%Y-%m-%dT%H:%i:%s+00:00') dateup
             FROM $dbp p
-            LEFT JOIN $dbc c ON c.pc_id = p.pt_citypage_id
-            LEFT JOIN $dbr u ON u.uid = c.pc_url_id
+                LEFT JOIN $dbc c ON c.pc_id = p.pt_citypage_id
+                    LEFT JOIN $dbr u ON u.uid = c.pc_url_id
             WHERE pt_active = 1";
 $db->exec();
 while ($row = $db->fetch()) {
@@ -69,9 +70,9 @@ if ($file_hndlr) {
     fwrite($file_hndlr, $filecontent);
     fclose($file_hndlr);
     //echo 'Файл записан!</p>';
-}
-else
+} else {
     echo '<br>Ошибка доступа к файлу!';
+}
 
 $filesize = filesize($filename);
 
