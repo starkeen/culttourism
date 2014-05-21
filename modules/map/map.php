@@ -173,7 +173,6 @@ class Page extends PageCommon {
         $this->db->sql = "SELECT pp.*,
                                 CONCAT('" . _URL_ROOT . "', ru.url, '/') AS cityurl,
                                 CONCAT('" . _URL_ROOT . "', ru.url, '/', pp.pt_slugline, '.html') AS objurl
-                                #CONCAT('" . _URL_ROOT . "', ru.url, '/object', pp.pt_id, '.html') AS objurl
                             FROM $dbpp AS pp
                                 LEFT JOIN $dbpr pt ON pt.tp_id = pp.pt_type_id
                                 LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
