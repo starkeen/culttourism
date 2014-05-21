@@ -23,11 +23,94 @@ class Page extends PageCommon {
         elseif ($page_id == 'common') {
             $this->auth->setService('map');
             $this->getYMapsMLCommon($_GET);
+        } elseif ($page_id == 'city' && isset($_GET['cid']) && intval($_GET['cid']) > 0) {
+            $this->auth->setService('map');
+            $this->getYMapsMLRegion(intval($_GET['cid']));
         }
         //==========================  E X I T  ================================
         else {
             $this->getError('404');
         }
+    }
+
+    private function getYMapsMLRegion($cid) {
+        if (!$cid) {
+            $this->getError('404');
+        }
+
+        $dbpr = $this->db->getTableName('ref_pointtypes');
+        $dbpp = $this->db->getTableName('pagepoints');
+        $dbpc = $this->db->getTableName('pagecity');
+        $dbru = $this->db->getTableName('region_url');
+
+        $this->db->sql = "SELECT * FROM $dbpr";
+        $this->db->exec();
+        $ptypes = array();
+        while ($rpt = $this->db->fetch()) {
+            $ptypes[] = $rpt;
+        }
+
+        $this->db->sql = "SELECT pp.*,
+                        CONCAT('" . _URL_ROOT . "', ru.url, '/') AS cityurl,
+                        CONCAT('" . _URL_ROOT . "', ru.url, '/object', pp.pt_id, '.html') AS objurl
+                    FROM $dbpp AS pp
+                    LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
+                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
+                    WHERE pt_citypage_id='$cid'
+                    AND pt_latitude != ''
+                    AND pt_longitude != ''
+                    AND pt_active = 1";
+        $this->db->exec();
+        $points = array();
+        while ($pt = $this->db->fetch()) {
+            $pt['pt_description'] = strip_tags($pt['pt_description']);
+            $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
+            $short_end = @mb_strpos($pt['pt_description'], ' ', 100, 'utf-8');
+            $pt['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
+            $pt['pt_website'] = htmlspecialchars($pt['pt_website'], ENT_QUOTES);
+            $points[] = $pt;
+        }
+
+        $this->db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude, CONCAT(ru.url, '/') AS url
+                    FROM $dbpc pc
+                        LEFT JOIN $dbpc pc2 ON pc2.pc_region_id = pc.pc_region_id AND pc2.pc_id != pc.pc_id
+                            LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
+                    WHERE pc.pc_id = '$cid'
+                        AND pc2.pc_city_id != 0";
+        $this->db->exec();
+        $city = array();
+        while ($pc = $this->db->fetch()) {
+            $city[] = $pc;
+        }
+
+        $this->db->sql = "SELECT pc.*
+                    FROM $dbpc pc
+                    WHERE pc.pc_id = '$cid'";
+        $this->db->exec();
+        $this_city = $this->db->fetch();
+
+        if ($this_city['pc_region_id'] == 0) {
+            $this->db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude, CONCAT(ru.url, '/') AS url
+                        FROM $dbpc pc2
+                            LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
+                        WHERE pc2.pc_country_id = '{$this_city['pc_country_id']}'
+                            AND pc2.pc_city_id != 0";
+            $this->db->exec();
+            while ($pc = $this->db->fetch()) {
+                $city[] = $pc;
+            }
+        }
+
+        $this->smarty->assign('ptypes', $ptypes);
+        $this->smarty->assign('points', $points);
+        $this->smarty->assign('city', $city);
+
+        header("Content-type: application/xml");
+        header("Cache-Control: no-store, no-cache, must-revalidate");
+        header("Expires: " . date("r"));
+
+        echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML1.sm.xml');
+        exit();
     }
 
     private function getYMapsMLCommon($get) {
