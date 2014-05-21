@@ -8,93 +8,94 @@ class Page extends PageCommon {
         $smarty->caching = false;
         parent::__construct($db, 'ajax');
         $id = urldecode($id);
-        if (strpos($id, '?') !== FALSE)
+        if (strpos($id, '?') !== FALSE) {
             $id = substr($id, 0, strpos($id, '?'));
+        }
         $this->id = $id;
         $this->auth->setService('ajax');
 
-        if ($page_id == 'forms' && $id == 'commonlogin')
+        if ($page_id == 'forms' && $id == 'commonlogin') {
             $this->content = $this->getFormLogin($smarty);
-        elseif ($page_id == 'point') {
-            if ($id == '' && isset($_GET['id']) && intval($_GET['id']))
+        } elseif ($page_id == 'point') {
+            if ($id == '' && isset($_GET['id']) && intval($_GET['id'])) {
                 $this->content = $this->getPoint(intval($_GET['id']), $smarty);
-            elseif ($id == 'savetitle' && isset($_GET['id']) && intval($_GET['id']))
+            } elseif ($id == 'savetitle' && isset($_GET['id']) && intval($_GET['id'])) {
                 $this->content = $this->savePointTitle(intval($_GET['id']), $smarty);
-            elseif ($id == 'savedescr' && isset($_GET['id']) && intval($_GET['id']))
+            } elseif ($id == 'savedescr' && isset($_GET['id']) && intval($_GET['id'])) {
                 $this->content = $this->savePointDescr(intval($_GET['id']), $smarty);
-            elseif ($id == 'savecontacts' && isset($_GET['cid']) && intval($_GET['cid']))
+            } elseif ($id == 'savecontacts' && isset($_GET['cid']) && intval($_GET['cid'])) {
                 $this->content = $this->savePointContacts(intval($_GET['cid']), $smarty);
-            elseif ($id == 'getnewform')
+            } elseif ($id == 'getnewform') {
                 $this->content = $this->getPointNew(intval($_GET['cid']), $smarty);
-            elseif ($id == 'savenew')
+            } elseif ($id == 'savenew') {
                 $this->content = $this->savePointNew(intval($_GET['cid']), $smarty);
-            elseif ($id == 'delpoint')
+            } elseif ($id == 'delpoint') {
                 $this->content = $this->deletePoint(intval($_GET['pid']), $smarty);
-            elseif ($id == 'getformGPS')
+            } elseif ($id == 'getformGPS') {
                 $this->content = $this->getFormPointGPS(intval($_GET['pid']), $smarty);
-            elseif ($id == 'saveformGPS')
+            } elseif ($id == 'saveformGPS') {
                 $this->content = $this->setFormPointGPS(intval($_GET['pid']), $smarty);
-            elseif ($id == 'savebest')
+            } elseif ($id == 'savebest') {
                 $this->content = $this->setFormPointBest(intval($_GET['pid']), $smarty);
+            }
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
-        }
-        elseif ($page_id == 'city') {
-            if ($id == 'savetitle' && isset($_GET['id']) && intval($_GET['id']))
+        } elseif ($page_id == 'city') {
+            if ($id == 'savetitle' && isset($_GET['id']) && intval($_GET['id'])) {
                 $this->content = $this->saveCityTitle(intval($_GET['id']), $smarty);
-            elseif ($id == 'savedescr' && isset($_GET['id']) && intval($_GET['id']))
+            } elseif ($id == 'savedescr' && isset($_GET['id']) && intval($_GET['id'])) {
                 $this->content = $this->saveCityDescr(intval($_GET['id']), $smarty);
-            elseif ($id == 'getformGPS' && isset($_GET['cid']) && intval($_GET['cid']))
+            } elseif ($id == 'getformGPS' && isset($_GET['cid']) && intval($_GET['cid'])) {
                 $this->content = $this->getFormCityGPS(intval($_GET['cid']), $smarty);
-            elseif ($id == 'saveformGPS')
+            } elseif ($id == 'saveformGPS') {
                 $this->content = $this->setFormCityGPS(intval($_GET['cid']), $smarty);
+            }
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
-        }
-        elseif ($page_id == 'pointtype') {
-            if ($id == 'getform')
+        } elseif ($page_id == 'pointtype') {
+            if ($id == 'getform') {
                 $this->content = $this->getChangeTypeForm($smarty);
-            elseif ($id == 'savetype' && isset($_POST['pid']) && intval($_POST['pid']))
+            } elseif ($id == 'savetype' && isset($_POST['pid']) && intval($_POST['pid'])) {
                 $this->content = $this->setPointType(intval($_POST['pid']));
-        }
-        elseif ($page_id == 'blog') {
+            }
+        } elseif ($page_id == 'blog') {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
-            if ($id == 'addform')
+            if ($id == 'addform') {
                 $this->content = $this->getFormBlog($smarty);
-            elseif ($id == 'editform' && intval($_GET['brid']))
+            } elseif ($id == 'editform' && intval($_GET['brid'])) {
                 $this->content = $this->getFormBlog($smarty, intval($_GET['brid']));
-            elseif ($id == 'saveform')
+            } elseif ($id == 'saveform') {
                 $this->content = $this->saveFormBlog();
-            elseif ($id == 'delentry' && intval($_GET['bid']))
+            } elseif ($id == 'delentry' && intval($_GET['bid'])) {
                 $this->content = $this->deleteBlogEntry(intval($_GET['bid']));
+            }
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
-        }
-        elseif ($page_id == 'page') {
-            if ($id == 'gps')
+        } elseif ($page_id == 'page') {
+            if ($id == 'gps') {
                 $this->content = $this->getTextPage($smarty, 31);
-            else
+            } else {
                 $this->getError('404');
-        }
-        elseif ($page_id == 'weather') {
+            }
+        } elseif ($page_id == 'weather') {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
-            if ($id == 'getbycoords')
+            if ($id == 'getbycoords') {
                 $this->content = $this->getWeatherBlockCoord($_GET['lat'], $_GET['lon'], $smarty);
-            else
+            } else {
                 $this->getError('404');
-        }
-
-        elseif ($page_id == 'YMapsML') {
-            if ($id == 'getcitypoints' && isset($_GET['cid']) && intval($_GET['cid']))
+            }
+        } elseif ($page_id == 'YMapsML') {
+            if ($id == 'getcitypoints' && isset($_GET['cid']) && intval($_GET['cid'])) {
                 $this->content = $this->getCityPointsYMapsML($smarty, intval($_GET['cid']));
-            elseif ($id == 'getcitymap' && isset($_GET['cid']) && intval($_GET['cid']))
+            } elseif ($id == 'getcitymap' && isset($_GET['cid']) && intval($_GET['cid'])) {
                 $this->content = $this->getCityMapYMapsML($smarty, intval($_GET['cid']));
-            elseif ($id == 'getcommonmap')
+            } elseif ($id == 'getcommonmap') {
                 $this->content = $this->getCommonMapYMapsML($smarty, $_GET);
-            else
+            } else {
                 $this->getError('404');
-        }
-        elseif ($page_id == 'GPX' && $id == 'getcitypoints' && isset($_GET['cid']) && intval($_GET['cid']))
+            }
+        } elseif ($page_id == 'GPX' && $id == 'getcitypoints' && isset($_GET['cid']) && intval($_GET['cid'])) {
             $this->content = $this->getCityPointsGPX($smarty, intval($_GET['cid']));
-        else
+        } else {
             $this->getError('404');
+        }
     }
 
     public static function getInstance($db, $mod = null) {
@@ -132,16 +133,19 @@ class Page extends PageCommon {
         $response = json_decode($result);
         if ($response->cod == 200) {
             $weather_data['temperature'] = round($response->list[0]->main->temp - 273.15);
-            if ($weather_data['temperature'] > 0)
+            if ($weather_data['temperature'] > 0) {
                 $weather_data['temperature'] = '+' . $weather_data['temperature'];
+            }
             if (isset($response->list[0]->main->temp_min) && isset($response->list[0]->main->temp_max)) {
                 if (round($response->list[0]->main->temp_min) != round($response->list[0]->main->temp_max)) {
                     $weather_data['temperature_min'] = round($response->list[0]->main->temp_min - 273.15);
                     $weather_data['temperature_max'] = round($response->list[0]->main->temp_max - 273.15);
-                    if ($weather_data['temperature_min'] > 0)
+                    if ($weather_data['temperature_min'] > 0) {
                         $weather_data['temperature_min'] = '+' . $weather_data['temperature_min'];
-                    if ($weather_data['temperature_max'] > 0)
+                    }
+                    if ($weather_data['temperature_max'] > 0) {
                         $weather_data['temperature_max'] = '+' . $weather_data['temperature_max'];
+                    }
                     $weather_data['temp_range'] = $weather_data['temperature_min'] . '&hellip;' . $weather_data['temperature_max'];
                 }
             }
@@ -161,27 +165,29 @@ class Page extends PageCommon {
                     $weather_data['weather_descr'] = $cond['description'];
                 }
                 $weather_data['weather_full'] = $weather_data['weather_text'];
-                if ($weather_data['weather_descr'])
+                if ($weather_data['weather_descr']) {
                     $weather_data['weather_full'] .= ', ' . $weather_data['weather_descr'];
+                }
             }
-            if ($weather_data['winddeg'] >= 0 && $weather_data['winddeg'] <= 22.5)
+            if ($weather_data['winddeg'] >= 0 && $weather_data['winddeg'] <= 22.5) {
                 $weather_data['winddirect'] = 'сев';
-            elseif ($weather_data['winddeg'] >= 22.5 && $weather_data['winddeg'] <= 67.5)
+            } elseif ($weather_data['winddeg'] >= 22.5 && $weather_data['winddeg'] <= 67.5) {
                 $weather_data['winddirect'] = 'с-в';
-            elseif ($weather_data['winddeg'] >= 67.5 && $weather_data['winddeg'] <= 112.5)
+            } elseif ($weather_data['winddeg'] >= 67.5 && $weather_data['winddeg'] <= 112.5) {
                 $weather_data['winddirect'] = 'вост';
-            elseif ($weather_data['winddeg'] >= 112.5 && $weather_data['winddeg'] <= 157.5)
+            } elseif ($weather_data['winddeg'] >= 112.5 && $weather_data['winddeg'] <= 157.5) {
                 $weather_data['winddirect'] = 'ю-в';
-            elseif ($weather_data['winddeg'] >= 157.5 && $weather_data['winddeg'] <= 202.5)
+            } elseif ($weather_data['winddeg'] >= 157.5 && $weather_data['winddeg'] <= 202.5) {
                 $weather_data['winddirect'] = 'юж';
-            elseif ($weather_data['winddeg'] >= 202.5 && $weather_data['winddeg'] <= 247.5)
+            } elseif ($weather_data['winddeg'] >= 202.5 && $weather_data['winddeg'] <= 247.5) {
                 $weather_data['winddirect'] = 'ю-3';
-            elseif ($weather_data['winddeg'] >= 247.5 && $weather_data['winddeg'] <= 292.5)
+            } elseif ($weather_data['winddeg'] >= 247.5 && $weather_data['winddeg'] <= 292.5) {
                 $weather_data['winddirect'] = 'зап';
-            elseif ($weather_data['winddeg'] >= 292.5 && $weather_data['winddeg'] <= 67.5)
+            } elseif ($weather_data['winddeg'] >= 292.5 && $weather_data['winddeg'] <= 67.5) {
                 $weather_data['winddirect'] = 'с-з';
-            else
+            } else {
                 $weather_data['winddirect'] = 'сев';
+            }
             $smarty->assign('weather_data', $weather_data);
             $out['state'] = true;
             $out['content'] = $smarty->fetch(_DIR_TEMPLATES . '/_ajax/weather.block.sm.html');
@@ -196,10 +202,11 @@ class Page extends PageCommon {
         $db->sql = "SELECT * FROM $dbwc WHERE wc_id = '$code'";
         $db->exec();
         $row = $db->fetch();
-        if ($row['wc_id'] != 0)
+        if ($row['wc_id'] != 0) {
             return array('main' => $row['wc_main'], 'description' => $row['wc_description']);
-        else
+        } else {
             return false;
+        }
     }
 
 //--------------------------------------------------------- TEXT PAGES ---------
@@ -214,11 +221,13 @@ class Page extends PageCommon {
 
 //-------------------------------------------------------------- BLOG ----------
     private function deleteBlogEntry($bid) {
-        if (!$this->checkEdit())
+        if (!$this->checkEdit()) {
             return FALSE;
+        }
         $brid = cut_trash_int($_POST['brid']);
-        if (!$brid || !$bid || $brid != $bid)
+        if (!$brid || !$bid || $brid != $bid) {
             return FALSE;
+        }
         $db = $this->db;
         $dbb = $db->getTableName('blogentries');
         $db->sql = "DELETE FROM $dbb WHERE br_id = '$brid'";
@@ -226,8 +235,9 @@ class Page extends PageCommon {
     }
 
     private function getFormBlog($smarty, $br_id = null) {
-        if (!$this->checkEdit())
+        if (!$this->checkEdit()) {
             return FALSE;
+        }
         if ($br_id) {
             $db = $this->db;
             $dbb = $db->getTableName('blogentries');
@@ -253,8 +263,9 @@ class Page extends PageCommon {
     }
 
     private function saveFormBlog($br_id = null) {
-        if (!$this->checkEdit())
+        if (!$this->checkEdit()) {
             return FALSE;
+        }
         $brid = cut_trash_int($_POST['brid']);
         $ntitle = cut_trash_text($_POST['ntitle']);
         $ntext = cut_trash_html($_POST['ntext']);
@@ -274,8 +285,9 @@ class Page extends PageCommon {
             $db->sql = "UPDATE $dbb SET
                         br_title='$ntitle', br_text='$ntext', br_date = '$ndate $ntime', br_active = '$nact', br_url='$nurl'
                         WHERE br_id = '$brid'";
-        } else
+        } else {
             return $this->getError('404');
+        }
 
         return $db->exec();
     }

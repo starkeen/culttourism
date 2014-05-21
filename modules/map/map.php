@@ -7,8 +7,9 @@ class Page extends PageCommon {
         global $smarty;
         parent::__construct($db, 'map', $page_id);
         $id = urldecode($id);
-        if (strpos($id, '?') !== FALSE)
+        if (strpos($id, '?') !== FALSE) {
             $id = substr($id, 0, strpos($id, '?'));
+        }
         $this->id = $id;
 
         //========================  I N D E X  ================================
@@ -19,8 +20,9 @@ class Page extends PageCommon {
             return true;
         }
         //==========================  E X I T  ================================
-        else
+        else {
             $this->getError('404');
+        }
     }
 
     public static function getInstance($db, $mod) {
