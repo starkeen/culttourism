@@ -88,7 +88,9 @@
     </tr>
     {foreach from = $points item=point}
     <tr style="background-color:#fff;">
-        <td style="text-align: center;"><a href="{$point.url}/object{$point.pt_id}.html" target="_blank">{$point.pt_id}</a></td>
+        <td style="text-align: center;">
+            <a href="{$point.url}/{$point.pt_slugline}.html" target="_blank">{$point.pt_id}</a>
+        </td>
         <td>{$point.country_name}</td>
         <td>{$point.region_name}</td>
         <td>
@@ -102,6 +104,11 @@
             <a href="#" class="points-editprop" data-prop="pt_name" data-oid="{$point.pt_id}">
                 {if $point.pt_active == 0}<s>{$point.pt_name}</s>{else}{$point.pt_name}{/if}
             </a>
+            <div style="text-align: right;">
+                <a href="#" class="points-editprop" data-prop="pt_slugline" data-oid="{$point.pt_id}" style="color:green;border: none;">
+                    <i>{$point.pt_slugline}</i>
+                </a>
+            </div>
         </td>
         <td style="text-align: right; background-color:{if $point.descr_len < 100}#FF4500{elseif $point.descr_len < 200}#FFA583{elseif $point.descr_len < 500}#FFA583{else}#CCE4CC{/if};">
             {$point.descr_len}
