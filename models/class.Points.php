@@ -151,7 +151,7 @@ class Points extends Model {
         $name = trim($point['pt_name']);
 
         $analogs = $this->searchByName($point['pt_name']);
-        if ($point['tr_sight'] == 0 || count($analogs) > 1) {
+        if (($point['tr_sight'] == 0 && $point['pt_type_id'] != 0) || count($analogs) > 1) {
             $name = $point['pc_title'] . ' ' . $name;
         }
         $name_url = trim(preg_replace('/[^a-z0-9-_]+/', '', strtolower(Helper::getTranslit($name, '_'))), '_-');
@@ -246,7 +246,9 @@ class Points extends Model {
                 unset($values['pt_longitude']);
             }
         }
-        parent::insert($values, $files);
+        $new_id = parent::insert($values, $files);
+        $this->createSluglineById($new_id);
+        return $new_id;
     }
 
     public function deleteByPk($id) {

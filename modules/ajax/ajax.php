@@ -808,51 +808,35 @@ class Page extends PageCommon {
     }
 
     private function savePointNew($cid, $smarty) {
-        if (!$cid)
+        if (!$cid) {
             return $this->getError('404');
-        if (!$this->checkEdit())
+        }
+        if (!$this->checkEdit()) {
             return $this->getError('403');
-        $cid = cut_trash_int($_POST['cid']);
-        $nname = cut_trash_string($_POST['nname']);
-        $ndesc = cut_trash_html($_POST['ndesc']);
-        $nweb = cut_trash_string($_POST['nweb']);
-        $nmail = cut_trash_string($_POST['nmail']);
-        $nphone = cut_trash_string($_POST['nphone']);
-        $nwork = cut_trash_string($_POST['nwork']);
-        $naddr = cut_trash_string($_POST['naddr']);
-        $nlat = cut_trash_float($_POST['nlat']);
-        $nlon = cut_trash_float($_POST['nlon']);
-        $nbest = cut_trash_int($_POST['nbest'] == "checked");
-        if (strlen($nweb) != 0) {
-            $nweb = str_replace('http://', '', $nweb);
-            $nweb = 'http://' . $nweb;
         }
         //print_x($_POST);
-        if (!$nname)
-            $nname = '[не указано]';
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $db->sql = "INSERT INTO $dbpp SET
-                pt_name = '$nname',
-                pt_description = '$ndesc',
-                pt_citypage_id = '$cid',
-                pt_create_date = now(),
-                pt_create_user = '" . $this->getUserId() . "',
-                pt_website = '$nweb',
-                pt_worktime = '$nwork',
-                pt_adress = '$naddr',
-                pt_phone = '$nphone',
-                pt_email = '$nmail',
-                pt_is_best = '$nbest',
-                pt_lastup_date = now(),
-                pt_rank = 0";
-        if ($nlat > 0 && $nlon > 0) {
-            $db->sql .= ", pt_latitude = '$nlat', pt_longitude = '$nlon'";
+
+        $pts = new Points($this->db);
+        $add_item = array(
+            'pt_name' => trim($_POST['nname']) != '' ? trim($_POST['nname']) : '[не указано]',
+            'pt_description' => trim($_POST['ndesc']),
+            'pt_citypage_id' => intval($_POST['cid']),
+            'pt_create_date' => date('Y-m-d H:i:s'),
+            'pt_create_user' => $this->getUserId(),
+            'pt_lastup_date' => date('Y-m-d H:i:s'),
+            'pt_website' => strlen(trim($_POST['nweb'])) > 0 ? 'http://' . str_replace('http://', '', trim($_POST['nweb'])) : null,
+            'pt_email' => trim($_POST['nmail']),
+            'pt_worktime' => trim($_POST['nwork']),
+            'pt_adress' => trim($_POST['naddr']),
+            'pt_phone' => trim($_POST['nphone']),
+            'pt_is_best' => intval($_POST['nbest'] == "checked"),
+            'pt_rank' => 0,
+        );
+        if ($_POST['nlat'] != '' && $_POST['nlon'] != '') {
+            $add_item['pt_latitude'] = floatval(str_replace(',', '.', trim($_POST['nlat'])));
+            $add_item['pt_longitude'] = floatval(str_replace(',', '.', trim($_POST['nlon'])));
         }
-        if ($db->exec())
-            return $db->getLastInserted();
-        else
-            return false;
+        return $pts->insert($add_item);
     }
 
     private function savePointTitle($id, $smarty) {
