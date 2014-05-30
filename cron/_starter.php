@@ -1,5 +1,6 @@
 <?php
 
+error_reporting(E_ALL);
 $_timer_start_main = microtime(true);
 header('Content-Type: text/html; charset=utf-8');
 include(realpath(dirname(__FILE__) . '/../config/configuration.php'));
@@ -7,6 +8,9 @@ include(_DIR_ROOT . '/includes/class.myDB.php');
 include(_DIR_ROOT . '/includes/class.mySmarty.php');
 include(_DIR_ROOT . '/includes/class.Logging.php');
 include(_DIR_ROOT . '/includes/debug.php');
+
+include(_DIR_INCLUDES . '/class.Helper.php');
+spl_autoload_register('Helper::autoloader');
 
 $db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
 $smarty = new mySmarty();
@@ -37,8 +41,9 @@ foreach ($scripts as $job) {
     $script_id = $job['cr_id'];
     $period = $job['period'];
 
-    if (!in_array($script_id, $nologging_ids))
+    if (!in_array($script_id, $nologging_ids)) {
         Logging::addHistory('cron', "Начала работу задача №$script_id ({$job['cr_title']})");
+    }
 
     $db->exec("UPDATE $cron SET cr_isrun = '1', cr_datelast_attempt = now() WHERE cr_id = $script_id");
 
@@ -48,8 +53,9 @@ foreach ($scripts as $job) {
     $content = ob_get_contents();
     ob_end_clean();
     $exectime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах
-    if (strlen($content) != 0)
+    if (strlen($content) != 0) {
         $content .= "<hr>время: $exectime c.";
+    }
     echo $content;
     $db->exec("UPDATE $cron SET
                     cr_isrun = '0',
@@ -59,8 +65,9 @@ foreach ($scripts as $job) {
                     cr_datelast = now()
                     WHERE cr_id = $script_id");
 
-    if (!in_array($script_id, $nologging_ids) && $exectime >= 0.01)
+    if (!in_array($script_id, $nologging_ids) && $exectime >= 0.01) {
         Logging::addHistory('cron', "Отработала задача №$script_id  ({$job['cr_title']}), время $exectime с.", $content);
+    }
 }
 
 //-- поправить ключи

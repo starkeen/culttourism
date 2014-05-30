@@ -37,8 +37,9 @@ class Page extends PageCommon {
             header("Location: /api/0/");
         }
         //==========================  E X I T  ================================
-        else
+        else {
             $this->getError('404');
+        }
     }
 
     private function getApi0($smarty) {

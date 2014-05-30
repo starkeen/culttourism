@@ -100,70 +100,70 @@
                 {/if}
             </td>
             <td>
-                <a href="object{$item.pt_id}.html" id="object_id_{$item.pt_id}" class="objlink" title="подробно: {$item.pt_name}" {if !$item.pt_active}style="color:#777;"{/if}>
-                    {$item.pt_name}
-                </a>
-            </td>
-            <td>
-                {if $item.gps_dec}<a href="#" id="gps_{$item.pt_id}" class="point_latlon">{$item.gps_dec}</a>{else}<a href="#" id="gps_{$item.pt_id}" class="point_latlon">указать</a>{/if}
-            </td>
-            <td>
-                <img class="point_deleter" id="del_{$item.pt_id}" src="/img/btn/ico.delete.gif" />
-            </td>
-        </tr>
-        <tr>
-            <td colspan="4"><span class="point_short">{$item.short}</span></td>
-        </tr>
-        {/foreach}
-    </table>
-    <button id="do_add_point">добавить</button>
-
-
-    <h2>Полезная информация</h2>
-
-    <ul id="menu_type2" class="points_selector">
-        <li>
-            <a class="points_selector_active typefilterlink" href="#type_all" title="показать всё">
-                <img class="seltype_icon" src="/img/points/x32/star.png" alt="показать всё" />
-                <span class="seltype_capt">всё</span>
+                <a href="{$item.url_canonical}" id="object_id_{$item.pt_id}" class="objlink" title="подробно: {$item.pt_name}" {if !$item.pt_active}style="color:#777;"{/if}>
+                   {$item.pt_name}
             </a>
-        </li>
-        {foreach from=$types_select.0 item=seltype key=typeid}
-        <li>
-            <a class="points_selector_inactive typefilterlink" href="#type_{$typeid}" title="{$seltype.full}">
-                <img class="seltype_icon" src="/img/points/x32/{$seltype.icon}" alt="{$seltype.full}" />
-                <span class="seltype_capt">{$seltype.short}</span>
-            </a>
-        </li>
-        {/foreach}
-    </ul>
+        </td>
+        <td>
+            {if $item.gps_dec}<a href="#" id="gps_{$item.pt_id}" class="point_latlon">{$item.gps_dec}</a>{else}<a href="#" id="gps_{$item.pt_id}" class="point_latlon">указать</a>{/if}
+        </td>
+        <td>
+            <img class="point_deleter" id="del_{$item.pt_id}" src="/img/btn/ico.delete.gif" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4"><span class="point_short">{$item.short}</span></td>
+    </tr>
+    {/foreach}
+</table>
+<button id="do_add_point">добавить</button>
 
-    <table id="whatservlist" class="citypoints_list">
-        {foreach from=$points_servo item=item}
-        <tr class="obj_type_{$item.pt_type_id}">
-            <td>{if $item.pt_type_id != 0}
-                <img class="point_typer" id="type_{$item.pt_id}" src="/img/points/x32/{$item.tp_icon}" alt="{$item.tp_name}" />
-                {else}
-                <img class="point_typer" id="type_{$item.pt_id}" src="/img/points/x32/star.png" alt="другое" />
-                {/if}
-            </td>
-            <td>
-                <a href="object{$item.pt_id}.html" id="object_id_{$item.pt_id}" class="objlink" title="подробно: {$item.pt_name}" {if !$item.pt_active}style="color:#777;"{/if}>
-                    {$item.pt_name}
-            </a>
-            </td>
-            <td>
-                {if $item.gps_dec}<a href="#" id="gps_{$item.pt_id}" class="point_latlon">{$item.gps_dec}</a>{else}<a href="#" id="gps_{$item.pt_id}" class="point_latlon">указать</a>{/if}
-            </td>
-            <td>
-                <img class="point_deleter" id="del_{$item.pt_id}" src="/img/btn/ico.delete.gif" />
-            </td>
-        </tr>
-        <tr>
-            <td colspan="4"><span class="point_short">{$item.short}</span></td>
-        </tr>
-        {/foreach}
-    </table>
+
+<h2>Полезная информация</h2>
+
+<ul id="menu_type2" class="points_selector">
+    <li>
+        <a class="points_selector_active typefilterlink" href="#type_all" title="показать всё">
+            <img class="seltype_icon" src="/img/points/x32/star.png" alt="показать всё" />
+            <span class="seltype_capt">всё</span>
+        </a>
+    </li>
+    {foreach from=$types_select.0 item=seltype key=typeid}
+    <li>
+        <a class="points_selector_inactive typefilterlink" href="#type_{$typeid}" title="{$seltype.full}">
+            <img class="seltype_icon" src="/img/points/x32/{$seltype.icon}" alt="{$seltype.full}" />
+            <span class="seltype_capt">{$seltype.short}</span>
+        </a>
+    </li>
+    {/foreach}
+</ul>
+
+<table id="whatservlist" class="citypoints_list">
+    {foreach from=$points_servo item=item}
+    <tr class="obj_type_{$item.pt_type_id}">
+        <td>{if $item.pt_type_id != 0}
+            <img class="point_typer" id="type_{$item.pt_id}" src="/img/points/x32/{$item.tp_icon}" alt="{$item.tp_name}" />
+            {else}
+            <img class="point_typer" id="type_{$item.pt_id}" src="/img/points/x32/star.png" alt="другое" />
+            {/if}
+        </td>
+        <td>
+            <a href="{$item.url_canonical}" id="object_id_{$item.pt_id}" class="objlink" title="подробно: {$item.pt_name}" {if !$item.pt_active}style="color:#777;"{/if}>
+               {$item.pt_name}
+        </a>
+    </td>
+    <td>
+        {if $item.gps_dec}<a href="#" id="gps_{$item.pt_id}" class="point_latlon">{$item.gps_dec}</a>{else}<a href="#" id="gps_{$item.pt_id}" class="point_latlon">указать</a>{/if}
+    </td>
+    <td>
+        <img class="point_deleter" id="del_{$item.pt_id}" src="/img/btn/ico.delete.gif" />
+    </td>
+</tr>
+<tr>
+    <td colspan="4"><span class="point_short">{$item.short}</span></td>
+</tr>
+{/foreach}
+</table>
 </div>
 
 {if $city.pc_latitude && $city.pc_longitude}

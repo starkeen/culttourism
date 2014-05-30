@@ -3,19 +3,18 @@
     <tbody>
         {foreach from=$tcity item=city}
         <tr>
-            <td>{counter}</td>
             <td>
                 <a href="../..{$city.url}/"
                    {if $city.pc_city_id!=0}
-                   style="margin-left:30px;"
+                   style="margin-left:60px;"
                    {elseif $city.pc_region_id!=0 && $city.pc_city_id==0 && $city.pc_country_id!=0}
-                   style="margin-left:20px;"
+                   style="margin-left:40px;"
                    {/if}
                    {if $city.url=='/goldenring'}
-                   style="margin-left:20px;"
+                   style="margin-left:40px;"
                    {/if}
                    >
-                   <b>{$city.pc_title}</b>
+                   <strong>{$city.pc_title}</strong>
                 </a>
             </td>
             <td>{$city.pc_pagepath}</td>
