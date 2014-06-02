@@ -45,7 +45,7 @@ DOC;
             'content' => $doc
     )));
     $response = file_get_contents('http://xmlsearch.yandex.ru/xmlsearch?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80&lr=225', true, $context);
-    //$response = file_get_contents('http://xmlsearch.yandex.ru/xmlsearch?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80&lr=1', true, $context);
+    // $response = file_get_contents('http://xmlsearch.yandex.ru/xmlsearch?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80&lr=1', true, $context);
     if ($response) {
         $xmldoc = new SimpleXMLElement($response);
         $error = $xmldoc->response->error;
