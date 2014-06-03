@@ -36,6 +36,7 @@
 </div>
 {/if}
 {if $object.pt_latitude && $object.pt_longitude}
+<input type="hidden" id="mapobj_pt_id" value="{$object.pt_id}" />
 <input type="hidden" id="mapobj_pt_latitude" value="{$object.pt_latitude}" />
 <input type="hidden" id="mapobj_pt_longitude" value="{$object.pt_longitude}" />
 <input type="hidden" id="mapobj_pt_zoom" value="{$object.map_zoom}" />
