@@ -22,9 +22,11 @@ class Page extends PageCommon {
         //====================  M A P   E N T R Y  ============================
         elseif ($page_id == 'common') {
             $this->auth->setService('map');
+            $this->isAjax = true;
             $this->getYMapsMLCommon($_GET);
         } elseif ($page_id == 'city' && isset($_GET['cid']) && intval($_GET['cid']) > 0) {
             $this->auth->setService('map');
+            $this->isAjax = true;
             $this->getYMapsMLRegion(intval($_GET['cid']));
         }
         //==========================  E X I T  ================================

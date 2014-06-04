@@ -49,7 +49,7 @@ $smarty->assign('page', $page);
 header('X-Powered-By: html');
 header('Content-Type: text/html; charset=utf-8');
 
-if (_CACHE_DAYS != 0) {
+if (_CACHE_DAYS != 0 && !$page->isAjax) {
     header('Expires: ' . $page->expiredate);
     header('Last-Modified: ' . $page->lastedit);
     header('Cache-Control: private, max-age=' . _CACHE_DAYS * 3600);
@@ -68,7 +68,7 @@ if (_CACHE_DAYS != 0) {
             exit();
         }
     }
-} elseif ($page->lastedit_timestamp > 0 && $module_id != 'ajax') {
+} elseif ($page->lastedit_timestamp > 0 && !$page->isAjax) {
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp) . ' GMT');
     header("Cache-control: public");
     header("Pragma: cache");
