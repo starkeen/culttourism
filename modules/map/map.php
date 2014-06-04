@@ -54,7 +54,6 @@ class Page extends PageCommon {
 
         $this->db->sql = "SELECT pp.*,
                         CONCAT('" . _URL_ROOT . "', ru.url, '/') AS cityurl,
-                        #CONCAT('" . _URL_ROOT . "', ru.url, '/object', pp.pt_id, '.html') AS objurl
                         CONCAT('" . _URL_ROOT . "', ru.url, '/', pp.pt_slugline, '.html') AS objurl
                     FROM $dbpp AS pp
                     LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
@@ -171,10 +170,17 @@ class Page extends PageCommon {
             $bounds['center_lat'] = $bounds['min_lat'] + $bounds['delta_lat'];
             $bounds['center_lon'] = $bounds['min_lon'] + $bounds['delta_lon'];
         }
+        if (isset($get['oid']) && intval($get['oid']) > 0) {
+            $selected_object_id = intval($get['oid']);
+        } else {
+            $selected_object_id = 0;
+        }
 
         $this->db->sql = "SELECT pp.*,
+                                IF (pp.pt_id = $selected_object_id, 1, 0) AS obj_selected,
                                 CONCAT('" . _URL_ROOT . "', ru.url, '/') AS cityurl,
-                                CONCAT('" . _URL_ROOT . "', ru.url, '/', pp.pt_slugline, '.html') AS objurl
+                                CONCAT('" . _URL_ROOT . "', ru.url, '/', pp.pt_slugline, '.html') AS objurl,
+                                CONCAT(ru.url, '/', pp.pt_slugline, '.html') AS objuri
                             FROM $dbpp AS pp
                                 LEFT JOIN $dbpr pt ON pt.tp_id = pp.pt_type_id
                                 LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
@@ -182,9 +188,11 @@ class Page extends PageCommon {
                             WHERE pp.pt_active = 1
                                 AND pp.pt_latitude BETWEEN '{$bounds['min_lat']}' AND '{$bounds['max_lat']}'
                                 AND pp.pt_longitude BETWEEN '{$bounds['min_lon']}' AND '{$bounds['max_lon']}'
+                                OR pp.pt_id = '$selected_object_id'
                             ORDER BY pt.tr_order DESC, pp.pt_rank
                             LIMIT 300";
         $this->db->exec();
+        //$this->db->showSQL();
         while ($pt = $this->db->fetch()) {
             $pt['pt_description'] = strip_tags($pt['pt_description']);
             $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');

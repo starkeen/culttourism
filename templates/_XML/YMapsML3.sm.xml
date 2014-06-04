@@ -46,6 +46,15 @@
                 <template>#balloonTemplateCity</template>
             </balloonContentStyle>
         </Style>
+        <Style xmlns:gml="http://www.opengis.net/gml" gml:id="style_object">
+            <parentStyle>#commonStyle</parentStyle>
+            <iconStyle>
+                <href>http://culttourism.ru/img/points/map/flag_object.png</href>
+            </iconStyle>
+            <balloonContentStyle>
+                <template>#balloonTemplateObject</template>
+            </balloonContentStyle>
+        </Style>
         
         <Template xmlns:gml="http://www.opengis.net/gml" gml:id="placemark">
             <text>&lt;img src="http://api-maps.yandex.ru/i/0.4/micro/pm$[metaDataProperty.AnyMetaData.icon]s.png" width="28" height="29"/&gt;&lt;font style="font-weight:bold;position:relative;z-index:4;top:-29px;display:block;width:22px;text-align:center" color="$[metaDataProperty.AnyMetaData.color]"&gt;$[metaDataProperty.AnyMetaData.number]&lt;/font&gt;</text>
@@ -66,6 +75,13 @@
             <text><![CDATA[
                     <div style="font-size:12px;max-width:250px;">
                         <div style="color:#4585C3;font-weight:bold"><a href="$[metaDataProperty.AnyMetaData.url]">$[name]</a></div>
+                    </div>]]>
+            </text>
+        </Template>
+        <Template xmlns:gml="http://www.opengis.net/gml" gml:id="balloonTemplateObject">
+            <text><![CDATA[
+                    <div style="font-size:12px;max-width:250px;">
+                        <div style="color:#4585C3;font-weight:bold"><a href="http://culttourism.ru$[metaDataProperty.AnyMetaData.objuri]">$[name]</a></div>
                     </div>]]>
             </text>
         </Template>
@@ -96,12 +112,17 @@
                         <ym:pid>{$point.pt_id}</ym:pid>
                         <ym:cityurl>{$point.cityurl}</ym:cityurl>
                         <ym:objurl>{$point.objurl}</ym:objurl>
+                        <ym:objuri>{$point.objuri}</ym:objuri>
                     </ym:AnyMetaData>
                 </metaDataProperty>
                 <Point>
                     <pos>{$point.pt_longitude} {$point.pt_latitude}</pos>
                 </Point>
+                {if $point.obj_selected}
+                <ym:style>#style_object</ym:style>
+                {else}
                 <ym:style>#style{$point.pt_type_id}</ym:style>
+                {/if}
             </ym:GeoObject>
             {/foreach}
 
