@@ -17,8 +17,9 @@ class PageCommon extends Core {
         $this->mainfile_css = $this->globalsettings['mainfile_css'];
         $this->mainfile_js = $this->globalsettings['mainfile_js'];
 
-        if (isset($_SESSION['user']))
+        if (isset($_SESSION['user'])) {
             $this->user['object'] = $_SESSION['user'];
+        }
         if (isset($_SESSION['user_name'])) {
             $this->user['username'] = $_SESSION['user_name'];
             $this->user['userid'] = $_SESSION['user_id'];
@@ -27,24 +28,27 @@ class PageCommon extends Core {
 
     public function checkEdit() {
         //проверяет возможность редактирования
-        if (isset($_SESSION['user_id']) && intval($_SESSION['user_id']) != 0)
+        if (isset($_SESSION['user_id']) && intval($_SESSION['user_id']) != 0) {
             return TRUE;
-        else
+        } else {
             return FALSE;
+        }
     }
 
     public function getUserId() {
-        if (isset($_SESSION['user_id']) && intval($_SESSION['user_id']) != 0)
+        if (isset($_SESSION['user_id']) && intval($_SESSION['user_id']) != 0) {
             return intval($_SESSION['user_id']);
-        else
+        } else {
             return FALSE;
+        }
     }
 
     public function getUserHash() {
-        if (isset($_SESSION['user_id']) && intval($_SESSION['user_id']) != 0)
+        if (isset($_SESSION['user_id']) && intval($_SESSION['user_id']) != 0) {
             return intval($_SESSION['user_id']);
-        else
+        } else {
             return session_id();
+        }
     }
 
 }
