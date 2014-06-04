@@ -58,14 +58,21 @@ ymaps.ready(function() {
         'rlt=' + bounds[1][1],
     ];
 
+    var objects_all = [];
+    var objects_cnt = 0;
     ymaps.geoXml.load("http://culttourism.ru/map/common/?" + boundsparams.join('&')).then(function(res) {
         if (res.mapState && !hashCenter)
             res.mapState.applyToMap(map);
         var arr = [];
         res.geoObjects.each(function(obj) {
-            arr.push(obj);
+            var oid = parseInt(obj.properties._K.metaDataProperty.AnyMetaData.pid);
+            objects_all[oid] = obj;
+            objects_cnt++;
         });
-        $('#mapdata_points').text(arr.length);
+        objects_all.map(function(object) {
+            return arr.push(object);
+        });
+        $('#mapdata_points').text(objects_cnt);
         cluster.add(arr);
         map.geoObjects.add(cluster);
     });
@@ -86,12 +93,15 @@ ymaps.ready(function() {
         ymaps.geoXml.load("http://culttourism.ru/map/common/?" + boundsparams.join('&')).then(function(res) {
             var arr = [];
             res.geoObjects.each(function(obj) {
-                arr.push(obj);
+                var oid = parseInt(obj.properties._K.metaDataProperty.AnyMetaData.pid);
+                if (!objects_all[oid]) {
+                    objects_all[oid] = obj;
+                    arr.push(obj);
+                    objects_cnt++;
+                }
             });
-            $('#mapdata_points').text(arr.length);
-            cluster.removeAll();
+            $('#mapdata_points').text(objects_cnt);
             cluster.add(arr);
-            map.geoObjects.remove(cluster);
             map.geoObjects.add(cluster);
         });
     });
