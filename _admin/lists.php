@@ -11,6 +11,8 @@ if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
     $list = $lst->getItemByPk($id);
 
+    $lstitems = new ListsItems($db, $id);
+
     if (isset($_POST) && !empty($_POST)) {
         $res = $lst->updateByPk($id, $_POST);
         if ($res) {
@@ -20,6 +22,7 @@ if (isset($_GET['id'])) {
     }
 
     $smarty->assign('list', $list);
+    $smarty->assign('list_items', $lstitems->getAll());
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/lists.item.sm.html'));
 } else {
     $smarty->assign('lists', $lst->getAll());

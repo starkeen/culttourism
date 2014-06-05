@@ -66,6 +66,15 @@
                     <th>Порядок</th>
                     <th>Активность</th>
                 </tr>
+                {foreach from=$list_items item=li}
+                <tr>
+                    <td style="text-align: center;">{$li.li_pt_id}</td>
+                    <td>{$li.pc_title}</td>
+                    <td>{$li.pt_name}</td>
+                    <td style="text-align: center;">{$li.li_order}</td>
+                    <td style="text-align: center;">{if $li.li_active}<b>ВКЛ</b>{else}откл{/if}</td>
+                </tr>
+                {/foreach}
             </table>
 
         </td>
