@@ -6,6 +6,8 @@ ini_set("memory_limit", "512M");
 session_start();
 /* Общие функции и опции */
 require_once('../config/configuration.php');
+include(_DIR_INCLUDES . '/class.Helper.php');
+spl_autoload_register('Helper::autoloader');
 require_once('debug.php');
 require_once('class.mySmarty.php');
 require_once('class.myDB.php');
