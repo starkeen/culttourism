@@ -1,2 +1,27 @@
 <img class="pageicon" src="/img/admin/ico.a_refs.gif" />
 <h3>{$title}</h3>
+
+<table style="background-color:teal; margin:10px auto; font-size: 80%;" cellpadding="3" cellspacing="1">
+    <tr style="background-color:#DCDCDC;">
+        <th>ID</th>
+        <th>Наименование</th>
+        <th>URL-часть</th>
+        <th>Текст</th>
+        <th>Элементов</th>
+        <th>Порядок</th>
+        <th>Активность</th>
+        <th>&nbsp;</th>
+    </tr>
+    {foreach from=$lists item=list}
+    <tr style="background-color:#fff;">
+        <td style="text-align: center;">{$list.ls_id}</td>
+        <td>{$list.ls_title}</td>
+        <td><a href="/list/{$list.ls_slugline}.html" target="_blank">{$list.ls_slugline}</a></td>
+        <td style="text-align: center;">{$list.len_text}</td>
+        <td style="text-align: center;">{$list.cnt}</td>
+        <td style="text-align: center;">{$list.ls_order}</td>
+        <td style="text-align: center;">{if $list.ls_active}<b>ВКЛ</b>{else}откл{/if}</td>
+        <td><a href="?id={$list.ls_id}"><img src="/img/admin/ico.edit.gif" /></a></td>
+    </tr>
+    {/foreach}
+</table>

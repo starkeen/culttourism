@@ -1,2 +1,82 @@
 <img class="pageicon" src="/img/admin/ico.a_refs.gif" />
 <h3>{$title}</h3>
+
+<p>Список "{$list.ls_title}"</p>
+
+<table style="width:100%;">
+    <tr>
+        <td valign="top">
+
+            <b>Данные списка</b>
+            <form method="post">
+                <table>
+                    <tr>
+                        <td>Наименование</td>
+                        <td><input type="text" name="ls_title" value="{$list.ls_title}" style="width:250px;" /></td>
+                    </tr>
+                    <tr>
+                        <td>URL-часть</td>
+                        <td><input type="text" name="ls_slugline" value="{$list.ls_slugline}" style="width:250px;" /></td>
+                    </tr>
+                    <tr>
+                        <td>Ключевые слова</td>
+                        <td><input type="text" name="ls_keywords" value="{$list.ls_keywords}" style="width:250px;" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Мета-описание</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <textarea name="ls_description" id="ls_description" style="width:99%;">{$list.ls_description}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Текст</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <textarea name="ls_text" id="ls_text" style="width:99%;">{$list.ls_text}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            Порядок: <input type="text" name="ls_order" value="{$list.ls_order}" style="width:50px;" />
+                            Активность:
+                            <input type="hidden" name="ls_active" value="0" />
+                            <input type="checkbox" name="ls_active" value="1" {if $list.ls_active == 1}checked{/if} />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="submit" value="Сохранить" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+
+        </td>
+        <td valign="top" style="width:70%">
+
+            <b>Список входящих объектов</b>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Регион</th>
+                    <th>Название</th>
+                    <th>Порядок</th>
+                    <th>Активность</th>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+
+<script>
+    CKEDITOR.replace('ls_text', {
+        customConfig: '/config/config.cke4.js',
+        height: '200px',
+        toolbar: 'Lite'
+    });
+</script>
