@@ -88,7 +88,7 @@ ymaps.ready(function() {
             'lln=' + bounds[0][0],
             'llt=' + bounds[0][1],
             'rln=' + bounds[1][0],
-            'rlt=' + bounds[1][1],
+            'rlt=' + bounds[1][1]
         ];
         ymaps.geoXml.load("http://culttourism.ru/map/common/?" + boundsparams.join('&')).then(function(res) {
             var arr = [];

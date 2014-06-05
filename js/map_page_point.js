@@ -27,15 +27,41 @@ ymaps.ready(function() {
         'rln=' + bounds[1][0],
         'rlt=' + bounds[1][1]
     ];
+    var objects_all = [];
     ymaps.geoXml.load("http://culttourism.ru/map/common/?oid=" + $("#mapobj_pt_id").val() + "&" + boundsparams.join('&')).then(function(res) {
         if (res.mapState) {
             res.mapState.applyToMap(myMap);
         }
-        var arr = [];
         res.geoObjects.each(function(obj) {
-            arr.push(obj);
+            var oid = parseInt(obj.properties._K.metaDataProperty.AnyMetaData.pid);
+            objects_all[oid] = obj;
+        });
+        var arr = [];
+        objects_all.map(function(object) {
+            return arr.push(object);
         });
         cluster.add(arr);
         myMap.geoObjects.add(cluster);
+    });
+    myMap.events.add(['boundschange', 'typechange'], function() {
+        bounds = myMap.getBounds();
+        boundsparams = [
+            'lln=' + bounds[0][0],
+            'llt=' + bounds[0][1],
+            'rln=' + bounds[1][0],
+            'rlt=' + bounds[1][1]
+        ];
+        ymaps.geoXml.load("http://culttourism.ru/map/common/?oid=" + $("#mapobj_pt_id").val() + "&" + boundsparams.join('&')).then(function(res) {
+            var arr = [];
+            res.geoObjects.each(function(obj) {
+                var oid = parseInt(obj.properties._K.metaDataProperty.AnyMetaData.pid);
+                if (!objects_all[oid]) {
+                    objects_all[oid] = obj;
+                    arr.push(obj);
+                }
+            });
+            cluster.add(arr);
+            myMap.geoObjects.add(cluster);
+        });
     });
 });
