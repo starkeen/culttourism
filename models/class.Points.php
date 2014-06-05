@@ -252,7 +252,7 @@ class Points extends Model {
     }
 
     public function deleteByPk($id) {
-        $this->updateByPk($id, array('pt_active' => 0));
+        $this->updateByPk($id, array($this->_table_active => 0));
     }
 
 }
