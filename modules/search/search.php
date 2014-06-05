@@ -99,6 +99,9 @@ DOC;
                                 $result_item['descr'] .= $this->highlight_words($passage) . "\n";
                             }
                         }
+                        $title_items = explode($this->globalsettings['title_delimiter'], $result_item['title']);
+                        array_pop($title_items);
+                        $result_item['title'] = trim(implode(', ', $title_items));
                         $result[] = $result_item;
                     }
                 }
