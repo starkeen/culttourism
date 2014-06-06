@@ -57,6 +57,56 @@ h1, h2, h3 {
     color: #009FD4;
 }
 
+/* -----------------------------  COMMON TABLES ------------------------- */
+.commontable {
+    background-color: #8A648A;
+    font-size:90%;
+    margin:10px auto;
+}
+.commontable tr {
+    background-color:#fff;
+}
+.commontable tr td {
+    position:relative;
+    background-color:inherit;
+    padding: 3px;
+}
+.commontable tr th {
+    background-color: #D3CED3;
+    padding: 3px;
+}
+
+.detailtable {
+    background-color: #8A648A;
+    margin:10px auto;
+}
+.detailtable tr td {
+    background-color: #F1ECF1;
+    padding: 3px;
+}
+.detailtable tr th {
+    text-align: right;
+    background-color: #D3CED3;
+    padding: 3px;
+}
+.tablerow_cellicon {
+    position:absolute;
+    right:2px;
+    bottom:1px;
+}
+.tablerow_additional_data {
+    color:#777;
+    display: block;
+    float:right;
+    font-size:x-small;
+}
+.commontable .bkgnd_warning td {
+    background-color:#FFFFD4;
+}
+.commontable .bkgnd_error td {
+    background-color:#FA8072;
+}
+
 /* --------------------------------------  PAGER ------------------------ */
 .pager_block {
     border: 1px dotted #efefef;
