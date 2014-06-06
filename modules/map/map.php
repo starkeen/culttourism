@@ -49,6 +49,12 @@ class Page extends PageCommon {
 
         $ptypes = array();
         $points = array();
+        $bounds = array(
+            'max_lat' => 0, 'max_lon' => 0,
+            'min_lat' => 180, 'min_lon' => 180,
+            'center_lat' => null, 'center_lon' => null,
+            'delta_lat' => 0.1, 'delta_lon' => 0.3,
+        );
 
         $this->db->sql = "SELECT * FROM $dbpr";
         $this->db->exec();
@@ -67,6 +73,8 @@ class Page extends PageCommon {
                                     LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
                                         LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
                             WHERE pp.pt_active = 1
+                                AND pt_latitude != 0
+                                AND pt_longitude != 0
                                 AND li.li_active
                                 AND li.li_ls_id = '$list_id'
                             ORDER BY pt.tr_order DESC, pp.pt_rank
@@ -80,6 +88,23 @@ class Page extends PageCommon {
             $pt['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
             $pt['pt_website'] = htmlspecialchars($pt['pt_website'], ENT_QUOTES);
             $points[] = $pt;
+
+            if ($pt['pt_latitude'] > $bounds['max_lat']) {
+                $bounds['max_lat'] = $pt['pt_latitude'];
+            }
+            if ($pt['pt_longitude'] > $bounds['max_lon']) {
+                $bounds['max_lon'] = $pt['pt_longitude'];
+            }
+            if ($pt['pt_latitude'] < $bounds['min_lat']) {
+                $bounds['min_lat'] = $pt['pt_latitude'];
+            }
+            if ($pt['pt_longitude'] < $bounds['min_lon']) {
+                $bounds['min_lon'] = $pt['pt_longitude'];
+            }
+            $bounds['min_lat'] = $bounds['min_lat'] - $bounds['delta_lat'];
+            $bounds['max_lat'] = $bounds['max_lat'] + $bounds['delta_lat'];
+            $bounds['min_lon'] = $bounds['min_lon'] - $bounds['delta_lon'];
+            $bounds['max_lon'] = $bounds['max_lon'] + $bounds['delta_lon'];
         }
 
         $this->smarty->assign('ptypes', $ptypes);

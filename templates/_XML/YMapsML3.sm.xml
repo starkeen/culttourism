@@ -2,6 +2,7 @@
 <ym:ymaps xmlns:ym="http://maps.yandex.ru/ymaps/1.x">
     <Representation xmlns="http://maps.yandex.ru/representation/1.x">
         <View>
+            <mapType>MAP</mapType>
             <boundedBy xmlns="http://www.opengis.net/gml">
                 <Envelope>
                     <lowerCorner>{$bounds.min_lon} {$bounds.min_lat}</lowerCorner>
