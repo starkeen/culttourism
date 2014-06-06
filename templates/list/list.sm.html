@@ -1,0 +1,11 @@
+<ul style="display:block; width:45%; float:right;">
+    {foreach from=$list_items item=pt}
+    <li><a href="{$pt.url_canonical}" class="objlink">{$pt.pt_name}</a></li>
+    {/foreach}
+</ul>
+
+<div style="width:49%;text-align: justify;">
+    {$about_text}
+</div>
+
+<div style="clear:both;"></div>

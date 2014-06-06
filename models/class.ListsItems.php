@@ -30,11 +30,29 @@ class ListsItems extends Model {
                                 LEFT JOIN $dbo pt ON pt.pt_id = li.li_pt_id
                                     LEFT JOIN $dbc pc ON pc.pc_id = pt.pt_citypage_id
                                         LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
-                            WHERE li_ls_id = '$this->_list_id'\n";
-        if ($this->_table_order) {
-            $this->_db->sql .= "GROUP BY pt.pt_id
-                                ORDER BY $this->_table_order ASC, pt.pt_rank DESC";
-        }
+                            WHERE li_ls_id = '$this->_list_id'
+                            GROUP BY pt.pt_id
+                            ORDER BY $this->_table_order ASC, pt.pt_rank DESC";
+        $this->_db->exec();
+        return $this->_db->fetchAll();
+    }
+
+    public function getActive() {
+        $dbo = $this->_db->getTableName('pagepoints');
+        $dbc = $this->_db->getTableName('pagecity');
+        $dbru = $this->_db->getTableName('region_url');
+        $this->_db->sql = "SELECT li.*, pt.*, pc.*,
+                                CONCAT(ru.url, '/') AS url_region,
+                                CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical
+                            FROM $this->_table_name li
+                                LEFT JOIN $dbo pt ON pt.pt_id = li.li_pt_id
+                                    LEFT JOIN $dbc pc ON pc.pc_id = pt.pt_citypage_id
+                                        LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
+                            WHERE li_ls_id = '$this->_list_id'
+                                AND li.li_active = 1
+                                AND pt.pt_active = 1
+                            GROUP BY pt.pt_id
+                            ORDER BY $this->_table_order ASC, pt.pt_rank DESC";
         $this->_db->exec();
         return $this->_db->fetchAll();
     }
