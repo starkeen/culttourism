@@ -24,6 +24,7 @@ class ListsItems extends Model {
         $dbc = $this->_db->getTableName('pagecity');
         $dbru = $this->_db->getTableName('region_url');
         $this->_db->sql = "SELECT li.*, pt.*, pc.*,
+                                UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
                                 CONCAT(ru.url, '/') AS url_region,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical
                             FROM $this->_table_name li
@@ -42,6 +43,7 @@ class ListsItems extends Model {
         $dbc = $this->_db->getTableName('pagecity');
         $dbru = $this->_db->getTableName('region_url');
         $this->_db->sql = "SELECT li.*, pt.*, pc.*,
+                                UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
                                 CONCAT(ru.url, '/') AS url_region,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical
                             FROM $this->_table_name li
