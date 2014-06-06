@@ -7,14 +7,15 @@ class Page extends PageCommon {
         global $smarty;
         parent::__construct($db, 'blog');
         $this->id = $id;
-        if ($page_id == '')
+        if ($page_id == '') {
             $this->content = $this->getAllEntries($smarty, $db); //все записи
-        elseif ($id2 != '')
+        } elseif ($id2 != '') {
             $this->content = $this->getOneEntry($smarty, $db, $id2, $page_id, $id); //одна запись
-        elseif ($page_id != '')
+        } elseif ($page_id != '') {
             $this->content = $this->getCalendar($smarty, $db, $page_id, $id); //календарь
-        else
+        } else {
             $this->getError('404');
+        }
     }
 
     public static function getInstance($db, $mod = null) {
@@ -137,8 +138,7 @@ class Page extends PageCommon {
             if (!$bid)
                 return false;
             return $bid;
-        }
-        else
+        } else
             return FALSE;
     }
 
@@ -153,8 +153,7 @@ class Page extends PageCommon {
             if (!$bid)
                 return false;
             return $bid;
-        }
-        else
+        } else
             return FALSE;
     }
 
