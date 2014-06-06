@@ -28,11 +28,69 @@ class Page extends PageCommon {
             $this->auth->setService('map');
             $this->isAjax = true;
             $this->getYMapsMLRegion(intval($_GET['cid']));
+        } elseif ($page_id == 'list' && isset($_GET['lid']) && intval($_GET['lid']) > 0) {
+            $this->auth->setService('map');
+            $this->isAjax = true;
+            $this->getYMapsMLList(intval($_GET['lid']));
         }
         //==========================  E X I T  ================================
         else {
             $this->getError('404');
         }
+    }
+
+    private function getYMapsMLList($list_id) {
+
+        $dbli = $this->db->getTableName('lists_items');
+        $dbpr = $this->db->getTableName('ref_pointtypes');
+        $dbpp = $this->db->getTableName('pagepoints');
+        $dbpc = $this->db->getTableName('pagecity');
+        $dbru = $this->db->getTableName('region_url');
+
+        $ptypes = array();
+        $points = array();
+
+        $this->db->sql = "SELECT * FROM $dbpr";
+        $this->db->exec();
+        while ($rpt = $this->db->fetch()) {
+            $ptypes[] = $rpt;
+        }
+
+        $this->db->sql = "SELECT pp.*,
+                                0 AS obj_selected,
+                                CONCAT('" . _URL_ROOT . "', ru.url, '/') AS cityurl,
+                                CONCAT('" . _URL_ROOT . "', ru.url, '/', pp.pt_slugline, '.html') AS objurl,
+                                CONCAT(ru.url, '/', pp.pt_slugline, '.html') AS objuri
+                            FROM $dbli li
+                                LEFT JOIN $dbpp AS pp ON pp.pt_id = li.li_pt_id
+                                    LEFT JOIN $dbpr pt ON pt.tp_id = pp.pt_type_id
+                                    LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
+                                        LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
+                            WHERE pp.pt_active = 1
+                                AND li.li_active
+                                AND li.li_ls_id = '$list_id'
+                            ORDER BY pt.tr_order DESC, pp.pt_rank
+                            LIMIT 300";
+        $this->db->exec();
+        //$this->db->showSQL();
+        while ($pt = $this->db->fetch()) {
+            $pt['pt_description'] = strip_tags($pt['pt_description']);
+            $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
+            $short_end = @mb_strpos($pt['pt_description'], ' ', 50, 'utf-8');
+            $pt['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
+            $pt['pt_website'] = htmlspecialchars($pt['pt_website'], ENT_QUOTES);
+            $points[] = $pt;
+        }
+
+        $this->smarty->assign('ptypes', $ptypes);
+        $this->smarty->assign('bounds', $bounds);
+        $this->smarty->assign('points', $points);
+
+        header("Content-type: application/xml");
+        header("Cache-Control: no-store, no-cache, must-revalidate");
+        header("Expires: " . date("r"));
+        echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
+        exit();
     }
 
     private function getYMapsMLRegion($cid) {

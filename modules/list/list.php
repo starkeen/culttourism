@@ -31,7 +31,7 @@ class Page extends PageCommon {
 
             $lis = new ListsItems($this->db, $list['data']['ls_id']);
 
-            $this->smarty->assign('about_text', $list['data']['ls_text']);
+            $this->smarty->assign('list', $list);
             $this->smarty->assign('list_items', $lis->getActive());
 
             $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/list/list.sm.html');
