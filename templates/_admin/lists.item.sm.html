@@ -65,6 +65,7 @@
                     <th>Регион</th>
                     <th>Название</th>
                     <th>Порядок</th>
+                    <th>Вес</th>
                     <th>Активность</th>
                 </tr>
                 {foreach from=$list_items item=li}
@@ -74,6 +75,7 @@
                     <td><a href="{$li.url_region}" target="_blank">{$li.pc_title}</a></td>
                     <td><a href="{$li.url_canonical}" target="_blank">{$li.pt_name}</a></td>
                     <td style="text-align: center;">{$li.li_order}</td>
+                    <td style="text-align: center;">{$li.pt_rank}</td>
                     <td style="text-align: center;">{if $li.li_active}<b>ВКЛ</b>{else}откл{/if}</td>
                 </tr>
                 {/foreach}
