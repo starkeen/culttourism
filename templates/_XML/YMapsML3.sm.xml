@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ym:ymaps xmlns:ym="http://maps.yandex.ru/ymaps/1.x">
-    <Representation xmlns="http://maps.yandex.ru/representation/1.x">
-        <View>
-            <mapType>MAP</mapType>
-            <boundedBy xmlns="http://www.opengis.net/gml">
-                <Envelope>
-                    <lowerCorner>{$bounds.min_lon} {$bounds.min_lat}</lowerCorner>
-                    <upperCorner>{$bounds.max_lon} {$bounds.max_lat}</upperCorner>
-                </Envelope>
-            </boundedBy>
-        </View>
+<ymaps:ymaps xmlns:ymaps="http://maps.yandex.ru/ymaps-1.x" xmlns:gml="http://www.opengis.net/gml">
+    <repr:Representation xmlns:repr="http://maps.yandex.ru/representation-1.x">
+        <repr:View>
+            <repr:mapType>MAP</repr:mapType>
+            <gml:boundedBy xmlns="http://www.opengis.net/gml">
+                <gml:Envelope>
+                    <gml:lowerCorner>{$bounds.min_lon} {$bounds.min_lat}</gml:lowerCorner>
+                    <gml:upperCorner>{$bounds.max_lon} {$bounds.max_lat}</gml:upperCorner>
+                </gml:Envelope>
+            </gml:boundedBy>
+        </repr:View>
         <Style xmlns:gml="http://www.opengis.net/gml" gml:id="userobject">
             <iconStyle>
                 <size x="28" y="29"/>
@@ -86,7 +86,7 @@
                     </div>]]>
             </text>
         </Template>
-    </Representation>
+    </repr:Representation>
     
     <Attribution>
         <Source id="culttourism">
@@ -97,39 +97,39 @@
         </Source>
     </Attribution>
     
-    <ym:GeoObjectCollection xmlns="http://www.opengis.net/gml">
+    <ymaps:GeoObjectCollection xmlns="http://www.opengis.net/gml">
         
-        <featureMembers>
+        <gml:featureMembers>
             {foreach from=$points item=point}
-            <ym:GeoObject id="pt{$point.pt_id}">
-                <name>{$point.pt_name}</name>
-                <description>{$point.pt_short}</description>
-                <metaDataProperty>
-                    <ym:AnyMetaData>
+            <ymaps:GeoObject id="pt{$point.pt_id}">
+                <gml:name>{$point.pt_name}</gml:name>
+                <gml:description>{$point.pt_short}</gml:description>
+                <gml:metaDataProperty>
+                    <AnyMetaData>
                         {if $point.pt_adress}
-                        <ym:address>{$point.pt_adress}</ym:address>{/if}
+                        <address>{$point.pt_adress}</address>{/if}
                         {if $point.pt_website}
-                        <ym:website>{$point.pt_website}</ym:website>{/if}
-                        <ym:pid>{$point.pt_id}</ym:pid>
-                        <ym:cityurl>{$point.cityurl}</ym:cityurl>
-                        <ym:objurl>{$point.objurl}</ym:objurl>
-                        <ym:objuri>{$point.objuri}</ym:objuri>
-                    </ym:AnyMetaData>
-                </metaDataProperty>
-                <Point>
-                    <pos>{$point.pt_longitude} {$point.pt_latitude}</pos>
-                </Point>
+                        <website>{$point.pt_website}</website>{/if}
+                        <pid>{$point.pt_id}</pid>
+                        <cityurl>{$point.cityurl}</cityurl>
+                        <objurl>{$point.objurl}</objurl>
+                        <objuri>{$point.objuri}</objuri>
+                    </AnyMetaData>
+                </gml:metaDataProperty>
+                <gml:Point>
+                    <gml:pos>{$point.pt_longitude} {$point.pt_latitude}</gml:pos>
+                </gml:Point>
                 {if $point.obj_selected}
-                <ym:style>#style_object</ym:style>
+                <ymaps:style>#style_object</ymaps:style>
                 {else}
-                <ym:style>#style{$point.pt_type_id}</ym:style>
+                <ymaps:style>#style{$point.pt_type_id}</ymaps:style>
                 {/if}
-            </ym:GeoObject>
+            </ymaps:GeoObject>
             {/foreach}
 
-        </featureMembers>
+        </gml:featureMembers>
         
         <gml:name xmlns:gml="http://www.opengis.net/gml">Достопримечательности России</gml:name>
-        <ym:style>#commonStyle</ym:style>
-    </ym:GeoObjectCollection>
-</ym:ymaps>
+        <ymaps:style>#commonStyle</ymaps:style>
+    </ymaps:GeoObjectCollection>
+</ymaps:ymaps>
