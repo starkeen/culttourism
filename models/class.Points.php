@@ -136,11 +136,15 @@ class Points extends Model {
         return $this->_db->fetchAll();
     }
 
-    public function searchByName($name) {
+    public function searchByName($name, $like = false) {
         $this->_db->sql = "SELECT *
-                            FROM $this->_table_name pt
-                            WHERE TRIM(pt.pt_name) = TRIM('$name')
-                            ORDER BY pt.pt_rank DESC";
+                            FROM $this->_table_name pt\n";
+        if ($like) {
+            $this->_db->sql .= "WHERE pt.pt_name LIKE '%$name%'\n";
+        } else {
+            $this->_db->sql .= "WHERE TRIM(pt.pt_name) = TRIM('$name')\n";
+        }
+        $this->_db->sql .= "ORDER BY pt.pt_rank DESC";
         $this->_db->exec();
         return $this->_db->fetchAll();
     }
