@@ -334,6 +334,7 @@ ol {
     margin-right:0.5em;
     font-weight:bold;
     font-size:130%;
+    text-decoration: none;
 }
 .objlink:hover {
     border-bottom: none;
