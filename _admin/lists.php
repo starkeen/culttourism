@@ -44,7 +44,7 @@ if (isset($_GET['id'])) {
     $variants = $lstitems->getSuggestion($out['query']);
     foreach ($variants as $variant) {
         $out['suggestions'][] = array(
-            'value' => "{$variant['pt_name']}",
+            'value' => "{$variant['pt_name']} ({$variant['pc_title']})",
             'oid' => "{$variant['pt_id']}",
         );
     }
