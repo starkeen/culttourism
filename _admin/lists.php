@@ -38,13 +38,20 @@ if (isset($_GET['id'])) {
 } elseif (isset($_GET['suggest'])) {
     $out = array('query' => '', 'suggestions' => array());
     $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
+    $lid = intval($_GET['lid']);
 
-    $pts = new Points($db);
-    $variants = $pts->searchByName($out['query'], true);
+    $lstitems = new ListsItems($db, $lid);
+    $variants = $lstitems->getSuggestion($out['query']);
     foreach ($variants as $variant) {
         $out['suggestions'][] = array(
             'value' => "{$variant['pt_name']}",
             'oid' => "{$variant['pt_id']}",
+        );
+    }
+    if (empty($out['suggestions'])) {
+        $out['suggestions'][] = array(
+            'value' => "-- не найдено --",
+            'oid' => "",
         );
     }
 

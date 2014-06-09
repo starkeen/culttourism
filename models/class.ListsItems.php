@@ -20,8 +20,17 @@ class ListsItems extends Model {
     }
 
     public function getSuggestion($name) {
-        $out = array();
-        return $out;
+        $dbo = $this->_db->getTableName('pagepoints');
+        $dbc = $this->_db->getTableName('pagecity');
+        $name = $this->_db->getEscapedString($name);
+        $this->_db->sql = "SELECT *
+                            FROM $dbo pt
+                                LEFT JOIN $dbc pc ON pc.pc_id = pt.pt_citypage_id
+                            WHERE pt.pt_name LIKE '%$name%'
+                                AND pt.pt_id NOT IN (SELECT li_pt_id FROM $this->_table_name WHERE li_ls_id = '$this->_list_id')
+                            ORDER BY pt.pt_name";
+        $this->_db->exec();
+        return $this->_db->fetchAll();
     }
 
     public function getAll() {
