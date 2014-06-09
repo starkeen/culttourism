@@ -14,6 +14,7 @@ class Lists extends Model {
             'ls_keywords',
             'ls_description',
             'ls_text',
+            'ls_update_date',
             'ls_order',
             'ls_active',
         );

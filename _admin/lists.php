@@ -17,11 +17,14 @@ if (isset($_GET['id'])) {
         if (isset($_GET['act']) && $_GET['act'] = 'add' && isset($_POST['add_id']) && intval($_POST['add_id']) > 0) {
             $res = $lstitems->insert(array('li_ls_id' => $id, 'li_pt_id' => intval($_POST['add_id'])));
             if ($res) {
+                $lst->updateByPk($id, array('ls_update_date' => date('Y-m-D H:i:s')));
                 header("Location: lists.php?id=$id");
                 exit();
             }
         } else {
-            $res = $lst->updateByPk($id, $_POST);
+            $upds = $_POST;
+            $upds['ls_update_date'] = date('Y-m-d H:i:s');
+            $res = $lst->updateByPk($id, $upds);
             if ($res) {
                 header("Location: lists.php");
                 exit();

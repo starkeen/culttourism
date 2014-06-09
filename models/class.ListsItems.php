@@ -19,6 +19,11 @@ class ListsItems extends Model {
         parent::__construct($db);
     }
 
+    public function getSuggestion($name) {
+        $out = array();
+        return $out;
+    }
+
     public function getAll() {
         $dbo = $this->_db->getTableName('pagepoints');
         $dbc = $this->_db->getTableName('pagecity');
