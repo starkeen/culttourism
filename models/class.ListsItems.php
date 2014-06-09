@@ -19,6 +19,21 @@ class ListsItems extends Model {
         parent::__construct($db);
     }
 
+    public function setField($field, $pt_id, $val) {
+        $val = $this->_db->getEscapedString($val);
+        if (in_array($field, $this->_table_fields)) {
+            $this->_db->sql = "SELECT * FROM $this->_table_name WHERE li_ls_id = '$this->_list_id' AND li_pt_id = '$pt_id'";
+            $this->_db->exec();
+            $row = $this->_db->fetch();
+            $this->updateByPk($row['li_id'], array($field => $val,));
+            $nrow = $this->getItemByPk($row['li_id']);
+            $newval = $nrow[$field];
+        } else {
+            $newval = null;
+        }
+        return $newval;
+    }
+
     public function getSuggestion($name) {
         $dbo = $this->_db->getTableName('pagepoints');
         $dbc = $this->_db->getTableName('pagecity');

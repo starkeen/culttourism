@@ -76,8 +76,8 @@
                         <td><a href="{$li.url_region}" target="_blank">{$li.pc_title}</a></td>
                         <td><a href="{$li.url_canonical}" target="_blank">{$li.pt_name}</a></td>
                         <td style="text-align: center;">{$li.pt_rank}</td>
-                        <td style="text-align: center;">{$li.li_order}</td>
-                        <td style="text-align: center;">{if $li.li_active}<b>ВКЛ</b>{else}откл{/if}</td>
+                        <td style="text-align: center;"><a href="#" class="list-edit-attr" data-field="li_order" data-ptid="{$li.pt_id}">{$li.li_order}</a></td>
+                        <td style="text-align: center;"><a href="#" class="list-edit-attr" data-field="li_active" data-ptid="{$li.pt_id}">{if $li.li_active}<b>ВКЛ</b>{else}откл{/if}</a></td>
                     </tr>
                     {/foreach}
                     <tr>
@@ -95,7 +95,7 @@
 </table>
 
 
-<script src="http://cult.localhost/js/jquery.autocomplete.min.js"></script>
+<script src="/js/jquery.autocomplete.min.js"></script>
 <script>
     CKEDITOR.replace('ls_text', {
         customConfig: '/config/config.cke4.js',
@@ -109,4 +109,38 @@
             $('#list-add-id').val(suggestion.oid);
         }
     });
+    $(document).ready(function() {
+        $(".list-edit-attr").click(function() {
+            var that = this;
+            if ($(that).data("field") === "li_active") {
+                var newval = ($(that).text() === "ВКЛ") ? 0 : 1;
+            } else {
+                var newval = prompt("Новое значение", $(this).text());
+            }
+            $.getJSON("lists.php?json&act=editfield", {
+                lid: {$list.ls_id},
+                ptid: $(that).data("ptid"),
+                field: $(that).data("field"),
+                val: newval
+            }, function(data) {
+                if (data.state) {
+                    if ($(that).data("field") === "li_active" && data.newval == 1) {
+                        data.newval = "ВКЛ"
+                    }
+                    if ($(that).data("field") === "li_active" && data.newval == 0) {
+                        data.newval = "откл"
+                    }
+                    $(that).text(data.newval);
+                }
+            });
+            return false;
+        });
+    });
 </script>
+<style>
+    .list-edit-attr {
+        text-decoration: none;
+        color: #0e506e;
+        border-bottom:1px dotted #0e506e;
+    }
+</style>

@@ -58,6 +58,20 @@ if (isset($_GET['id'])) {
     header('Content-type: application/json');
     echo json_encode($out);
     exit();
+} elseif (isset($_GET['json'])) {
+    $out = array('state' => false, 'newval' => null);
+
+    $lstitems = new ListsItems($db, intval($_GET['lid']));
+    $out['newval'] = $lstitems->setField($_GET['field'], intval($_GET['ptid']), $_GET['val']);
+    if ($out['newval'] !== null) {
+        $out['state'] = true;
+    }
+
+    $lst->updateByPk(intval($_GET['lid']), array('ls_update_date' => date('Y-m-D H:i:s')));
+
+    header('Content-type: application/json');
+    echo json_encode($out);
+    exit();
 } else {
     $smarty->assign('lists', $lst->getAll());
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/lists.list.sm.html'));
