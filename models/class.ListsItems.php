@@ -42,6 +42,7 @@ class ListsItems extends Model {
                             FROM $dbo pt
                                 LEFT JOIN $dbc pc ON pc.pc_id = pt.pt_citypage_id
                             WHERE pt.pt_name LIKE '%$name%'
+                                AND pt.pt_active = 1
                                 AND pt.pt_id NOT IN (SELECT li_pt_id FROM $this->_table_name WHERE li_ls_id = '$this->_list_id')
                             ORDER BY pt.pt_name";
         $this->_db->exec();
