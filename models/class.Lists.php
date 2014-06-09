@@ -30,7 +30,8 @@ class Lists extends Model {
                                 CHAR_LENGTH(TRIM(ls_description)) AS len_descr,
                                 CHAR_LENGTH(TRIM(ls_text)) AS len_text
                             FROM $this->_table_name ls
-                            WHERE ls.ls_slugline = '$slugline'\n";
+                            WHERE ls.ls_slugline = '$slugline'
+                                AND ls.ls_active = 1";
         $this->_db->exec();
         //$this->_db->showSQL();
         $out['data'] = $this->_db->fetch();

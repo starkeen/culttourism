@@ -45,7 +45,8 @@ class Points extends Model {
                             FROM $dbli li
                                 LEFT JOIN $dbls ls ON ls.ls_id = li.li_ls_id
                             WHERE li.li_pt_id = '$oid'
-                                AND li_active = 1";
+                                AND ls.ls_active = 1
+                                AND li.li_active = 1";
         $this->_db->exec();
         return $this->_db->fetchAll();
     }
