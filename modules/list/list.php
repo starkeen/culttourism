@@ -28,6 +28,9 @@ class Page extends PageCommon {
             $this->h1 = $list['data']['ls_title'];
             $this->addDescription($list['data']['ls_description']);
             $this->addKeywords($list['data']['ls_keywords']);
+            $this->addTitle($list['data']['ls_title']);
+
+            $this->lastedit_timestamp = $list['data']['last_update'];
 
             $lis = new ListsItems($this->db, $list['data']['ls_id']);
 
@@ -43,8 +46,17 @@ class Page extends PageCommon {
 
     private function getIndex() {
         $lst = new Lists($this->db);
+
+        $index_list = array();
+        foreach ($lst->getActive() as $list) {
+            if ($list['last_update'] > $this->lastedit_timestamp) {
+                $this->lastedit_timestamp = $list['last_update'];
+            }
+            $index_list[] = $list;
+        }
+
         $this->smarty->assign('index_text', $this->content);
-        $this->smarty->assign('index_lists', $lst->getActive());
+        $this->smarty->assign('index_lists', $index_list);
         $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/list/index.sm.html');
         return true;
     }

@@ -25,6 +25,7 @@ class Lists extends Model {
         $out = array();
         $dbi = $this->_db->getTableName('lists_items');
         $this->_db->sql = "SELECT ls.*,
+                                UNIX_TIMESTAMP(ls.ls_update_date) AS last_update,
                                 (SELECT COUNT(*) FROM $dbi WHERE li_ls_id = ls.ls_id) AS cnt,
                                 CHAR_LENGTH(TRIM(ls_description)) AS len_descr,
                                 CHAR_LENGTH(TRIM(ls_text)) AS len_text
@@ -39,10 +40,25 @@ class Lists extends Model {
     public function getAll() {
         $dbi = $this->_db->getTableName('lists_items');
         $this->_db->sql = "SELECT ls.*,
+                                UNIX_TIMESTAMP(ls.ls_update_date) AS last_update,
                                 (SELECT COUNT(*) FROM $dbi WHERE li_ls_id = ls.ls_id) AS cnt,
                                 CHAR_LENGTH(TRIM(ls_description)) AS len_descr,
                                 CHAR_LENGTH(TRIM(ls_text)) AS len_text
                             FROM $this->_table_name ls
+                            ORDER BY $this->_table_order ASC";
+        $this->_db->exec();
+        return $this->_db->fetchAll();
+    }
+
+    public function getActive() {
+        $dbi = $this->_db->getTableName('lists_items');
+        $this->_db->sql = "SELECT ls.*,
+                                UNIX_TIMESTAMP(ls.ls_update_date) AS last_update,
+                                (SELECT COUNT(*) FROM $dbi WHERE li_ls_id = ls.ls_id) AS cnt,
+                                CHAR_LENGTH(TRIM(ls_description)) AS len_descr,
+                                CHAR_LENGTH(TRIM(ls_text)) AS len_text
+                            FROM $this->_table_name ls
+                            WHERE ls.ls_active = 1
                             ORDER BY $this->_table_order ASC";
         $this->_db->exec();
         return $this->_db->fetchAll();
