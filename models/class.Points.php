@@ -37,6 +37,19 @@ class Points extends Model {
         parent::__construct($db);
     }
 
+    public function getLists($oid) {
+        $dbli = $this->_db->getTableName('lists_items');
+        $dbls = $this->_db->getTableName('lists');
+
+        $this->_db->sql = "SELECT *
+                            FROM $dbli li
+                                LEFT JOIN $dbls ls ON ls.ls_id = li.li_ls_id
+                            WHERE li.li_pt_id = '$oid'
+                                AND li_active = 1";
+        $this->_db->exec();
+        return $this->_db->fetchAll();
+    }
+
     public function getPointsByCity($city_id, $show_all = false) {
         $out = array(
             'points' => array(),

@@ -112,6 +112,7 @@ class Page extends PageCommon {
 
         $this->smarty->assign('object', $object);
         $this->smarty->assign('city', $city);
+        $this->smarty->assign('lists', $pts->getLists($object['pt_id']));
 
         return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.sm.html');
     }

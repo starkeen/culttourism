@@ -34,6 +34,16 @@
         {/if}
     </ul>
 </div>
+
+{if !empty($lists)}
+<p style="font-weight: bold; margin-top: 1em;">Смотрите также:</p>
+<ul>
+    {foreach from=$lists item=list}
+    <li><a href="/list/{$list.ls_slugline}.html">{$list.ls_title}</a></li>
+    {/foreach}
+</ul>
+{/if}
+
 {/if}
 {if $object.pt_latitude && $object.pt_longitude}
 <input type="hidden" id="mapobj_pt_id" value="{$object.pt_id}" />
