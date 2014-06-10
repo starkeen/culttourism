@@ -9,6 +9,14 @@
 <div id="object_description">
     <img id="object_icon" alt="{$object.tp_name}" title="{$object.tp_name}" src="/img/points/x32/{$object.tp_icon}" />
     {$object.pt_description}
+    {if !empty($lists)}
+    <p style="font-weight: bold; margin-top: 1em;">Смотрите также:</p>
+    <ul>
+        {foreach from=$lists item=list}
+        <li><a href="/list/{$list.ls_slugline}.html">{$list.ls_title}</a></li>
+        {/foreach}
+    </ul>
+    {/if}
     <p><a href="." id="page_point_link_back" title="перейти к достопримечательностям {$city.pc_inwheretext}">&larr; достопримечательности {$city.pc_inwheretext}</a></p>
 </div>
 <div id="widget_photos"></div>
@@ -34,17 +42,8 @@
         {/if}
     </ul>
 </div>
-
-{if !empty($lists)}
-<p style="font-weight: bold; margin-top: 1em;">Смотрите также:</p>
-<ul>
-    {foreach from=$lists item=list}
-    <li><a href="/list/{$list.ls_slugline}.html">{$list.ls_title}</a></li>
-    {/foreach}
-</ul>
 {/if}
 
-{/if}
 {if $object.pt_latitude && $object.pt_longitude}
 <input type="hidden" id="mapobj_pt_id" value="{$object.pt_id}" />
 <input type="hidden" id="mapobj_pt_latitude" value="{$object.pt_latitude}" />
