@@ -17,7 +17,7 @@
         <td style="text-align: center;">{$list.ls_id}</td>
         <td>{$list.ls_title}</td>
         <td><a href="/list/{$list.ls_slugline}.html" target="_blank">{$list.ls_slugline}</a></td>
-        <td style="text-align: center;">{$list.len_text}</td>
+        <td style="text-align: center; background-color: {if $list.len_text < 100}#FF4500{elseif $list.len_text < 200}#FFA583{elseif $list.len_text < 500}#FFA583{else}#CCE4CC{/if};">{$list.len_text}</td>
         <td style="text-align: center;">{$list.cnt}</td>
         <td style="text-align: center;">{$list.ls_order}</td>
         <td style="text-align: center;">{if $list.ls_active}<b>ВКЛ</b>{else}откл{/if}</td>

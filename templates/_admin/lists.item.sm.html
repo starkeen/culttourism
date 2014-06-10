@@ -65,6 +65,7 @@
                         <th>ID</th>
                         <th>Регион</th>
                         <th>Название</th>
+                        <th>Д</th>
                         <th>Вес</th>
                         <th>Порядок</th>
                         <th>Активность</th>
@@ -76,6 +77,7 @@
                         <td style="text-align: center;">{$li.pt_id}</td>
                         <td><a href="{$li.url_region}" target="_blank">{$li.pc_title}</a></td>
                         <td><a href="{$li.url_canonical}" target="_blank">{$li.pt_name}</a></td>
+                        <td style="text-align: center; background-color: {if $li.len_descr < 100}#FF4500{elseif $li.len_descr < 200}#FFA583{elseif $li.len_descr < 500}#FFA583{else}#CCE4CC{/if};">{$li.len_descr}</td>
                         <td style="text-align: center;">{$li.pt_rank}</td>
                         <td style="text-align: center;"><a href="#" class="list-edit-attr" data-field="li_order" data-ptid="{$li.pt_id}">{$li.li_order}</a></td>
                         <td style="text-align: center;"><a href="#" class="list-edit-attr" data-field="li_active" data-ptid="{$li.pt_id}">{if $li.li_active}<b>ВКЛ</b>{else}откл{/if}</a></td>
@@ -84,7 +86,7 @@
                     <tr>
                         <td colspan="2" style="text-align: center;"><img src="/img/btn/btn.add.png" /></td>
                         <td><input type="text" name="add_id" id="list-add-id" value="" style="width:4em" /></td>
-                        <td colspan="3"><input type="text" id="list-add-name" value="" style="width:98%" autocomplete="off" /></td>
+                        <td colspan="4"><input type="text" id="list-add-name" value="" style="width:98%" autocomplete="off" /></td>
                         <td></td>
                         <td><input type="submit" value="добавить" /></td>
                     </tr>

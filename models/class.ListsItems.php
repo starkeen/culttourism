@@ -56,6 +56,7 @@ class ListsItems extends Model {
         $dbrt = $this->_db->getTableName('ref_pointtypes');
         $this->_db->sql = "SELECT li.*, pt.*, pc.*, rt.*,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
+                                CHAR_LENGTH(TRIM(pt.pt_description)) AS len_descr,
                                 CONCAT(ru.url, '/') AS url_region,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical
                             FROM $this->_table_name li
