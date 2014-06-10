@@ -5,22 +5,22 @@
 
 <table style="width:100%;">
     <tr>
-        <td valign="top">
+        <td valign="top" style="max-width: 50%;">
 
             <b>Данные списка</b>
             <form method="post">
-                <table>
+                <table style="width:100%;">
                     <tr>
                         <td>Наименование</td>
-                        <td><input type="text" name="ls_title" value="{$list.ls_title}" style="width:250px;" /></td>
+                        <td><input type="text" name="ls_title" value="{$list.ls_title}" style="width:99%;" /></td>
                     </tr>
                     <tr>
                         <td>URL-часть</td>
-                        <td><input type="text" name="ls_slugline" value="{$list.ls_slugline}" style="width:250px;" /></td>
+                        <td><input type="text" name="ls_slugline" value="{$list.ls_slugline}" style="width:99%;" /></td>
                     </tr>
                     <tr>
                         <td>Ключевые слова</td>
-                        <td><input type="text" name="ls_keywords" value="{$list.ls_keywords}" style="width:250px;" /></td>
+                        <td><input type="text" name="ls_keywords" value="{$list.ls_keywords}" style="width:99%;" /></td>
                     </tr>
                     <tr>
                         <td colspan="2">Мета-описание</td>
@@ -55,13 +55,13 @@
             </form>
 
         </td>
-        <td valign="top" style="width:70%">
+        <td valign="top" style="max-width: 50%;">
 
             <b>Список входящих объектов</b>
             <form method="post" action="?id={$list.ls_id}&act=add">
                 <table class="commontable" cellspacing="1">
                     <tr>
-                        <th>№</th>
+                        <th colspan="2">№</th>
                         <th>ID</th>
                         <th>Регион</th>
                         <th>Название</th>
@@ -72,6 +72,7 @@
                     {foreach from=$list_items item=li}
                     <tr>
                         <td style="text-align: center;">{counter}</td>
+                        <td style="text-align: center;"><img src="/img/points/x16/{$li.tp_icon}" alt="{$li.tp_short}" title="{$li.tp_short}" /></td>
                         <td style="text-align: center;">{$li.pt_id}</td>
                         <td><a href="{$li.url_region}" target="_blank">{$li.pc_title}</a></td>
                         <td><a href="{$li.url_canonical}" target="_blank">{$li.pt_name}</a></td>
@@ -81,7 +82,7 @@
                     </tr>
                     {/foreach}
                     <tr>
-                        <td><img src="/img/btn/btn.add.png" /></td>
+                        <td colspan="2" style="text-align: center;"><img src="/img/btn/btn.add.png" /></td>
                         <td><input type="text" name="add_id" id="list-add-id" value="" style="width:4em" /></td>
                         <td colspan="3"><input type="text" id="list-add-name" value="" style="width:98%" autocomplete="off" /></td>
                         <td></td>
@@ -99,7 +100,7 @@
 <script>
     CKEDITOR.replace('ls_text', {
         customConfig: '/config/config.cke4.js',
-        height: '200px',
+        height: '370px',
         toolbar: 'Lite'
     });
     $('#list-add-name').autocomplete({

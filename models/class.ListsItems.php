@@ -53,12 +53,14 @@ class ListsItems extends Model {
         $dbo = $this->_db->getTableName('pagepoints');
         $dbc = $this->_db->getTableName('pagecity');
         $dbru = $this->_db->getTableName('region_url');
-        $this->_db->sql = "SELECT li.*, pt.*, pc.*,
+        $dbrt = $this->_db->getTableName('ref_pointtypes');
+        $this->_db->sql = "SELECT li.*, pt.*, pc.*, rt.*,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
                                 CONCAT(ru.url, '/') AS url_region,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical
                             FROM $this->_table_name li
                                 LEFT JOIN $dbo pt ON pt.pt_id = li.li_pt_id
+                                    LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
                                     LEFT JOIN $dbc pc ON pc.pc_id = pt.pt_citypage_id
                                         LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
                             WHERE li_ls_id = '$this->_list_id'
