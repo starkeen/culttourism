@@ -102,6 +102,7 @@ DOC;
                         $title_items = explode($this->globalsettings['title_delimiter'], $result_item['title']);
                         array_pop($title_items);
                         $result_item['title'] = trim(implode(', ', $title_items));
+                        $result_item['title'] = str_replace(' , ', ', ', $result_item['title']);
                         $result[] = $result_item;
                     }
                 }
