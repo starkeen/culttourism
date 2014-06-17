@@ -40,21 +40,22 @@ if (isset($_GET['id'])) {
     $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
     $lid = intval($_GET['lid']);
 
-    $lstitems = new ListsItems($db, $lid);
-    $variants = $lstitems->getSuggestion($out['query']);
-    foreach ($variants as $variant) {
-        $out['suggestions'][] = array(
-            'value' => "{$variant['pt_name']} ({$variant['pc_title']})",
-            'oid' => "{$variant['pt_id']}",
-        );
+    if (strlen($out['query']) > 4) {
+        $lstitems = new ListsItems($db, $lid);
+        $variants = $lstitems->getSuggestion($out['query']);
+        foreach ($variants as $variant) {
+            $out['suggestions'][] = array(
+                'value' => "{$variant['pt_name']} ({$variant['pc_title']})",
+                'oid' => "{$variant['pt_id']}",
+            );
+        }
+        if (empty($out['suggestions'])) {
+            $out['suggestions'][] = array(
+                'value' => "-- не найдено --",
+                'oid' => "",
+            );
+        }
     }
-    if (empty($out['suggestions'])) {
-        $out['suggestions'][] = array(
-            'value' => "-- не найдено --",
-            'oid' => "",
-        );
-    }
-
     header('Content-type: application/json');
     echo json_encode($out);
     exit();

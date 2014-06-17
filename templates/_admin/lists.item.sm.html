@@ -107,6 +107,7 @@
     });
     $('#list-add-name').autocomplete({
         serviceUrl: "lists.php?suggest&lid={$list.ls_id}",
+        minChars: 4,
         paramName: "query",
         onSelect: function(suggestion) {
             $('#list-add-id').val(suggestion.oid);
