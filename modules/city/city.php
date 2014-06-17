@@ -334,6 +334,7 @@ class Page extends PageCommon {
         $dbcd = $db->getTableName('city_data');
         $dbrc = $db->getTableName('ref_country');
         $dbrr = $db->getTableName('ref_region');
+        $dbws = $db->getTableName('wordstat');
         $where = (!$this->checkEdit()) ? "WHERE city.pc_text is not null" : '';
         $db->sql = "SELECT city.pc_id, city.pc_title, city.pc_latitude, city.pc_longitude,
                             city.pc_city_id, city.pc_region_id, city.pc_country_id,
@@ -341,14 +342,17 @@ class Page extends PageCommon {
                             city.pc_pagepath,
                             (SELECT count(pt_id) FROM $dbp WHERE pt_citypage_id = city.pc_id) as pts,
                             (SELECT count(cd_id) FROM $dbcd WHERE cd_pc_id = city.pc_id) as meta,
+                            ws.ws_weight_max, ws.ws_position,
                             UNIX_TIMESTAMP(city.pc_lastup_date) AS last_update
                     FROM $dbc city
                         LEFT JOIN $dbr url ON url.uid = city.pc_url_id
                         LEFT JOIN $dbrc rc ON rc.id = city.pc_country_id
                         LEFT JOIN $dbrr rr ON rr.id = city.pc_region_id
+                        LEFT JOIN $dbws ws ON ws.ws_city_id = city.pc_city_id
                 $where
+                    GROUP BY city.pc_id
                     ORDER BY rc.ordering, rc.name, rr.ordering, rr.name, url.url, city.pc_title";
-        $res = $db->exec();
+        $db->exec();
         while ($row = $db->fetch()) {
             $row['pc_pagepath'] = strip_tags($row['pc_pagepath']);
             if ($row['last_update'] > $this->lastedit_timestamp) {

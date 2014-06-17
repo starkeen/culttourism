@@ -14,12 +14,12 @@
         <tr>
             <th>#</th>
             <th>Название</th>
-            <th>URL</th>
             <th>Описание</th>
             <th>Мета</th>
             <th>Точки</th>
-            <th>GPS</th>
-            <th>Достопримечательности</th>
+            <th>Я.Частота</th>
+            <th>Я.Позиция</th>
+            <th>&nbsp;</th>
         </tr>
     </thead>
     <tbody>
@@ -27,7 +27,7 @@
         <tr>
             <td>{counter}</td>
             <td><a href="../..{$city.url}/" title="список достопримечательностей"
-            {if $city.pc_city_id!=0}
+                   {if $city.pc_city_id!=0}
                    style="margin-left:30px;"
                    {elseif $city.pc_region_id!=0 && $city.pc_city_id==0 && $city.pc_country_id!=0}
                    style="margin-left:20px;"
@@ -36,11 +36,11 @@
                    style="margin-left:20px;"
                    {/if}
                    ><b>{$city.pc_title}</b></a></td>
-            <td>{$city.url}</td>
-            <td>{$city.len} знаков</td>
+            <td style="color: {if $city.len < 1200}#8B0000{else}#228B22{/if};">{$city.len} знаков</td>
             <td>{$city.meta}</td>
             <td>{$city.pts} точек</td>
-            <td><div style="font-size:x-small;background-color: #eee;">{$city.pc_latitude}<br>{$city.pc_longitude}</div></td>
+            <td>{$city.ws_weight_max}</td>
+            <td style="color:{if $city.ws_position == 0}#8B0000{elseif $city.ws_position > 10}#FF0000{else}#228B22{/if};">{$city.ws_position}</td>
             <td><a href="detail/?city_id={$city.pc_id}" title="детально...">детально {$city.pc_title}</a></td>
         </tr>
         {/foreach}
