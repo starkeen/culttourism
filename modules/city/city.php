@@ -348,7 +348,7 @@ class Page extends PageCommon {
                         LEFT JOIN $dbr url ON url.uid = city.pc_url_id
                         LEFT JOIN $dbrc rc ON rc.id = city.pc_country_id
                         LEFT JOIN $dbrr rr ON rr.id = city.pc_region_id
-                        LEFT JOIN $dbws ws ON ws.ws_city_id = city.pc_city_id
+                        LEFT JOIN $dbws ws ON ws.ws_city_id = city.pc_city_id AND ws.ws_city_title = city.pc_title
                 $where
                     GROUP BY city.pc_id
                     ORDER BY rc.ordering, rc.name, rr.ordering, rr.name, url.url, city.pc_title";

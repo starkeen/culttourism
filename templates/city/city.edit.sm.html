@@ -24,9 +24,9 @@
     </thead>
     <tbody>
         {foreach from=$tcity item=city}
-        <tr>
+        <tr {if $city.pc_city_id == 0}style="border-top:1px solid #ddd;"{/if}>
             <td>{counter}</td>
-            <td><a href="../..{$city.url}/" title="список достопримечательностей"
+            <td><a href="{$city.url}/" title="список достопримечательностей"
                    {if $city.pc_city_id!=0}
                    style="margin-left:30px;"
                    {elseif $city.pc_region_id!=0 && $city.pc_city_id==0 && $city.pc_country_id!=0}
