@@ -81,7 +81,7 @@
         </li>
         {foreach from=$types_select.1 item=seltype key=typeid}
         <li>
-            <a class="points_selector_inactive typefilterlink" href="#type_{$typeid}" title="{$seltype.full}">
+            <a class="points_selector_inactive typefilterlink" href="#type_{$typeid}" id="type_selector_{$typeid}" title="{$seltype.full}">
                 <img class="seltype_icon" src="/img/points/x32/{$seltype.icon}" alt="{$seltype.full}" />
                 <span class="seltype_capt">{$seltype.short}</span>
             </a>
@@ -130,7 +130,7 @@
     </li>
     {foreach from=$types_select.0 item=seltype key=typeid}
     <li>
-        <a class="points_selector_inactive typefilterlink" href="#type_{$typeid}" title="{$seltype.full}">
+        <a class="points_selector_inactive typefilterlink" href="#type_{$typeid}" id="type_selector_{$typeid}" title="{$seltype.full}">
             <img class="seltype_icon" src="/img/points/x32/{$seltype.icon}" alt="{$seltype.full}" />
             <span class="seltype_capt">{$seltype.short}</span>
         </a>

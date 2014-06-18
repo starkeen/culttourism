@@ -1,8 +1,4 @@
 $(document).ready(function() {
-    $('#show_auth_form').click(function() {
-        showWindByURL("/ajax/forms/commonlogin/", {});
-        return false;
-    });
     //------------------------------------- BEST OBJECTS -------------------------------
     $(".obj_best").append("<img class=\"obj_best_pic\" src=\"/img/points/best-24.png\" />");
     //---------------------------------- OPEN OBJECT WINDOW ----------------------------
@@ -415,7 +411,7 @@ $(document).ready(function() {
             } else
                 $("#whatseelist tr").show();
         }
-        return false;
+        //return false;
     });
     //--------------------------------- / POINTS FILTER ------------------------------
     //------------------------------------ BLOG AJAX ---------------------------------
@@ -538,8 +534,23 @@ $(document).ready(function() {
             document.location.href = suggestion.url;
         }
     });
-});
 //---------------------------- / SEARCH AUTOCOMPLETE  ----------------------------
+//---------------------------------   AUTH  --------------------------------------
+    $("#show_auth_form").click(function() {
+        showWindByURL("/ajax/forms/commonlogin/", {});
+        return false;
+    });
+
+    if (window.location.hash) {
+        var matches = /^#type_([0-9]+)/.exec(window.location.hash);
+        if (matches) {
+            var typeid = parseInt(matches[1]);
+            $("#type_selector_" + typeid).click();
+        }
+    }
+
+});
+
 
 
 //======================= FUNCTIONS ==============================================
