@@ -15,8 +15,124 @@ class Page extends PageCommon {
             return $this->detailCity($db, $smarty);
         } elseif ($page_id[1] == 'meta') {
             return $this->metaCity($db, $smarty);
+        } elseif ($page_id[1] == 'weather') {
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
+            $this->isAjax = true;
+            return $this->getBlockWeather($_GET['lat'], $_GET['lon']);
         } else {
             return $this->getError('404');
+        }
+    }
+
+    private function getBlockWeather($lat, $lon) {
+        $lat = cut_trash_float($lat);
+        $lon = cut_trash_float($lon);
+
+        $out = array('state' => false, 'content' => '', 'color' => '');
+        $weather_data = array(
+            'temperature' => '',
+            'temperature_min' => '',
+            'temperature_max' => '',
+            'temp_range' => '',
+            'pressure' => 0,
+            'humidity' => 0,
+            'windspeed' => 0,
+            'winddirect' => '',
+            'winddeg' => 0,
+            'clouds' => 0,
+            'weather_id' => 800,
+            'weather_icon' => '01d',
+            'weather_text' => '',
+            'weather_descr' => '',
+            'weather_full' => '',
+        );
+
+        $url = "http://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $response = json_decode($result);
+        if ($response->cod == 200) {
+            $weather_data['temperature'] = round($response->main->temp - 273.15);
+            if ($weather_data['temperature'] > 0) {
+                $weather_data['temperature'] = '+' . $weather_data['temperature'];
+            }
+            if (isset($response->main->temp_min) && isset($response->main->temp_max)) {
+                if (round($response->main->temp_min) != round($response->main->temp_max)) {
+                    $weather_data['temperature_min'] = round($response->main->temp_min - 273.15);
+                    $weather_data['temperature_max'] = round($response->main->temp_max - 273.15);
+                    if ($weather_data['temperature_min'] > 0) {
+                        $weather_data['temperature_min'] = '+' . $weather_data['temperature_min'];
+                    }
+                    if ($weather_data['temperature_max'] > 0) {
+                        $weather_data['temperature_max'] = '+' . $weather_data['temperature_max'];
+                    }
+                    $weather_data['temp_range'] = $weather_data['temperature_min'] . '&hellip;' . $weather_data['temperature_max'];
+                }
+            }
+            $weather_data['pressure'] = round($response->main->pressure / 10);
+            $weather_data['humidity'] = round($response->main->humidity);
+            $weather_data['windspeed'] = round($response->wind->speed, 1);
+            $weather_data['winddeg'] = $response->wind->deg;
+            $weather_data['clouds'] = $response->clouds->all;
+            if (isset($response->weather[0])) {
+                $weather_data['weather_id'] = $response->weather[0]->id;
+                $weather_data['weather_text'] = $response->weather[0]->main;
+                $weather_data['weather_descr'] = $response->weather[0]->description;
+                $weather_data['weather_icon'] = $response->weather[0]->icon;
+                $cond = $this->getWeaterConditionsByCode($weather_data['weather_id']);
+                if ($cond) {
+                    $weather_data['weather_text'] = $cond['main'];
+                    $weather_data['weather_descr'] = $cond['description'];
+                }
+                $weather_data['weather_full'] = $weather_data['weather_text'];
+                if ($weather_data['weather_descr']) {
+                    $weather_data['weather_full'] .= ', ' . $weather_data['weather_descr'];
+                }
+            }
+            if ($weather_data['winddeg'] >= 0 && $weather_data['winddeg'] <= 22.5) {
+                $weather_data['winddirect'] = 'сев';
+            } elseif ($weather_data['winddeg'] >= 22.5 && $weather_data['winddeg'] <= 67.5) {
+                $weather_data['winddirect'] = 'с-в';
+            } elseif ($weather_data['winddeg'] >= 67.5 && $weather_data['winddeg'] <= 112.5) {
+                $weather_data['winddirect'] = 'вост';
+            } elseif ($weather_data['winddeg'] >= 112.5 && $weather_data['winddeg'] <= 157.5) {
+                $weather_data['winddirect'] = 'ю-в';
+            } elseif ($weather_data['winddeg'] >= 157.5 && $weather_data['winddeg'] <= 202.5) {
+                $weather_data['winddirect'] = 'юж';
+            } elseif ($weather_data['winddeg'] >= 202.5 && $weather_data['winddeg'] <= 247.5) {
+                $weather_data['winddirect'] = 'ю-3';
+            } elseif ($weather_data['winddeg'] >= 247.5 && $weather_data['winddeg'] <= 292.5) {
+                $weather_data['winddirect'] = 'зап';
+            } elseif ($weather_data['winddeg'] >= 292.5 && $weather_data['winddeg'] <= 67.5) {
+                $weather_data['winddirect'] = 'с-з';
+            } else {
+                $weather_data['winddirect'] = 'сев';
+            }
+            $this->smarty->assign('weather_data', $weather_data);
+            $out['state'] = true;
+            $out['content'] = $this->smarty->fetch(_DIR_TEMPLATES . '/city/weather.block.sm.html');
+        }
+        header("Content-type: application/json");
+        echo json_encode($out);
+        exit();
+    }
+
+    private function getWeaterConditionsByCode($code) {
+        $code = cut_trash_int($code);
+        $db = $this->db;
+        $dbwc = $db->getTableName('weather_codes');
+        $db->sql = "SELECT * FROM $dbwc WHERE wc_id = '$code'";
+        $db->exec();
+        $row = $db->fetch();
+        if ($row['wc_id'] != 0) {
+            return array('main' => $row['wc_main'], 'description' => $row['wc_description']);
+        } else {
+            return false;
         }
     }
 
