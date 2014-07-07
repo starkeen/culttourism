@@ -3,7 +3,7 @@
 $dbns = $db->getTableName('news_sourses');
 $dbni = $db->getTableName('news_items');
 
-$db->sql = "SELECT * FROM $dbns WHERE ns_active = 1 ORDER BY ns_last_read LIMIT 2";
+$db->sql = "SELECT * FROM $dbns WHERE ns_active = 1 ORDER BY ns_last_read LIMIT 1";
 $db->exec();
 $sourses = array();
 while ($row = $db->fetch()) {
@@ -37,6 +37,11 @@ foreach ($sourses as $sourse) {
     $db->sql = "UPDATE $dbns SET ns_last_read = now() WHERE ns_id = '{$sourse['ns_id']}'";
     $db->exec();
 }
+
+$db->sql = "OPTIMIZE TABLE $dbns";
+$db->exec();
+$db->sql = "OPTIMIZE TABLE $dbni";
+$db->exec();
 
 function rss_to_array($tag, $array, $url) {
     $doc = new DOMdocument();
