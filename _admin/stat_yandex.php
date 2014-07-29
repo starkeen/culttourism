@@ -152,7 +152,7 @@ $db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name A
                     LEFT JOIN $dbco co ON co.id = rc.country_id
             WHERE ws_weight > 0
                 AND pc_id IS NULL
-            ORDER BY ws_weight_max DESC, ws_weight DESC
+            ORDER BY ws_weight_min DESC, ws_weight DESC
             LIMIT 50";
 $db->exec();
 $stat = array();
