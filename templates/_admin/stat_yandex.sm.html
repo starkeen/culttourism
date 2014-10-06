@@ -71,9 +71,14 @@
                         <a href="http://wordstat.yandex.ru/#!/?words={$item.city_name} достопримечательности"><img src="/img/new-window.png" /></a>
                     </td>
                     <td align="center">
-                        <span title="{$item.ws_weight_date}">{$item.ws_weight}</span>
+                        <span title="{$item.ws_weight_min_date}" style="font-style: italic;">{$item.ws_weight_min}</span>
                         /
-                        <span title="{$item.ws_weight_max_date}">{$item.ws_weight_max}</span>
+                        <span title="{$item.ws_weight_date}" style="font-weight:bold;">{$item.ws_weight}</span>
+                        /
+                        <span title="{$item.ws_weight_max_date}" style="font-style: italic;">{$item.ws_weight_max}</span>
+                        {if $item.weight_delta_sign == 1}<span style="color:green;" title="ближе к верхнему">&#8593;</span>{/if}
+                        {if $item.weight_delta_sign == -1}<span style="color:red;" title="ближе к нижнему">&#8595;</span>{/if}
+                        {if $item.weight_delta_sign == 0}<span style="">-</span>{/if}
                     </td>
                     <td align="center">
                         <form method="post">
@@ -108,10 +113,14 @@
                     <td>{$item.region_name}</td>
                     <td>{$item.city_name}</td>
                     <td align="center">{$item.pc_add_date|date_format:"%d.%m.%Y"}</td>
-                    <td align="center" nowrap>
+                    <td align="center" class="ws-counts" nowrap>
                         <a href="http://wordstat.yandex.ru/#!/?words={$item.city_name} достопримечательности" title="{$item.ws_weight_date}">{$item.ws_weight}</a>
-                        /
-                        <span title="{$item.ws_weight_max_date}">{$item.ws_weight_max}</span>
+                        <span class="ws-counts-minmax">
+                            <sup title="{$item.ws_weight_max_date}">{$item.ws_weight_max}</sup>
+                            <sub title="{$item.ws_weight_min_date}">{$item.ws_weight_min}</sub>
+                        </span>
+                        {if $item.weight_delta_sign == 1}<span style="color:green;" title="ближе к верхнему">&#8593;</span>{/if}
+                        {if $item.weight_delta_sign == -1}<span style="color:red;" title="ближе к нижнему">&#8595;</span>{/if}
                     </td>
                     <td align="center" title="{$item.ws_position_date}">
                         <a href="http://yandex.ru/yandsearch?text={$item.city_name}+достопримечательности&lr=213">{$item.ws_position}</a>
@@ -123,3 +132,22 @@
     </tr>
 </table>
 
+<style>
+    .ws-counts .ws-counts-minmax {
+        display: inline-block;
+        font-style: italic;
+        color:#777;
+    }
+    .ws-counts .ws-counts-minmax sup, .ws-counts .ws-counts-minmax sub {
+        display: block;
+        line-height: 0;
+        position: relative;
+        vertical-align: baseline;
+    }
+    .ws-counts .ws-counts-minmax sup {
+        top: -0.6em;
+    }
+    .ws-counts .ws-counts-minmax sub {
+        top: 0.4em;
+    }
+</style>

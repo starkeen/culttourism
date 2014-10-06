@@ -136,11 +136,14 @@ class Auth {
     public function checkKey($key) {
         $db = $this->db;
         $dba = $db->getTableName('authorizations');
-        $db->sql = "SELECT au_key, au_session FROM $dba WHERE au_date_expire > now()";
+        $key = $db->getEscapedString($key);
+        $session_id = session_id();
+        $db->sql = "SELECT au_key, au_session FROM $dba WHERE au_date_expire > now() AND au_key = '$key' AND au_session = '$session_id'";
         $db->exec();
         while ($row = $db->fetch()) {
-            if ($row['au_key'] == $key && session_id() == $row['au_session'])
+            if ($row['au_key'] == $key && session_id() == $row['au_session']) {
                 return true;
+            }
         }
         return false;
     }

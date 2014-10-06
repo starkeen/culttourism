@@ -139,7 +139,12 @@ $towns['date_positions'] = $row['min_position'];
 
 
 $db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name AS country_name,
-                ws_city_id, ws_weight, ws.ws_weight_date, ws_weight_max, ws.ws_weight_max_date
+                ws_city_id, ws_weight, ws.ws_weight_date,
+                ws_weight_min, ws.ws_weight_min_date,
+                ws_weight_max, ws.ws_weight_max_date,
+                ROUND(100*(ws_weight_max - ws_weight) / ws_weight) AS weight_delta_max,
+                ROUND(100*(ws_weight - ws_weight_min) / ws_weight) AS weight_delta_min,
+                0 AS weight_delta_sign
             FROM $dbws ws
                 LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
                 LEFT JOIN $dbrc rc ON rc.id = ws.ws_city_id
@@ -147,11 +152,18 @@ $db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name A
                     LEFT JOIN $dbco co ON co.id = rc.country_id
             WHERE ws_weight > 0
                 AND pc_id IS NULL
-            ORDER BY ws_weight_max DESC, ws_weight DESC
+            ORDER BY ws_weight_min DESC, ws_weight DESC
             LIMIT 50";
 $db->exec();
 $stat = array();
 while ($row = $db->fetch()) {
+    if ($row['weight_delta_max'] > $row['weight_delta_min'] && $row['weight_delta_min'] > 10) {
+        $row['weight_delta_sign'] = -1;
+    } elseif ($row['weight_delta_max'] < $row['weight_delta_min'] && $row['weight_delta_max'] > 10) {
+        $row['weight_delta_sign'] = 1;
+    } else {
+        $row['weight_delta_sign'] = 0;
+    }
     $stat[] = $row;
 }
 
@@ -160,8 +172,12 @@ $db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name A
                 ws_weight, ws.ws_weight_date,
                 ws_position, ws.ws_position_date,
                 ws_weight_max, ws.ws_weight_max_date,
+                ws_weight_min, ws.ws_weight_min_date,
                 ROUND(ws_weight_max/1000) AS weight_x1000,
                 ROUND(ws_weight_max/100) AS weight_x100,
+                ROUND(100*(ws_weight_max - ws_weight) / ws_weight) AS weight_delta_max,
+                ROUND(100*(ws_weight - ws_weight_min) / ws_weight) AS weight_delta_min,
+                0 AS weight_delta_sign,
                 IF(ws_position = 0, 101, ws_position) AS ws_position_real,
                 IF(ws_position = 0, '&mdash;', ws_position) AS ws_position,
                 IF(ws_position = 0, 100, IF(ws_position > 50, 100, IF(ws_position > 20, 50, IF(ws_position > 10, 20, 10)))) AS position_x
@@ -181,6 +197,13 @@ $db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name A
 $db->exec();
 $seo = array();
 while ($row = $db->fetch()) {
+    if ($row['weight_delta_max'] > $row['weight_delta_min'] && $row['weight_delta_min'] > 10) {
+        $row['weight_delta_sign'] = -1;
+    } elseif ($row['weight_delta_max'] < $row['weight_delta_min'] && $row['weight_delta_max'] > 10) {
+        $row['weight_delta_sign'] = 1;
+    } else {
+        $row['weight_delta_sign'] = 0;
+    }
     $seo[] = $row;
 }
 
@@ -191,7 +214,8 @@ $smarty->assign('towns', $towns);
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/stat_yandex.sm.html'));
 
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
-exit();
+exit
+();
 
 function yandex_req($request) {
     $url = "https://api.direct.yandex.ru/v4/json/";

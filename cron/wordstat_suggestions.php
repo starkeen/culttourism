@@ -61,6 +61,10 @@ $db->sql = "UPDATE $dbws
                     SET ws_weight_max = ws_weight, ws_weight_max_date = now()
                 WHERE ws_weight > ws_weight_max";
 $db->exec();
+$db->sql = "UPDATE $dbws
+                    SET ws_weight_min = ws_weight, ws_weight_min_date = now()
+                WHERE ws_weight < ws_weight_min";
+$db->exec();
 
 foreach ($reps_to_del as $repdel) {
     yandex_req(array(
