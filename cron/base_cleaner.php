@@ -9,7 +9,7 @@ $tables = array(
     array($db->getTableName('log_errors'), 'le_date', 30),
 );
 
-$db->sql = "DELETE FROM $dbau WHERE au_service = 'ajax')";
+$db->sql = "DELETE FROM $dbau WHERE au_service IN ('ajax', 'map'))";
 $db->exec();
 
 foreach ($tables as $table) {
