@@ -8,6 +8,7 @@ class Model {
     protected $_table_pk = 'id'; //первичный ключ
     protected $_table_order = 'order'; //поле сортировки
     protected $_table_active = 'active'; //поле активности
+    protected $_tables_related = array();
     protected $_files_dir = 'files'; //директория для привязанных файлов
 
     public function __construct($db) {
@@ -128,6 +129,17 @@ class Model {
         $out[$this->_table_order] = 10;
         $out[$this->_table_active] = 1;
         return $out;
+    }
+
+    protected function _addRelatedTable($tablename) {
+        $tablename = trim($tablename);
+        if ($tablename != '') {
+            $this->_tables_related[$tablename] = $this->_db->getTableName($tablename);
+        }
+    }
+
+    public function now() {
+        return date('Y-m-d H:i:s');
     }
 
 }
