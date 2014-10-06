@@ -16,11 +16,20 @@ $db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
 $smarty = new mySmarty();
 
 $cron = $db->getTableName('cron');
+$dbsp = $db->getTableName('siteprorerties');
+
+$db->sql = "SELECT sp_value FROM $dbsp WHERE sp_name = 'mail_report_cron'";
+$db->exec();
+$row = $db->fetch();
+$global_cron_email = $row['sp_value'];
 
 //-- если больше двух часов работает скрипт - зарубить
-$db->exec("UPDATE $cron SET cr_isrun = 0
-           WHERE cr_isrun=1 AND cr_active=1
-           AND TIMEDIFF(now(),cr_datelast_attempt) > '02:00:00'");
+$db->sql = "UPDATE $cron
+            SET cr_isrun = 0
+            WHERE cr_isrun = 1
+            AND cr_active = 1
+            AND cr_datelast_attempt < SUBTIME(NOW(), '02:00:00')";
+$db->exec();
 
 //* * ********    В Ы Б О Р К А   С К Р И П Т О В     ********* */
 $db->sql = "SELECT *, DATE_FORMAT(cr_period, '%d %H:%i') as period FROM $cron
