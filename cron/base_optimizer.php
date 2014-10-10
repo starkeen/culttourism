@@ -1,7 +1,6 @@
 <?php
 
 $tables = array(
-    $db->getTableName('authorizations'),
     $db->getTableName('city_data'),
     $db->getTableName('pagepoints'),
     $db->getTableName('pagecity'),
