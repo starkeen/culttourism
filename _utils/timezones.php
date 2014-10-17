@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Изменение исчисления времени произойдет 26 октября 2014 года в 2:00 местного времени.
  * http://habrahabr.ru/post/239827/
@@ -9,4 +10,19 @@
  * в Кемеровской области следует выполнить ручное переключение на часовой пояс “Russian Time Zone 6” вместо автоматически установленного часового пояса RTZ 5 (Russian Time Zone 5);
  * в Забайкальском крае следует выполнить ручное переключение на часовой пояс “Russian Time Zone 7” вместо автоматически установленного часового пояса RTZ 8 (Russian Time Zone 8).
  */
+
+error_reporting(E_ALL);
+
+header('Content-Type: text/html; charset=utf-8');
+include(realpath(dirname(__FILE__) . '/../config/configuration.php'));
+
+include(_DIR_ROOT . '/includes/class.myDB.php');
+include(_DIR_ROOT . '/includes/class.mySmarty.php');
+include(_DIR_ROOT . '/includes/class.Logging.php');
+include(_DIR_ROOT . '/includes/debug.php');
+
+include(_DIR_INCLUDES . '/class.Helper.php');
+spl_autoload_register('Helper::autoloader');
+
+$db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
 ?>
