@@ -25,4 +25,21 @@ include(_DIR_INCLUDES . '/class.Helper.php');
 spl_autoload_register('Helper::autoloader');
 
 $db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
+
+$dbc = $db->getTableName('pagecity');
+$dbcd = $db->getTableName('city_data');
+$dbrr = $db->getTableName('ref_region');
+
+$db->sql = "SELECT cd.cd_value, c.pc_title, c.pc_region_id, r.name
+            FROM $dbcd cd
+                LEFT JOIN $dbc c ON c.pc_id = cd.cd_pc_id
+                    LEFT JOIN $dbrr r ON r.id = c.pc_region_id
+            WHERE cd_cf_id = 8
+                AND pc_country_id = 3159
+            GROUP BY c.pc_region_id, cd.cd_value
+            ORDER BY c.pc_region_id, cd.cd_value";
+$db->exec();
+$rows = $db->fetchAll();
+
+print_x($rows);
 ?>
