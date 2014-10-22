@@ -66,5 +66,5 @@ if ($row['sp_value'] != $timestamp_max) {
         'datetime_last' => date('d.m.Y H:i:s', $row['sp_value']),
         'filename_last' => $filename_last,
     );
-    Mailing::sendLetterCommon($global_cron_email, 14, $mail_attrs);
+    Mailing::sendLetterCommon($global_cron_email, 3, $mail_attrs);
 }
