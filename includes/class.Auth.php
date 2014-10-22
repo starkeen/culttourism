@@ -42,15 +42,19 @@ class Auth {
             $this->key = $this->db->getEscapedString($_COOKIE['apikey']);
         } else {
             $this->key = md5(uniqid() . $this->secretstring);
-            if (!setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/'))
+            if (!setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/')) {
                 $this->key = + 'x_';
+            }
         }
         return $this->key;
     }
 
     public function checkSession($service = 'web') {
         $dba = $this->db->getTableName('authorizations');
-        $this->db->sql = "SELECT au_session FROM $dba WHERE au_key = '$this->key' AND au_date_expire > now() AND au_service = '$service' LIMIT 1";
+        $this->db->sql = "SELECT au_session FROM $dba
+                            WHERE au_key = '$this->key'
+                            AND au_date_expire > now()
+                            LIMIT 1";
         $this->db->exec();
         $row = $this->db->fetch();
         if (isset($row['au_session']) && $row['au_session'] == $this->session) {

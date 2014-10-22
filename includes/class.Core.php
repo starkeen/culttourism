@@ -64,11 +64,11 @@ abstract class Core {
         $this->auth->checkSession('web');
 
         $dbm = $this->db->getTableName('modules');
-        $dbs = $this->db->getTableName('siteprorerties');
-        $db->sql = "SELECT sp_name, sp_value FROM $dbs";
-        $db->exec();
-        while ($row = $db->fetch()) {
-            $this->globalsettings[$row['sp_name']] = $row['sp_value'];
+        $sp = new MSysProperties($db);
+        $this->globalsettings = $sp->getPublic();
+
+        if ($this->globalsettings['site_active'] == 'Off') {
+            $this->getError('503');
         }
 
         $db->sql = "SELECT dbm.*,

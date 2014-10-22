@@ -18,11 +18,12 @@ class Statcity extends Model {
     }
 
     public function add($city_id, $hash) {
-        $this->insert(array(
-            'sc_citypage_id' => $city_id,
-            'sc_date' => date('Y-m-d H:i:s'),
-            'sc_hash' => $hash,
-        ));
+        $this->_db->sql = "INSERT INTO $this->_table_name SET
+                            sc_citypage_id = '$city_id',
+                            sc_date = now(),
+                            sc_hash = '$hash'
+                           ON DUPLICATE KEY UPDATE sc_date = now()";
+        $this->_db->exec();
         return true;
     }
 

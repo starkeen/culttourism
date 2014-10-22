@@ -18,11 +18,12 @@ class Statpoints extends Model {
     }
 
     public function add($point_id, $hash) {
-        $this->insert(array(
-            'sp_pagepoint_id' => $point_id,
-            'sp_date' => date('Y-m-d H:i:s'),
-            'sp_hash' => $hash,
-        ));
+        $this->_db->sql = "INSERT INTO $this->_table_name SET
+                            sp_pagepoint_id = '$point_id',
+                            sp_date = now(),
+                            sp_hash = '$hash'
+                           ON DUPLICATE KEY UPDATE sp_date = now()";
+        $this->_db->exec();
         return true;
     }
 
