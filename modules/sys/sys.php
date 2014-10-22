@@ -33,12 +33,17 @@ class Page extends Page_common {
                 $bb = new DeployBitbucket($config);
                 $res = $bb->deploy($req);
 
-                Logging::addHistory('sys', "Результаты деплоя", implode("\n", $res));
-                $mail_attrs = array(
-                    'files_list' => implode("<br>", $res),
-                );
-                Mailing::sendLetterCommon($config['git_report_email'], 15, $mail_attrs);
-
+                if (!empty($res)) {
+                    $this->smarty->cleanCompiled();
+                    $this->smarty->cleanCache();
+                    
+                    Logging::addHistory('sys', "Результаты деплоя", implode("\n", $res));
+                    
+                    $mail_attrs = array(
+                        'files_list' => implode("<br>", $res),
+                    );
+                    Mailing::sendLetterCommon($config['git_report_email'], 15, $mail_attrs);
+                }
                 echo 'ok';
                 exit();
             } else {

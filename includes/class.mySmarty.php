@@ -18,6 +18,18 @@ class mySmarty extends Smarty {
         $this->debugging = FALSE;
     }
 
+    public function cleanCompiled() {
+        foreach (glob($this->compile_dir . "*.php") as $filename) {
+            unlink(realpath($filename));
+        }
+    }
+
+    public function cleanCache() {
+        foreach (glob($this->cache_dir . "*.php") as $filename) {
+            unlink(realpath($filename));
+        }
+    }
+
 }
 
 ?>
