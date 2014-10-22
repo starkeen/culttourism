@@ -69,7 +69,8 @@ class Page extends PageCommon {
                     $mailtext = $smarty->fetch(_DIR_TEMPLATES . '/feedback/mailtome.sm.html');
 
                     include(_DIR_INCLUDES . "/class.Mailing.php");
-                    if (Mailing::sendImmediately($db, _FEEDBACK_MAIL, $mailtext, 'Новое сообщение с сайта ' . _URL_ROOT)) {
+                    //if (Mailing::sendImmediately($db, _FEEDBACK_MAIL, $mailtext, 'Новое сообщение с сайта ' . _URL_ROOT)) {
+                    if (Mailing::sendInCache(_FEEDBACK_MAIL, $mailtext, 'Новое сообщение с сайта ' . _URL_ROOT, null, 'X-Mailru-Msgtype: feedback')) {
                         $_SESSION['feedback_referer'] = null;
                         unset($_SESSION['feedback_referer']);
                         header('Location: /');

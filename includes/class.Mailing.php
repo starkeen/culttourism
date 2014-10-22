@@ -20,17 +20,18 @@ class Mailing {
         $mailer->SMTPAuth = true;
         $mailer->CharSet = "utf-8";
         $mailer->From = _MAIL_FROMADDR;
-        //$mailer->FromName = iconv('utf-8', 'windows-1251', _MAIL_FROMNAME);
         $mailer->FromName = _MAIL_FROMNAME;
         $mailer->Host = _MAIL_HOST;
         $mailer->Username = _MAIL_USER;                  // SMTP username
         $mailer->Password = _MAIL_PASS;                  // SMTP password
-        //$mailer->Subject  = iconv('utf-8', 'windows-1251', $letter['ml_theme']);
         $mailer->Subject = $letter['ml_theme'];
-        //$mailer->Body     = iconv('utf-8', 'windows-1251', $letter['ml_text']);
         $mailer->Body = $letter['ml_text'];
+        if ($letter['ml_customheader'] != '') {
+            $mailer->AddCustomHeader($letter['ml_customheader']);
+            $listid = trim(str_replace('X-Mailru-Msgtype:', '', $letter['ml_customheader']));
+            $mailer->AddCustomHeader("List-id: <list-$listid.culttourism.ru>");
+        }
         $mailer->AddAddress($letter['ml_adr_to']);
-        $mailer->AddCustomHeader('X-Mailru-Msgtype: feedback');
         $mailer->Send();
         $mailer->ClearAddresses();
         $mailer->ClearAttachments();
@@ -44,30 +45,32 @@ class Mailing {
             self::sendOnly($letter);
             $db->sql = "UPDATE $dbmp SET ml_worked = 1, ml_inwork=0, ml_datesend=now() WHERE ml_id = '$ml_id'";
             return $db->exec();
-        }
-        else
+        } else {
             return FALSE;
+        }
     }
 
     public static function sendFromPool($limit = null) {
         global $db;
         $dbm = $db->getTableName('mail_pool');
         $db->sql = "SELECT ml_id FROM $dbm WHERE ml_worked = 0 AND ml_inwork = 0";
-        if ($limit)
+        if ($limit) {
             $db->sql .= " LIMIT $limit";
+        }
         $db->exec();
         $pool = array();
         $cnt = 0;
         while ($ml = $db->fetch()) {
             $pool[] = $ml['ml_id'];
         }
-        if (!empty($pool))
+        if (!empty($pool)) {
             foreach ($pool as $mid) {
                 $db->exec("UPDATE $dbm SET ml_inwork = 1 WHERE ml_id = '$mid'");
                 self::sendLetter($db, $mid);
                 $db->exec("UPDATE $dbm SET ml_inwork = 0, ml_worked = 1 WHERE ml_id = '$mid'");
                 $cnt++;
             }
+        }
         return $cnt;
     }
 
@@ -80,27 +83,67 @@ class Mailing {
         return self::sendInCache($to, $letter['mt_content'], $letter['mt_theme'], $_SESSION['user_id']);
     }
 
-    private static function sendInCache($to, $text, $theme, $sender) {
+    public static function sendLetterNewPassword($to, $details) {
         global $db;
-        $text = mysql_real_escape_string($text);
-        $dbmp = $db->getTableName('mail_pool');
-        $db->sql = "INSERT INTO $dbmp
-                    (ml_datecreate, ml_text, ml_adr_to, ml_theme, ml_inwork, ml_worked, ml_sender_id)
-                    VALUES
-                    (now(), '$text', '$to', '$theme', 0, 0, '$sender')";
-        return $db->exec();
+        $attrs['REQUEST_LINK'] = _SITE_URL . 'request/' . $details['req_key'] . '/';
+        $attrs['SITE_LINK'] = _SITE_URL;
+        $letter = self::prepareLetter(5, $attrs);
+        return self::sendImmediately($db, $to, $letter['mt_content'], $letter['mt_theme'], $letter['mt_custom_header']);
     }
 
-    public static function sendImmediately($db, $to, $text, $theme) {
-        $text = mysql_real_escape_string($text);
-        $theme = mysql_real_escape_string($theme);
-        $dbmp = $db->getTableName('mail_pool');
-        $db->sql = "INSERT INTO $dbmp
-                    (ml_datecreate, ml_text, ml_adr_to, ml_theme, ml_inwork, ml_worked, ml_sender_id)
-                    VALUES
-                    (now(), '$text', '$to', '$theme', 1, 0, 0)";
-        $db->exec();
-        $lt_id = $db->getLastInserted();
+    public static function sendLetterNewUser($to, $details) {
+        global $db;
+        $attrs['USER_NAME'] = $details['user_name'];
+        $attrs['REQUEST_KEY'] = $details['request_key'];
+        $attrs['USER_EMAIL'] = $to;
+        $attrs['SITE_LINK'] = _SITE_URL;
+        $letter = self::prepareLetter(2, $attrs);
+        return self::sendImmediately($db, $to, $letter['mt_content'], $letter['mt_theme'], $letter['mt_custom_header']);
+    }
+
+    public static function sendLetterCommon($to, $type, $details) {
+        global $db;
+        $attrs = array();
+        $attrs['SITE_LINK'] = _SITE_URL;
+        $attrs['USER_IP'] = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'cron';
+        foreach ($details as $key => $val) {
+            $attrs[strtoupper($key)] = $val;
+        }
+        if (!isset($attrs['USER_EMAIL']) || !$attrs['USER_EMAIL']) {
+            $attrs['USER_EMAIL'] = $to;
+        }
+        $letter = self::prepareLetter($type, $attrs);
+        return self::sendImmediately($db, $to, $letter['mt_content'], $letter['mt_theme'], $letter['mt_custom_header']);
+    }
+
+    public static function sendInCache($to, $text, $theme, $sender = null, $xheader = null) {
+        global $db;
+        $mp = new MMailPool($db);
+        $mp->insert(array(
+            'ml_datecreate' => date('Y-m-d H:i:s'),
+            'ml_text' => trim($text),
+            'ml_adr_to' => $to,
+            'ml_theme' => trim($theme),
+            'ml_inwork' => 0,
+            'ml_worked' => 0,
+            'ml_sender_id' => 0,
+            'ml_customheader' => $xheader,
+        ));
+        return true;
+    }
+
+    public static function sendImmediately($db, $to, $text, $theme, $custom_header = '') {
+        $mp = new MMailPool($db);
+        $lt_id = $mp->insert(array(
+            'ml_datecreate' => date('Y-m-d'),
+            'ml_text' => trim($text),
+            'ml_adr_to' => $to,
+            'ml_theme' => trim($theme),
+            'ml_inwork' => 1,
+            'ml_worked' => 0,
+            'ml_sender_id' => 0,
+            'ml_customheader' => $custom_header,
+        ));
         return self::sendLetter($db, $lt_id);
     }
 
