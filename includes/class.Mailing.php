@@ -135,7 +135,7 @@ class Mailing {
     public static function sendImmediately($db, $to, $text, $theme, $custom_header = '') {
         $mp = new MMailPool($db);
         $lt_id = $mp->insert(array(
-            'ml_datecreate' => date('Y-m-d'),
+            'ml_datecreate' => date('Y-m-d H:i:s'),
             'ml_text' => trim($text),
             'ml_adr_to' => $to,
             'ml_theme' => trim($theme),
