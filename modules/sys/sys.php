@@ -42,7 +42,7 @@ class Page extends Page_common {
                     $mail_attrs = array(
                         'files_list' => implode("<br>", $res),
                     );
-                    Mailing::sendLetterCommon($config['git_report_email'], 15, $mail_attrs);
+                    Mailing::sendLetterCommon($config['git_report_email'], 2, $mail_attrs);
                 }
                 echo 'ok';
                 exit();
