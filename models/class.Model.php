@@ -36,6 +36,42 @@ class Model {
         return $this->_db->fetchAll();
     }
 
+    public function getItemsByFilter($filter) {
+        $out = array(
+            'fields' => '*',
+            'join' => array(),
+            'where' => array(),
+            'limit' => 20,
+            'offset' => 0,
+            'order' => "$this->_table_order ASC",
+            'items' => 0,
+            'total' => 0,
+        );
+
+        foreach ($filter as $k => $f) {
+            if (isset($out[$k])) {
+                $out[$k] = $f;
+            } else {
+                $out['where'][] = $f;
+            }
+        }
+
+        $this->_db->sql = "SELECT SQL_CALC_FOUND_ROWS {$out['fields']}
+                            FROM $this->_table_name t
+                                " . (!empty($out['join']) ? implode("\n", $out['join']) : '') . "
+                            " . (!empty($out['where']) ? ('WHERE ' . implode("\n AND ", $out['where'])) : '') . "
+                            ORDER BY {$out['order']}
+                            LIMIT {$out['offset']}, {$out['limit']}";
+        //$this->_db->showSQL();
+        $this->_db->exec();
+        $out['items'] = $this->_db->fetchAll();
+        $this->_db->sql = "SELECT FOUND_ROWS() AS cnt";
+        $this->_db->exec();
+        $row = $this->_db->fetch();
+        $out['total'] = $row['cnt'];
+        return $out;
+    }
+
     public function getItemByPk($id) {
         $id = intval($id);
         $this->_db->sql = "SELECT * FROM $this->_table_name WHERE $this->_table_pk = '$id'";
