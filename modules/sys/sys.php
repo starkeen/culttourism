@@ -5,7 +5,7 @@
  *
  * @author starkeen
  */
-class Page extends Page_common {
+class Page extends PageCommon {
 
     public function __construct($db, $mod) {
         list($module_id, $page_id, $id) = $mod;
@@ -36,9 +36,9 @@ class Page extends Page_common {
                 if (!empty($res)) {
                     $this->smarty->cleanCompiled();
                     $this->smarty->cleanCache();
-                    
+
                     Logging::addHistory('sys', "Результаты деплоя", implode("\n", $res));
-                    
+
                     $mail_attrs = array(
                         'files_list' => implode("<br>", $res),
                     );
@@ -59,7 +59,7 @@ class Page extends Page_common {
         return $sp->getSettingsByBranchId(9);
     }
 
-    public static function getInstance($db, $mod = null) {
+    public static function getInstance($db, $mod) {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
 
