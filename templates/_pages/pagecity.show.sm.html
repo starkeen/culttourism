@@ -83,7 +83,7 @@
         <tr class="obj_type_{$item.pt_type_id}">
             <td class="td_obj_icon{if $item.pt_is_best == 1} obj_best{/if}">
                 {if $item.pt_type_id != 0}
-                <a href="object{$item.pt_id}.html" title="подробно: {$item.pt_name}">
+                <a href="{$item.url_canonical}" title="подробно: {$item.pt_name}">
                     <img class="obj_icon_img" src="/img/points/x32/{$item.tp_icon}" alt="{$item.tp_name}: {$item.pt_name}" />
                 </a>
                 {else}<img class="obj_icon_img" src="/img/points/x32/star.png" alt="другое" />{/if}
@@ -132,7 +132,7 @@
         <tr class="obj_type_{$item.pt_type_id}">
             <td class="td_obj_icon">
                 {if $item.pt_type_id != 0}
-                <a href="object{$item.pt_id}.html" title="подробно: {$item.pt_name}">
+                <a href="{$item.url_canonical}" title="подробно: {$item.pt_name}">
                     <img src="/img/points/x32/{$item.tp_icon}" alt="{$item.tp_name}: {$item.pt_name}" />
                 </a>
                 {else}
