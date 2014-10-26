@@ -95,8 +95,8 @@ class DeployBitbucket {
         curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36");
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->_config['git_user'] . ':' . $this->_config['git_passwd']);
-        //curl_setopt($ch, CURLOPT_SSLVERSION, 3);
-        //curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'SSLv3');
+        curl_setopt($ch, CURLOPT_SSLVERSION, 3);
+        curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'SSLv3');
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
