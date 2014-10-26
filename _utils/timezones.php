@@ -82,7 +82,7 @@ foreach ($timezones as $tzid => $zone) {
 foreach ($timezones as $tz) {
     foreach ($tz['pages'] as $pg) {
         if ($pg['tz_new']) {
-            $db->sql = "UPDATE $dbcd SET cd_value = '{$pg['tz_new']}' WHERE cd_cf_id = 8 cd_pc_id = '{$pg['pc_id']}'; #{$pg['pc_title']}";
+            $db->sql = "UPDATE $dbcd SET cd_value = '{$pg['tz_new']}' WHERE cd_cf_id = 8 AND cd_pc_id = '{$pg['pc_id']}'; #{$pg['pc_title']}";
             $db->exec();
         }
     }
