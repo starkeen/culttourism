@@ -4,6 +4,8 @@ $dbrc = $db->getTableName('ref_city');
 $dbpc = $db->getTableName('pagecity');
 $dbws = $db->getTableName('wordstat');
 
+
+//****************   1 - Обработка результатов запущеных ранее отчетов *********
 $request = array(
     'method' => 'GetWordstatReportList',
 );
@@ -21,6 +23,7 @@ $db->sql = "SELECT ws_rep_id FROM $dbws
             GROUP BY ws_rep_id";
 $db->exec();
 $reps = array();
+$reps_to_reset = array();
 while ($row = $db->fetch()) {
     if (in_array($row['ws_rep_id'], $open_reports)) {
         $request = array(
@@ -42,8 +45,20 @@ while ($row = $db->fetch()) {
             echo "Error2 in {$row['ws_rep_id']}:\n";
             print_r($res);
         }
+    } else {
+        $reps_to_reset[] = $row['ws_rep_id'];
     }
 }
+
+//****************   2 - Сброс очереди зависших отчетов ************************
+if (!empty($reps_to_reset)) {
+    $db->sql = "UPDATE $dbws
+                SET ws_rep_id = 0
+                WHERE ws_rep_id IN (" . implode(',', $reps_to_reset) . ")";
+    $db->exec();
+}
+
+//****************   3 - Простановка данных по словам **************************
 $reps_to_del = array();
 foreach ($reps as $rep) {
     $city = trim(str_replace(' достопримечательности', '', $rep['word']));
@@ -66,6 +81,7 @@ $db->sql = "UPDATE $dbws
                 WHERE ws_weight < ws_weight_min";
 $db->exec();
 
+//****************   4 - Удаление отработанных отчетов *************************
 foreach ($reps_to_del as $repdel) {
     yandex_req(array(
         'method' => 'DeleteWordstatReport',
@@ -73,6 +89,7 @@ foreach ($reps_to_del as $repdel) {
     ));
 }
 
+//****************   5 - Постановка новых отчетов в очередь ********************
 $new_reps_cnt = 5;
 $request = array(
     'method' => 'GetWordstatReportList',
@@ -117,7 +134,8 @@ if ($new_reps_cnt > 0) {
     }
 }
 
-$db->sql = "OPTIMIZE TABLE $dbws)";
+//****************   6 - Оптимизация таблицы данных ****************************
+$db->sql = "OPTIMIZE TABLE $dbws";
 $db->exec();
 
 function yandex_req($request) {
@@ -136,5 +154,3 @@ function yandex_req($request) {
 
     return json_decode($result, true);
 }
-
-?>
