@@ -3,7 +3,7 @@
 //echo '<p>rss...';
 $dbb = $db->getTableName('blogentries');
 $dbu = $db->getTableName('users');
-$db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text, us.us_name,
+$db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text, 'Роберт' AS us_name,
             DATE_FORMAT(bg.br_date,'%a, %d %b %Y %H:%i:%s GMT') as bg_pubdate,
             DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
             IF(bg.br_url != '', CONCAT('" . _SITE_URL . "blog/',DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'), CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/%d'),'.html')) as br_link
