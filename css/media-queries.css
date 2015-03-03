@@ -1,0 +1,17 @@
+@media screen and (max-width: 980px) {
+
+}
+@media screen and (max-width: 650px) {
+
+}
+@media screen and (max-width: 480px) {
+    html {
+        -webkit-text-size-adjust: none;
+    }
+}
+
+img {
+   max-width: 100%;
+   height: auto;
+   width: auto\9;
+}
