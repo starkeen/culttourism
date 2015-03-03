@@ -76,6 +76,36 @@ strong {
     margin:0 auto;
 }
 
+@media screen and (max-width: 980px) {
+    #content {
+        color:red;
+    }
+}
+@media screen and (max-width: 650px) {
+    #content {
+        color:red;
+    }
+}
+@media screen and (max-width: 480px) {
+    html {
+        -webkit-text-size-adjust: none;
+    }
+    #city_float {
+        display:none;
+    }
+    #content {
+        font-size: 90%;
+        padding: 10px 8px;
+        color:red;
+    }
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    width: auto\9;
+}
+
 /* Common
 -----------------------------------------------------------------------------*/
 ul.menu_common {
