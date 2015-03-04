@@ -91,8 +91,15 @@ ul.menu_common li {
 /* Header
 -----------------------------------------------------------------------------*/
 #header {
+    position: relative;
     height: 258px;
     background:url(/img/header/silhouette.png) bottom right no-repeat;
+}
+
+#header img {
+    position: relative;
+    top: 50px;
+    left:30px;
 }
 
 #mainmenu {
