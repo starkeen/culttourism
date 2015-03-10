@@ -28,7 +28,7 @@ $db->sql = "SELECT pc.pc_id, pc.pc_title,
 $db->exec();
 //$db->showSQL();
 $out = array();
-$url_root = '/';
+$url_root = '';
 while ($row = $db->fetch()) {
     $out[$row['pc_id']] = '';
     //-------------- страна --
