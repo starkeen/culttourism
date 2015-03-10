@@ -28,25 +28,27 @@ $db->sql = "SELECT pc.pc_id, pc.pc_title,
 $db->exec();
 //$db->showSQL();
 $out = array();
-$url_root = 'http://' . _URL_ROOT;
+$url_root = '/';
 while ($row = $db->fetch()) {
     $out[$row['pc_id']] = '';
     //-------------- страна --
-    if ($row['country_name'])
+    if ($row['country_name']) {
         $out[$row['pc_id']] .= $row['country_name'];
+    }
     //-------------- регион --
-    if ($row['region_url'] && $row['region_name'])
+    if ($row['region_url'] && $row['region_name']) {
         $out[$row['pc_id']] .= " > <a href=\"$url_root{$row['region_url']}/\">{$row['region_name']}</a>";
-    elseif ($row['region_name'])
+    } elseif ($row['region_name']) {
         $out[$row['pc_id']] .= " > {$row['region_name']}";
-    elseif ($row['region_name2'])
+    } elseif ($row['region_name2']) {
         $out[$row['pc_id']] .= " > {$row['region_name2']}";
+    }
     //-------------- город --
-    if ($row['city_url'] && $row['city_name'])
+    if ($row['city_url'] && $row['city_name']) {
         $out[$row['pc_id']] .= " > <a href=\"$url_root{$row['city_url']}/\" title=\"перейти к странице {$row['pc_title']}\">{$row['pc_title']}</a>";
+    }
 }
 foreach ($out as $cid => $link) {
     $db->exec("UPDATE $dbc SET pc_pagepath = '$link' WHERE pc_id = '$cid' AND pc_pagepath IS NULL");
 }
 //echo "<p>обработано " . count($out) . " страниц";
-?>
