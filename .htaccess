@@ -2,8 +2,6 @@ Options -Indexes
 Options +FollowSymLinks
 DirectoryIndex index.php index.html
 RewriteEngine On
-RewriteCond %{HTTP_HOST} ^www.culttourism\.ru$ [NC]
-RewriteRule ^(.*)$ http://culttourism.ru/$1 [R=301,L]
 RewriteCond %{REQUEST_URI} ^/[^.]+[^/]$
 RewriteRule ^(.*)$ http://%{HTTP_HOST}/$1/ [R=301,L]
 RewriteCond %{REQUEST_FILENAME} !-f 
