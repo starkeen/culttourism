@@ -828,14 +828,99 @@ textarea.feedinput {
 -----------------------------------------------------------------------------*/
 /* IPad (landscape) ----------- */
 @media screen and (max-width: 980px) {
-    #content {
-
+    html {
+        -webkit-text-size-adjust: none;
     }
 }
 /* IPad (portrait) ----------- */
 @media screen and (max-width: 650px) {
-    #content {
-
+    html {
+        -webkit-text-size-adjust: none;
+    }
+    #wrapper {
+        width:100%;
+        max-width:650px;
+        min-width:0;
+    }
+    #header {
+        height:135px;
+        background-size: auto 169px;
+    }
+    #header img {
+        display:block;
+        top: 13px;
+        left: -222px;
+        margin: 30px auto;
+        height:100px;
+    }
+    #mainmenu {
+        position:absolute;
+        top:0;
+        margin:-33px 0;
+        height:42px;
+        width:100%;
+        font-size:inherit;
+        -webkit-border-radius: 0px;
+        -moz-border-radius: 0px;
+        border-radius: 0px;
+    }
+    #mainmenu #show_auth_form {
+        display:none;
+    }
+    .navigate {
+        position: relative;
+        top: -18px;
+    }
+    #mainmenu form {
+        position: relative;
+        top: -18px;
+    }
+    #content h1 {
+        height: 26px;
+        padding-top: 0;
+        font-size:13pt;
+    }
+    #content h2 {
+        height: 20px;
+        font-size:12pt;
+    }
+    #city_path {
+        display:none;
+    }
+    #object_icon {
+        display:none;
+    }
+    #city_float {
+        display:none;
+    }
+    #map_container {
+        float: none;
+        width:100%;
+        height:200px;
+        margin-right:8px;
+    }
+    #city_map {
+        width:98%;
+        height:99%;
+        margin:0 auto;
+    }
+    .points_selector {
+        float: none;
+        width: 100%;
+        background: none;
+    }
+    .points_selector li {
+        display: inline-block;
+        width:40px;
+    }
+    .objlink {
+        font-size: 90%;
+    }
+    .point_gpsshort {
+        display:none;
+    }
+    #widget_photos {
+        display:none;
     }
 }
 /* Smartphones (landscape) ----------- */
@@ -845,11 +930,84 @@ textarea.feedinput {
     }
     #wrapper {
         min-width: 480px;
-        max-width: 480px;
+        max-width: 0;
+    }
+    #header {
+        height:80px;
+        background:none;
+    }
+    #header img {
+        display:block;
+        top: 12px;
+        margin: 30px auto;
+        height:100px;
+    }
+    #mainmenu {
+        position:absolute;
+        top:0;
+        margin:-33px 0;
+        height:42px;
+        width:100%;
+        font-size:inherit;
+        -webkit-border-radius: 0px;
+        -moz-border-radius: 0px;
+        border-radius: 0px;
+    }
+    #mainmenu form {
+        display:none;
+    }
+    #mainmenu #show_auth_form {
+        display:none;
+    }
+    .navigate {
+        position: relative;
+        top: -18px;
     }
     #city_float {
         display:none;
     }
+    #content h1 {
+        height: 20px;
+        font-size:11pt;
+    }
+    #content h2 {
+        height: 20px;
+        font-size:10pt;
+    }
+    #city_path {
+        display:none;
+    }
+    #object_icon {
+        display:none;
+    }
+    #city_float {
+        display:none;
+    }
+    #map_container {
+        float: none;
+        width:100%;
+        height:200px;
+        margin-right:8px;
+        margin-left:-8px;
+    }
+    #city_map {
+        width:90%;
+        height:99%;
+        margin:0 auto;
+    }
+    .points_selector {
+        float: none;
+        width: 100%;
+        background: none;
+    }
+    .points_selector li {
+        display: inline-block;
+        width:40px;
+    }
+    .objlink {
+        font-size: 90%;
+    }
+    .point_gpsshort {display:none;}
     #widget_photos {
         display:none;
     }
@@ -864,7 +1022,7 @@ textarea.feedinput {
         -webkit-text-size-adjust: none;
     }
     #wrapper {
-        min-width: 320px;
+        min-width: 0;
         max-width: 320px;
     }
     #header {
@@ -873,16 +1031,20 @@ textarea.feedinput {
     }
     #header img {
         display:block;
+        top: -10px;
         margin: 30px auto;
         height:100px;
     }
     #mainmenu {
         position:absolute;
         top:0;
-        margin:-10px 0;
+        margin:-33px 0;
         height:42px;
         width:100%;
         font-size:inherit;
+        -webkit-border-radius: 0px;
+        -moz-border-radius: 0px;
+        border-radius: 0px;
     }
     #mainmenu form {
         display:none;
@@ -947,5 +1109,5 @@ textarea.feedinput {
         font-size: 90%;
     }
     .point_gpsshort {display:none;}
-    
+
 }
