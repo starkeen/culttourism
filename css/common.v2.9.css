@@ -852,6 +852,9 @@ textarea.feedinput {
     #yandex_ad {
         display:none;
     }
+    #object_contacts_block {
+        width:100%;
+    }
     #footer {
         min-width: 0;
     }
@@ -954,6 +957,9 @@ textarea.feedinput {
     }
     #widget_photos {
         display:none;
+    }
+    #object_contacts_block {
+        width:100%;
     }
     #yandex_ad {
         display:none;
@@ -1066,6 +1072,9 @@ textarea.feedinput {
     .point_gpsshort {display:none;}
     #widget_photos {
         display:none;
+    }
+    #object_contacts_block {
+        width:100%;
     }
     #content {
         font-size: 90%;
