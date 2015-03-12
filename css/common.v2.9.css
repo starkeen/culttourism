@@ -1045,6 +1045,9 @@ textarea.feedinput {
         height:99%;
         margin:0 auto;
     }
+    #point_gps {
+        display:none;
+    }
     #object_description {
         margin:0;
     }
