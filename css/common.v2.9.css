@@ -961,10 +961,6 @@ textarea.feedinput {
     #mainmenu #show_auth_form {
         display:none;
     }
-    .navigate {
-        position: relative;
-        top: -18px;
-    }
     #mainmenu form {
         position: relative;
         top: -18px;
@@ -1084,17 +1080,13 @@ textarea.feedinput {
     }
     #mainmenu li {
         position: relative;
-        top: -8px;
+        top: -18px;
     }
     #mainmenu form {
         display:none;
     }
     #mainmenu #show_auth_form {
         display:none;
-    }
-    .navigate {
-        position: relative;
-        top: -18px;
     }
     #city_float {
         display:none;
