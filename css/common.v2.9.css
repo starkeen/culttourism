@@ -834,6 +834,9 @@ textarea.feedinput {
     body {
         font-size: 15px;
     }
+    #yandex_ad {
+        display:none;
+    }
     #footer {
         min-width: 0;
     }
@@ -929,6 +932,9 @@ textarea.feedinput {
         display:none;
     }
     #widget_photos {
+        display:none;
+    }
+    #yandex_ad {
         display:none;
     }
     #footer {
@@ -1031,6 +1037,9 @@ textarea.feedinput {
         font-size: 90%;
         padding: 10px 8px;
     }
+    #yandex_ad {
+        display:none;
+    }
     #footer {
         min-width: 0;
     }
@@ -1132,6 +1141,9 @@ textarea.feedinput {
         font-size: 90%;
     }
     .point_gpsshort {display:none;}
+    #yandex_ad {
+        display:none;
+    }
     #footer {
         min-width: 0;
     }
