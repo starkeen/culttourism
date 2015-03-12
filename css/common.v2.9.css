@@ -1060,6 +1060,7 @@ textarea.feedinput {
     }
     #footer {
         min-width: 0;
+        margin: -10px auto 0;
     }
 }
 /* Smartphones (portrait) ----------- */
