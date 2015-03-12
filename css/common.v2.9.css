@@ -923,6 +923,9 @@ textarea.feedinput {
     #city_float {
         display:none;
     }
+    #object_description {
+        margin:0;
+    }
     #map_container {
         float: none;
         width:100%;
@@ -969,6 +972,9 @@ textarea.feedinput {
     }
     ul {
         margin: 0 0 6px;
+    }
+    p {
+        margin-bottom: 8px;
     }
     #wrapper {
         min-width: 0;
@@ -1039,6 +1045,9 @@ textarea.feedinput {
         height:99%;
         margin:0 auto;
     }
+    #object_description {
+        margin:0;
+    }
     .points_selector {
         float: none;
         width: 100%;
@@ -1084,6 +1093,9 @@ textarea.feedinput {
     }
     ul {
         margin: 0 0 6px;
+    }
+    p {
+        margin-bottom: 8px;
     }
     #wrapper {
         min-width: 0;
