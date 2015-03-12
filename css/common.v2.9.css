@@ -849,6 +849,29 @@ textarea.feedinput {
     ul {
         margin: 0 0 6px;
     }
+    #header {
+        height:135px;
+        background-size: auto 169px;
+    }
+    #header img {
+        display:block;
+        top: 13px;
+        left: -222px;
+        margin: 30px auto;
+        height:100px;
+    }
+    #mainmenu {
+        position:absolute;
+        top:0;
+        margin:-33px 0;
+        height:42px;
+        width:100%;
+        overflow: hidden;
+        font-size:inherit;
+        -webkit-border-radius: 0px;
+        -moz-border-radius: 0px;
+        border-radius: 0px;
+    }
     #yandex_ad {
         display:none;
     }
@@ -933,11 +956,12 @@ textarea.feedinput {
     }
     #object_description {
         margin:0;
+        padding: 6px;
     }
     #map_container {
         float: none;
         width:100%;
-        height:200px;
+        height:180px;
         margin-right:8px;
     }
     #city_map {
@@ -1055,7 +1079,7 @@ textarea.feedinput {
     #map_container {
         float: none;
         width:100%;
-        height:200px;
+        height:150px;
         margin-left:0;
     }
     #city_map {
@@ -1068,6 +1092,7 @@ textarea.feedinput {
     }
     #object_description {
         margin:0;
+        padding: 2px;
     }
     .points_selector {
         float: none;
@@ -1116,7 +1141,7 @@ textarea.feedinput {
         -webkit-text-size-adjust: none;
     }
     body {
-        font-size: 16px;
+        font-size: 15px;
     }
     ul {
         margin: 0 0 6px;
@@ -1186,7 +1211,7 @@ textarea.feedinput {
     #map_container {
         float: none;
         width:100%;
-        height:200px;
+        height:100px;
         margin-left:0;
     }
     #city_map {
@@ -1199,6 +1224,7 @@ textarea.feedinput {
     }
     #object_description {
         margin:0;
+        padding: 1px;
     }
     #widget_photos {
         display:none;
