@@ -846,6 +846,9 @@ textarea.feedinput {
     body {
         font-size: 15px;
     }
+    ul {
+        margin: 0 0 6px;
+    }
     #yandex_ad {
         display:none;
     }
@@ -860,6 +863,9 @@ textarea.feedinput {
     }
     body {
         font-size: 15px;
+    }
+    ul {
+        margin: 0 0 6px;
     }
     #wrapper {
         max-width:650px;
@@ -882,6 +888,7 @@ textarea.feedinput {
         margin:-33px 0;
         height:42px;
         width:100%;
+        overflow: hidden;
         font-size:inherit;
         -webkit-border-radius: 0px;
         -moz-border-radius: 0px;
@@ -960,6 +967,9 @@ textarea.feedinput {
     body {
         font-size: 15px;
     }
+    ul {
+        margin: 0 0 6px;
+    }
     #wrapper {
         min-width: 0;
         max-width: 480px;
@@ -981,6 +991,7 @@ textarea.feedinput {
         margin:-33px 0;
         height:42px;
         width:100%;
+        overflow: hidden;
         font-size:inherit;
         -webkit-border-radius: 0px;
         -moz-border-radius: 0px;
@@ -1071,6 +1082,9 @@ textarea.feedinput {
     body {
         font-size: 16px;
     }
+    ul {
+        margin: 0 0 6px;
+    }
     #wrapper {
         min-width: 0;
         max-width: 320px;
@@ -1092,6 +1106,7 @@ textarea.feedinput {
         margin:-33px 0;
         height:42px;
         width:100%;
+        overflow: hidden;
         font-size:inherit;
         -webkit-border-radius: 0px;
         -moz-border-radius: 0px;
@@ -1136,7 +1151,7 @@ textarea.feedinput {
         margin:0 auto;
     }
     #point_gps {
-        font-size: 50%;
+        display:none;
     }
     #object_description {
         margin:0;
