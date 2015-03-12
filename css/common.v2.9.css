@@ -834,6 +834,9 @@ textarea.feedinput {
     body {
         font-size: 15px;
     }
+    #footer {
+        min-width: 0;
+    }
 }
 /* IPad (portrait) ----------- */
 @media screen and (max-width: 650px) {
@@ -927,6 +930,9 @@ textarea.feedinput {
     }
     #widget_photos {
         display:none;
+    }
+    #footer {
+        min-width: 0;
     }
 }
 /* Smartphones (landscape) ----------- */
@@ -1024,6 +1030,9 @@ textarea.feedinput {
     #content {
         font-size: 90%;
         padding: 10px 8px;
+    }
+    #footer {
+        min-width: 0;
     }
 }
 /* Smartphones (portrait) ----------- */
