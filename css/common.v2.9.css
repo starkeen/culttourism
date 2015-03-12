@@ -860,7 +860,7 @@ textarea.feedinput {
     #header img {
         display:block;
         top: 13px;
-        left: -400px;
+        left: -258px;
         margin: 30px auto;
         height:100px;
     }
@@ -890,6 +890,9 @@ textarea.feedinput {
         width:98%;
         height:99%;
         margin:0 auto;
+    }
+    #city_map_link {
+        top: -185px;
     }
     #object_description {
         margin:0;
@@ -931,7 +934,7 @@ textarea.feedinput {
     #header img {
         display:block;
         top: 13px;
-        left: -222px;
+        left: -154px;
         margin: 30px auto;
         height:100px;
     }
@@ -946,6 +949,14 @@ textarea.feedinput {
         -webkit-border-radius: 0px;
         -moz-border-radius: 0px;
         border-radius: 0px;
+    }
+    #mainmenu li {
+        position: relative;
+        top: -18px;
+    }
+    #mainmenu li form {
+        position: relative;
+        top: 1px;
     }
     #mainmenu #show_auth_form {
         display:none;
@@ -992,6 +1003,9 @@ textarea.feedinput {
         width:98%;
         height:99%;
         margin:0 auto;
+    }
+    #city_map_link {
+        top: -170px;
     }
     #point_gps {
         display:none;
@@ -1111,6 +1125,9 @@ textarea.feedinput {
         height:99%;
         margin:0 auto;
     }
+    #city_map_link {
+        top: -140px;
+    }
     #point_gps {
         display:none;
     }
@@ -1200,15 +1217,15 @@ textarea.feedinput {
         -moz-border-radius: 0px;
         border-radius: 0px;
     }
+    #mainmenu li {
+        position: relative;
+        top: -6px;
+    }
     #mainmenu form {
         display:none;
     }
     #mainmenu #show_auth_form {
         display:none;
-    }
-    .navigate {
-        position: relative;
-        top: -9px;
     }
     #content h1 {
         width: 100%;
@@ -1242,6 +1259,9 @@ textarea.feedinput {
         width:100%;
         height:99%;
         margin:0 auto;
+    }
+    #city_map_link {
+        display:none;
     }
     #point_gps {
         display:none;
