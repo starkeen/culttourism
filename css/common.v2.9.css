@@ -177,6 +177,7 @@ h1, .h1 {
     font-weight: bold;
     vertical-align: middle;
     padding: 4pt 0 0 8pt;
+    overflow: hidden;
 }
 h2, .h2 {
     display: block;
@@ -189,6 +190,7 @@ h2, .h2 {
     border-top: 1px solid #373737;
     border-bottom: 1px solid #373737;
     color: #bbbbbb;
+    overflow: hidden;
 }
 h3 {
     display:block;
@@ -200,6 +202,7 @@ h3 {
     border-top: 1px solid #373737;
     border-bottom: 1px solid #373737;
     color: #bbbbbb;
+    overflow: hidden;
 }
 h3 a {
     color:#393939;
@@ -962,7 +965,7 @@ textarea.feedinput {
         top: 12px;
         left: 0;
         margin: 30px auto;
-        height:100px;
+        height:80px;
     }
     #mainmenu {
         position:absolute;
@@ -1062,10 +1065,10 @@ textarea.feedinput {
     }
     #header img {
         display:block;
-        top: -10px;
+        top: 10px;
         left: 0;
         margin: 30px auto;
-        height:100px;
+        height:80px;
     }
     #mainmenu {
         position:absolute;
