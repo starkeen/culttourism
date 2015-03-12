@@ -898,6 +898,10 @@ textarea.feedinput {
         position: relative;
         top: -4px;
     }
+    #content {
+        font-size: 90%;
+        padding: 10px 10px;
+    }
     #content h1 {
         font-size: 17pt;
         padding: 0pt 0 8px 3pt;
@@ -1001,6 +1005,10 @@ textarea.feedinput {
     #mainmenu form {
         position: relative;
         top: -18px;
+    }
+    #content {
+        font-size: 90%;
+        padding: 10px 10px;
     }
     #content h1 {
         width: 100%;
@@ -1128,6 +1136,10 @@ textarea.feedinput {
     #city_float {
         display:none;
     }
+    #content {
+        font-size: 90%;
+        padding: 10px 8px;
+    }
     #content h1 {
         width: 100%;
         padding-left: 2px;
@@ -1180,7 +1192,9 @@ textarea.feedinput {
     .objlink {
         font-size: 90%;
     }
-    .point_gpsshort {display:none;}
+    .point_gpsshort {
+        display:none;
+    }
     #widget_photos {
         display:none;
     }
@@ -1189,10 +1203,6 @@ textarea.feedinput {
     }
     .textmarker {
         margin-right: 0;
-    }
-    #content {
-        font-size: 90%;
-        padding: 10px 8px;
     }
     .index-half-left {
         display:none;
@@ -1263,7 +1273,7 @@ textarea.feedinput {
     #content h1 {
         width: 100%;
         padding-left: 2px;
-        height: 20px;
+        height: 15px;
         font-size:11pt;
     }
     #content h2 {
