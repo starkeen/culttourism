@@ -1082,6 +1082,10 @@ textarea.feedinput {
         -moz-border-radius: 0px;
         border-radius: 0px;
     }
+    #mainmenu li {
+        position: relative;
+        top: -8px;
+    }
     #mainmenu form {
         display:none;
     }
