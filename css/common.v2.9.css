@@ -225,7 +225,7 @@ ol {
     margin: -70px auto 0;
     min-width: 1000px;
     height: 65px;
-    /*background: #BFF08E;*/
+    clear: both;
     position: relative;
     border-top:5px solid #20657f;
 }
@@ -251,6 +251,15 @@ ol {
     margin: 10px;
     clear:both;
     text-align:right;
+}
+/*------------------------------------- INDEX --------------------------*/
+.index-half-left {
+    width: 49%;
+    float: left;
+}
+.index-half-right {
+    width: 49%;
+    float: right;
 }
 
 /*------------------------------- page CITY ----------------------------------*/
@@ -1094,6 +1103,9 @@ textarea.feedinput {
     #content h2 {
         height: 20px;
         font-size:10pt;
+    }
+    .index-half-left, .index-half-right {
+        display:none;
     }
     #city_path {
         display:none;
