@@ -855,6 +855,9 @@ textarea.feedinput {
     #object_contacts_block {
         width:100%;
     }
+    .textmarker {
+        margin-right: 0;
+    }
     #footer {
         min-width: 0;
     }
@@ -960,6 +963,9 @@ textarea.feedinput {
     }
     #object_contacts_block {
         width:100%;
+    }
+    .textmarker {
+        margin-right: 0;
     }
     #yandex_ad {
         display:none;
@@ -1075,6 +1081,9 @@ textarea.feedinput {
     }
     #object_contacts_block {
         width:100%;
+    }
+    .textmarker {
+        margin-right: 0;
     }
     #content {
         font-size: 90%;
@@ -1201,6 +1210,9 @@ textarea.feedinput {
     }
     #object_contacts_block {
         width:100%;
+    }
+    .textmarker {
+        margin-right: 0;
     }
     .objlink {
         font-size: 90%;
