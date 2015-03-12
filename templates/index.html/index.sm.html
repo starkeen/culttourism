@@ -1,11 +1,11 @@
 <h2>Справочник культурно-исторических достопримечательностей</h2>
 <div>{$hello_text}</div>
-<hr style="clear:both" />
+<hr class="clear" />
 <p>
     Собранная на нашем сайте интересная информация о более чем {$stat}
     поможет выбрать именно тот туристический маршрут, который вам принесет наибольшее удовлетворение.
 </p>
-<div style="width:49%;float:left;">
+<div class="index-half-left">
     <h3>Записи в блоге</h3>
     {foreach from=$blogentries item=entry}
     <div class="index-blog-record">
@@ -18,7 +18,7 @@
     </div>
     {/foreach}
 </div>
-<div style="width:49%;float:right;">
+<div class="index-half-right">
     <h3>Новости</h3>
     {foreach from=$agrnewsentries item=entry}
     <div class="index-blog-record">
