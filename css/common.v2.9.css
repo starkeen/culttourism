@@ -1118,6 +1118,10 @@ textarea.feedinput {
     #mainmenu #show_auth_form {
         display:none;
     }
+    .navigate {
+        position: relative;
+        top: -9px;
+    }
     #content h1 {
         height: 20px;
         font-size:11pt;
