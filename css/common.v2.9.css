@@ -834,6 +834,9 @@ textarea.feedinput {
     body {
         font-size: 15px;
     }
+    #footer {
+        min-width: 0;
+    }
 }
 /* IPad (portrait) ----------- */
 @media screen and (max-width: 650px) {
@@ -928,6 +931,9 @@ textarea.feedinput {
     #widget_photos {
         display:none;
     }
+    #footer {
+        min-width: 0;
+    }
 }
 /* Smartphones (landscape) ----------- */
 @media screen and (max-width: 480px) {
@@ -948,6 +954,7 @@ textarea.feedinput {
     #header img {
         display:block;
         top: 12px;
+        left: 0;
         margin: 30px auto;
         height:100px;
     }
@@ -1024,6 +1031,9 @@ textarea.feedinput {
         font-size: 90%;
         padding: 10px 8px;
     }
+    #footer {
+        min-width: 0;
+    }
 }
 /* Smartphones (portrait) ----------- */
 @media screen and (max-width: 320px) {
@@ -1044,6 +1054,7 @@ textarea.feedinput {
     #header img {
         display:block;
         top: -10px;
+        left: 0;
         margin: 30px auto;
         height:100px;
     }
@@ -1121,5 +1132,7 @@ textarea.feedinput {
         font-size: 90%;
     }
     .point_gpsshort {display:none;}
-
+    #footer {
+        min-width: 0;
+    }
 }
