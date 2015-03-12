@@ -254,11 +254,11 @@ ol {
 }
 /*------------------------------------- INDEX --------------------------*/
 .index-half-left {
-    width: 49%;
+    width: 50%;
     float: left;
 }
 .index-half-right {
-    width: 49%;
+    width: 50%;
     float: right;
 }
 
@@ -1050,6 +1050,10 @@ textarea.feedinput {
     }
     .index-half-left {
         display:none;
+    }
+    .index-half-right {
+        float:none;
+        width:100%;
     }
     #yandex_ad {
         display:none;
