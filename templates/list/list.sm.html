@@ -1,12 +1,12 @@
+<div class="list-half-left">
+    {$list.data.ls_text}
+</div>
+
 <ul class="list-half-right">
     {foreach from=$list_items item=pt}
     <li>{$pt.pc_title}: <a href="{$pt.url_canonical}" class="objlink">{$pt.pt_name}</a></li>
     {/foreach}
 </ul>
-
-<div class="list-half-left">
-    {$list.data.ls_text}
-</div>
 
 <div style="clear:both;"></div>
 
