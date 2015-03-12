@@ -1,39 +1,39 @@
-<ul style="display:block; width:45%; float:right;">
+<ul class="list-half-right">
     {foreach from=$list_items item=pt}
     <li>{$pt.pc_title}: <a href="{$pt.url_canonical}" class="objlink">{$pt.pt_name}</a></li>
     {/foreach}
 </ul>
 
-<div style="width:49%;text-align: justify;">
+<div class="list-half-left">
     {$list.data.ls_text}
 </div>
 
 <div style="clear:both;"></div>
 
 <h2>{$list.data.ls_title} на карте</h2>
-<div id="list-map" style="width:100%; height:300px;"></div>
+<div id="list-map" class="list-map"></div>
 <input type="hidden" id="list-id" value="{$list.data.ls_id}" />
 
 <script type="text/javascript">
-    ymaps.ready(function() {
+    ymaps.ready(function () {
         var myMap = new ymaps.Map("list-map", {
             center: [37, 55],
             zoom: 10,
             behaviors: ['default', 'scrollZoom']
         });
         myMap.controls.add("zoomControl").add("mapTools").add(new ymaps.control.TypeSelector(["yandex#map", "yandex#hybrid"]));
-        $.getScript('/js/nmap-autoswitcher/nmap-autoswitcher.js', function() {
+        $.getScript('/js/nmap-autoswitcher/nmap-autoswitcher.js', function () {
             var autoSwitcher = new AutoSwitcher();
             autoSwitcher.addToMap(myMap);
         });
 
         ymaps.geoXml.load("http://culttourism.ru/map/list/?lid=" + $("#list-id").val())
-                .then(function(res) {
+                .then(function (res) {
                     var bounds = res.mapState.getBounds();
                     myMap.geoObjects.add(res.geoObjects);
                     myMap.setBounds(bounds);
                 },
-                        function(error) {
+                        function (error) {
                             //console.log('Ошибка при загрузке YMapsML: ' + error.status + ' (' + error.message + ')');
                         });
     });

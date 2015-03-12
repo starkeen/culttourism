@@ -252,14 +252,32 @@ ol {
     clear:both;
     text-align:right;
 }
+
 /*------------------------------------- INDEX --------------------------*/
 .index-half-left {
+    padding:2px;
     width: 50%;
     float: left;
 }
 .index-half-right {
+    padding:2px;
     width: 50%;
     float: right;
+}
+
+/*------------------------------------- LIST --------------------------*/
+.list-half-left {
+    width:49%;
+    text-align: justify;
+}
+.list-half-right {
+    display:block;
+    width:45%;
+    float: right;
+}
+.list-map {
+    width:100%;
+    height:300px;
 }
 
 /*------------------------------- page CITY ----------------------------------*/
@@ -879,6 +897,11 @@ textarea.feedinput {
     #mainmenu li {
         position: relative;
         top: -4px;
+    }
+    #content h1 {
+        font-size: 17pt;
+        padding: 0pt 0 8px 3pt;
+        height: 25px;
     }
     #map_container {
         float: none;
