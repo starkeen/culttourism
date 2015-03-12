@@ -900,7 +900,7 @@ textarea.feedinput {
     }
     #content {
         font-size: 90%;
-        padding: 10px 10px;
+        padding: 0;
     }
     #content h1 {
         font-size: 17pt;
@@ -921,6 +921,9 @@ textarea.feedinput {
     }
     #city_map_link {
         top: -185px;
+    }
+    #citytext {
+        padding: 6px;
     }
     #object_description {
         margin:0;
@@ -1008,7 +1011,6 @@ textarea.feedinput {
     }
     #content {
         font-size: 90%;
-        padding: 10px 10px;
     }
     #content h1 {
         width: 100%;
@@ -1138,7 +1140,6 @@ textarea.feedinput {
     }
     #content {
         font-size: 90%;
-        padding: 10px 8px;
     }
     #content h1 {
         width: 100%;
@@ -1270,6 +1271,9 @@ textarea.feedinput {
     #mainmenu #show_auth_form {
         display:none;
     }
+    #content {
+        font-size: 90%;
+    }
     #content h1 {
         width: 100%;
         padding-left: 2px;
@@ -1315,9 +1319,6 @@ textarea.feedinput {
     }
     #widget_photos {
         display:none;
-    }
-    #content {
-        font-size: 90%;
     }
     .points_selector {
         float: none;
