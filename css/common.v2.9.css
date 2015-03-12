@@ -831,11 +831,17 @@ textarea.feedinput {
     html {
         -webkit-text-size-adjust: none;
     }
+    body {
+        font-size: 15px;
+    }
 }
 /* IPad (portrait) ----------- */
 @media screen and (max-width: 650px) {
     html {
         -webkit-text-size-adjust: none;
+    }
+    body {
+        font-size: 15px;
     }
     #wrapper {
         width:100%;
@@ -928,9 +934,12 @@ textarea.feedinput {
     html {
         -webkit-text-size-adjust: none;
     }
+    body {
+        font-size: 15px;
+    }
     #wrapper {
-        min-width: 480px;
-        max-width: 0;
+        min-width: 0;
+        max-width: 480px;
     }
     #header {
         height:80px;
@@ -1020,6 +1029,9 @@ textarea.feedinput {
 @media screen and (max-width: 320px) {
     html {
         -webkit-text-size-adjust: none;
+    }
+    body {
+        font-size: 16px;
     }
     #wrapper {
         min-width: 0;
