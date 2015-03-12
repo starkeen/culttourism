@@ -849,14 +849,18 @@ textarea.feedinput {
     ul {
         margin: 0 0 6px;
     }
+    #wrapper {
+        max-width:980px;
+        min-width:0;
+    }
     #header {
         height:135px;
-        background-size: auto 169px;
+        background-size: auto 220px;
     }
     #header img {
         display:block;
         top: 13px;
-        left: -222px;
+        left: -400px;
         margin: 30px auto;
         height:100px;
     }
@@ -864,13 +868,33 @@ textarea.feedinput {
         position:absolute;
         top:0;
         margin:-33px 0;
-        height:42px;
+        height:47px;
         width:100%;
         overflow: hidden;
         font-size:inherit;
         -webkit-border-radius: 0px;
         -moz-border-radius: 0px;
         border-radius: 0px;
+    }
+    #mainmenu li {
+        position: relative;
+        top: -4px;
+    }
+    #map_container {
+        float: none;
+        width:100%;
+        height:200px;
+        margin-right:8px;
+    }
+    #city_map {
+        width:98%;
+        height:99%;
+        margin:0 auto;
+    }
+    #object_description {
+        margin:0;
+        margin-top: 2em;
+        padding: 6px;
     }
     #yandex_ad {
         display:none;
