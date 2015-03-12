@@ -862,7 +862,6 @@ textarea.feedinput {
         font-size: 15px;
     }
     #wrapper {
-        width:100%;
         max-width:650px;
         min-width:0;
     }
@@ -1049,6 +1048,9 @@ textarea.feedinput {
         font-size: 90%;
         padding: 10px 8px;
     }
+    .index-half-left {
+        display:none;
+    }
     #yandex_ad {
         display:none;
     }
@@ -1161,5 +1163,6 @@ textarea.feedinput {
     }
     #footer {
         min-width: 0;
+        margin: -20px auto 0;
     }
 }
