@@ -255,12 +255,12 @@ ol {
 
 /*------------------------------------- INDEX --------------------------*/
 .index-half-left {
-    padding:2px;
-    width: 50%;
+    padding:1px;
+    width: 49%;
     float: left;
 }
 .index-half-right {
-    padding:2px;
+    padding:1px;
     width: 50%;
     float: right;
 }
@@ -939,6 +939,9 @@ textarea.feedinput {
     .textmarker {
         margin-right: 0;
     }
+    .blog_record {
+        padding:6px;
+    }
     .list-half-left {
         width: 100%;
     }
@@ -1015,7 +1018,7 @@ textarea.feedinput {
     #content h1 {
         width: 100%;
         padding-left: 2px;
-        height: 26px;
+        height: 21px;
         padding-top: 0;
         font-size:13pt;
     }
