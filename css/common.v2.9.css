@@ -902,6 +902,7 @@ textarea.feedinput {
         font-size: 17pt;
         padding: 0pt 0 8px 3pt;
         height: 25px;
+        overflow: hidden;
     }
     #map_container {
         float: none;
@@ -937,6 +938,9 @@ textarea.feedinput {
     .list-half-right {
         width: 100%;
         float: none;
+    }
+    .list-half-right li {
+        margin-top: 2px;
     }
     #footer {
         min-width: 0;
