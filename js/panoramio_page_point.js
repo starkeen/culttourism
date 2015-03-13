@@ -1,3 +1,9 @@
+var js = document.createElement("script");
+js.type = "text/javascript";
+js.defer = "true";
+js.src = "http://www.panoramio.com/wapi/wapi.js?v=1&amp;hl=ru";
+document.getElementsByTagName('head')[0].appendChild(js);
+
 var block_width = 500;
 var block_columns = 8;
 var delta_heights = $('#object_description').height() - $('#map_container').height();
