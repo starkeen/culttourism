@@ -1,6 +1,5 @@
 var js = document.createElement("script");
 js.type = "text/javascript";
-js.defer = "true";
 js.src = "http://www.panoramio.com/wapi/wapi.js?v=1&amp;hl=ru";
 document.getElementsByTagName('head')[0].appendChild(js);
 
