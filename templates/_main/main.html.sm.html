@@ -15,7 +15,7 @@
                 <link rel="search" href="/search/" />
                 <link rel="copyright" href="/about/" />
                 <link rel="start" href="http://{$page->basepath}/" />
-                <meta name="viewport" content="width=device-width; initial-scale=1.0">
+                <meta name="viewport" content="width=device-width;initial-scale=1.0" />
                     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans&amp;subset=latin,cyrillic-ext,cyrillic" type="text/css"/>
                     <link rel="stylesheet" href="/css/{$page->mainfile_css}" type="text/css" media="screen, projection, print"/>
                     <!--[if lte IE 6]><link rel="stylesheet" href="/css/style_ie.css" type="text/css" media="screen, projection, print" /><![endif]-->
@@ -37,7 +37,6 @@
                     <script type="text/javascript" src="/js/jquery.ui.datepicker-ru.js" defer="true"></script>
                     <link type="text/css" rel="stylesheet" href="http://{$page->basepath}/css/ui-lightness/jquery-ui-1.8.2.custom.css" />
                     {/if}
-                    <script type="text/javascript" src="/js/{$page->mainfile_js}" defer="true"></script>
                     {if $page->module_id == 'index.html'}
                     {if $page->globalsettings.key_google}<meta name="google-site-verification" content="{$page->globalsettings.key_google}" />{/if}
                     {if $page->globalsettings.key_yandex}<meta name="yandex-verification" content="{$page->globalsettings.key_yandex}" />{/if}
@@ -45,6 +44,7 @@
                     {if $page->globalsettings.key_yahoo}<meta name="y_key" content="{$page->globalsettings.key_yahoo}" />{/if}
                     {/if}
                     <script type="text/javascript" src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&load=package.full&wizard=constructor&lang=ru-RU" defer="true"></script>
+                    <script type="text/javascript" src="/js/{$page->mainfile_js}" defer="true"></script>
                     <link rel="alternate" type="application/rss+xml" title="RSS blog" href="{$page->globalsettings.main_rss}" />
                     </head>
                     <body>
