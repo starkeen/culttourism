@@ -12,7 +12,6 @@
 *.log
 *.ico
 templates_c/
-addons/
 config/
 data/private/
 sitemap.xml
