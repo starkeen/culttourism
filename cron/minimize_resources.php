@@ -38,7 +38,6 @@ foreach ($config['css'] as $pack => $files) {
     }
     $file_hash_new = crc32(file_get_contents($file_out));
     if ($file_hash_new != $file_hash_old) {
-        echo 'do!';
         $file_production = _DIR_ROOT . '/css/ct-' . $pack . '-' . $file_hash_new . '.css';
         $file_production_min = _DIR_ROOT . '/css/ct-' . $pack . '-' . $file_hash_new . '.min.css';
         copy($file_out, $file_production);
@@ -46,7 +45,7 @@ foreach ($config['css'] as $pack => $files) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'http://cssminifier.com/raw');
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, array('input' => file_get_contents($file_production)));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $minified = curl_exec($ch);
