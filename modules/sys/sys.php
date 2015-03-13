@@ -37,6 +37,9 @@ class Page extends PageCommon {
                     $this->smarty->cleanCompiled();
                     $this->smarty->cleanCache();
 
+                    $sr = new StaticResources();
+                    $sr->rebuildAll();
+
                     Logging::addHistory('sys', "Результаты деплоя", implode("\n", $res));
 
                     $mail_attrs = array(
