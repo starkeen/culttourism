@@ -14,27 +14,4 @@
 <div id="list-map" class="list-map"></div>
 <input type="hidden" id="list-id" value="{$list.data.ls_id}" />
 
-<script type="text/javascript">
-    ymaps.ready(function () {
-        var myMap = new ymaps.Map("list-map", {
-            center: [37, 55],
-            zoom: 10,
-            behaviors: ['default', 'scrollZoom']
-        });
-        myMap.controls.add("zoomControl").add("mapTools").add(new ymaps.control.TypeSelector(["yandex#map", "yandex#hybrid"]));
-        $.getScript('/js/nmap-autoswitcher/nmap-autoswitcher.js', function () {
-            var autoSwitcher = new AutoSwitcher();
-            autoSwitcher.addToMap(myMap);
-        });
-
-        ymaps.geoXml.load("http://culttourism.ru/map/list/?lid=" + $("#list-id").val())
-                .then(function (res) {
-                    var bounds = res.mapState.getBounds();
-                    myMap.geoObjects.add(res.geoObjects);
-                    myMap.setBounds(bounds);
-                },
-                        function (error) {
-                            //console.log('Ошибка при загрузке YMapsML: ' + error.status + ' (' + error.message + ')');
-                        });
-    });
-</script>
+<script type="text/javascript" src="/js/map_page_list.js" defer="true"></script>
