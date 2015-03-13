@@ -2,6 +2,11 @@
 
 class StaticResources {
 
+    private $config = array(
+        'css' => array(),
+        'js' => array(),
+    );
+
     public function __construct() {
         $this->config = array(
             'css' => array(
@@ -63,6 +68,7 @@ class StaticResources {
     }
 
     public function rebuildCSS() {
+        $out = array();
         foreach ($this->config['css'] as $pack => $files) {
             $file_out = _DIR_ROOT . '/css/ct-' . $pack . '.css';
             file_put_contents($file_out, '');
@@ -92,11 +98,14 @@ class StaticResources {
                 }
             }
             unlink($file_out);
+            $out[$pack] = $file_production;
         }
+        return $out;
     }
 
     public function rebuildJS() {
-        foreach ($config['js'] as $pack => $files) {
+        $out = array();
+        foreach ($this->config['js'] as $pack => $files) {
             $file_out = _DIR_ROOT . '/js/ct-' . $pack . '.js';
             file_put_contents($file_out, '');
             foreach ($files as $file) {
@@ -125,12 +134,16 @@ class StaticResources {
                 }
             }
             unlink($file_out);
+            $out[$pack] = $file_production;
         }
+        return $out;
     }
 
     public function rebuildAll() {
-        $this->rebuildCSS();
-        $this->rebuildJS();
+        return array(
+            'css' => $this->rebuildCSS(),
+            'js' => $this->rebuildJS(),
+        );
     }
 
 }

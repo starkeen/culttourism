@@ -25,7 +25,8 @@ class Page extends PageCommon {
             Logging::addHistory('sys', "Запрос на деплой", $_POST);
             $req = json_decode($_POST['payload']);
 
-            $config = $this->getRepoConfig();
+            $sp = new MSysProperties($this->db);
+            $config = $sp->getSettingsByBranchId(9);
 
             if ($key && $key == $config['git_key']) {
                 $config['location'] = _DIR_ROOT . '/';
@@ -38,7 +39,10 @@ class Page extends PageCommon {
                     $this->smarty->cleanCache();
 
                     $sr = new StaticResources();
-                    $sr->rebuildAll();
+                    $static = $sr->rebuildAll();
+                    if (isset($static['css']['common'])) {
+                        $sp->updateByPk(13, array('sp_value' => basename($static['css']['common'])));
+                    }
 
                     Logging::addHistory('sys', "Результаты деплоя", implode("\n", $res));
 

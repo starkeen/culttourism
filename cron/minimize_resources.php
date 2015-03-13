@@ -1,4 +1,9 @@
 <?php
 
 $sr = new StaticResources();
-$sr->rebuildAll();
+$static = $sr->rebuildAll();
+
+$sp = new MSysProperties($db);
+if (isset($static['css']['common'])) {
+    $sp->updateByPk(13, array('sp_value' => basename($static['css']['common'])));
+}
