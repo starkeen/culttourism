@@ -5,6 +5,7 @@ $config = array(
         'common' => array(
             _DIR_ROOT . '/css/common-layout.css',
             _DIR_ROOT . '/css/common-modules.css',
+            _DIR_ROOT . '/addons/autocomplete/autocomplete.css',
             _DIR_ROOT . '/css/common-print.css',
             _DIR_ROOT . '/addons/simplemodal/simplemodal.css',
             _DIR_ROOT . '/css/common-media-queries.css',
@@ -60,16 +61,14 @@ $config = array(
 //-----------   C S S   ----------------------
 foreach ($config['css'] as $pack => $files) {
     $file_out = _DIR_ROOT . '/css/ct-' . $pack . '.css';
-    $file_hash_old = crc32(file_get_contents($file_out));
     file_put_contents($file_out, '');
     foreach ($files as $file) {
         file_put_contents($file_out, "/*\n$file\n*/\n\n\n", FILE_APPEND);
         file_put_contents($file_out, file_get_contents($file) . "\n", FILE_APPEND);
     }
     $file_hash_new = crc32(file_get_contents($file_out));
-    if ($file_hash_new != $file_hash_old) {
-        $file_production = _DIR_ROOT . '/css/ct-' . $pack . '-' . $file_hash_new . '.min.css';
-
+    $file_production = _DIR_ROOT . '/css/ct-' . $pack . '-' . $file_hash_new . '.min.css';
+    if (!file_exists($file_production)) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'http://cssminifier.com/raw');
         curl_setopt($ch, CURLOPT_POST, true);
@@ -82,24 +81,22 @@ foreach ($config['css'] as $pack => $files) {
         curl_close($ch);
         if ($minified != '') {
             file_put_contents($file_production, $minified);
-            unlink(_DIR_ROOT . '/css/ct-' . $pack . '-' . $file_hash_old . '.min.css');
         }
     }
+    unlink($file_out);
 }
 
 //------------   J S   -----------------------
 foreach ($config['js'] as $pack => $files) {
     $file_out = _DIR_ROOT . '/js/ct-' . $pack . '.js';
-    $file_hash_old = crc32(file_get_contents($file_out));
     file_put_contents($file_out, '');
     foreach ($files as $file) {
         file_put_contents($file_out, "/*\n$file\n*/\n\n\n", FILE_APPEND);
         file_put_contents($file_out, file_get_contents($file) . "\n", FILE_APPEND);
     }
     $file_hash_new = crc32(file_get_contents($file_out));
-    if ($file_hash_new != $file_hash_old) {
-        $file_production = _DIR_ROOT . '/js/ct-' . $pack . '-' . $file_hash_new . '.min.js';
-
+    $file_production = _DIR_ROOT . '/js/ct-' . $pack . '-' . $file_hash_new . '.min.js';
+    if (!file_exists($file_production)) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'http://javascript-minifier.com/raw');
         curl_setopt($ch, CURLOPT_POST, true);
@@ -112,7 +109,8 @@ foreach ($config['js'] as $pack => $files) {
         curl_close($ch);
         if ($minified != '') {
             file_put_contents($file_production, $minified);
-            unlink(_DIR_ROOT . '/js/ct-' . $pack . '-' . $file_hash_old . '.min.js');
+            //unlink(_DIR_ROOT . '/js/ct-' . $pack . '-' . $file_hash_old . '.min.js');
         }
     }
+    unlink($file_out);
 }
