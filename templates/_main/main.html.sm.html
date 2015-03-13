@@ -22,29 +22,29 @@
                     <!--[if lt IE 9]>
                         <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
                     <![endif]-->
-                    <script type="text/javascript" src="http://yandex.st/jquery/1.7.2/jquery.min.js"></script>
-                    <script type="text/javascript" src="/js/jquery.simplemodal.1.4.4.min.js"></script>
-                    <script type="text/javascript" src="http://www.panoramio.com/wapi/wapi.js?v=1&amp;hl=ru"></script>
-                    <script src="/js/jquery.autocomplete.min.js"></script>
+                    <script type="text/javascript" src="http://yandex.st/jquery/1.7.2/jquery.min.js" defer="true"></script>
+                    <script type="text/javascript" src="/js/jquery.simplemodal.1.4.4.min.js" defer="true"></script>
+                    <script type="text/javascript" src="http://www.panoramio.com/wapi/wapi.js?v=1&amp;hl=ru" defer="true"></script>
+                    <script type="text/javascript" src="/js/jquery.autocomplete.min.js" defer="true"></script>
                     {if $page->canonical}
                     <link rel="canonical" href="{$page->canonical}" />
                     {/if}
                     {if $page->user.userid}
-                    <script type="text/javascript" src="/addons/ckeditor/ckeditor.js"></script>
-                    <script type="text/javascript" src="/addons/ckeditor/adapters/jquery.js"></script>
-                    <script src="/js/jquery.ui.core.js"></script>
-                    <script src="/js/jquery.ui.datepicker.js"></script>
-                    <script src="/js/jquery.ui.datepicker-ru.js"></script>
+                    <script type="text/javascript" src="/addons/ckeditor/ckeditor.js" defer="true"></script>
+                    <script type="text/javascript" src="/addons/ckeditor/adapters/jquery.js" defer="true"></script>
+                    <script type="text/javascript" src="/js/jquery.ui.core.js" defer="true"></script>
+                    <script type="text/javascript" src="/js/jquery.ui.datepicker.js" defer="true"></script>
+                    <script type="text/javascript" src="/js/jquery.ui.datepicker-ru.js" defer="true"></script>
                     <link type="text/css" rel="stylesheet" href="http://{$page->basepath}/css/ui-lightness/jquery-ui-1.8.2.custom.css" />
                     {/if}
-                    <script type="text/javascript" src="/js/{$page->mainfile_js}"></script>
+                    <script type="text/javascript" src="/js/{$page->mainfile_js}" defer="true"></script>
                     {if $page->module_id == 'index.html'}
                     {if $page->globalsettings.key_google}<meta name="google-site-verification" content="{$page->globalsettings.key_google}" />{/if}
                     {if $page->globalsettings.key_yandex}<meta name="yandex-verification" content="{$page->globalsettings.key_yandex}" />{/if}
                     {if $page->globalsettings.key_bing}<meta name="msvalidate.01" content="{$page->globalsettings.key_bing}" />{/if}
                     {if $page->globalsettings.key_yahoo}<meta name="y_key" content="{$page->globalsettings.key_yahoo}" />{/if}
                     {/if}
-                    <script src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&load=package.full&wizard=constructor&lang=ru-RU" type="text/javascript"></script>
+                    <script type="text/javascript" src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&load=package.full&wizard=constructor&lang=ru-RU" defer="true"></script>
                     <link rel="alternate" type="application/rss+xml" title="RSS blog" href="{$page->globalsettings.main_rss}" />
                     </head>
                     <body>
