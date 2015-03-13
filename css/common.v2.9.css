@@ -269,11 +269,12 @@ ol {
 .list-half-left {
     width:49%;
     text-align: justify;
+    float: left;
 }
 .list-half-right {
     display:block;
     width:45%;
-    float: right;
+    margin-left: 50%;
 }
 .list-map {
     width:100%;
