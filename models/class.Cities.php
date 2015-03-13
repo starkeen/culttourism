@@ -155,4 +155,14 @@ class Cities extends Model {
         $this->updateByPk($id, array('pc_active' => 0,));
     }
 
+    /*
+     * Заменяет все абсолютные ссылки относительными
+     */
+
+    public function repairLinksAbsRel() {
+        $this->_db->sql = "UPDATE $this->_table_name
+                            SET pc_text = REPLACE(pc_text, '=\"http://" . _URL_ROOT . "/', '=\"/')";
+        $this->_db->exec();
+    }
+
 }

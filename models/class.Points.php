@@ -273,4 +273,14 @@ class Points extends Model {
         $this->updateByPk($id, array($this->_table_active => 0));
     }
 
+    /*
+     * Заменяет все абсолютные ссылки относительными
+     */
+
+    public function repairLinksAbsRel() {
+        $this->_db->sql = "UPDATE $this->_table_name
+                            SET pt_description = REPLACE(pt_description, '=\"http://" . _URL_ROOT . "/', '=\"/')";
+        $this->_db->exec();
+    }
+
 }
