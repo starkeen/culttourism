@@ -281,6 +281,10 @@ class Points extends Model {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET pt_description = REPLACE(pt_description, '=\"http://" . _URL_ROOT . "/', '=\"/')";
         $this->_db->exec();
+
+        $this->_db->sql = "UPDATE $this->_table_name
+                            SET pt_description = REPLACE(pt_description, '=\"https://" . _URL_ROOT . "/', '=\"/')";
+        $this->_db->exec();
     }
 
 }

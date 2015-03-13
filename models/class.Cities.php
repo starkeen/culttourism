@@ -163,6 +163,10 @@ class Cities extends Model {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET pc_text = REPLACE(pc_text, '=\"http://" . _URL_ROOT . "/', '=\"/')";
         $this->_db->exec();
+
+        $this->_db->sql = "UPDATE $this->_table_name
+                            SET pc_text = REPLACE(pc_text, '=\"https://" . _URL_ROOT . "/', '=\"/')";
+        $this->_db->exec();
     }
 
 }
