@@ -807,9 +807,7 @@ textarea.feedinput {
     right:-14px;
     width:22px;
     height:26px;
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(
-        src='/img/x.png', sizingMethod='scale'
-        );
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/img/x.png', sizingMethod='scale');
 }
 .simplewindow {
     overflow-x: hidden;
