@@ -34,12 +34,6 @@
                     <script type="text/javascript" src="/js/jquery.ui.datepicker-ru.js" defer="true"></script>
                     <link type="text/css" rel="stylesheet" href="http://{$page->basepath}/css/ui-lightness/jquery-ui-1.8.2.custom.css" />
                     {/if}
-                    {if $page->module_id == 'index.html'}
-                    {if $page->globalsettings.key_google}<meta name="google-site-verification" content="{$page->globalsettings.key_google}" />{/if}
-                    {if $page->globalsettings.key_yandex}<meta name="yandex-verification" content="{$page->globalsettings.key_yandex}" />{/if}
-                    {if $page->globalsettings.key_bing}<meta name="msvalidate.01" content="{$page->globalsettings.key_bing}" />{/if}
-                    {if $page->globalsettings.key_yahoo}<meta name="y_key" content="{$page->globalsettings.key_yahoo}" />{/if}
-                    {/if}
                     <script type="text/javascript" src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&load=package.full&wizard=constructor&lang=ru-RU" defer="true"></script>
                     <script type="text/javascript" src="/js/{$page->mainfile_js}" defer="true"></script>
                     <link rel="alternate" type="application/rss+xml" title="RSS blog" href="{$page->globalsettings.main_rss}" />
