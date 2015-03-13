@@ -51,6 +51,8 @@ foreach ($config['css'] as $pack => $files) {
         $minified = curl_exec($ch);
         curl_close($ch);
         file_put_contents($file_production_min, $minified);
+
+        unlink($file_production);
     }
 }
 
