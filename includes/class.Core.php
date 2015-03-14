@@ -38,13 +38,6 @@ abstract class Core {
     public $smarty = null;
     protected $auth = null;
 
-    protected static function getInstanceOf($sClassname, $db, $mod) {
-        if (!isset(self::$hInstances[$sClassname])) {
-            self::$hInstances[$sClassname] = new $sClassname($db, $mod); // создаем экземпляр
-        }
-        return self::$hInstances[$sClassname];
-    }
-
     protected function __construct($db, $mod) {
         $this->db = $db;
         $this->smarty = new mySmarty();
@@ -141,20 +134,13 @@ abstract class Core {
     }
 
     public function getError($err_code = '404', $err_data = null) {
-
         if ($err_code != '301') {
             $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
             $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
-            $this->globalsettings['mainfile_css'] = $_css_files[0];
-            $this->globalsettings['mainfile_js'] = $_js_files[0];
-            $this->globalsettings['key_yandexmaps'] = '';
-            $this->globalsettings['key_google'] = '';
-            $this->globalsettings['key_yandex'] = '';
-            $this->globalsettings['key_bing'] = '';
-            $this->globalsettings['key_yahoo'] = '';
             $this->globalsettings['main_rss'] = '';
             $this->basepath = _URL_ROOT;
-            $this->mainfile_css = $this->globalsettings['mainfile_css'];
+            $this->mainfile_css = basename($_css_files[0]);
+            $this->mainfile_js = basename($_js_files[0]);
             $smarty = $err_data;
             if (!$smarty) {
                 global $smarty;
@@ -238,6 +224,13 @@ abstract class Core {
 
     protected function __clone() {
         throw new Exception('Cannot clone singleton');
+    }
+
+    protected static function getInstanceOf($sClassname, $db, $mod) {
+        if (!isset(self::$hInstances[$sClassname])) {
+            self::$hInstances[$sClassname] = new $sClassname($db, $mod); // создаем экземпляр
+        }
+        return self::$hInstances[$sClassname];
     }
 
 }
