@@ -15,9 +15,15 @@ class Page extends PageCommon {
             $this->content = $this->getError('301', '');
         } elseif ($page_id == 'bitbucket' && $id == '' && isset($_GET['key'])) {
             $this->content = $this->getBitbucket(trim($_GET['key']));
+        } elseif ($page_id == 'static' && $id == '' && isset($_GET['type']) && isset($_GET['pack'])) {
+            $this->content = $this->getStatic(trim($_GET['type']), trim($_GET['pack']));
         } else {
             $this->content = $this->getError('404');
         }
+    }
+
+    public function getStatic($type, $pack = 'common') {
+        $sr = new StaticResources();
     }
 
     private function getBitbucket($key = null) {

@@ -11,7 +11,13 @@ class StaticResources {
         $this->config = include(_DIR_ROOT . '/config/static_files.php');
     }
 
-    public function rebuildCSS() {
+    public function getFull($type, $pack) {
+        $out = '';
+        $files = $this->config[$type][$pack];
+        return $out;
+    }
+
+    private function rebuildCSS() {
         $out = array();
         foreach ($this->config['css'] as $pack => $files) {
             $file_out = _DIR_ROOT . '/css/ct-' . $pack . '.css';
@@ -47,7 +53,7 @@ class StaticResources {
         return $out;
     }
 
-    public function rebuildJS() {
+    private function rebuildJS() {
         $out = array();
         foreach ($this->config['js'] as $pack => $files) {
             $file_out = _DIR_ROOT . '/js/ct-' . $pack . '.js';
