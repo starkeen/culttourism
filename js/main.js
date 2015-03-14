@@ -196,7 +196,7 @@ $(document).ready(function () {
                         this.destroy();
                     });
                     $.modal.close();
-                    document.location = '/blog/?ts=' + Date.now();
+                    document.location = '/blog/?ts=' + Date.now() + '#blog_edit_' + $("#br_id").val();
                 }
             });
         }
