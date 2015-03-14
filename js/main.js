@@ -182,8 +182,9 @@ $(document).ready(function () {
             $(document).css("cursor", "default")
         }
         if ($(this).parent().attr("id") == "br_save_handler") {//------ запись в блоге
+            var record_id = $("#br_id").val();
             $.post("/ajax/blog/saveform/?bid=" + $("#pr_id").val(), {
-                brid: $("#br_id").val(),
+                brid: record_id,
                 ntitle: $("#eblog_title").val(),
                 ntext: $("#eblog_text").val(),
                 ndate: $("#eblog_date").val(),
@@ -196,7 +197,7 @@ $(document).ready(function () {
                         this.destroy();
                     });
                     $.modal.close();
-                    document.location = '/blog/?ts=' + Date.now() + '#blog_edit_' + $("#br_id").val();
+                    document.location = '/blog/?ts=' + Date.now() + '#blog_edit_' + record_id;
                 }
             });
         }
