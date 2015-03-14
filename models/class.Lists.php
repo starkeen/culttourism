@@ -69,4 +69,18 @@ class Lists extends Model {
         $this->updateByPk($id, array($this->_table_active => 0));
     }
 
+    /*
+     * Заменяет все абсолютные ссылки относительными
+     */
+
+    public function repairLinksAbsRel() {
+        $this->_db->sql = "UPDATE $this->_table_name
+                            SET ls_text = REPLACE(ls_text, '=\"http://" . _URL_ROOT . "/', '=\"/')";
+        $this->_db->exec();
+
+        $this->_db->sql = "UPDATE $this->_table_name
+                            SET ls_text = REPLACE(ls_text, '=\"https://" . _URL_ROOT . "/', '=\"/')";
+        $this->_db->exec();
+    }
+
 }
