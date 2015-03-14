@@ -246,5 +246,3 @@ abstract class Core {
     }
 
 }
-
-?>

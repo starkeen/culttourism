@@ -52,5 +52,3 @@ class PageCommon extends Core {
     }
 
 }
-
-?>
