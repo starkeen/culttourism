@@ -11,6 +11,8 @@ class Page extends PageCommon {
             $id = substr($id, 0, strpos($id, '?'));
         }
         $this->id = $id;
+        
+        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $module_id) : $this->globalsettings['res_js_' . $module_id];
 
         //========================  I N D E X  ================================
         if ($page_id == '') {
