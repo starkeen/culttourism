@@ -43,9 +43,9 @@
     background: #292929;
     color: #fff;
     padding: 0 5pt;
+    background: #000;
     background: -moz-linear-gradient(left,#292929,#fff);
     background: -webkit-gradient(linear, right top, left top, from(#292929), to(#fff));
-    filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#292929,endColorstr=#ffffff,GradientType=0); zoom: 1;
     background: linear-gradient(top,#292929,#fff);
 }
 #city_path a {
