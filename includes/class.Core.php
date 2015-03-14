@@ -67,6 +67,11 @@ abstract class Core {
         $sp = new MSysProperties($db);
         $this->globalsettings = $sp->getPublic();
 
+        if (_ER_REPORT) {//отладочная конфигурация
+            $this->globalsettings['mainfile_css'] = '../sys/static/?type=css&pack=common';
+            $this->globalsettings['mainfile_js'] = '../sys/static/?type=js&pack=common';
+        }
+
         if ($this->globalsettings['site_active'] == 'Off') {
             $this->getError('503');
         }
