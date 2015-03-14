@@ -32,7 +32,7 @@ class Page extends PageCommon {
                 return $this->getPageMap($this->db, $this->smarty, $url);
             } elseif (array_pop(explode('/', $url)) == 'index.html') {
                 return $this->getPageCity($this->db, $this->smarty, $url);
-            } elseif (ereg('^object([[:digit:]]+).html$', array_pop(explode('/', $url)), $regs)) {
+            } elseif (preg_match('^object([0-9]+).html$', array_pop(explode('/', $url)), $regs)) {
                 return $this->getPageObject($this->db, $this->smarty, intval($regs[1]));
             } elseif (preg_match('/([a-z0-9_-]+)\.html/i', array_pop(explode('/', $url)), $regs)) {
                 return $this->getPageObjectBySlug($regs[1]);
@@ -109,6 +109,7 @@ class Page extends PageCommon {
         if (isset($object['gps_dec'])) {
             $this->addKeywords('координаты GPS');
         }
+        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=point') : $this->globalsettings['res_js_point'];
 
         $this->smarty->assign('object', $object);
         $this->smarty->assign('city', $city);
@@ -264,6 +265,7 @@ class Page extends PageCommon {
             $this->smarty->assign('points_servo', $points_data['points_service']);
             $this->smarty->assign('page_url', $this->basepath);
             $this->smarty->assign('types_select', $points_data['types']);
+            $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=city') : $this->globalsettings['res_js_city'];
 
             if ($this->checkEdit()) {
                 return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.edit.sm.html');
@@ -352,6 +354,7 @@ class Page extends PageCommon {
         $this->addDescription($short);
         $this->addKeywords($city['pc_title']);
         $this->addKeywords($object['esc_name']);
+        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=point') : $this->globalsettings['res_js_point'];
         if (isset($object['gps_dec'])) {
             $this->addKeywords('координаты GPS');
         }
@@ -360,5 +363,3 @@ class Page extends PageCommon {
     }
 
 }
-
-?>
