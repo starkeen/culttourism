@@ -61,6 +61,11 @@ class Page extends PageCommon {
                     if (isset($static['js']['common'])) {
                         $sp->updateByName('mainfile_js', basename($static['js']['common']));
                     }
+                    foreach ($static as $type => $packs) {
+                        foreach ($packs as $pack => $file) {
+                            $sp->updateByName('res_' . $type . '_' . $pack, basename($file));
+                        }
+                    }
 
                     Logging::addHistory('sys', "Результаты деплоя", implode("\n", $res));
 
