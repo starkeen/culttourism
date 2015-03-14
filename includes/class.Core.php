@@ -143,15 +143,10 @@ abstract class Core {
     public function getError($err_code = '404', $err_data = null) {
 
         if ($err_code != '301') {
-            $css_dir = scandir(_DIR_ROOT . '/css', true);
-            $_css_files = array();
-            foreach ($css_dir as $css_file) {
-                if (substr($css_file, 0, 6) == 'common') {
-                    $_css_files[] = $css_file;
-                }
-            }
+            $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
+            $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
             $this->globalsettings['mainfile_css'] = $_css_files[0];
-            $this->globalsettings['mainfile_js'] = '';
+            $this->globalsettings['mainfile_js'] = $_js_files[0];
             $this->globalsettings['key_yandexmaps'] = '';
             $this->globalsettings['key_google'] = '';
             $this->globalsettings['key_yandex'] = '';
