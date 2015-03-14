@@ -11,7 +11,9 @@
 *.csv
 *.log
 *.ico
+css/ct-
+js/ct-
 templates_c/
-config/
+config/configuration.php
 data/private/
 sitemap.xml
