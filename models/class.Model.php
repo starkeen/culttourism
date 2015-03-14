@@ -10,9 +10,11 @@ class Model {
     protected $_table_active = 'active'; //поле активности
     protected $_tables_related = array();
     protected $_files_dir = 'files'; //директория для привязанных файлов
+    protected $_pager; //листалка для многостраничной выборки
 
     public function __construct($db) {
         $this->_db = $db;
+        $this->_pager = new SQLPager();
     }
 
     public function getAll() {
@@ -41,10 +43,12 @@ class Model {
             'fields' => '*',
             'join' => array(),
             'where' => array(),
+            'having' => array(),
             'limit' => 20,
             'offset' => 0,
             'order' => "$this->_table_order ASC",
-            'items' => 0,
+            'groupby' => array(),
+            'items' => array(),
             'total' => 0,
         );
 
@@ -55,21 +59,30 @@ class Model {
                 $out['where'][] = $f;
             }
         }
+        $this->_pager->setParam('limit', $out['limit']);
+        $out['offset'] = $this->_pager->getParam('offset');
 
         $this->_db->sql = "SELECT SQL_CALC_FOUND_ROWS {$out['fields']}
                             FROM $this->_table_name t
                                 " . (!empty($out['join']) ? implode("\n", $out['join']) : '') . "
                             " . (!empty($out['where']) ? ('WHERE ' . implode("\n AND ", $out['where'])) : '') . "
+                            " . (!empty($out['having']) ? ('HAVING ' . implode("\n AND ", $out['having'])) : '') . "
+                            " . (!empty($out['groupby']) ? ('GROUP BY ' . implode(", ", $out['groupby'])) : '') . "
                             ORDER BY {$out['order']}
                             LIMIT {$out['offset']}, {$out['limit']}";
-        //$this->_db->showSQL();
+        //$this->_db->showSQL();exit();
         $this->_db->exec();
         $out['items'] = $this->_db->fetchAll();
         $this->_db->sql = "SELECT FOUND_ROWS() AS cnt";
         $this->_db->exec();
         $row = $this->_db->fetch();
         $out['total'] = $row['cnt'];
+        $this->_pager->setParam('total', $out['total']);
         return $out;
+    }
+
+    public function getPager($show_selector = false, $show_total = false) {
+        return $this->_pager->getHTML($show_selector, $show_total);
     }
 
     public function getItemByPk($id) {
@@ -144,6 +157,11 @@ class Model {
         return $this->_db->exec();
     }
 
+    public function truncate() {
+        $this->_db->sql = "TRUNCATE TABLE $this->_table_name";
+        return $this->_db->exec();
+    }
+
     public function saveFile($id, $file_field, $file) {
         if (!empty($file) && $file['error'] == 0) {
             $filename = md5_file($file['tmp_name']) . '.' . Helper::getExt($file['type']);
@@ -167,6 +185,10 @@ class Model {
         return $out;
     }
 
+    public function escape($txt) {
+        return $this->_db->getEscapedString(trim($txt));
+    }
+
     protected function _addRelatedTable($tablename) {
         $tablename = trim($tablename);
         if ($tablename != '') {
@@ -178,6 +200,8 @@ class Model {
         return date('Y-m-d H:i:s');
     }
 
-}
+    public function getUserId() {
+        return intval($_SESSION['user_id']);
+    }
 
-?>
+}

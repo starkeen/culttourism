@@ -44,6 +44,11 @@ class MSysProperties extends Model {
         return $config;
     }
 
-}
+    public function updateByName($name, $value) {
+        $this->_db->sql = "UPDATE $this->_table_name
+                            SET sp_value = '" . $this->escape($value) . "'
+                            WHERE sp_name = '" . $this->escape($name) . "'";
+        $this->_db->exec();
+    }
 
-?>
+}
