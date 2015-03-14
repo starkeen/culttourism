@@ -58,6 +58,9 @@ class Page extends PageCommon {
                     if (isset($static['css']['common'])) {
                         $sp->updateByName('mainfile_css', basename($static['css']['common']));
                     }
+                    if (isset($static['js']['common'])) {
+                        $sp->updateByName('mainfile_js', basename($static['js']['common']));
+                    }
 
                     Logging::addHistory('sys', "Результаты деплоя", implode("\n", $res));
 
