@@ -9,65 +9,63 @@
         <meta name="keywords" content="{$page->keywords|escape:"html"}" />
               <meta name="description" content="{$page->description|escape:"html"}" />
               <meta name="robots" content="index, follow" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <meta name="revisit-after" content="7 days" />
                 <link rel="icon" href="/favicon.ico" type="image/x-icon" />
                 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
                 <link rel="search" href="/search/" />
-                <link rel="copyright" href="/about/" />
-                <link rel="start" href="http://{$page->basepath}/" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                    <link rel="stylesheet" href="/css/{$page->mainfile_css}" type="text/css" media="screen, projection, print"/>
-                    <!--[if lt IE 9]>
-                        <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
-                    <![endif]-->
-                    <script type="text/javascript" src="http://yandex.st/jquery/1.7.2/jquery.min.js" defer="true"></script>
-                    {if $page->canonical}
-                    <link rel="canonical" href="{$page->canonical}" />
-                    {/if}
-                    {if $page->user.userid}
-                    <script type="text/javascript" src="/addons/ckeditor/ckeditor.js" defer="true"></script>
-                    <script type="text/javascript" src="/addons/ckeditor/adapters/jquery.js" defer="true"></script>
-                    <script type="text/javascript" src="/js/jquery.ui.core.js" defer="true"></script>
-                    <script type="text/javascript" src="/js/jquery.ui.datepicker.js" defer="true"></script>
-                    <script type="text/javascript" src="/js/jquery.ui.datepicker-ru.js" defer="true"></script>
-                    <link type="text/css" rel="stylesheet" href="http://{$page->basepath}/css/ui-lightness/jquery-ui-1.8.2.custom.css" />
-                    {/if}
-                    <script type="text/javascript" src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&load=package.full&wizard=constructor&lang=ru-RU" defer="true"></script>
-                    <script type="text/javascript" src="/js/{$page->mainfile_js}" defer="true"></script>
-                    <link rel="alternate" type="application/rss+xml" title="RSS blog" href="{$page->globalsettings.main_rss}" />
-                    </head>
-                    <body>
-                        <div id="wrapper">
-                            <header id="header">
-                                <a href="/" title="Достопримечательности России">
-                                    <img src="/img/header/logotype.png" alt="Культурный туризм" title="Достопримечательности России" />
-                                </a>
-                                <ul id="mainmenu" class="menu_common">
-                                    <li class="navigate"><a href="/" title="Главная страница">Главная</a></li>
-                                    <li class="navigate"><a href="/city/" title="Города">Города</a></li>
-                                    <li class="navigate"><a href="/blog/" title="Блог проекта">Блог</a></li>
-                                    <li class="navigate"><a href="/feedback/" title="Обратная связь">Отзыв</a></li>
-                                    <li class="navigate"><a href="/about/" title="О проекте">О проекте</a></li>
-                                    <li>
-                                        <form method="get" action="/search/">
-                                            <input type="text" id="search_mainform_q" name="q" value="" placeholder="Поиск" />
-                                        </form>
-                                    </li>
-                                    <li><a id="show_auth_form" href="/sign/in/" title="Вход" rel="nofollow">&#x25bc;</a></li>
-                                </ul>
-                            </header><!-- #header-->
-                            <div id="content">
-                                {if $page->h1}<h1>{$page->h1}</h1>{/if}
-                                {$page->content}
-                            </div><!-- #content-->
-                        </div><!-- #wrapper -->
-                        <footer id="footer">
-                            <div id="footer_conters">
-                                <!--noindex-->{$page->counters}<!--/noindex-->
-                            </div>
-                            <div id="footer_debug">
-                                {$debug_info}
-                            </div>
-                        </footer><!-- #footer -->
-                    </body>
-                    </html>
+                <link rel="alternate" href="{$page->globalsettings.main_rss}" type="application/rss+xml" title="RSS blog" />
+                {if $page->canonical}
+                <link rel="canonical" href="{$page->canonical}" />
+                {/if}
+                <!--[if lt IE 9]>
+                    <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+                <![endif]-->
+                <link rel="stylesheet" href="/css/{$page->mainfile_css}" type="text/css" media="screen, projection, print"/>
+                <script type="text/javascript" src="http://yandex.st/jquery/1.7.2/jquery.min.js" defer="true"></script>
+                <script type="text/javascript" src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&load=package.full&wizard=constructor&lang=ru-RU" defer="true"></script>
+                {if $page->user.userid}
+                <script type="text/javascript" src="/addons/ckeditor/ckeditor.js" defer="true"></script>
+                <script type="text/javascript" src="/addons/ckeditor/adapters/jquery.js" defer="true"></script>
+                <script type="text/javascript" src="/js/jquery.ui.core.js" defer="true"></script>
+                <script type="text/javascript" src="/js/jquery.ui.datepicker.js" defer="true"></script>
+                <script type="text/javascript" src="/js/jquery.ui.datepicker-ru.js" defer="true"></script>
+                <link rel="stylesheet" href="http://{$page->basepath}/css/ui-lightness/jquery-ui-1.8.2.custom.css" type="text/css" />
+                {/if}
+                <script type="text/javascript" src="/js/{$page->mainfile_js}" defer="true"></script>
+                </head>
+                <body>
+                    <div id="wrapper">
+                        <header id="header">
+                            <a href="/" title="Достопримечательности России">
+                                <img src="/img/header/logotype.png" alt="Культурный туризм" title="Достопримечательности России" />
+                            </a>
+                            <ul id="mainmenu" class="menu_common">
+                                <li class="navigate"><a href="/" title="Главная страница">Главная</a></li>
+                                <li class="navigate"><a href="/city/" title="Города">Города</a></li>
+                                <li class="navigate"><a href="/blog/" title="Блог проекта">Блог</a></li>
+                                <li class="navigate"><a href="/feedback/" title="Обратная связь">Отзыв</a></li>
+                                <li class="navigate"><a href="/about/" title="О проекте">О проекте</a></li>
+                                <li>
+                                    <form method="get" action="/search/">
+                                        <input type="text" id="search_mainform_q" name="q" value="" placeholder="Поиск" />
+                                    </form>
+                                </li>
+                                <li><a id="show_auth_form" href="/sign/in/" title="Вход" rel="nofollow">&#x25bc;</a></li>
+                            </ul>
+                        </header><!-- #header-->
+                        <div id="content">
+                            {if $page->h1}<h1>{$page->h1}</h1>{/if}
+                            {$page->content}
+                        </div><!-- #content-->
+                    </div><!-- #wrapper -->
+                    <footer id="footer">
+                        <div id="footer_conters">
+                            <!--noindex-->{$page->counters}<!--/noindex-->
+                        </div>
+                        <div id="footer_debug">
+                            {$debug_info}
+                        </div>
+                    </footer><!-- #footer -->
+                </body>
+                </html>
