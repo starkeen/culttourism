@@ -13,7 +13,9 @@ class StaticResources {
 
     public function getFull($type, $pack) {
         $out = '';
-        $files = $this->config[$type][$pack];
+        foreach ($this->config[$type][$pack] as $file) {
+            $out.= file_get_contents($file);
+        }
         return $out;
     }
 

@@ -23,7 +23,16 @@ class Page extends PageCommon {
     }
 
     public function getStatic($type, $pack = 'common') {
+        if ($type == 'css') {
+            header("Content-Type: text/css");
+        } elseif ($type == 'js') {
+            header("Content-Type: text/javascript");
+        } else {
+            header("Content-Type: text/plain");
+        }
         $sr = new StaticResources();
+        echo $sr->getFull($type, $pack);
+        exit();
     }
 
     private function getBitbucket($key = null) {
@@ -47,7 +56,7 @@ class Page extends PageCommon {
                     $sr = new StaticResources();
                     $static = $sr->rebuildAll();
                     if (isset($static['css']['common'])) {
-                        $sp->updateByPk(13, array('sp_value' => basename($static['css']['common'])));
+                        $sp->updateByName('mainfile_css', basename($static['css']['common']));
                     }
 
                     Logging::addHistory('sys', "Результаты деплоя", implode("\n", $res));
