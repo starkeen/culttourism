@@ -183,7 +183,7 @@ h2, .h2 {
     display: block;
     clear: both;
     padding: 2pt 0 2pt 8pt;
-    margin-right: -4px;
+    margin-right: 0;
     font-size: 16pt;
     font-weight: bold;
     background: #292929;
