@@ -1,5 +1,5 @@
 <h2>Города и регионы</h2>
-<ul style="list-style-type: none;font-size:100%;">
+<ul class="city-tree-full">
         {foreach from=$tcity item=city}
         <li>
                 <a href="{$city.url}/"
@@ -17,3 +17,12 @@
         </li>
         {/foreach}
 </ul>
+<style>
+.city-tree-full {
+        list-style-type: none;
+        font-size:15px;
+}
+.city-tree-full li {
+        margin-bottom: 4px;
+}
+</style>
