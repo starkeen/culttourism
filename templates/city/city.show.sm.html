@@ -3,15 +3,7 @@
         {foreach from=$tcity item=city}
         <li>
                 <a href="{$city.url}/"
-                   {if $city.pc_city_id!=0}
-                   style="margin-left:60px;"
-                   {elseif $city.pc_region_id!=0 && $city.pc_city_id==0 && $city.pc_country_id!=0}
-                   style="margin-left:40px;"
-                   {/if}
-                   {if $city.url=='/goldenring'}
-                   style="margin-left:40px;"
-                   {/if}
-                   >
+                        class="{if $city.pc_city_id!=0}m_left_moremore{elseif $city.pc_region_id!=0 && $city.pc_city_id==0 && $city.pc_country_id!=0 ||  $city.url=='/goldenring'}m_left_more{/if}">
                    <strong>{$city.pc_title}</strong>
                 </a>
         </li>
@@ -20,9 +12,15 @@
 <style>
 .city-tree-full {
         list-style-type: none;
-        font-size:15px;
+        font-size:16px;
 }
 .city-tree-full li {
         margin-bottom: 4px;
+}
+.city-tree-full li a.m_left_more {
+        margin-left:40px;
+}
+.city-tree-full li a.m_left_moremore {
+        margin-left:60px;
 }
 </style>
