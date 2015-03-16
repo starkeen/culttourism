@@ -4,7 +4,7 @@
         {foreach from=$tcity item=city}
         <tr>
             <td>
-                <a href="../..{$city.url}/"
+                <a href="{$city.url}/"
                    {if $city.pc_city_id!=0}
                    style="margin-left:60px;"
                    {elseif $city.pc_region_id!=0 && $city.pc_city_id==0 && $city.pc_country_id!=0}
@@ -17,8 +17,6 @@
                    <strong>{$city.pc_title}</strong>
                 </a>
             </td>
-            <td>{$city.pc_pagepath}</td>
-            <!--<td>заметок: {$city.pts}</td>-->
         </tr>
         {/foreach}
     </tbody>
