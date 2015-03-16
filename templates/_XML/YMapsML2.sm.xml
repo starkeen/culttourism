@@ -33,14 +33,14 @@
         <Style xmlns:gml="http://www.opengis.net/gml" gml:id="style{$ptype.tp_id}">
             <parentStyle>#commonStyle</parentStyle>
             <iconStyle>
-                <href>http://culttourism.ru/img/points/xmap/{$ptype.tp_icon}</href>
+                <href>https://culttourism.ru/img/points/xmap/{$ptype.tp_icon}</href>
             </iconStyle>
         </Style>
         {/foreach}
         <Style xmlns:gml="http://www.opengis.net/gml" gml:id="style_town">
             <parentStyle>#commonStyle</parentStyle>
             <iconStyle>
-                <href>http://culttourism.ru/img/points/map/flag_city.png</href>
+                <href>https://culttourism.ru/img/points/map/flag_city.png</href>
             </iconStyle>
             <balloonContentStyle>
                 <template>#balloonTemplateCity</template>
@@ -75,7 +75,7 @@
         <Source id="culttourism">
             <author>
                 <name>Достопримечательности в городах России и бывшего СССР</name>
-                <uri>http://culttourism.ru</uri>
+                <uri>https://culttourism.ru</uri>
             </author>
         </Source>
     </Attribution>

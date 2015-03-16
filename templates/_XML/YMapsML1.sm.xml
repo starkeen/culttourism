@@ -19,14 +19,14 @@
         <repr:Style gml:id="style{$ptype.tp_id}">
             <repr:parentStyle>#commonStyle</repr:parentStyle>
             <repr:iconStyle>
-                <repr:href>http://culttourism.ru/img/points/xmap/{$ptype.tp_icon}</repr:href>
+                <repr:href>https://culttourism.ru/img/points/xmap/{$ptype.tp_icon}</repr:href>
             </repr:iconStyle>
         </repr:Style>
         {/foreach}
         <repr:Style gml:id="style_town">
             <repr:parentStyle>#commonStyle</repr:parentStyle>
             <repr:iconStyle>
-                <repr:href>http://culttourism.ru/img/points/map/flag_city.png</repr:href>
+                <repr:href>https://culttourism.ru/img/points/map/flag_city.png</repr:href>
             </repr:iconStyle>
             <repr:balloonContentStyle>
                 <repr:template>#balloonTemplateCity</repr:template>
@@ -44,7 +44,7 @@
         <repr:Template gml:id="balloonTemplateCity">
             <repr:text><![CDATA[
                     <div style="font-size:12px;max-width:250px;">
-                        <div style="color:#4585C3;font-weight:bold"><a href="http://culttourism.ru$[metaDataProperty.AnyMetaData.url]">$[name]</a></div>
+                        <div style="color:#4585C3;font-weight:bold"><a href="https://culttourism.ru$[metaDataProperty.AnyMetaData.url]">$[name]</a></div>
                     </div>]]>
             </repr:text>
         </repr:Template>

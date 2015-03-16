@@ -34,14 +34,14 @@
         <Style xmlns:gml="http://www.opengis.net/gml" gml:id="style{$ptype.tp_id}">
             <parentStyle>#commonStyle</parentStyle>
             <iconStyle>
-                <href>http://culttourism.ru/img/points/xmap/{$ptype.tp_icon}</href>
+                <href>https://culttourism.ru/img/points/xmap/{$ptype.tp_icon}</href>
             </iconStyle>
         </Style>
         {/foreach}
         <Style xmlns:gml="http://www.opengis.net/gml" gml:id="style_town">
             <parentStyle>#commonStyle</parentStyle>
             <iconStyle>
-                <href>http://culttourism.ru/img/points/map/flag_city.png</href>
+                <href>https://culttourism.ru/img/points/map/flag_city.png</href>
             </iconStyle>
             <balloonContentStyle>
                 <template>#balloonTemplateCity</template>
@@ -50,7 +50,7 @@
         <Style xmlns:gml="http://www.opengis.net/gml" gml:id="style_object">
             <parentStyle>#commonStyle</parentStyle>
             <iconStyle>
-                <href>http://culttourism.ru/img/points/map/flag_object.png</href>
+                <href>https://culttourism.ru/img/points/map/flag_object.png</href>
             </iconStyle>
             <balloonContentStyle>
                 <template>#balloonTemplateObject</template>
@@ -82,7 +82,7 @@
         <Template xmlns:gml="http://www.opengis.net/gml" gml:id="balloonTemplateObject">
             <text><![CDATA[
                     <div style="font-size:12px;max-width:250px;">
-                        <div style="color:#4585C3;font-weight:bold"><a href="http://culttourism.ru$[metaDataProperty.AnyMetaData.objuri]">$[name]</a></div>
+                        <div style="color:#4585C3;font-weight:bold"><a href="https://culttourism.ru$[metaDataProperty.AnyMetaData.objuri]">$[name]</a></div>
                     </div>]]>
             </text>
         </Template>
@@ -92,7 +92,7 @@
         <Source id="culttourism">
             <author>
                 <name>Достопримечательности в городах России и бывшего СССР</name>
-                <uri>http://culttourism.ru</uri>
+                <uri>https://culttourism.ru</uri>
             </author>
         </Source>
     </Attribution>
