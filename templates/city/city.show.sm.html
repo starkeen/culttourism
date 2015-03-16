@@ -1,7 +1,7 @@
 <h2>Города и регионы</h2>
 <ul class="city-tree-full">
         {foreach from=$tcity item=city}
-        <li>
+        <li {if $city.pc_city_id==0 || $city.url=='/goldenring'}m_region{/if}>
                 <a href="{$city.url}/"
                         class="{if $city.pc_city_id!=0}m_left_moremore{elseif $city.pc_region_id!=0 && $city.pc_city_id==0 && $city.pc_country_id!=0 ||  $city.url=='/goldenring'}m_left_more{/if}">
                    <strong>{$city.pc_title}</strong>
@@ -16,6 +16,9 @@
 }
 .city-tree-full li {
         margin-bottom: 4px;
+}
+.city-tree-full li.m_region {
+        margin-bottom: 6px;
 }
 .city-tree-full li a.m_left_more {
         margin-left:40px;
