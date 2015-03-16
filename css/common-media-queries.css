@@ -99,6 +99,13 @@
     .list-half-right li {
         margin-top: 2px;
     }
+    .city-tree-full li {
+        margin-bottom: 7px;
+    }
+    .city-tree-full li.m_region {
+        margin-top: 9px;
+        font-size: 17px;
+    }
     #footer {
         min-width: 0;
     }
