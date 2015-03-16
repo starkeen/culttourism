@@ -1,9 +1,7 @@
 <h2>Города и регионы</h2>
-<table style="width:90%;">
-    <tbody>
+<ul>
         {foreach from=$tcity item=city}
-        <tr>
-            <td>
+        <li>
                 <a href="{$city.url}/"
                    {if $city.pc_city_id!=0}
                    style="margin-left:60px;"
@@ -16,8 +14,6 @@
                    >
                    <strong>{$city.pc_title}</strong>
                 </a>
-            </td>
-        </tr>
+        </li>
         {/foreach}
-    </tbody>
-</table>
+</ul>
