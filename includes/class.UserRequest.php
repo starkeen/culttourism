@@ -1,7 +1,10 @@
 <?php
+
 class UserRequest {
+
     private $key = '';
-    public function  __construct($type_id = 1) {
+
+    public function __construct($type_id = 1) {
         $this->key = getGUID();
         $owner_id = $_SESSION['user_id'];
         $this->req_type = intval($type_id);
@@ -29,13 +32,13 @@ class UserRequest {
                     WHERE  rq_keystring = '$this->key'";
         return $db->exec();
     }
-    
+
     public function getKey() {
         return $this->key;
     }
 
     public function getReqLink() {
-        return 'http://' . _URL_ROOT . "/request/$this->key/";
+        return 'https://' . _URL_ROOT . "/request/$this->key/";
     }
+
 }
-?>

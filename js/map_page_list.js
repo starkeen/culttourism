@@ -10,7 +10,7 @@ ymaps.ready(function () {
             autoSwitcher.addToMap(myMap);
         });
 
-        ymaps.geoXml.load("http://culttourism.ru/map/list/?lid=" + $("#list-id").val())
+        ymaps.geoXml.load("https://culttourism.ru/map/list/?lid=" + $("#list-id").val())
                 .then(function (res) {
                     var bounds = res.mapState.getBounds();
                     myMap.geoObjects.add(res.geoObjects);

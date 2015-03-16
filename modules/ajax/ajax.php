@@ -482,7 +482,7 @@ class Page extends PageCommon {
             $ptypes[] = $rpt;
         }
 
-        $db->sql = "SELECT CONCAT('http://', '" . _URL_ROOT . "', ru.url, '/') AS url
+        $db->sql = "SELECT CONCAT('https://', '" . _URL_ROOT . "', ru.url, '/') AS url
                     FROM $dbpc pc
                     LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
                     WHERE pc.pc_id = '$cid'

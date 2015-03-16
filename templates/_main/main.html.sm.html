@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <!--[if lt IE 9]>
-            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+            <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
         <title>{$page->title}</title>
         <meta name="keywords" content="{$page->keywords|escape:"html"}" />
@@ -19,18 +19,18 @@
                 <link rel="canonical" href="{$page->canonical}" />
                 {/if}
                 <!--[if lt IE 9]>
-                    <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+                    <script src="https://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
                 <![endif]-->
-                <script type="text/javascript" src="http://yandex.st/jquery/1.7.2/jquery.min.js" defer="defer"></script>
-                <script type="text/javascript" src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&load=package.full&wizard=constructor&lang=ru-RU" defer="defer"></script>
-                <script type="text/javascript" src="http://www.panoramio.com/wapi/wapi.js?v=1&amp;hl=ru" defer="defer"></script>
+                <script type="text/javascript" src="https://yandex.st/jquery/1.7.2/jquery.min.js" defer="defer"></script>
+                <script type="text/javascript" src="https://api-maps.yandex.ru/2.0/?coordorder=longlat&load=package.full&wizard=constructor&lang=ru-RU" defer="defer"></script>
+                <script type="text/javascript" src="https://www.panoramio.com/wapi/wapi.js?v=1&amp;hl=ru" defer="defer"></script>
                 {if $page->user.userid}
                 <script type="text/javascript" src="/addons/ckeditor/ckeditor.js" defer="defer"></script>
                 <script type="text/javascript" src="/addons/ckeditor/adapters/jquery.js" defer="defer"></script>
                 <script type="text/javascript" src="/js/jquery.ui.core.js" defer="defer"></script>
                 <script type="text/javascript" src="/js/jquery.ui.datepicker.js" defer="defer"></script>
                 <script type="text/javascript" src="/js/jquery.ui.datepicker-ru.js" defer="defer"></script>
-                <link rel="stylesheet" href="http://{$page->basepath}/css/ui-lightness/jquery-ui-1.8.2.custom.css" type="text/css" />
+                <link rel="stylesheet" href="/css/ui-lightness/jquery-ui-1.8.2.custom.css" type="text/css" />
                 {/if}
                 <link rel="stylesheet" href="/css/{$page->mainfile_css}" type="text/css" media="screen, projection, print"/>
                 <script type="text/javascript" src="/js/{$page->mainfile_js}" defer="defer"></script>

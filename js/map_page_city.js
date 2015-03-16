@@ -9,7 +9,7 @@ ymaps.ready(function() {
         var autoSwitcher = new AutoSwitcher();
         autoSwitcher.addToMap(myMap);
     });
-    ymaps.geoXml.load('http://culttourism.ru/map/city/?cid=' + $('#mapcity_pc_id').val()).then(function(res) {
+    ymaps.geoXml.load('https://culttourism.ru/map/city/?cid=' + $('#mapcity_pc_id').val()).then(function(res) {
         myMap.geoObjects.add(res.geoObjects);
         if (res.mapState) {
             res.mapState.applyToMap(myMap);

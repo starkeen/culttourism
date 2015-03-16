@@ -60,7 +60,7 @@ ymaps.ready(function() {
 
     var objects_all = [];
     var objects_cnt = 0;
-    ymaps.geoXml.load("http://culttourism.ru/map/common/?" + boundsparams.join('&')).then(function(res) {
+    ymaps.geoXml.load("https://culttourism.ru/map/common/?" + boundsparams.join('&')).then(function(res) {
         if (res.mapState && !hashCenter)
             res.mapState.applyToMap(map);
         var arr = [];
@@ -90,7 +90,7 @@ ymaps.ready(function() {
             'rln=' + bounds[1][0],
             'rlt=' + bounds[1][1]
         ];
-        ymaps.geoXml.load("http://culttourism.ru/map/common/?" + boundsparams.join('&')).then(function(res) {
+        ymaps.geoXml.load("https://culttourism.ru/map/common/?" + boundsparams.join('&')).then(function(res) {
             var arr = [];
             res.geoObjects.each(function(obj) {
                 var oid = parseInt(obj.properties._K.metaDataProperty.AnyMetaData.pid);

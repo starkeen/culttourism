@@ -1,9 +1,6 @@
 <?php
 
-$urls = array();
-//echo '<p>sitemap...';
-
-$baseurl = _URL_ROOT;
+$baseurl = 'https://' . _URL_ROOT;
 $basedate = date('Y-m-d\TH:i:s+00:00');
 $urls = array();
 
@@ -16,7 +13,7 @@ $db->sql = "SELECT md_url FROM $dbm WHERE md_active = '1' AND md_robots = 'index
 $db->exec();
 while ($row = $db->fetch()) {
     $url['uri'] = $row['md_url'];
-    $url['full'] = "http://$baseurl/{$row['md_url']}";
+    $url['full'] = "$baseurl/{$row['md_url']}";
     if ($row['md_url'] != 'index.html') {
         $url['full'] .= '/';
     }
@@ -33,7 +30,7 @@ $db->sql = "SELECT u.url, DATE_FORMAT(c.pc_lastup_date, '%Y-%m-%dT%H:%i:%s+00:00
 $db->exec();
 while ($row = $db->fetch()) {
     $url['uri'] = $row['url'];
-    $url['full'] = "http://$baseurl{$row['url']}/";
+    $url['full'] = "$baseurl{$row['url']}/";
     $url['lastmod'] = $row['dateup'];
     $url['freq'] = 'daily';
     $url['priority'] = '0.80';
@@ -48,7 +45,7 @@ $db->sql = "SELECT concat(u.url, '/', p.pt_slugline, '.html') url, DATE_FORMAT(p
 $db->exec();
 while ($row = $db->fetch()) {
     $url['uri'] = $row['url'];
-    $url['full'] = "http://$baseurl{$row['url']}";
+    $url['full'] = "$baseurl{$row['url']}";
     $url['lastmod'] = $row['dateup'];
     $url['freq'] = 'daily';
     $url['priority'] = '0.70';
@@ -88,4 +85,3 @@ if ($filesize != $filesize_old) {
 
 
 //echo '<p>Записей: ' . count($urls) . '. Размер файла: '. $filesize . " байт.\n";
-?>
