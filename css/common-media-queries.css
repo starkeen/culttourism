@@ -366,6 +366,12 @@
         float:none;
         width:100%;
     }
+    .city-tree-full li {
+        margin-bottom: 8px;
+    }
+    .city-tree-full li.m_region {
+        margin-top: 10px;
+    }
     #yandex_ad {
         display:none;
     }
