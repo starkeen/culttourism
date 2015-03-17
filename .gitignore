@@ -1,7 +1,4 @@
-*.jpg
-*.png
 *.pdf
-*.gif
 *.zip
 *.gz
 *.gzip
@@ -10,7 +7,6 @@
 *.xls
 *.csv
 *.log
-*.ico
 css/ct-
 js/ct-
 templates_c/
