@@ -45,7 +45,7 @@ return array(
             _DIR_ROOT . '/js/main.js',
             _DIR_ROOT . '/js/adv_point.js',
             _DIR_ROOT . '/js/map_page_point.js',
-            _DIR_ROOT . '/js/panoramio_page_point.js',
+           // _DIR_ROOT . '/js/panoramio_page_point.js',
         ),
         'api' => array(
             _DIR_ROOT . '/js/api.js',
