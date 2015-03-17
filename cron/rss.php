@@ -44,8 +44,9 @@ if ($file_hndlr) {
     fclose($file_hndlr);
     //echo 'Файл записан!</p>';
 }
-else
+else {
     echo '<br>Ошибка доступа к файлу!';
+}
 
 //echo '<p>Записей: ' . count($entry) . '. Размер файла: '. $filesize . " байт.\n";
 ?>
