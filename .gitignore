@@ -12,4 +12,5 @@ js/ct-
 templates_c/
 config/configuration.php
 data/private/
+data/feed/
 sitemap.xml
