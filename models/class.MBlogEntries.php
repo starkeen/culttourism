@@ -21,7 +21,9 @@ class MBlogEntries extends Model {
     }
 
     public function getLastActive($qnt = 10) {
-        $this->_db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text, 'Роберт' AS us_name,
+        $this->_db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text,
+                                REPLACE(bg.br_text, '=\"/', '=\"http://" . _URL_ROOT . "/') AS bg.br_text_absolute,
+                                'Роберт' AS us_name,
                                 DATE_FORMAT(bg.br_date,'%a, %d %b %Y %H:%i:%s GMT') as bg_pubdate,
                                 DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
                                 IF(bg.br_url != '',
@@ -35,6 +37,20 @@ class MBlogEntries extends Model {
                             LIMIT $qnt";
         $this->_db->exec();
         return $this->_db->fetchAll();
+    }
+
+    /*
+     * Заменяет все абсолютные ссылки относительными
+     */
+
+    public function repairLinksAbsRel() {
+        $this->_db->sql = "UPDATE $this->_table_name
+                            SET br_text = REPLACE(br_text, '=\"http://" . _URL_ROOT . "/', '=\"/')";
+        $this->_db->exec();
+
+        $this->_db->sql = "UPDATE $this->_table_name
+                            SET br_text = REPLACE(br_text, '=\"https://" . _URL_ROOT . "/', '=\"/')";
+        $this->_db->exec();
     }
 
 }

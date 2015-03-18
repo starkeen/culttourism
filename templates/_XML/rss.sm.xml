@@ -16,7 +16,7 @@
             <guid isPermaLink="true">{$entry.br_link}</guid>
             <pubDate>{$entry.bg_pubdate}</pubDate>
             <link>{$entry.br_link}</link>
-            <description><![CDATA[{$entry.br_text}]]></description>
+            <description><![CDATA[{$entry.br_text_absolute}]]></description>
             <dc:creator>{$entry.us_name}</dc:creator>
         </item>
         {/foreach}

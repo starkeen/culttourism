@@ -1,8 +1,6 @@
 <?php
 
 $be = new MBlogEntries($db);
-$smarty->assign('entries', $be->getLastActive(10));
-//print_x($entry);
 
 $feed['title'] = 'Культурный туризм в России';
 $feed['sitelink'] = _SITE_URL;
@@ -11,6 +9,9 @@ $feed['mail_webmaster'] = 'starkeen@ourways.ru (Andrey Panisko)';
 $feed['description'] = 'Достопримечательности России и ближнего зарубежья: музеи, церкви и монастыри, памятники архитектуры';
 $feed['date_build'] = date('r');
 $feed['generator'] = 'Cultural tourism / ' . _SITE_URL;
+
+
+$smarty->assign('entries', $be->getLastActive(10));
 $smarty->assign('feed', $feed);
 
 $filecontent = $smarty->fetch(_DIR_TEMPLATES . '/_XML/rss.sm.xml');
