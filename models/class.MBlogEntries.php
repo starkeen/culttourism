@@ -22,7 +22,7 @@ class MBlogEntries extends Model {
 
     public function getLastActive($qnt = 10) {
         $this->_db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text,
-                                REPLACE(bg.br_text, '=\"/', '=\"http://" . _URL_ROOT . "/') AS br_text_absolute,
+                                REPLACE(bg.br_text, '=\"/', '=\"" . _SITE_URL . "') AS br_text_absolute,
                                 'Роберт' AS us_name,
                                 DATE_FORMAT(bg.br_date,'%a, %d %b %Y %H:%i:%s GMT') as bg_pubdate,
                                 DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
