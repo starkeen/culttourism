@@ -22,7 +22,7 @@ class MBlogEntries extends Model {
 
     public function getLastActive($qnt = 10) {
         $this->_db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text,
-                                REPLACE(bg.br_text, '=\"/', '=\"http://" . _URL_ROOT . "/') AS bg.br_text_absolute,
+                                REPLACE(bg.br_text, '=\"/', '=\"http://" . _URL_ROOT . "/') AS br_text_absolute,
                                 'Роберт' AS us_name,
                                 DATE_FORMAT(bg.br_date,'%a, %d %b %Y %H:%i:%s GMT') as bg_pubdate,
                                 DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
@@ -30,8 +30,8 @@ class MBlogEntries extends Model {
                                     CONCAT('" . _SITE_URL . "blog/', DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'),
                                     CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/%d'),'.html')
                                 ) as br_link
-                            FROM $this->_table_name
-                            WHERE br_active = '1'
+                            FROM $this->_table_name AS bg
+                            WHERE br_active = 1
                                 AND br_date < now()
                             ORDER BY bg.br_date DESC
                             LIMIT $qnt";
