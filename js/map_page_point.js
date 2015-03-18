@@ -2,14 +2,15 @@ ymaps.ready(function () {
     var myMap = new ymaps.Map("city_map", {
         center: [$('#mapobj_pt_longitude').val(), $('#mapobj_pt_latitude').val()],
         zoom: $('#mapobj_pt_zoom').val(),
-        behaviors: ['default', 'scrollZoom']
+        type: "yandex#map",
+        controls: ["zoomControl", "typeSelector", "geolocationControl"]
     });
-    myMap.controls.add("zoomControl").add("mapTools").add(new ymaps.control.TypeSelector(["yandex#map", "yandex#hybrid"]));
-    $.getScript('/js/nmap-autoswitcher/nmap-autoswitcher.js', function () {
-        var autoSwitcher = new AutoSwitcher();
-        autoSwitcher.addToMap(myMap);
-    });
-
+    /*
+     $.getScript('/js/nmap-autoswitcher/nmap-autoswitcher.js', function () {
+     var autoSwitcher = new AutoSwitcher();
+     autoSwitcher.addToMap(myMap);
+     });
+     */
     var cluster = new ymaps.Clusterer({
         margin: [20],
         clusterIcons: [{
@@ -28,12 +29,13 @@ ymaps.ready(function () {
         'rlt=' + bounds[1][1]
     ];
     var objects_all = [];
-    ymaps.geoXml.load("https://culttourism.ru/map/common/?oid=" + $("#mapobj_pt_id").val() + "&" + boundsparams.join('&')).then(function (res) {
+    ymaps.geoXml.load("https://culttourism.ru/map/common/?oid=" + $("#mapobj_pt_id").val()
+            + "&" + boundsparams.join('&')).then(function (res) {
         if (res.mapState) {
             res.mapState.applyToMap(myMap);
         }
         res.geoObjects.each(function (obj) {
-            var oid = parseInt(obj.properties._K.metaDataProperty.AnyMetaData.pid);
+            var oid = parseInt(obj.properties.get("metaDataProperty").AnyMetaData.pid);
             objects_all[oid] = obj;
         });
         var arr = [];
@@ -43,6 +45,7 @@ ymaps.ready(function () {
         cluster.add(arr);
         myMap.geoObjects.add(cluster);
     });
+
     myMap.events.add(['boundschange', 'typechange'], function () {
         bounds = myMap.getBounds();
         boundsparams = [
@@ -54,7 +57,7 @@ ymaps.ready(function () {
         ymaps.geoXml.load("https://culttourism.ru/map/common/?oid=" + $("#mapobj_pt_id").val() + "&" + boundsparams.join('&')).then(function (res) {
             var arr = [];
             res.geoObjects.each(function (obj) {
-                var oid = parseInt(obj.properties._K.metaDataProperty.AnyMetaData.pid);
+                var oid = parseInt(obj.properties.get("metaDataProperty").AnyMetaData.pid);
                 if (!objects_all[oid]) {
                     objects_all[oid] = obj;
                     arr.push(obj);

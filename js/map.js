@@ -1,44 +1,33 @@
-ymaps.ready(function() {
-    hashCenter = getHashParam('center');
-    hashZoom = getHashParam('zoom');
-    var latitude = null;
-    var longitude = null;
-    var zoom = null;
+ymaps.ready(function () {
+    var latitude = 55.75949;
+    var longitude = 37.63252;
+    var zoom = 10;
+
+    var hashCenter = getHashParam('center');
+    var hashZoom = getHashParam('zoom');
     if (hashCenter) {
         latitude = hashCenter.split(',')[1];
         longitude = hashCenter.split(',')[0];
         zoom = hashZoom;
     } else {
-        latitude = ymaps.geolocation.latitude;
-        longitude = ymaps.geolocation.longitude;
-        zoom = ymaps.geolocation.zoom;
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                latitude = position.coords.latitude;
-                longitude = position.coords.longitude;
-                if (!latitude || !longitude) {
-                    latitude = ymaps.geolocation.latitude;
-                    longitude = ymaps.geolocation.longitude;
-                    zoom = 12;
-                }
+        ymaps.geolocation.get({
+            autoReverseGeocode: true
+        }).then(function (result) {
+            var c = result.geoObjects.get(0).geometry.getCoordinates();
+            map.setCenter(c, zoom, {
+                checkZoomRange: true
             });
-        }
-        var params = [
-            'center=' + longitude + ',' + latitude,
-            'zoom=' + zoom
-        ];
-        window.location.hash = params.join('&');
+        });
     }
+
     var map = new ymaps.Map('maponpage', {
         center: [longitude, latitude],
         zoom: zoom,
-        behaviors: ['default', 'scrollZoom'],
-        type: 'yandex#publicMap'
+        type: "yandex#map",
+        controls: ["zoomControl", "typeSelector", "geolocationControl", "routeEditor", "fullscreenControl"]
     }, {
-        minZoom: 4
+        minZoom: 1
     });
-    map.controls.add("zoomControl").add("mapTools").add(new ymaps.control.TypeSelector(["yandex#map", "yandex#satellite", "yandex#hybrid", "yandex#publicMap"]));
-
     var cluster = new ymaps.Clusterer({
         margin: [20],
         clusterIcons: [{
@@ -50,26 +39,29 @@ ymaps.ready(function() {
         gridSize: 50
     });
 
+
+    var objects_all = [];
+    var objects_cnt = 0;
+
+
     var bounds = map.getBounds();
     var boundsparams = [
         'lln=' + bounds[0][0],
         'llt=' + bounds[0][1],
         'rln=' + bounds[1][0],
-        'rlt=' + bounds[1][1],
+        'rlt=' + bounds[1][1]
     ];
-
-    var objects_all = [];
-    var objects_cnt = 0;
-    ymaps.geoXml.load("https://culttourism.ru/map/common/?" + boundsparams.join('&')).then(function(res) {
-        if (res.mapState && !hashCenter)
+    ymaps.geoXml.load("https://culttourism.ru/map/common/?" + boundsparams.join('&')).then(function (res) {
+        if (res.mapState && !hashCenter) {
             res.mapState.applyToMap(map);
+        }
         var arr = [];
-        res.geoObjects.each(function(obj) {
-            var oid = parseInt(obj.properties._K.metaDataProperty.AnyMetaData.pid);
+        res.geoObjects.each(function (obj) {
+            var oid = parseInt(obj.properties.get("metaDataProperty").AnyMetaData.pid);
             objects_all[oid] = obj;
             objects_cnt++;
         });
-        objects_all.map(function(object) {
+        objects_all.map(function (object) {
             return arr.push(object);
         });
         $('#mapdata_points').text(objects_cnt);
@@ -77,7 +69,7 @@ ymaps.ready(function() {
         map.geoObjects.add(cluster);
     });
 
-    map.events.add(['boundschange', 'typechange'], function() {
+    map.events.add(['boundschange', 'typechange'], function () {
         var params = [
             'center=' + map.getCenter(),
             'zoom=' + map.getZoom()
@@ -90,10 +82,10 @@ ymaps.ready(function() {
             'rln=' + bounds[1][0],
             'rlt=' + bounds[1][1]
         ];
-        ymaps.geoXml.load("https://culttourism.ru/map/common/?" + boundsparams.join('&')).then(function(res) {
+        ymaps.geoXml.load("https://culttourism.ru/map/common/?" + boundsparams.join('&')).then(function (res) {
             var arr = [];
-            res.geoObjects.each(function(obj) {
-                var oid = parseInt(obj.properties._K.metaDataProperty.AnyMetaData.pid);
+            res.geoObjects.each(function (obj) {
+                var oid = parseInt(obj.properties.get("metaDataProperty").AnyMetaData.pid);
                 if (!objects_all[oid]) {
                     objects_all[oid] = obj;
                     arr.push(obj);
@@ -106,9 +98,12 @@ ymaps.ready(function() {
         });
     });
 
-    var locationparams = [ymaps.geolocation.country, ymaps.geolocation.region, ymaps.geolocation.city];
-    $('#mapdata_location').text(locationparams.join(', '));
+    ymaps.geolocation.get().then(function (result) {
+        $('#mapdata_location').text(result.geoObjects.get(0).properties.get('text'));
+    });
 });
+
+
 function getHashParam(name, location) {
     location = location || window.location.hash;
     var res = location.match(new RegExp('[#&]' + name + '=([^&]*)', 'i'));
