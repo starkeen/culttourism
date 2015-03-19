@@ -118,6 +118,9 @@
         margin-top: 9px;
         font-size: 17px;
     }
+    #yandex_sharer a {
+        margin: 5px;
+    }
     #footer {
         min-width: 0;
     }
@@ -521,6 +524,9 @@
     }
     .list-map {
         height:100px;
+    }
+    #yandex_sharer {
+        display:none;
     }
     #yandex_ad {
         display:none;
