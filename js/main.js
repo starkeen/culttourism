@@ -570,7 +570,11 @@ function showWindByURL(url, get) {
     });
     $.get(url, get, function (data) {
         $("#simplemodal-data").html(data);
-        $("#object_text_container").css("bottom", $("#object_additional").height()).css("top", 2.7 * ($("#object_container h2").position().top + $("#object_container h2").height()));
+        if ($("#object_container h2").position() !== undefined) {
+            $("#object_text_container").css("bottom", $("#object_additional").height())
+                    .css("top", 2.7 * ($("#object_container h2").position().top + $("#object_container h2").height()));
+        }
+        $("body").trigger('afterShowWindByURL');
     });
 }
 

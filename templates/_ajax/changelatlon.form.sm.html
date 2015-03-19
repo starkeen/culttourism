@@ -24,8 +24,7 @@
     <div id="objfinder_map"></div>
 </div>
 <script type="text/javascript">
-    $('#simplemodal-container, #simplemodal-overlay').live('mouseenter', function(){
-        $('#simplemodal-container, #simplemodal-overlay').die('mouseenter');
+    $("body").live("afterShowWindByURL", function () {
         showMap($("#mapcenter_lat").val(), $("#mapcenter_lon").val(), $("#obj_zoom").val(), $("#obj_point_h").val());
         $('#objfinder_map').focus();
     });
