@@ -79,8 +79,30 @@
         margin-top: 2em;
         padding: 6px;
     }
-    #yandex_ad {
-        display:none;
+    .citypoints_list {
+        font-size: 90%;
+    }
+    .citypoints_list tr {
+        margin-bottom: 5px;
+    }
+    .citypoints_list tr td {
+        padding-bottom: 5px;
+    }
+    .citypoints_list .objlink {
+        font-size: 120%;
+    }
+    .td_obj_icon {
+        width: auto;
+        padding: 2px;
+    }
+    .obj_icon_img {
+        margin: 5px;
+        width: 24px;
+    }
+    .obj_best_pic {
+        top: 28px;
+        right: 2px;
+        width: 16px;
     }
     #object_contacts_block {
         width:100%;
@@ -117,6 +139,9 @@
     .city-tree-full li.m_region {
         margin-top: 9px;
         font-size: 17px;
+    }
+    #yandex_ad {
+        display:none;
     }
     #yandex_sharer a {
         margin: 5px;
@@ -497,6 +522,12 @@
     .points_selector li {
         display: inline-block;
         width:40px;
+    }
+    .citypoints_list tr td {
+        padding-bottom: 10px;
+    }
+    .citypoints_list .objlink {
+        font-size: 140%;
     }
     #object_contacts_block {
         width:100%;
