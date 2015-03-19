@@ -87,17 +87,21 @@
         padding:6px;
     }
     .list-half-left {
-        width: 100%;
+        width: 93%;
+    }
+    .list-half-left img {
+        max-width: 96%;
     }
     .list-half-right {
         width: 100%;
         float: none;
-    }
-    .list-map {
-        height:150px;
+        margin-left: auto;
     }
     .list-half-right li {
         margin-top: 2px;
+    }
+    .list-map {
+        height:150px;
     }
     .city-tree-full li {
         margin-bottom: 7px;
@@ -162,9 +166,6 @@
     #mainmenu form {
         position: relative;
         top: -18px;
-    }
-    #content {
-        font-size: 90%;
     }
     #content h1 {
         width: 100%;
@@ -291,9 +292,6 @@
     }
     #city_float {
         display:none;
-    }
-    #content {
-        font-size: 90%;
     }
     #content h1 {
         width: 100%;
@@ -431,9 +429,6 @@
     #mainmenu #show_auth_form {
         display:none;
     }
-    #content {
-        font-size: 90%;
-    }
     #content h1 {
         width: 100%;
         padding-left: 2px;
@@ -502,11 +497,16 @@
         display:none;
     }
     .list-half-left {
-        width: 100%;
+        float: none;
     }
     .list-half-right {
-        width: 100%;
+        list-style-type: none;
+        width: 98%;
         float: none;
+    }
+    .list-half-right li {
+        margin-top: 3px;
+        margin-right: 13px;
     }
     .list-map {
         height:100px;

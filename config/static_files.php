@@ -61,9 +61,9 @@ return array(
             _DIR_ROOT . '/js/api.js',
         ),
         'editor' => array(
-            _DIR_ROOT . '/js/jquery.ui.core.js',
-            _DIR_ROOT . '/js/jquery.ui.datepicker.js',
-            _DIR_ROOT . '/js/jquery.ui.datepicker-ru.js',
+            _DIR_ROOT . '/addons/jquery.ui/jquery.ui.core.js',
+            _DIR_ROOT . '/addons/jquery.ui/jquery.ui.datepicker.js',
+            _DIR_ROOT . '/addons/jquery.ui/jquery.ui.datepicker-ru.js',
         ),
     ),
 );
