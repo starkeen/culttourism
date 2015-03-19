@@ -22,21 +22,21 @@
 
 /*------------------------------------- CITY --------------------------*/
 .city-tree-full {
-        list-style-type: none;
-        font-size:16px;
+    list-style-type: none;
+    font-size:16px;
 }
 .city-tree-full li {
-        margin-bottom: 5px;
+    margin-bottom: 5px;
 }
 .city-tree-full li.m_region {
-        margin-top: 8px;
-        font-size: 17px;
+    margin-top: 8px;
+    font-size: 17px;
 }
 .city-tree-full li a.m_left_more {
-        margin-left:40px;
+    margin-left:40px;
 }
 .city-tree-full li a.m_left_moremore {
-        margin-left:60px;
+    margin-left:60px;
 }
 
 /*------------------------------------- LIST --------------------------*/
@@ -430,6 +430,13 @@ input.dogo {
     vertical-align:top;
 }
 /*------------------------------------- MAPS --------------------------*/
+#maponpage {
+    width:99%;
+    min-height:400px;  
+    height:600px;
+    border:1px solid #99B099;
+    margin:0 auto;
+}
 #map_container {
     float: right;
     position: relative;
@@ -480,6 +487,7 @@ ymaps .ymap_balloon {
 .point_dataext {
     color:#A59F9A;
 }
+
 /*----------------------------------- FEEDBACK ------------------------*/
 .feedtable {
     width:70%;
