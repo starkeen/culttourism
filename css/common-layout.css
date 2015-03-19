@@ -101,22 +101,25 @@ ul.menu_common li {
     top: 50px;
     left:30px;
 }
-
-#mainmenu {
+#mainmenu-container {
     position:relative;
-    display:block;
     height:58px;
     width: 610px;
     float:right;
     margin-top:4pt;
     margin-right:10pt;
-    text-align: center;
     background: #0e506e;
     background:url(/img/header/menu.png) repeat-x;
-    font-size:large;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     border-radius: 8px;
+}
+#mainmenu {
+    position:relative;
+    display:block;
+    height:100%;
+    text-align: center;
+    font-size:large;
 }
 #mainmenu li {
     display: inline-block;
@@ -158,6 +161,15 @@ ul.menu_common li {
 }
 #show_auth_form {
     color: #b6e7ff;
+}
+#mainmenu li#mainmenu_item_0 {
+    display: none;
+}
+#mainmenu li#mainmenu_item_0 img {
+    top: 7px;
+    left: 4px; 
+    margin: 0; 
+    height: 32px; 
 }
 
 

@@ -26,17 +26,19 @@
         margin: 30px auto;
         height:100px;
     }
-    #mainmenu {
+    #mainmenu-container {
         position:absolute;
         top:0;
         margin:-33px 0;
         height:47px;
         width:100%;
-        overflow: hidden;
-        font-size:inherit;
         -webkit-border-radius: 0px;
         -moz-border-radius: 0px;
         border-radius: 0px;
+    }
+    #mainmenu {
+        overflow: hidden;
+        font-size:inherit;
     }
     #mainmenu li {
         position: relative;
@@ -176,20 +178,10 @@
         margin: 30px auto;
         height:100px;
     }
-    #mainmenu {
-        position:absolute;
-        top:0;
-        margin:-33px 0;
+    #mainmenu-container {
         height:42px;
-        width:100%;
-        overflow: hidden;
-        font-size:inherit;
-        -webkit-border-radius: 0px;
-        -moz-border-radius: 0px;
-        border-radius: 0px;
     }
     #mainmenu li {
-        position: relative;
         top: -18px;
     }
     #mainmenu li form {
@@ -304,21 +296,8 @@
         margin: 30px auto;
         height:80px;
     }
-    #mainmenu {
-        position:absolute;
-        top:0;
-        margin:-33px 0;
-        height:42px;
-        width:100%;
-        overflow: hidden;
-        font-size:inherit;
-        -webkit-border-radius: 0px;
-        -moz-border-radius: 0px;
-        border-radius: 0px;
-    }
     #mainmenu li {
-        position: relative;
-        top: -18px;
+        top: -9px;
     }
     #mainmenu form {
         display:none;
@@ -433,31 +412,28 @@
         max-width: 320px;
     }
     #header {
-        height:80px;
+        height:40px;
         background:none;
     }
     #header img {
-        display:block;
-        top: 10px;
-        left: 0;
-        margin: 30px auto;
-        height:80px;
+        display:none;
     }
-    #mainmenu {
-        position:absolute;
-        top:0;
-        margin:-33px 0;
-        height:42px;
+    #mainmenu-container {
         width:100%;
-        overflow: hidden;
-        font-size:inherit;
-        -webkit-border-radius: 0px;
-        -moz-border-radius: 0px;
-        border-radius: 0px;
+        margin: -4px 0;
+        padding-right: 2px;
     }
     #mainmenu li {
-        position: relative;
-        top: -6px;
+        top: -18px;
+    }
+    #mainmenu li#mainmenu_item_1 {
+        display: none;
+    }
+    #mainmenu li#mainmenu_item_0 {
+        display: inline-block;
+    }
+    #mainmenu li#mainmenu_item_0 img {
+        display: block;
     }
     #mainmenu form {
         display:none;

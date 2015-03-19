@@ -39,19 +39,24 @@
                             <a href="/" title="Достопримечательности России">
                                 <img src="/img/header/logotype.png" alt="Культурный туризм" title="Достопримечательности России" />
                             </a>
-                            <ul id="mainmenu" class="menu_common">
-                                <li class="navigate"><a href="/" title="Главная страница">Главная</a></li>
-                                <li class="navigate"><a href="/city/" title="Города">Города</a></li>
-                                <li class="navigate"><a href="/blog/" title="Блог проекта">Блог</a></li>
-                                <li class="navigate"><a href="/feedback/" title="Обратная связь">Отзыв</a></li>
-                                <li class="navigate"><a href="/about/" title="О проекте">О проекте</a></li>
-                                <li>
-                                    <form method="get" action="/search/">
-                                        <input type="text" id="search_mainform_q" name="q" value="" placeholder="Поиск" />
-                                    </form>
-                                </li>
-                                <li><a id="show_auth_form" href="/sign/in/" title="Вход" rel="nofollow">&#x25bc;</a></li>
-                            </ul>
+                            <div id="mainmenu-container">
+                                <ul id="mainmenu" class="menu_common">
+                                    <li id="mainmenu_item_0">
+                                        <a href="/" title="Главная страница"><img src="/img/header/logo-sign-32.png" /></a>
+                                    </li>
+                                    <li class="navigate" id="mainmenu_item_1"><a href="/" title="Главная страница">Главная</a></li>
+                                    <li class="navigate" id="mainmenu_item_2"><a href="/city/" title="Города">Города</a></li>
+                                    <li class="navigate" id="mainmenu_item_3"><a href="/blog/" title="Блог проекта">Блог</a></li>
+                                    <li class="navigate" id="mainmenu_item_4"><a href="/feedback/" title="Обратная связь">Отзыв</a></li>
+                                    <li class="navigate" id="mainmenu_item_5"><a href="/about/" title="О проекте">О проекте</a></li>
+                                    <li id="mainmenu_item_6">
+                                        <form method="get" action="/search/">
+                                            <input type="text" id="search_mainform_q" name="q" value="" placeholder="Поиск" />
+                                        </form>
+                                    </li>
+                                    <li id="mainmenu_item_7"><a id="show_auth_form" href="/sign/in/" title="Вход" rel="nofollow">&#x25bc;</a></li>
+                                </ul>
+                            </div>
                         </header><!-- #header-->
                         <div id="content">
                             {if $page->h1}<h1>{$page->h1}</h1>{/if}
