@@ -43,6 +43,7 @@
         top: -4px;
     }
     #content {
+        line-height: 1.5;
         font-size: 90%;
         padding: 0;
     }
@@ -67,6 +68,7 @@
         top: -185px;
     }
     #citytext {
+        font-size: 110%;
         padding: 6px;
     }
     #object_description {
