@@ -579,14 +579,12 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
         var map = new ymaps.Map("objfinder_map", {
             center: [c_lon, c_lat],
             zoom: c_zoom,
-            behaviors: ['default', 'scrollZoom'],
-            type: 'yandex#publicMap'
+            type: "yandex#publicMap",
+            controls: ["zoomControl", "typeSelector"]
         });
-        map.controls.add("zoomControl").add("mapTools").add(new ymaps.control.TypeSelector(["yandex#map", "yandex#hybrid", "yandex#publicMap"]));
-
         if (f_point == -1) {//от клика
             map.events.add('click', function (e) {
-                var coords = e.get('coordPosition');
+                var coords = e.get('coords');
                 $("#obj_lat").val(coords[1]);
                 $("#obj_lon").val(coords[0]);
                 $("#obj_zoom").val(map.getZoom());
@@ -598,11 +596,12 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
         else if (f_point == 0) {//от координат города
             var mapOnClick = function (e) {
                 map.events.remove("click", mapOnClick);
-                var coords = e.get('coordPosition');
+                var coords = e.get('coords');
                 myPlacemark = new ymaps.Placemark(coords, {
                     hintContent: "Перетащите для изменения координат",
                     balloonContent: $("#obj_name").text()
                 }, {
+                    iconLayout: 'default#image',
                     iconImageHref: '/img/points/xmap/' + $('#obj_typeicon_h').val(), // картинка иконки
                     iconImageSize: [55, 55], // размеры картинки
                     iconImageOffset: [-27, -55], // смещение картинки
@@ -632,6 +631,7 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
                 hintContent: "Перетащите для изменения координат",
                 balloonContent: $("#obj_name").text()
             }, {
+                iconLayout: 'default#image',
                 iconImageHref: '/img/points/xmap/' + $('#obj_typeicon_h').val(), // картинка иконки
                 iconImageSize: [55, 55], // размеры картинки
                 iconImageOffset: [-27, -55], // смещение картинки
@@ -648,7 +648,6 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
             });
             map.geoObjects.add(myPlacemark);
         }
-        ;
         $(".dogo").live("click", function () {
             var point = [parseFloat($("#obj_lon").val()), parseFloat($("#obj_lat").val())];
             map.panTo(point, {
@@ -656,7 +655,6 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
                 delay: 0,
                 duration: 1000
             });
-            myPlacemark.geometry.setCoordinates(point);
             return false;
         });
         $("#obj_addr_searcher").live("click", function () {
@@ -667,7 +665,7 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
             }).then(function (res) {
                 map.geoObjects.add(res.geoObjects);
                 res.geoObjects.each(function (obj) {
-                    map.panTo(obj.geometry._n, {
+                    map.panTo(obj.geometry.getCoordinates(), {
                         flying: true,
                         delay: 0,
                         duration: 1000
