@@ -473,6 +473,9 @@
     #city_map_link {
         display:none;
     }
+    #citytext {
+        font-size: 120%;
+    }
     #point_gps {
         display:none;
     }
