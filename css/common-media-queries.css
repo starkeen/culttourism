@@ -43,7 +43,7 @@
         top: -4px;
     }
     #content {
-        line-height: 1.5;
+        line-height: 1.6;
         font-size: 90%;
         padding: 0;
     }
@@ -70,6 +70,9 @@
     #citytext {
         font-size: 110%;
         padding: 6px;
+    }
+    .city_nearmenu ul li {
+        margin: 3px;
     }
     #object_description {
         margin:0;
