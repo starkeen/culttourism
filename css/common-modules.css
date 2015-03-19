@@ -399,6 +399,7 @@ input.dogo {
     width:200px;
     float:right;
     margin:5px auto;
+    margin-left:5px;
     position:relative;
 }
 .city_weather {
@@ -414,6 +415,7 @@ input.dogo {
 /*----------------------------------- METADATA ------------------------*/
 .city_metadata {
     margin-top:2px;
+    padding:2px;
     border: 1px solid #99B099;
     background-color:#E0FCE7;
     font-size:70%;
