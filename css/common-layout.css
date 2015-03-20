@@ -181,14 +181,14 @@ ul.menu_common li {
 }
 h1, .h1 {
     display:block;
-    height:30px;
+    height:32px;
     overflow: hidden;
     background:url(/img/header/h1.png) top center no-repeat;
     color:#fff;
     font-size: 19pt;
     font-weight: bold;
     vertical-align: middle;
-    padding: 4pt 0 0 8pt;
+    padding: 0 0 4px 8px;
     overflow: hidden;
 }
 h2, .h2 {
