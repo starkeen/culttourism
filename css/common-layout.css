@@ -65,6 +65,9 @@ strong {
     font-style:normal;
     font-weight:bold;
 }
+.m_clear {
+    clear:both;
+}
 
 #wrapper {
     width: 98%;

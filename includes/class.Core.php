@@ -161,6 +161,9 @@ abstract class Core {
                     header('HTTP/1.1 403 Forbidden');
                     $this->title = "$this->title - 403 Forbidden - страница недоступна (запрещено)";
                     $this->h1 = 'Запрещено';
+                    $smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+                    $smarty->assign('host', _SITE_URL);
+                    $this->content = $smarty->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html');
                     $this->content = file_get_contents(_DIR_TEMPLATES . '/_errors/er403.sm.html');
                     $this->content = str_replace('<!--#echo var="REQUEST_URI" -->', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], $this->content);
                     $this->content = str_replace('<!--#echo var="HTTP_SIGNATURE" -->', $_SERVER['SERVER_SIGNATURE'], $this->content);
@@ -187,7 +190,7 @@ abstract class Core {
 
                     $this->title = "$this->title - Ошибка 503 - Сервис временно недоступен";
                     $this->h1 = 'Сервис временно недоступен';
-                    $this->content = file_get_contents(_DIR_TEMPLATES . '/_errors/er503.sm.html');
+                    $this->content = $smarty->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html');
                 }
                 break;
         }

@@ -8,6 +8,12 @@
     text-align:right;
 }
 
+/*---------------------------------- ERROR PAGES -----------------------*/
+.errpage_img_main {
+    float:left;
+    margin:6px;
+    height: 200px;
+}
 /*------------------------------------- INDEX --------------------------*/
 .index-half-left {
     padding:1px;

@@ -1,7 +1,7 @@
-<p>Доступ к запрошенному вами адресу <b>http://<!--#echo var="REQUEST_URI" --></b> запрещен.</p>
-<p>Попробуйте начать со стартовой страницы <a href="http://<!--#echo var="HTTP_HOST" -->/">http://<!--#echo var="HTTP_HOST" -->/</a> или воспользуйтесь <a href="http://<!--#echo var="HTTP_HOST" -->/search/">поиском</a>.</p>
+<p>Доступ к запрошенному вами адресу <b>https://{$requested}</b> запрещен.</p>
+<p>
+    Попробуйте начать со стартовой страницы <a href="/">{$host}</a>
+    или воспользуйтесь <a href="/search/">поиском</a>.</p>
 
 <h2>Forbidden</h2>
-<p>You don't have permission to access <!--#echo var="REQUEST_URI" --> on this server.
-    <i><!--#echo var="HTTP_SIGNATURE" --></i>
-</p>
+<p>You don't have permission to access <b>https://{$requested}</b> on this server.</p>
