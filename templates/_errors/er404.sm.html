@@ -5,6 +5,16 @@
     какие <a href="/city/">регионы</a> у нас представлены
     или воспользуйтесь <a href="/search/">поиском</a>.
 </p>
+{if !empty($suggestions)}
+<div>
+    <p>А может вы имели в виду что-то другое?</p>
+    <ul>
+        {foreach from=$suggestions item=s}
+        <li><a href="{$s.url}">{$s.title}</a></li>
+        {/foreach}
+    </ul>
+</div>
+{/if}
 <p>
     А еще можно попробовать найти что-нибудь <a href="https://{$host}/map/">на карте</a>.
 </p>

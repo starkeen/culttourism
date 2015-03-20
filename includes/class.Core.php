@@ -141,12 +141,8 @@ abstract class Core {
             $this->basepath = _URL_ROOT;
             $this->mainfile_css = basename($_css_files[0]);
             $this->mainfile_js = basename($_js_files[0]);
-            $smarty = $err_data;
-            if (!$smarty) {
-                global $smarty;
-            }
-            $smarty->assign('page', $this);
-            $smarty->assign('debug_info', '');
+            $this->smarty->assign('page', $this);
+            $this->smarty->assign('debug_info', '');
         }
         switch ($err_code) {
             case '301': {
@@ -157,25 +153,45 @@ abstract class Core {
                 break;
             case '403': {
                     Logging::write($err_code, $err_data);
+
                     header('Content-Type: text/html; charset=utf-8');
                     header('HTTP/1.1 403 Forbidden');
+
                     $this->title = "$this->title - 403 Forbidden - страница недоступна (запрещено)";
                     $this->h1 = 'Запрещено';
-                    $smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-                    $smarty->assign('host', _SITE_URL);
-                    $this->content = $smarty->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html');
+                    $this->smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+                    $this->smarty->assign('host', _SITE_URL);
+                    $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html');
                 }
                 break;
             case '404': {
                     Logging::write($err_code, $err_data);
+
                     header('Content-Type: text/html; charset=utf-8');
                     header("HTTP/1.0 404 Not Found");
 
+                    $suggestions = array();
+                    $ys = new YandexSearcher();
+                    $variants = $ys->search(trim($_SERVER['REQUEST_URI'], '/') . ' host:culttourism.ru');
+                    if (!empty($variants['results'])) {
+                        $i = 0;
+                        foreach ($variants['results'] as $variant) {
+                            $suggestions[] = array(
+                                'url' => $variant['url'],
+                                'title' => trim(str_replace('| Культурный туризм', '', $variant['title'])),
+                            );
+                            if ($i++ == 3) {
+                                break;
+                            }
+                        }
+                    }
+
                     $this->title = "$this->title - 404 Not Found - страница не найдена на сервере";
                     $this->h1 = 'Не найдено';
-                    $smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-                    $smarty->assign('host', _SITE_URL);
-                    $this->content = $smarty->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html');
+                    $this->smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+                    $this->smarty->assign('host', _SITE_URL);
+                    $this->smarty->assign('suggestions', $suggestions);
+                    $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html');
                 }
                 break;
             case '503': {
@@ -186,16 +202,16 @@ abstract class Core {
 
                     $this->title = "$this->title - Ошибка 503 - Сервис временно недоступен";
                     $this->h1 = 'Сервис временно недоступен';
-                    $this->content = $smarty->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html');
+                    $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html');
                 }
                 break;
         }
         if ($this->module_id == 'api') {
-            $smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
+            $this->smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
         } elseif ($this->module_id == 'ajax') {
-            $smarty->display(_DIR_TEMPLATES . '/_main/empty.sm.html');
+            $this->smarty->display(_DIR_TEMPLATES . '/_main/empty.sm.html');
         } else {
-            $smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
+            $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
         }
         exit();
     }
