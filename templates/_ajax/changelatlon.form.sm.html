@@ -27,5 +27,6 @@
     $("body").live("afterShowWindByURL", function () {
         showMap($("#mapcenter_lat").val(), $("#mapcenter_lon").val(), $("#obj_zoom").val(), $("#obj_point_h").val());
         $('#objfinder_map').focus();
+        $("body").die("afterShowWindByURL");
     });
 </script>
