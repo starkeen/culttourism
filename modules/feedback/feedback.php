@@ -19,8 +19,40 @@ class Page extends PageCommon {
     }
 
     private function getAdd() {
+        $cp = new MCandidatePoints($this->db);
+        if (!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] == null) {
+            $_SESSION['feedback_referer'] = $_SERVER['HTTP_REFERER'];
+        }
         if (isset($_POST) && !empty($_POST)) {
-            //
+            $cp->add(array(
+                'cp_title' => $_POST['title'],
+                'cp_city' => $_POST['region'],
+                'cp_text' => $_POST['descr'],
+                'cp_addr' => $_POST['addrs'],
+                'cp_phone' => $_POST['phone'],
+                'cp_web' => $_POST['web'],
+                'cp_worktime' => $_POST['worktime'],
+                'cp_referer' => $_SESSION['feedback_referer'],
+                'cp_sender' => $_POST['name'] . ' <' . $_POST['email'] . '>',
+                'cp_source_id' => 4,
+            ));
+
+            $mail_attrs = array(
+                'user_name' => $_POST['name'],
+                'user_mail' => $_POST['email'],
+                'add_city' => $_POST['region'],
+                'add_title' => $_POST['title'],
+                'add_text' => $_POST['descr'],
+                'add_contacts' => $_POST['addrs']
+                . ' ' . $_POST['phone']
+                . ' ' . $_POST['web']
+                . ' ' . $_POST['worktime'],
+                'referer' => $_SESSION['feedback_referer']);
+            Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 5, $mail_attrs);
+            unset($_POST);
+            unset($_SESSION['feedback_referer']);
+            unset($_SESSION['captcha_keystring']);
+            $this->content = $this->getAddingSuccess();
         } else {
             $this->content = $this->getAddingForm();
         }
@@ -77,6 +109,7 @@ class Page extends PageCommon {
                 Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 4, $mail_attrs);
                 unset($_POST);
                 unset($_SESSION['captcha_keystring']);
+                unset($_SESSION['feedback_referer']);
                 $this->content = $this->getCommonSuccess($data);
             } else {
                 $this->content = $this->getCommonForm($data);
@@ -104,6 +137,10 @@ class Page extends PageCommon {
 
     private function getAddingForm() {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addpoint.sm.html');
+    }
+
+    private function getAddingSuccess($data) {
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addsuccess.sm.html');
     }
 
     private function getCaptcha() {

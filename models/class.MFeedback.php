@@ -19,7 +19,6 @@ class MFeedback extends Model {
             'fb_active',
         );
         parent::__construct($db);
-        $this->_addRelatedTable('users');
     }
 
     public function add($data) {

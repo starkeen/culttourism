@@ -68,6 +68,12 @@ strong {
 .m_clear {
     clear:both;
 }
+.m_center {
+    text-align: center;
+}
+.m_width_full {
+    width:100%;
+}
 
 #wrapper {
     width: 98%;
