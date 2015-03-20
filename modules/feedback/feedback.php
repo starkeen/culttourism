@@ -12,9 +12,17 @@ class Page extends PageCommon {
         } elseif ($page_id == 'getcapt') {
             $this->getCaptcha();
         } elseif ($page_id == 'newpoint') {
-            //
+            $this->getAdd();
         } else {
             $this->getError('404');
+        }
+    }
+
+    private function getAdd() {
+        if (isset($_POST) && !empty($_POST)) {
+            //
+        } else {
+            $this->content = $this->getAddingForm();
         }
     }
 
@@ -95,7 +103,7 @@ class Page extends PageCommon {
     }
 
     private function getAddingForm() {
-        //
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addpoint.sm.html');
     }
 
     private function getCaptcha() {
