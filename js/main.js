@@ -680,3 +680,4 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
         });
     });
 }
+
