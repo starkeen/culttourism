@@ -421,21 +421,22 @@ $(document).ready(function () {
         showWindByURL("/ajax/blog/editform/", {
             brid: a[2]
         });
-        $("#eblog_text").live("mouseover", function () {
-            $("#eblog_text").die("mouseover").ckeditor(function () {
-            }, {
-                customConfig: "/config/config.cke.js"
+        $("body").live("afterShowWindByURL", function () {
+            $("#body").die("afterShowWindByURL");
+            $("#eblog_text").ckeditor({
+                customConfig: '/config/config.cke4.js',
+                height: '250px',
+                toolbar: 'Lite'
             });
             $("#eblog_date").datepicker({
                 dateFormat: "dd.mm.yy"
             });
         });
-        $("#eblog_date").live("click",
-                function () {
-                    $(this).datepicker({
-                        dateFormat: "dd.mm.yy"
-                    });
-                });
+        $("#eblog_date").live("click", function () {
+            $(this).datepicker({
+                dateFormat: "dd.mm.yy"
+            });
+        });
         return false;
     });
     $("#blog_entry_add").live("click", function () {

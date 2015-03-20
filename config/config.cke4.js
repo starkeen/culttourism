@@ -47,14 +47,14 @@ CKEDITOR.editorConfig = function(config) {
                 {name: 'styles', items: ['Format', 'FontSize']}
             ];
     config.stylesSet = [];
-    config.contentsCss = '/css/editors.css?v=3';
+    config.contentsCss = '/css/editors.css';
     config.disableNativeSpellChecker = false;
-    config.filebrowserBrowseUrl = '/addons/ckfinder/ckfinder.html';
-    config.filebrowserImageBrowseUrl = '/addons/ckfinder/ckfinder.html?type=Images';
-    config.filebrowserFlashBrowseUrl = '/addons/ckfinder/ckfinder.html?type=Flash';
-    config.filebrowserUploadUrl = '/addons/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files';
-    config.filebrowserImageUploadUrl = '/addons/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images';
-    config.filebrowserFlashUploadUrl = '/addons/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash';
+    config.filebrowserBrowseUrl = '/addons/ckfinder.2.4/ckfinder.html';
+    config.filebrowserImageBrowseUrl = '/addons/ckfinder.2.4/ckfinder.html?type=Images';
+    config.filebrowserFlashBrowseUrl = '/addons/ckfinder.2.4/ckfinder.html?type=Flash';
+    config.filebrowserUploadUrl = '/addons/ckfinder.2.4/core/connector/php/connector.php?command=QuickUpload&type=Files';
+    config.filebrowserImageUploadUrl = '/addons/ckfinder.2.4/core/connector/php/connector.php?command=QuickUpload&type=Images';
+    config.filebrowserFlashUploadUrl = '/addons/ckfinder.2.4/core/connector/php/connector.php?command=QuickUpload&type=Flash';
 };
 CKEDITOR.stylesSet.add('my_styles', [
     // Block-level styles
