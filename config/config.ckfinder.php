@@ -190,8 +190,8 @@ $config['ResourceType'][] = Array(
 
 $config['ResourceType'][] = Array(
     'name' => 'Images',
-    'url' => $baseUrl . 'image',
-    'directory' => $baseDir . 'image',
+    'url' => $baseUrl . 'images',
+    'directory' => $baseDir . 'images',
     'maxSize' => 0,
     'allowedExtensions' => 'bmp,gif,jpeg,jpg,png',
     'deniedExtensions' => '');
