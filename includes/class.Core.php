@@ -172,7 +172,8 @@ abstract class Core {
 
                     $suggestions = array();
                     $ys = new YandexSearcher();
-                    $variants = $ys->search(trim($_SERVER['REQUEST_URI'], '/') . ' host:culttourism.ru');
+                    $searchstring = trim(implode(' ', explode('/', $_SERVER['REQUEST_URI'])));
+                    $variants = $ys->search("$searchstring host:culttourism.ru");
                     if (!empty($variants['results'])) {
                         $i = 0;
                         foreach ($variants['results'] as $variant) {

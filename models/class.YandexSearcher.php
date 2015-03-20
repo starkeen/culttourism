@@ -2,9 +2,9 @@
 
 class YandexSearcher {
 
-    private $_request_url = "https://xmlsearch.yandex.ru/xmlsearch?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80";
+    private $_request_url = "https://xmlsearch.yandex.ru/xmlsearch?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80&l10n=ru&sortby=rlv&filter=strict";
     private $_meta = array(
-        'page' => 20,
+        'page' => 0,
         'pages' => 20,
     );
 
@@ -19,12 +19,13 @@ class YandexSearcher {
         $doc = <<<DOC
 <?xml version="1.0" encoding="utf-8"?>
 <request>
-    <query>$request</query>
-    <maxpassages>5</maxpassages>
-    <groupings>
-        <groupby attr="" mode="flat" groups-on-page="{$this->_meta['pages']}" docs-in-group="1" />
-    </groupings>
-    <page>{$this->_meta['page']}</page>
+        <query>$request</query>
+        <page>{$this->_meta['page']}</page>
+        <sortby order="descending" priority="no">rlv</sortby>
+        <maxpassages>5</maxpassages>
+        <groupings>
+            <groupby attr="" mode="flat" groups-on-page="{$this->_meta['pages']}" docs-in-group="1" curcateg="-1" />
+        </groupings>
 </request>
 DOC;
         $context = stream_context_create(array(
