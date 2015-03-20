@@ -36,6 +36,8 @@ class MyDB {
                         }
                     } catch (Exception $e) {
                         //echo 'Выброшено исключение: ', $e->getMessage(), "\n";
+                        $this->link = null;
+                        return $this;
                     }
                 } else {
                     throw new Exception('Нет связи с сервером БД');
