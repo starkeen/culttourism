@@ -116,7 +116,7 @@ abstract class Core {
             }
         }
         if (!$this->url) {
-            return $this->getError('404');
+            return FALSE;
         } else {
             return TRUE;
         }
