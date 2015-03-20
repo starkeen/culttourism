@@ -1,11 +1,11 @@
 <img src="/img/elements/compass.jpg" style="float:left; margin:6px; height: 200px;" />
-<p>Запрошенный вами адрес URL <b>http://<!--#echo var="REQUEST_URI" --></b> не найден на сервере.</p>
+<p>Запрошенный вами адрес URL <b>https://{$requested}</b> не найден на сервере.</p>
 <p>
-    Попробуйте начать со стартовой страницы <a href="https://<!--#echo var="HTTP_HOST" -->/"><!--#echo var="HTTP_HOST" --></a>, посмотрите,
-    какие <a href="https://<!--#echo var="HTTP_HOST" -->/city/">регионы</a> у нас представлены
-    или воспользуйтесь <a href="http://<!--#echo var="HTTP_HOST" -->/search/">поиском</a>.
+    Попробуйте начать со стартовой страницы <a href="/">{$host}</a>, посмотрите,
+    какие <a href="/city/">регионы</a> у нас представлены
+    или воспользуйтесь <a href="/search/">поиском</a>.
 </p>
 <p>
-    А еще можно попробовать найти что-нибудь <a href="http://<!--#echo var="HTTP_HOST" -->/map/">на карте</a>.
+    А еще можно попробовать найти что-нибудь <a href="https://{$host}/map/">на карте</a>.
 </p>
 <div style="clear:both;"></div>
