@@ -213,7 +213,7 @@ class Page extends PageCommon {
         $pts = new Points($this->db);
         $row = $pcs->getCityByUrl($url);
 
-        if (!empty($row)) {
+        if (!empty($row) && isset($row['pc_title']) && $row['pc_title'] != '') {
             $row['pc_zoom'] = ($row['pc_latlon_zoom']) ? $row['pc_latlon_zoom'] : 12;
             $this->lastedit_timestamp = $row['last_update'];
 
