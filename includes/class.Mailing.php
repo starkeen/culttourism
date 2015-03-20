@@ -106,6 +106,7 @@ class Mailing {
         $attrs = array();
         $attrs['SITE_LINK'] = _SITE_URL;
         $attrs['USER_IP'] = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'cron';
+        $attrs['NOW'] = date('d.m.Y H:i:s');
         foreach ($details as $key => $val) {
             $attrs[strtoupper($key)] = $val;
         }
