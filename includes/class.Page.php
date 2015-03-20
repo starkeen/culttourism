@@ -273,7 +273,7 @@ class Page extends PageCommon {
                 return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.show.sm.html');
             }
         } else {
-            return FALSE;
+            return $this->getError('404');
         }
     }
 
