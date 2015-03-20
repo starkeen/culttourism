@@ -54,61 +54,35 @@ class Page extends PageCommon {
 
             $error_text = '';
             $result = array();
-            $result_meta = array();
-            $found = 0;
+            $result_meta = array(
+                'query' => $query,
+                'page' => array_key_exists('page', $_GET) ? intval($_GET['page']) : 0,
+                'pages_all' => 0,
+            );
+
+            $ys = new YandexSearcher();
+            $ys->setPage($result_meta['page']);
+            $res = $ys->search("$query host:culttourism.ru");
+            if ($res['error_text']) {
+                $error_text = $res['error_text'];
+            } else {
+                foreach ($res['results'] as $result_item) {
+                    $title_items = explode($this->globalsettings['title_delimiter'], $result_item['title_hw']);
+                    array_pop($title_items);
+                    $result_item['title'] = trim(implode(', ', $title_items));
+                    $result_item['title'] = str_replace(' , ', ', ', $result_item['title']);
+                    $result_item['descr'] = $result_item['descr_hw'];
+                    unset($result_item['title_hw']);
+                    unset($result_item['descr_hw']);
+                    $result[] = $result_item;
+                }
+                $result_meta['pages_all'] = $res['pages_cnt'];
+            }
+
             $result_meta['pages'] = 20;
             $result_meta['query'] = ($query);
             $result_meta['page'] = array_key_exists('page', $_GET) ? intval($_GET['page']) : 0;
 
-            $doc = <<<DOC
-<?xml version='1.0' encoding='utf-8'?>
-<request>
-    <query>{$result_meta['query']} host:culttourism.ru</query>
-    <maxpassages>5</maxpassages>
-    <groupings>
-        <groupby attr="" mode="flat" groups-on-page="{$result_meta['pages']}"  docs-in-group="1" />
-    </groupings>
-    <page>{$result_meta['page']}</page>
-</request>
-DOC;
-            $context = stream_context_create(array(
-                'http' => array(
-                    'method' => "POST",
-                    'header' => "Content-type: application/xml\r\n" .
-                    "Content-length: " . strlen($doc),
-                    'content' => $doc
-            )));
-            $response = file_get_contents('https://xmlsearch.yandex.ru/xmlsearch?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80', true, $context);
-            if ($response) {
-                $xmldoc = new SimpleXMLElement($response);
-                $error = $xmldoc->response->error;
-                $found = $xmldoc->xpath("response/results/grouping/group/doc");
-                if ($error) {
-                    $error_text = "Ошибка: " . $error[0];
-                } else {
-                    $result_meta['pages_all'] = $xmldoc->response->found;
-
-                    foreach ($found as $item) {
-                        $result_item = array(
-                            'url' => $item->url,
-                            'title' => $this->highlight_words($item->title),
-                            'descr' => '',
-                        );
-                        if ($item->passages) {
-                            foreach ($item->passages->passage as $passage) {
-                                $result_item['descr'] .= $this->highlight_words($passage) . "\n";
-                            }
-                        }
-                        $title_items = explode($this->globalsettings['title_delimiter'], $result_item['title']);
-                        array_pop($title_items);
-                        $result_item['title'] = trim(implode(', ', $title_items));
-                        $result_item['title'] = str_replace(' , ', ', ', $result_item['title']);
-                        $result[] = $result_item;
-                    }
-                }
-            } else {
-                $error_text = "Внутренняя ошибка сервера.\n";
-            }
             $smarty->assign('search', $query);
             $smarty->assign('error', $error_text);
             $smarty->assign('result', $result);

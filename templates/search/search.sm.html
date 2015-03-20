@@ -11,7 +11,8 @@
 {if $result}
 <ul style="margin:1em;">
     {foreach from=$result item=res}
-    <li><a href="{$res.url}">{$res.title}</a>
+    <li>
+        <a href="{$res.url}">{$res.title}</a>
         <br><span style="color:#aaa;font-size: 90%">{$res.descr}</span>
     </li>
     {/foreach}
