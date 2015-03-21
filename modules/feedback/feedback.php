@@ -49,10 +49,10 @@ class Page extends PageCommon {
                 . ' ' . $_POST['worktime'],
                 'referer' => $_SESSION['feedback_referer']);
             Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 5, $mail_attrs);
-            unset($_POST);
             unset($_SESSION['feedback_referer']);
             unset($_SESSION['captcha_keystring']);
-            $this->content = $this->getAddingSuccess();
+            $this->content = $this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']);
+            unset($_POST);
         } else {
             $this->content = $this->getAddingForm();
         }
@@ -139,7 +139,10 @@ class Page extends PageCommon {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addpoint.sm.html');
     }
 
-    private function getAddingSuccess($data) {
+    private function getAddingSuccess($title, $descr, $region) {
+        $this->smarty->assign('add_title', $title);
+        $this->smarty->assign('add_descr', nl2br($descr));
+        $this->smarty->assign('add_region', $region);
         return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addsuccess.sm.html');
     }
 
