@@ -65,7 +65,6 @@ foreach ($scripts as $job) {
     if (strlen($content) != 0) {
         $content .= "<hr>время: $exectime c.";
     }
-    echo $content;
     $db->exec("UPDATE $cron SET
                     cr_isrun = '0',
                     cr_lastexectime = '$exectime',
@@ -77,10 +76,10 @@ foreach ($scripts as $job) {
     if (!in_array($script_id, $nologging_ids) && $exectime >= 0.01) {
         Logging::addHistory('cron', "Отработала задача №$script_id  ({$job['cr_title']}), время $exectime с.", $content);
     }
+    echo iconv('cp1251', 'utf-8', $content);
 }
 
 //-- поправить ключи
 $db->exec("OPTIMIZE TABLE $cron");
 
 //echo '<hr>Общее время работы скриптов: ' . substr(microtime(true) - $_timer_start_main, 0, 6) . ' c.';
-?>
