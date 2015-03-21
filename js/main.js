@@ -239,13 +239,14 @@ $(document).ready(function () {
             $("#pt_description_add").ckeditor(function () {
                 this.destroy();
             });
-            $("#pt_description_add").live("mouseover", function () {
-                $("#pt_description_add").die("mouseover").ckeditor(function () {
+            $("body").live("afterShowWindByURL", function () {
+                $("#pt_description_add").ckeditor(function () {
                 }, {
                     customConfig: "/config/config.cke4.js",
                     height: '250px',
                     toolbar: "Lite"
                 });
+                $("body").die("afterShowWindByURL");
             });
             $.modal.close();
         }
@@ -288,14 +289,14 @@ $(document).ready(function () {
         showWindByURL("/ajax/point/getnewform/", {
             cid: $("#pc_id").val()
         });
-        $("#pt_description_add").live("mouseover", function () {
-            $("#pt_description_add").die("mouseover");
+        $("body").live("afterShowWindByURL", function () {
             $("#pt_description_add").ckeditor(function () {
             }, {
                 customConfig: "/config/config.cke4.js",
                 height: '250px',
                 toolbar: "Lite"
             });
+            $("body").die("afterShowWindByURL");
         });
         $(document).css("cursor", "default");
         return false;
