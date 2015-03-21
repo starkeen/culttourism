@@ -43,6 +43,7 @@ DOC;
                 $out['pages_cnt'] = (int) $xmldoc->response->found;
                 foreach ($out['found'] as $item) {
                     $result_item = array(
+                        'domain' => (string) $item->domain,
                         'url' => (string) $item->url,
                         'title' => $this->clean($item->title),
                         'title_hw' => $this->highlight($item->title),
@@ -72,6 +73,10 @@ DOC;
 
     public function setPage($page) {
         $this->_meta['page'] = intval($page);
+    }
+
+    public function setPagesMax($max) {
+        $this->_meta['pages'] = intval($max);
     }
 
     private function highlight($node) {

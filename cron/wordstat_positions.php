@@ -18,47 +18,19 @@ while ($row = $db->fetch()) {
     $cities[] = $row;
 }
 
+$ys = new YandexSearcher();
+$ys->setPagesMax($limit_sites_per_answer);
+
 foreach ($cities as $city) {
-    $result = array();
-    $result[0] = 'null';
-    $result_meta = array();
-    $found = array();
-    $result_meta['pages'] = $limit_sites_per_answer;
-    $result_meta['page'] = 0;
-    $result_meta['page_all'] = 0;
-    $doc = <<<DOC
-<?xml version='1.0' encoding='utf-8'?>
-<request>
-    <query>{$city['ws_city_title']} достопримечательности</query>
-    <maxpassages>5</maxpassages>
-    <groupings>
-        <groupby attr="" mode="flat" groups-on-page="{$result_meta['pages']}"  docs-in-group="1" />
-    </groupings>
-    <page>{$result_meta['page']}</page>
-</request>
-DOC;
-    $context = stream_context_create(array(
-        'http' => array(
-            'method' => "POST",
-            'header' => "Content-type: application/xml\r\n" .
-            "Content-length: " . strlen($doc),
-            'content' => $doc
-    )));
-    $response = file_get_contents('https://xmlsearch.yandex.ru/xmlsearch?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80&lr=225', true, $context);
-    if ($response) {
-        $xmldoc = new SimpleXMLElement($response);
-        $error = $xmldoc->response->error;
-        $found = $xmldoc->xpath("response/results/grouping/group/doc");
-        if ($error) {
-            echo "Ошибка: " . $error[0];
-        } else {
-            $result_meta['pages_all'] = $xmldoc->response->found;
-            foreach ($found as $item) {
-                $result[] = (string) $item->domain;
-            }
-        }
+    $domains = array(
+        0 => null,
+    );
+    $res = $ys->search("{$city['ws_city_title']} достопримечательности");
+
+    foreach ($res['results'] as $site) {
+        $domains[] = (string) $site['domain'];
     }
-    $founded = array_search('culttourism.ru', $result);
+    $founded = array_search(_URL_ROOT, $domains);
     if ($founded === false) {
         $position = 0;
     } else {
@@ -68,4 +40,3 @@ DOC;
     $db->sql = "UPDATE $dbws SET ws_position = '$position', ws_position_date = now() WHERE ws_id = '{$city['ws_id']}'";
     $db->exec();
 }
-?>
