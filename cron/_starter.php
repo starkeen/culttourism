@@ -64,6 +64,8 @@ foreach ($scripts as $job) {
     $exectime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах
     if (strlen($content) != 0) {
         $content .= "<hr>время: $exectime c.";
+
+        Mailing::sendDirect($global_cron_email, 'Cron on ' . _URL_ROOT, $content, 'X-Mailru-Msgtype:cronreport');
     }
     $db->exec("UPDATE $cron SET
                     cr_isrun = '0',
@@ -76,7 +78,6 @@ foreach ($scripts as $job) {
     if (!in_array($script_id, $nologging_ids) && $exectime >= 0.01) {
         Logging::addHistory('cron', "Отработала задача №$script_id  ({$job['cr_title']}), время $exectime с.", $content);
     }
-    echo iconv('cp1251', 'utf-8', $content);
 }
 
 //-- поправить ключи

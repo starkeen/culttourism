@@ -148,6 +148,18 @@ class Mailing {
         return self::sendLetter($db, $lt_id);
     }
 
+    /* Отправка напрямую без записи в БД
+     */
+
+    public static function sendDirect($to, $theme, $text, $headers = null) {
+        self::sendOnly(array(
+            'ml_adr_to' => $to,
+            'ml_theme' => $theme,
+            'ml_text' => $text,
+            'ml_customheader' => $headers ? $headers : '',
+        ));
+    }
+
     private static function prepareLetter($tmpl_id, $elements = array()) {
         global $db;
         $dbmt = $db->getTableName('mail_templates');
