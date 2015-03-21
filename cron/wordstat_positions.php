@@ -27,16 +27,20 @@ foreach ($cities as $city) {
     );
     $res = $ys->search("{$city['ws_city_title']} достопримечательности");
 
-    foreach ($res['results'] as $site) {
-        $domains[] = (string) $site['domain'];
-    }
-    $founded = array_search(_URL_ROOT, $domains);
-    if ($founded === false) {
-        $position = 0;
-    } else {
-        $position = $founded;
-    }
+    if (!$res['error_text']) {
+        foreach ($res['results'] as $site) {
+            $domains[] = (string) $site['domain'];
+        }
+        $founded = array_search(_URL_ROOT, $domains);
+        if ($founded === false) {
+            $position = 0;
+        } else {
+            $position = $founded;
+        }
 
-    $db->sql = "UPDATE $dbws SET ws_position = '$position', ws_position_date = now() WHERE ws_id = '{$city['ws_id']}'";
-    $db->exec();
+        $db->sql = "UPDATE $dbws SET ws_position = '$position', ws_position_date = now() WHERE ws_id = '{$city['ws_id']}'";
+        $db->exec();
+    } else {
+        echo "Ошибка: " . $res['error_text'];
+    }
 }
