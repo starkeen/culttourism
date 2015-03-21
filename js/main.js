@@ -37,7 +37,7 @@ $(document).ready(function () {
             $(document).css("cursor", "progress");
             $("#pc_text_edit").ckeditor(function () {
             }, {
-                customConfig: "/config/config.cke.js",
+                customConfig: "/config/config.cke4.js",
                 toolbar: "City"
             });
             $("#pc_text_edit").css("height", "500px").val($(this).html());
@@ -54,10 +54,14 @@ $(document).ready(function () {
         }
         if (this.id == "pt_description_hidd") {//---------- описание точки -----
             $(document).css("cursor", "progress");
-            $("#pt_description_edit").css("height", "300px").css("width", "100%").val($(this).html()).ckeditor(function () {
-            }, {
-                customConfig: "/config/config.cke.js"
-            });
+            $("#pt_description_edit").css("height", "300px").css("width", "100%")
+                    .val($(this).html())
+                    .ckeditor(function () {
+                    }, {
+                        customConfig: "/config/config.cke4.js",
+                        height: '230px',
+                        toolbar: "Lite"
+                    });
             $(this).hide();
             $("#pt_description_edit").show().focus().css("height", "0");
             $("div#pt_description_handler input").show();
@@ -238,8 +242,10 @@ $(document).ready(function () {
             $("#pt_description_add").live("mouseover", function () {
                 $("#pt_description_add").die("mouseover").ckeditor(function () {
                 }, {
-                    customConfig: "/config/config.cke.js"
-                })
+                    customConfig: "/config/config.cke4.js",
+                    height: '250px',
+                    toolbar: "Lite"
+                });
             });
             $.modal.close();
         }
@@ -286,7 +292,9 @@ $(document).ready(function () {
             $("#pt_description_add").die("mouseover");
             $("#pt_description_add").ckeditor(function () {
             }, {
-                customConfig: "/config/config.cke.js"
+                customConfig: "/config/config.cke4.js",
+                height: '250px',
+                toolbar: "Lite"
             });
         });
         $(document).css("cursor", "default");
@@ -444,7 +452,9 @@ $(document).ready(function () {
         $("#eblog_text").live("mouseover", function () {
             $("#eblog_text").die("mouseover").ckeditor(function () {
             }, {
-                customConfig: "/config/config.cke.js"
+                customConfig: "/config/config.cke4.js",
+                height: '250px',
+                toolbar: "Lite"
             });
             $("#eblog_date").datepicker({
                 dateFormat: "dd.mm.yy"
