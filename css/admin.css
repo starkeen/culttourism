@@ -61,8 +61,14 @@ h1, h2, h3 {
 .m_center {
     text-align: center;
 }
+.h_valign_top {
+    vertical-align: top;
+}
 .m_width_full {
     width: 100%;
+}
+.m_height_full {
+    height: 100%;
 }
 /* -----------------------------  COMMON TABLES ------------------------- */
 .commontable {
