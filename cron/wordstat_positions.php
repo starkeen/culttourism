@@ -25,6 +25,9 @@ foreach ($cities as $city) {
     $domains = array(
         0 => null,
     );
+    if (date("H") > 7 && date("H") < 20) {
+        continue;
+    }
     $res = $ys->search("{$city['ws_city_title']} достопримечательности");
 
     if (!$res['error_text']) {
