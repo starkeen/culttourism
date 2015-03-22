@@ -57,11 +57,20 @@ h1, h2, h3 {
     color: #009FD4;
 }
 
+/* -------------------------------  MODIFIERS --------------------------- */
+.m_center {
+    text-align: center;
+}
+.m_width_full {
+    width: 100%;
+}
 /* -----------------------------  COMMON TABLES ------------------------- */
 .commontable {
     background-color: #8A648A;
     font-size:90%;
     margin:10px auto;
+    border-spacing: 1px;
+    border-collapse: separate;
 }
 .commontable tr {
     background-color:#fff;
@@ -79,6 +88,8 @@ h1, h2, h3 {
 .detailtable {
     background-color: #8A648A;
     margin:10px auto;
+    border-spacing: 1px;
+    border-collapse: separate;
 }
 .detailtable tr td {
     background-color: #F1ECF1;

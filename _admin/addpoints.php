@@ -8,6 +8,8 @@ $smarty->assign('title', 'Заявки на добавление');
 $c = new MCandidatePoints($db);
 
 if (isset($_GET['id'])) {
+    $item = $c->getItemByPk(intval($_GET['id']));
+    $smarty->assign('claim', $item);
     // -----------   обработка заявки ----------
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/pointadding.item.sm.html'));
 } else {

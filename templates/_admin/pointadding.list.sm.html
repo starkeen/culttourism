@@ -3,11 +3,17 @@
 
 <table class="commontable">
     <tr>
-        <th></th>
+        <th>Дата</th>
+        <th>Регион</th>
+        <th>Название</th>
+        <th>&nbsp;</th>
     </tr>
     {foreach from=$list item=req}
     <tr>
-        <td></td>
+        <td>{$req.cp_date}</td>
+        <td>{$req.cp_city}</td>
+        <td>{$req.cp_title}</td>
+        <td><a href="?id={$req.cp_id}"><img src="/img/btn/btn.tick.png"</a></td>
     </tr>
-    {foreach}
+    {/foreach}
 </table>

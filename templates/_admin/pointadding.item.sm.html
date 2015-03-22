@@ -1,2 +1,47 @@
 <img class="pageicon" src="/img/admin/ico.a_refs.gif" />
 <h3>{$title}</h3>
+<p>Обработка заявки</p>
+
+<table class="detailtable">
+    <tr>
+        <th>Название</th>
+        <td>
+            <input type="text" id="pointadding-item-title" value="{$claim.cp_title}" />
+        </td>
+    </tr>
+    <tr>
+        <th>Тип</th>
+        <td>
+
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <textarea class="pointadding-item-textarea m_width_full" id="pointadding-item-text">{$claim.cp_text}</textarea>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="m_center">
+            <input type="button" id="pointadding-item-confirm" value="Сохранить">
+            &nbsp;&nbsp;&nbsp;
+            <a href="?">вернуться</a>
+        </td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("pointadding-item-text").ckeditor({
+            customConfig: "/config/config.cke4.js",
+            height: '230px',
+            toolbar: "Lite"
+        });
+    });
+</script>
+
+<style type="text/css">
+    .pointadding-item-textarea {
+        height: 250px;
+        width:300px;
+    }
+</style>
