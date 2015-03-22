@@ -22,14 +22,12 @@ $ys = new YandexSearcher();
 $ys->setPagesMax($limit_sites_per_answer);
 
 foreach ($cities as $city) {
-    $domains = array(
-        0 => null,
-    );
     if (date("H") > 7 && date("H") < 20) {
         continue;
     }
-    $res = $ys->search("{$city['ws_city_title']} достопримечательности");
 
+    $domains = array(0 => null);
+    $res = $ys->search("{$city['ws_city_title']} достопримечательности");
     if (!$res['error_text']) {
         foreach ($res['results'] as $site) {
             $domains[] = (string) $site['domain'];
