@@ -62,6 +62,7 @@ class Page extends PageCommon {
 
             $ys = new YandexSearcher();
             $ys->setPage($result_meta['page']);
+            $ys->enableLogging();
             $res = $ys->search("$query host:culttourism.ru");
             if ($res['error_text']) {
                 $error_text = trim(str_replace('starkeen', '', $res['error_text']));
