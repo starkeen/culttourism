@@ -64,7 +64,7 @@ class Page extends PageCommon {
             $ys->setPage($result_meta['page']);
             $res = $ys->search("$query host:culttourism.ru");
             if ($res['error_text']) {
-                $error_text = $res['error_text'];
+                $error_text = trim(str_replace('starkeen', '', $res['error_text']));
             } else {
                 foreach ($res['results'] as $result_item) {
                     $title_items = explode($this->globalsettings['title_delimiter'], $result_item['title_hw']);
