@@ -3,6 +3,8 @@ class MSearchLog extends Model {
     protected $_table_pk = 'sl_id';
     protected $_table_order = 'sl_date';
     protected $_table_active = 'sl_id';
+    
+    private $_record_id = null;
 
     public function __construct($db) {
         $this->_table_name = $db->getTableName('search_log');
@@ -18,7 +20,12 @@ class MSearchLog extends Model {
 
     public function add($data) {
         $data['sl_date'] = $this->now();
-        return $this->insert($data);
+        $this->_record_id = $this->insert($data);
+        return $this->_record_id;
+    }
+    
+    public function setAnswer($data) {
+        $this->updateById($this->_record_id, $data);
     }
 }
 ?>
