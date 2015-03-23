@@ -171,23 +171,8 @@ abstract class Core {
                     header("HTTP/1.0 404 Not Found");
 
                     $suggestions = array();
-                    if (strpos($_SERVER['REQUEST_URI'], '.css') === false && strpos($_SERVER['REQUEST_URI'], '.js') === false) {
-                        $ys = new YandexSearcher();
-                        $ys->enableLogging($this->db);
-                        $searchstring = trim(implode(' ', explode('/', $_SERVER['REQUEST_URI'])));
-                        $variants = $ys->search("$searchstring host:culttourism.ru");
-                        if (!empty($variants['results'])) {
-                            $i = 0;
-                            foreach ($variants['results'] as $variant) {
-                                $suggestions[] = array(
-                                    'url' => $variant['url'],
-                                    'title' => trim(str_replace('| Культурный туризм', '', $variant['title'])),
-                                );
-                                if ($i++ == 3) {
-                                    break;
-                                }
-                            }
-                        }
+                    if (empty($suggestions)) {
+                        $suggestions = $this->getSuggestions404Yandex($_SERVER['REQUEST_URI']);
                     }
 
                     $this->title = "$this->title - 404 Not Found - страница не найдена на сервере";
@@ -236,6 +221,29 @@ abstract class Core {
         $this->_description[] = trim($text);
         krsort($this->_description);
         $this->description = implode('. ', $this->_description);
+    }
+
+    private function getSuggestions404Yandex($req) {
+        $out = array();
+        if (strpos($req, '.css') === false && strpos($req, '.js') === false) {
+            $ys = new YandexSearcher();
+            $ys->enableLogging($this->db);
+            $searchstring = trim(implode(' ', explode('/', $_SERVER['REQUEST_URI'])));
+            $variants = $ys->search("$searchstring host:culttourism.ru");
+            if (!empty($variants['results'])) {
+                $i = 0;
+                foreach ($variants['results'] as $variant) {
+                    $out[] = array(
+                        'url' => $variant['url'],
+                        'title' => trim(str_replace('| Культурный туризм', '', $variant['title'])),
+                    );
+                    if ($i++ == 3) {
+                        break;
+                    }
+                }
+            }
+        }
+        return $out;
     }
 
     /* запрещаем клонировать экземпляр класса */
