@@ -170,7 +170,7 @@ abstract class Core {
                     header('Content-Type: text/html; charset=utf-8');
                     header("HTTP/1.0 404 Not Found");
 
-                    $suggestions = array();
+                    $suggestions = $this->getSuggestions404Local($_SERVER['REQUEST_URI']);
                     if (empty($suggestions)) {
                         $suggestions = $this->getSuggestions404Yandex($_SERVER['REQUEST_URI']);
                     }
@@ -223,12 +223,22 @@ abstract class Core {
         $this->description = implode('. ', $this->_description);
     }
 
+    private function getSuggestions404Local($req) {
+        $out = array();
+        if (strpos($req, '.html') !== false) {
+            $uri = explode('/', $req);
+            array_pop($uri);
+            $test = '/' . trim(implode('/', $uri), '/');
+        }
+        return $out;
+    }
+
     private function getSuggestions404Yandex($req) {
         $out = array();
         if (strpos($req, '.css') === false && strpos($req, '.js') === false) {
             $ys = new YandexSearcher();
             $ys->enableLogging($this->db);
-            $searchstring = trim(implode(' ', explode('/', $_SERVER['REQUEST_URI'])));
+            $searchstring = trim(implode(' ', explode('/', $req)));
             $variants = $ys->search("$searchstring host:culttourism.ru");
             if (!empty($variants['results'])) {
                 $i = 0;
