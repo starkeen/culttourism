@@ -37,6 +37,7 @@ DOC;
             $this->_logger->add(array(
                 'sl_query' => $request,
                 'sl_request' => $doc,
+                'sl_error_code' => 0,
             ));
         }
         $context = stream_context_create(array(
