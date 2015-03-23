@@ -34,7 +34,6 @@ class YandexSearcher {
 </request>
 DOC;
         if ($this->_enable_logging) {
-            $this->_logger = new MSearchLog($db);
             $this->_logger_id = $this->_logger->add(array(
                 'query' => $request,
                 'request' => $doc,
@@ -92,7 +91,8 @@ DOC;
         $this->_meta['pages'] = intval($max);
     }
     
-    public function enableLogging() {
+    public function enableLogging($db) {
+        $this->_logger = new MSearchLog($db);
         $this->_enable_logging = true;
     }
 
