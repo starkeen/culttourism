@@ -34,9 +34,9 @@ class YandexSearcher {
 </request>
 DOC;
         if ($this->_enable_logging) {
-            $this->_logger_id = $this->_logger->add(array(
-                'query' => $request,
-                'request' => $doc,
+            $this->_logger->add(array(
+                'sl_query' => $request,
+                'sl_request' => $doc,
             ));
         }
         $context = stream_context_create(array(
