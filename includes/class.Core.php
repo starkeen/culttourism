@@ -171,19 +171,21 @@ abstract class Core {
                     header("HTTP/1.0 404 Not Found");
 
                     $suggestions = array();
-                    $ys = new YandexSearcher();
-                    $ys->enableLogging($this->db);
-                    $searchstring = trim(implode(' ', explode('/', $_SERVER['REQUEST_URI'])));
-                    $variants = $ys->search("$searchstring host:culttourism.ru");
-                    if (!empty($variants['results'])) {
-                        $i = 0;
-                        foreach ($variants['results'] as $variant) {
-                            $suggestions[] = array(
-                                'url' => $variant['url'],
-                                'title' => trim(str_replace('| Культурный туризм', '', $variant['title'])),
-                            );
-                            if ($i++ == 3) {
-                                break;
+                    if (strpos($_SERVER['REQUEST_URI'], '.css') === false && strpos($_SERVER['REQUEST_URI'], '.js') === false) {
+                        $ys = new YandexSearcher();
+                        $ys->enableLogging($this->db);
+                        $searchstring = trim(implode(' ', explode('/', $_SERVER['REQUEST_URI'])));
+                        $variants = $ys->search("$searchstring host:culttourism.ru");
+                        if (!empty($variants['results'])) {
+                            $i = 0;
+                            foreach ($variants['results'] as $variant) {
+                                $suggestions[] = array(
+                                    'url' => $variant['url'],
+                                    'title' => trim(str_replace('| Культурный туризм', '', $variant['title'])),
+                                );
+                                if ($i++ == 3) {
+                                    break;
+                                }
                             }
                         }
                     }
