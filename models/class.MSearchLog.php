@@ -10,6 +10,7 @@ class MSearchLog extends Model {
         $this->_table_name = $db->getTableName('search_log');
         $this->_table_fields = array(
             'sl_date',
+            'sl_query',
             'sl_request',
             'sl_answer',
             'sl_error_code',
