@@ -26,7 +26,7 @@ class MSearchLog extends Model {
     }
     
     public function setAnswer($data) {
-        $this->updateById($this->_record_id, $data);
+        $this->updateByPk($this->_record_id, $data);
     }
 }
 ?>
