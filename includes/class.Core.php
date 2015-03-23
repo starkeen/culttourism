@@ -226,9 +226,17 @@ abstract class Core {
     private function getSuggestions404Local($req) {
         $out = array();
         if (strpos($req, '.html') !== false) {
+            $c = new Cities($this->db);
+
             $uri = explode('/', $req);
             array_pop($uri);
-            $test = '/' . trim(implode('/', $uri), '/');
+            $page = $c->getCityByUrl('/' . trim(implode('/', $uri), '/'));
+            if (!empty($page)) {
+                $out[] = array(
+                    'url' => $page['url'] . '/',
+                    'title' => $page['pc_title'],
+                );
+            }
         }
         return $out;
     }
