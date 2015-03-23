@@ -190,11 +190,11 @@ ul.menu_common li {
 }
 h1, .h1 {
     display:block;
-    height:32px;
+    height:27px;
     overflow: hidden;
     background:url(/img/header/h1.png) top center no-repeat;
     color:#fff;
-    font-size: 19pt;
+    font-size: 20px;
     font-weight: bold;
     vertical-align: middle;
     padding: 0 0 4px 8px;
@@ -203,9 +203,9 @@ h1, .h1 {
 h2, .h2 {
     display: block;
     clear: both;
-    padding: 2pt 0 2pt 8pt;
+    padding: 1px 0 2px 6px;
     margin-right: 0;
-    font-size: 16pt;
+    font-size: 18px;
     font-weight: bold;
     background: #292929;
     border-top: 1px solid #373737;
@@ -216,13 +216,13 @@ h2, .h2 {
 h3 {
     display:block;
     clear:both;
-    padding: 2pt 0 2pt 8pt;
-    font-size: 14pt;
+    padding: 1px 0 1px 8px;
+    font-size: 16px;
     font-weight: bold;
     background: #a1a1a1;
     border-top: 1px solid #373737;
     border-bottom: 1px solid #373737;
-    color: #bbbbbb;
+    color:#fff;
     overflow: hidden;
 }
 h3 a {
