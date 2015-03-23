@@ -80,6 +80,12 @@ DOC;
             } else {
                 $out['error_code'] = $out['error'];
                 $out['error_text'] = "Ошибка: " . $out['error'];
+                if ($this->_enable_logging) {
+                    $this->_logger->setAnswer(array(
+                        'sl_error_code' => 0,
+                        'sl_error_text' => print_r($out['error']),
+                    ));
+                }
             }
         } else {
             $out['error_text'] = "Внутренняя ошибка сервера.\n";
