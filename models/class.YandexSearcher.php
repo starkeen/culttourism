@@ -83,7 +83,7 @@ DOC;
                 if ($this->_enable_logging) {
                     $this->_logger->setAnswer(array(
                         'sl_error_code' => 0,
-                        'sl_error_text' => print_r($out['error']),
+                        'sl_error_text' => print_r($out['error'], 1),
                     ));
                 }
             }
