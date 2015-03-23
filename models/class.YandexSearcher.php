@@ -7,6 +7,8 @@ class YandexSearcher {
         'page' => 0,
         'pages' => 20,
     );
+    private $_enable_logging = false;
+    private $_logger = null;
 
     public function search($request) {
         $out = array(
@@ -14,6 +16,7 @@ class YandexSearcher {
             'results' => null,
             'pages_cnt' => null,
             'error' => null,
+            'error_code' => null,
             'error_text' => null,
         );
         $doc = <<<DOC
@@ -61,6 +64,7 @@ DOC;
                     $out['results'][] = $result_item;
                 }
             } else {
+                $out['error_code'] = $out['error'];
                 $out['error_text'] = "Ошибка: " . $out['error'];
             }
         } else {
@@ -77,6 +81,10 @@ DOC;
 
     public function setPagesMax($max) {
         $this->_meta['pages'] = intval($max);
+    }
+    
+    public function enableLogging() {
+        $this->_enable_logging = true;
     }
 
     private function highlight($node) {
