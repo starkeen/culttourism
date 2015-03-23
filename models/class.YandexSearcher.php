@@ -47,7 +47,13 @@ DOC;
         )));
         $response = file_get_contents($this->_request_url, true, $context);
         if ($response) {
+            if ($this->_enable_logging) {
+                $this->_logger->setAnswer(array(
+                    'sl_answer' => $response,
+                ));
+            }
             $xmldoc = new SimpleXMLElement($response);
+            
             $out['error'] = $xmldoc->response->error;
             $out['found'] = $xmldoc->xpath("response/results/grouping/group/doc");
             if (empty($out['error'])) {
