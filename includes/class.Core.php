@@ -172,7 +172,7 @@ abstract class Core {
 
                     $suggestions = array();
                     $ys = new YandexSearcher();
-                    $ys->enableLogging($db);
+                    $ys->enableLogging($this->db);
                     $searchstring = trim(implode(' ', explode('/', $_SERVER['REQUEST_URI'])));
                     $variants = $ys->search("$searchstring host:culttourism.ru");
                     if (!empty($variants['results'])) {
