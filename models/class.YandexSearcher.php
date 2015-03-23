@@ -78,11 +78,12 @@ DOC;
                     $out['results'][] = $result_item;
                 }
             } else {
-                $out['error_code'] = $out['error'];
+                $err_attr = $out['error']->attributes();
+                $out['error_code'] = $err_attr['code'];
                 $out['error_text'] = "Ошибка: " . $out['error'];
                 if ($this->_enable_logging) {
                     $this->_logger->setAnswer(array(
-                        'sl_error_code' => 0,
+                        'sl_error_code' => $out['error_code'],
                         'sl_error_text' => print_r($out['error'], 1),
                     ));
                 }
