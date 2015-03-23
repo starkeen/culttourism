@@ -101,8 +101,8 @@ ul.menu_common li {
 -----------------------------------------------------------------------------*/
 #header {
     position: relative;
-    height: 258px;
-    background:url(/img/header/silhouette.png) bottom right no-repeat;
+    height: 175px;
+    background:url(/img/header/silhouette-left.png) bottom left no-repeat;
 }
 
 #header img {
@@ -112,8 +112,8 @@ ul.menu_common li {
 }
 #mainmenu-container {
     position:relative;
-    height:58px;
-    width: 610px;
+    height:48px;
+    width: 550px;
     float:right;
     margin-top:4pt;
     margin-right:10pt;
@@ -126,24 +126,21 @@ ul.menu_common li {
 #mainmenu {
     position:relative;
     display:block;
-    height:100%;
+    height:48px;
     text-align: center;
-    font-size:large;
+    font-size:18px;
 }
 #mainmenu li {
     display: inline-block;
-    height:100%;
+    height: 38px;
+    margin: -11px 3px 0;
+    padding: 7px 3px 0;
 }
 #mainmenu li.navigate:hover {
     background:url(/img/header/menu_hover.png) repeat-x;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
 }
 #mainmenu a {
     display:block;
-    margin-top:8pt;
-    padding:4pt;
     color:#fff;
     height:100%;
     text-decoration: none;
@@ -171,12 +168,12 @@ ul.menu_common li {
 #show_auth_form {
     color: #b6e7ff;
 }
-#mainmenu li#mainmenu_item_0 {
+#mainmenu li#mainmenu_item_1 {
     display: none;
 }
 #mainmenu li#mainmenu_item_0 img {
-    top: 7px;
-    left: 4px; 
+    top: 14px;
+    left:0;
     margin: 0; 
     height: 32px; 
 }
@@ -190,11 +187,11 @@ ul.menu_common li {
 }
 h1, .h1 {
     display:block;
-    height:27px;
+    height:24px;
     overflow: hidden;
     background:url(/img/header/h1.png) top center no-repeat;
     color:#fff;
-    font-size: 20px;
+    font-size: 19px;
     font-weight: bold;
     vertical-align: middle;
     padding: 0 0 4px 8px;
@@ -203,9 +200,9 @@ h1, .h1 {
 h2, .h2 {
     display: block;
     clear: both;
-    padding: 1px 0 2px 6px;
+    padding: 0 0 0 6px;
     margin-right: 0;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
     background: #292929;
     border-top: 1px solid #373737;

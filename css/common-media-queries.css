@@ -28,8 +28,7 @@
     }
     #mainmenu-container {
         position:absolute;
-        top:0;
-        margin:-33px 0;
+        top: -8px;
         height:47px;
         width:100%;
         -webkit-border-radius: 0px;
@@ -182,7 +181,10 @@
         height:42px;
     }
     #mainmenu li {
-        top: -18px;
+        top: -9px;
+    }
+    #mainmenu li#mainmenu_item_0 img {
+        top: 18px;
     }
     #mainmenu li form {
         position: relative;
@@ -424,7 +426,7 @@
         padding-right: 2px;
     }
     #mainmenu li {
-        top: -18px;
+        top: -3px;
     }
     #mainmenu li#mainmenu_item_1 {
         display: none;
