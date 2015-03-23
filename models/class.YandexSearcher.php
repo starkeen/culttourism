@@ -9,8 +9,9 @@ class YandexSearcher {
     );
     private $_enable_logging = false;
     private $_logger = null;
+    private $_logger_id = null;
 
-    public function search($request) {
+    public function search($request, $db = null) {
         $out = array(
             'found' => null,
             'results' => null,
@@ -19,6 +20,7 @@ class YandexSearcher {
             'error_code' => null,
             'error_text' => null,
         );
+        
         $doc = <<<DOC
 <?xml version="1.0" encoding="utf-8"?>
 <request>
@@ -31,6 +33,13 @@ class YandexSearcher {
         </groupings>
 </request>
 DOC;
+        if ($this->_enable_logging) {
+            $this->_logger = new MSearchLog($db);
+            $this->_logger_id = $this->_logger->add(array(
+                'query' => $request,
+                'request' => $doc,
+            ));
+        }
         $context = stream_context_create(array(
             'http' => array(
                 'method' => "POST",
