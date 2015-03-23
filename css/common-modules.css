@@ -15,6 +15,17 @@
     height: 200px;
 }
 /*------------------------------------- INDEX --------------------------*/
+.index-illustration {
+    margin:5px;
+    border:1px solid #efefef;
+}
+.index-illustration.m_left {
+    float:left;
+}
+.index-illustration.m_right {
+    float:right;
+}
+
 .index-half-left {
     padding:1px;
     width: 49%;
