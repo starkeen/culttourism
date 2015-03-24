@@ -170,7 +170,8 @@ abstract class Core {
                     header('Content-Type: text/html; charset=utf-8');
                     header("HTTP/1.0 404 Not Found");
 
-                    $suggestions = $this->getSuggestions404Local($_SERVER['REQUEST_URI']);
+                    $suggestions = array();
+                    //$suggestions = $this->getSuggestions404Local($_SERVER['REQUEST_URI']);
                     if (empty($suggestions)) {
                         $suggestions = $this->getSuggestions404Yandex($_SERVER['REQUEST_URI']);
                     }
