@@ -45,7 +45,7 @@ class StaticResources {
                     $old_files = glob(_DIR_ROOT . '/css/ct-' . $pack . '-*.min.css');
                     file_put_contents($file_production, $minified);
                     foreach ($old_files as $old) {
-                        unlink($old);
+                       // unlink($old);
                     }
                 }
             }
@@ -81,7 +81,7 @@ class StaticResources {
                     $old_files = glob(_DIR_ROOT . '/js/ct-' . $pack . '-*.min.js');
                     file_put_contents($file_production, $minified);
                     foreach ($old_files as $old) {
-                        unlink($old);
+                        //unlink($old);
                     }
                 }
             }
