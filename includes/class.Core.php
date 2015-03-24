@@ -225,7 +225,7 @@ abstract class Core {
 
     private function getSuggestions404Local($req) {
         $out = array();
-        if (strpos($req, '.html') !== false && strpos($req, '.png') === false && strpos($req, '.txt') === false) {
+        if (strpos($req, '.html') !== false) {
             $c = new MCities($this->db);
 
             $uri = explode('/', $req);
@@ -243,7 +243,7 @@ abstract class Core {
 
     private function getSuggestions404Yandex($req) {
         $out = array();
-        if (strpos($req, '.css') === false && strpos($req, '.js') === false) {
+        if (strpos($req, '.css') === false && strpos($req, '.js') === false && strpos($req, '.png') === false && strpos($req, '.txt') === false) {
             $ys = new YandexSearcher();
             $ys->enableLogging($this->db);
             $searchstring = trim(implode(' ', explode('/', $req)));
