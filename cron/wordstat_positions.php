@@ -6,6 +6,10 @@ $dbws = $db->getTableName('wordstat');
 $limit_cities_per_time = 15;
 $limit_sites_per_answer = 90;
 
+if (date("H") > 7 && date("H") < 20) {
+    $limit_cities_per_time = 5;
+}
+
 $db->sql = "SELECT ws_id, ws_city_title
             FROM $dbws ws
                 LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
@@ -22,9 +26,6 @@ $ys = new YandexSearcher();
 $ys->setPagesMax($limit_sites_per_answer);
 
 foreach ($cities as $city) {
-    if (date("H") > 7 && date("H") < 20) {
-        continue;
-    }
 
     $domains = array(0 => null);
     $res = $ys->search("{$city['ws_city_title']} достопримечательности");
