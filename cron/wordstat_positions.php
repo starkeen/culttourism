@@ -7,7 +7,7 @@ $limit_cities_per_time = 15;
 $limit_sites_per_answer = 90;
 
 if (date("H") > 7 && date("H") < 20) {
-    $limit_cities_per_time = 5;
+    //$limit_cities_per_time = 5;
 }
 
 $db->sql = "SELECT ws_id, ws_city_title
