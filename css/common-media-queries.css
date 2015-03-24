@@ -16,7 +16,7 @@
         min-width:0;
     }
     #header {
-        height:135px;
+        height:186px;
         background-size: auto 220px;
     }
     #header img {
@@ -167,7 +167,7 @@
         min-width:0;
     }
     #header {
-        height:135px;
+        height:150px;
         background-size: auto 169px;
     }
     #header img {
@@ -199,10 +199,13 @@
     }
     #content h1 {
         width: 100%;
-        padding-left: 2px;
+        padding-left: 0px;
         height: 21px;
         padding-top: 0;
         font-size:13pt;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing:3px;
     }
     #content h2 {
         height: 20px;
@@ -225,7 +228,7 @@
         float: none;
         width:100%;
         height:180px;
-        margin-left:7px;
+        margin-left:0px;
     }
     #city_map {
         width:98%;
@@ -288,7 +291,7 @@
         max-width: 480px;
     }
     #header {
-        height:80px;
+        height: 40px;
         background:none;
     }
     #header img {
@@ -312,7 +315,7 @@
     }
     #content h1 {
         width: 100%;
-        padding-left: 2px;
+        padding-left: 0px;
         height: 15px;
         font-size:11pt;
     }
@@ -414,7 +417,7 @@
         max-width: 320px;
     }
     #header {
-        height:40px;
+        height:31px;
         background:none;
     }
     #header img {
