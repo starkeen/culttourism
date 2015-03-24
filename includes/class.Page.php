@@ -32,7 +32,7 @@ class Page extends PageCommon {
                 return $this->getPageMap($this->db, $this->smarty, $url);
             } elseif (array_pop(explode('/', $url)) == 'index.html') {
                 return $this->getPageCity($this->db, $this->smarty, $url);
-            } elseif (preg_match('^object([0-9]+).html$', array_pop(explode('/', $url)), $regs)) {
+            } elseif (preg_match('/object([0-9]+)\.html/i', array_pop(explode('/', $url)), $regs)) {
                 return $this->getPageObject($this->db, $this->smarty, intval($regs[1]));
             } elseif (preg_match('/([a-z0-9_-]+)\.html/i', array_pop(explode('/', $url)), $regs)) {
                 return $this->getPageObjectBySlug($regs[1]);
@@ -284,7 +284,6 @@ class Page extends PageCommon {
 
         $pts = new MPoints($this->db);
         $object = $pts->getItemByPk($id);
-        echo $id; print_r($object);
         if (!$object || $object['pt_active'] == 0) {
             return false;
         }
