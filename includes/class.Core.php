@@ -225,7 +225,7 @@ abstract class Core {
 
     private function getSuggestions404Local($req) {
         $out = array();
-        if (strpos($req, '.html') !== false) {
+        if (strpos($req, '.html') !== false && strpos($req, '.png') === false && strpos($req, '.txt') === false) {
             $c = new MCities($this->db);
 
             $uri = explode('/', $req);
