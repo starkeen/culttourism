@@ -100,20 +100,20 @@
 
 <script src="/js/jquery.autocomplete.min.js"></script>
 <script>
-    CKEDITOR.replace('ls_text', {
-        customConfig: '/config/config.cke4.js',
-        height: '370px',
-        toolbar: 'Lite'
-    });
-    $('#list-add-name').autocomplete({
-        serviceUrl: "lists.php?suggest&lid={$list.ls_id}",
-        minChars: 4,
-        paramName: "query",
-        onSelect: function(suggestion) {
-            $('#list-add-id').val(suggestion.oid);
-        }
-    });
     $(document).ready(function() {
+        $('#list-add-name').autocomplete({
+            serviceUrl: "lists.php?suggest&lid={$list.ls_id}",
+            minChars: 4,
+            paramName: "query",
+            onSelect: function(suggestion) {
+                $('#list-add-id').val(suggestion.oid);
+            }
+        });
+        $('#ls_text').ckeditor(function () {}, {
+                        customConfig: "/config/config.cke4.js",
+                        height: '370px',
+                        toolbar: "Lite"
+                    });
         $(".list-edit-attr").click(function() {
             var that = this;
             if ($(that).data("field") === "li_active") {
