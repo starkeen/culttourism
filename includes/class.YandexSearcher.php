@@ -24,7 +24,7 @@ class YandexSearcher {
         $doc = <<<DOC
 <?xml version="1.0" encoding="utf-8"?>
 <request>
-        <query>$request</query>
+        <query>$query</query>
         <page>{$this->_meta['page']}</page>
         <sortby order="descending" priority="no">rlv</sortby>
         <maxpassages>5</maxpassages>
