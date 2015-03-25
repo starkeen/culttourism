@@ -109,10 +109,11 @@
         padding:6px;
     }
     .list-half-left {
-        width: 93%;
+        text-align: left;
+        width: 100%;
     }
     .list-half-left img {
-        max-width: 96%;
+        max-width: 50%;
     }
     .list-half-right {
         width: 100%;
@@ -197,6 +198,13 @@
     #content h2 {
         height: 20px;
         font-size:12pt;
+    }
+    .index-illustration {
+        width: 30%;
+    }
+    .index-illustration img {
+        width: 94%;
+        height: auto;
     }
     #city_path {
         display:none;
@@ -299,6 +307,9 @@
     #content h2 {
         height: 20px;
         font-size:10pt;
+    }
+    .index-illustration {
+        width: 47%;
     }
     #city_path {
         display:none;
@@ -437,6 +448,9 @@
     #content h2 {
         height: 20px;
         font-size:10pt;
+    }
+    .index-illustration {
+        width: 45%;
     }
     .index-half-left, .index-half-right {
         display:none;
