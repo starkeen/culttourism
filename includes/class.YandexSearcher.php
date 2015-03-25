@@ -9,7 +9,6 @@ class YandexSearcher {
     );
     private $_enable_logging = false;
     private $_logger = null;
-    private $_logger_id = null;
 
     public function search($request) {
         $out = array(
@@ -54,7 +53,7 @@ DOC;
                 ));
             }
             $xmldoc = new SimpleXMLElement($response);
-            
+
             $out['error'] = $xmldoc->response->error;
             $out['found'] = $xmldoc->xpath("response/results/grouping/group/doc");
             if (empty($out['error'])) {
@@ -104,7 +103,7 @@ DOC;
     public function setPagesMax($max) {
         $this->_meta['pages'] = intval($max);
     }
-    
+
     public function enableLogging($db) {
         $this->_logger = new MSearchLog($db);
         $this->_enable_logging = true;

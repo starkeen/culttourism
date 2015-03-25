@@ -17,6 +17,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
             break;
         case "get_analogs":
             $ys = new YandexSearcher();
+            $ys->setPagesMax(10);
             $ys->enableLogging($db);
             $res = $ys->search($_GET['pname'] . " host:" . _URL_ROOT, $db);
             $out['founded'] = $res['results'];

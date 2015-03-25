@@ -109,6 +109,7 @@
                 pname: pname
             }, function (data) {
                 if (data.state) {
+                    console.log(data);
                     $.each(data.founded, function (item) {
                         $(".pointadding-item-analogs-list").append("<li>" + item.title + "</li>");
                     });
