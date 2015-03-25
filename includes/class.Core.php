@@ -244,7 +244,7 @@ abstract class Core {
 
     private function getSuggestions404Yandex($req) {
         $out = array();
-        if (strpos($req, '.css') === false && strpos($req, '.js') === false && strpos($req, '.png') === false && strpos($req, '.txt') === false) {
+        if (strpos($req, '.css') === false && strpos($req, '.js') === false && strpos($req, '.png') === false && strpos($req, '.txt') === false && strpos($req, '.xml') === false) {
             $ys = new YandexSearcher();
             $ys->enableLogging($this->db);
             $searchstring = trim(implode(' ', explode('/', $req)));
