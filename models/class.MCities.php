@@ -35,6 +35,7 @@ class MCities extends Model {
             'pc_active',
         );
         parent::__construct($db);
+        $this->_addRelatedTable('region_url');
     }
 
     public function getCityByUrl($url) {
@@ -153,6 +154,22 @@ class MCities extends Model {
 
     public function deleteByPk($id) {
         $this->updateByPk($id, array('pc_active' => 0,));
+    }
+
+    /*
+     * Ищет подходящие страницы городов
+     */
+
+    public function getSuggestion($query) {
+        $name = $this->escape($query);
+        $this->_db->sql = "SELECT *
+                            FROM $this->_table_name pc
+                                LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
+                            WHERE pc.pc_title LIKE '%$name%'
+                                AND pc.pc_active = 1
+                            ORDER BY pc.pc_title";
+        $this->_db->exec();
+        return $this->_db->fetchAll();
     }
 
     /*

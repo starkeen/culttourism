@@ -30,9 +30,11 @@
     <tr>
         <th>Регион</th>
         <td>
-            <span class="pointadding-item-city-typed" title="Как ввел пользователь">{$claim.cp_city}</span>
-            <input type="hidden" value="{$claim.cp_citypage_id}" />
-            <input type="hidden" value="" />
+            <a href="#" class="pointadding-item-city-typed" title="Как ввел пользователь">{$claim.cp_city}</a>
+            <input type="hidden" id="pointadding-item-city-pcid" value="{$claim.cp_citypage_id}" />
+            <input type="text" class="pointadding-item-city-suggest m_hide" value="{$claim.cp_city}" />
+            =>
+            <span class="pointadding-item-city-pctitle"></span>
         </td>
     </tr>
     <tr>
@@ -98,6 +100,22 @@
         } else {
             $(".pointadding-item-geo-set").removeClass("m_hide");
         }
+        $('#pointadding-item-city-pcid').change(function() {
+            $.getJSON("addpoints.php", {
+                act: "get_citypage",
+                id: item_id,
+                pc_id: $("#pointadding-item-city-pcid").val()
+            }, function (data) {
+                if (data.state) {
+                    $(".pointadding-item-city-pctitle").text(data.citypage.pc_title);
+                } else {
+                    console.log("error", data);
+                }
+            });
+        });
+        if ($("#pointadding-item-city-pcid").val() !== 0) {
+            $("#pointadding-item-city-pcid").change();
+        }
         $(".pointadding-item-analogs-run").click(function () {
             // поиск аналогов, добавленных ранее
             var pname = $(".pointadding-item-title").val();
@@ -119,6 +137,16 @@
             });
             return false;
 
+        });
+        $(".pointadding-item-city-typed").click(function () {
+            // подбор страницы для размещения точки
+            $(".pointadding-item-city-typed").hide();
+            $(".pointadding-item-city-suggest").show().focus();
+            $(".pointadding-item-city-suggest").blur(function () {
+                $(".pointadding-item-city-suggest").hide();
+                $(".pointadding-item-city-typed").show();
+            });
+            return false;
         });
         $(".pointadding-item-geo-set").click(function () {
             // указание координат по карте
@@ -149,6 +177,26 @@
         });
         $(".pointadding-item-confirm").click(function () {
             //сохранение точки в базу
+        });
+        $(".pointadding-item-city-suggest").autocomplete({
+            serviceUrl: "addpoints.php?act=citysuggest&id=" + item_id,
+            minChars: 2,
+            paramName: "query",
+            "width": 400,
+            onSelect: function (suggestion) {
+                $('#pointadding-item-city-pcid').val(suggestion.pcid);
+                $.getJSON("addpoints.php", {
+                    act: "set_citypage",
+                    id: item_id,
+                    pc_id: suggestion.pcid
+                }, function (data) {
+                    if (data.state) {
+                        $(".pointadding-item-city-pctitle").text(suggestion.value);
+                    } else {
+                        console.log("error", data);
+                    }
+                });
+            }
         });
         $("#pointadding-item-text").ckeditor({
             customConfig: "/config/config.cke4.js",
@@ -181,6 +229,9 @@
     }
     .pointadding-item-city-typed {
         font-style: italic;
+        color:blue;
+        text-decoration: none;
+        border-bottom: 1px dotted blue;
     }
     .pointadding-item-analogs-error {
         color:red;

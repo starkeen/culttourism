@@ -24,6 +24,28 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
             $out['error'] = $res['error_text'];
             $out['state'] = $res['error_code'] == 0;
             break;
+        case "citysuggest":
+            $pc = new MCities($db);
+            $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
+            $out['suggestions'] = array();
+            $variants = $pc->getSuggestion($out['query']);
+            foreach ($variants as $variant) {
+                $out['suggestions'][] = array(
+                    'value' => "{$variant['pc_title']}",
+                    'pcid' => "{$variant['pc_id']}",
+                );
+            }
+            break;
+        case "set_citypage":
+            $out['state'] = $c->updateByPk($out['id'], array(
+                'cp_citypage_id' => intval($_GET['pc_id']),
+            ));
+            break;
+        case "get_citypage":
+            $pc = new MCities($db);
+            $out['citypage'] = $pc->getItemByPk(intval($_GET['pc_id']));
+            $out['state'] = true;
+            break;
     }
     $out['data'] = $c->getItemByPk($out['id']);
     header("Content-type: text/json");

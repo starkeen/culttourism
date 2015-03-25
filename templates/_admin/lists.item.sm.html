@@ -99,21 +99,22 @@
 
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#list-add-name').autocomplete({
             serviceUrl: "lists.php?suggest&lid={$list.ls_id}",
             minChars: 4,
             paramName: "query",
-            onSelect: function(suggestion) {
+            onSelect: function (suggestion) {
                 $('#list-add-id').val(suggestion.oid);
             }
         });
-        $('#ls_text').ckeditor(function () {}, {
-                        customConfig: "/config/config.cke4.js",
-                        height: '370px',
-                        toolbar: "Lite"
-                    });
-        $(".list-edit-attr").click(function() {
+        $('#ls_text').ckeditor(function () {
+        }, {
+            customConfig: "/config/config.cke4.js",
+            height: '370px',
+            toolbar: "Lite"
+        });
+        $(".list-edit-attr").click(function () {
             var that = this;
             if ($(that).data("field") === "li_active") {
                 var newval = ($(that).text() === "ВКЛ") ? 0 : 1;
@@ -125,7 +126,7 @@
                 ptid: $(that).data("ptid"),
                 field: $(that).data("field"),
                 val: newval
-            }, function(data) {
+            }, function (data) {
                 if (data.state) {
                     if ($(that).data("field") === "li_active" && data.newval == 1) {
                         data.newval = "ВКЛ"
