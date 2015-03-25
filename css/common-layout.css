@@ -105,11 +105,6 @@ ul.menu_common li {
     background:url(/img/header/silhouette-left.png) bottom left no-repeat;
 }
 
-#header img {
-    position: relative;
-    top: 50px;
-    left:30px;
-}
 #mainmenu-container {
     position:relative;
     height:48px;
@@ -131,15 +126,17 @@ ul.menu_common li {
     font-size:18px;
 }
 #mainmenu li {
+    position: relative;
     display: inline-block;
     height: 38px;
-    margin: -11px 3px 0;
+    margin: -17px 3px 0;
     padding: 7px 3px 0;
 }
 #mainmenu li.navigate:hover {
     background:url(/img/header/menu_hover.png) repeat-x;
 }
 #mainmenu a {
+    position: relative;
     display:block;
     color:#fff;
     height:100%;
@@ -172,10 +169,17 @@ ul.menu_common li {
     display: none;
 }
 #mainmenu li#mainmenu_item_0 img {
-    top: 14px;
+    position: absolute;
+    top: 18px;
+    left: -29px;
+    height: 32px; 
+}
+#mainmenu li#mainmenu_item_7 img {
+    position: absolute;
+    top: 21px;
     left:0;
     margin: 0; 
-    height: 32px; 
+    height: 24px; 
 }
 
 

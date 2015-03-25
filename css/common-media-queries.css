@@ -19,13 +19,6 @@
         height:186px;
         background-size: auto 220px;
     }
-    #header img {
-        display:block;
-        top: 13px;
-        left: -258px;
-        margin: 30px auto;
-        height:100px;
-    }
     #mainmenu-container {
         position:absolute;
         top: -8px;
@@ -41,7 +34,8 @@
     }
     #mainmenu li {
         position: relative;
-        top: -4px;
+        height: 36px;
+        top: 0px;
     }
     #content {
         line-height: 1.6;
@@ -170,18 +164,11 @@
         height:150px;
         background-size: auto 169px;
     }
-    #header img {
-        display:block;
-        top: 13px;
-        left: -154px;
-        margin: 30px auto;
-        height:100px;
-    }
     #mainmenu-container {
         height:42px;
     }
     #mainmenu li {
-        top: -9px;
+        top: -4px;
     }
     #mainmenu li#mainmenu_item_0 img {
         top: 18px;
@@ -293,16 +280,6 @@
     #header {
         height: 40px;
         background:none;
-    }
-    #header img {
-        display:block;
-        top: 12px;
-        left: 0;
-        margin: 30px auto;
-        height:80px;
-    }
-    #mainmenu li {
-        top: -9px;
     }
     #mainmenu form {
         display:none;
@@ -420,16 +397,18 @@
         height:31px;
         background:none;
     }
-    #header img {
-        display:none;
-    }
     #mainmenu-container {
         width:100%;
-        margin: -4px 0;
+        margin: 5px 0;
+        height: 33px;
         padding-right: 2px;
     }
+    #mainmenu {
+        height: 34px;
+    }
     #mainmenu li {
-        top: -3px;
+        height: 32px;
+        top: -1px;
     }
     #mainmenu li#mainmenu_item_1 {
         display: none;
@@ -439,6 +418,9 @@
     }
     #mainmenu li#mainmenu_item_0 img {
         display: block;
+        top: 16px;
+        left: -13px;
+        height: 25px;
     }
     #mainmenu form {
         display:none;
