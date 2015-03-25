@@ -20,7 +20,7 @@ class YandexSearcher {
             'error_code' => null,
             'error_text' => null,
         );
-        
+        $query = html_entity_decode($request, ENT_QUOTES, "utf-8");
         $doc = <<<DOC
 <?xml version="1.0" encoding="utf-8"?>
 <request>
