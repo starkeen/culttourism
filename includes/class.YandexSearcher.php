@@ -11,7 +11,7 @@ class YandexSearcher {
     private $_logger = null;
     private $_logger_id = null;
 
-    public function search($request, $db = null) {
+    public function search($request) {
         $out = array(
             'found' => null,
             'results' => null,

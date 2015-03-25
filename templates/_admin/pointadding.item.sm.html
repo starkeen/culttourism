@@ -5,31 +5,39 @@
     <tr>
         <th>Название</th>
         <td>
-            <input type="text" class="m_width_full" id="pointadding-item-title" value="{$claim.cp_title}" />
+            <input type="text" class="pointadding-item-title m_width_full" value="{$claim.cp_title}" />
+            <input type="hidden" id="pointadding-item-id" value="{$claim.cp_id}" />
+            <input type="hidden" id="pointadding-item-geo-lat" value="{$claim.cp_latitude}" />
+            <input type="hidden" id="pointadding-item-geo-lon" value="{$claim.cp_longitude}" />
         </td>
         <td>Возможные аналоги</td>
     </tr>
     <tr>
         <th>Тип</th>
         <td>
-
+            {foreach from=$ref_types item=tp}
+            <a href="#" class="pointadding-item-select-type {if $tp.tp_id == $claim.cp_type_id}m_active{/if}" title="{$tp.tp_short}" data-value="{$tp.tp_id}">
+                <img src="/img/points/x32/{$tp.tp_icon}" />
+            </a>
+            {/foreach}
         </td>
-        <td rowspan="4" class="h_valign_top">
-            <ul></ul>
-            <div class="m_center"><input type="button" value="искать" /></div>
+        <td rowspan="3" class="h_valign_top">
+            <ul class="pointadding-item-analogs-list"></ul>
+            <div class="pointadding-item-analogs-error"></div>
+            <div class="pointadding-item-analogs-run m_center"><input type="button" value="искать" /></div>
         </td>
     </tr>
     <tr>
         <th>Регион</th>
         <td>
             <span class="pointadding-item-city-typed" title="Как ввел пользователь">{$claim.cp_city}</span>
-            <input type="hidden" value="" />
+            <input type="hidden" value="{$claim.cp_citypage_id}" />
             <input type="hidden" value="" />
         </td>
     </tr>
     <tr>
         <td colspan="2">
-            <textarea class="pointadding-item-textarea" id="pointadding-item-text">{$claim.cp_text}</textarea>
+            <textarea class="pointadding-item-text" id="pointadding-item-text">{$claim.cp_text}</textarea>
         </td>
     </tr>
 
@@ -38,7 +46,10 @@
         <td>
             <input type="text" value="{$claim.cp_addr}" class="m_width_full" />
         </td>
-
+        <td>
+            <input type="button" class="pointadding-item-geo-set m_hide" value="GPS" />
+            <input type="button" class="pointadding-item-geo-change m_hide" value="N55.72851 E37.64223" />
+        </td>
     </tr>
     <tr>
         <th>Телефон</th>
@@ -51,7 +62,7 @@
         </td>
     </tr>
     <tr>
-        <th>Телефон</th>
+        <th>График</th>
         <td>
             <input type="text" value="{$claim.cp_worktime}" class="m_width_full" />
         </td>
@@ -70,7 +81,7 @@
 
     <tr>
         <td colspan="2" class="m_center">
-            <input type="button" id="pointadding-item-confirm" value="Сохранить">
+            <input type="button" class="pointadding-item-confirm" value="Сохранить">
             &nbsp;&nbsp;&nbsp;
             <a href="?">вернуться</a>
         </td>
@@ -79,6 +90,65 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        var item_id = $("#pointadding-item-id").val();
+        var item_latitude = $("#pointadding-item-geo-lat").val();
+        var item_longitude = $("#pointadding-item-geo-lon").val();
+        if (item_latitude != null && item_longitude != null) {
+            $(".pointadding-item-geo-change").removeClass("m_hide");
+        } else {
+            $(".pointadding-item-geo-set").removeClass("m_hide");
+        }
+        $(".pointadding-item-analogs-run").click(function () {
+            // поиск аналогов, добавленных ранее
+            var pname = $(".pointadding-item-title").val();
+            $(".pointadding-item-analogs-error").empty();
+            $(".pointadding-item-analogs-list").empty();
+            $.getJSON("addpoints.php", {
+                act: "get_analogs",
+                id: item_id,
+                pname: pname
+            }, function (data) {
+                if (data.state) {
+                    $.each(data.founded, function (item) {
+                        $(".pointadding-item-analogs-list").append("<li>" + item.title + "</li>");
+                    });
+                } else {
+                    $(".pointadding-item-analogs-error").text(data.error);
+                }
+            });
+            return false;
+
+        });
+        $(".pointadding-item-geo-set").click(function () {
+            // указание координат по карте
+        });
+        $(".pointadding-item-geo-change").click(function () {
+            // изменение координат по карте
+        });
+        $(".pointadding-item-select-type").click(function () {
+            //выбор типа точки
+            var ptype = $(this).data("value");
+            $.getJSON("addpoints.php", {
+                act: "set_type",
+                id: item_id,
+                ptype: ptype
+            }, function (data) {
+                if (data.state) {
+                    $(".pointadding-item-select-type").each(function (item) {
+                        $(this).removeClass("m_active");
+                        if ($(this).data("value") == data.data.cp_type_id) {
+                            $(this).addClass("m_active");
+                        }
+                    });
+                } else {
+                    console.log("error", data);
+                }
+            });
+            return false;
+        });
+        $(".pointadding-item-confirm").click(function () {
+            //сохранение точки в базу
+        });
         $("#pointadding-item-text").ckeditor({
             customConfig: "/config/config.cke4.js",
             height: '230px',
@@ -88,11 +158,35 @@
 </script>
 
 <style type="text/css">
-    .pointadding-item-textarea {
+    .pointadding-item-select-type {
+        display:inline-block;
+        width:30px;
+        height:25px;
+        padding:2px;
+        text-align: center;
+        vertical-align: middle;
+        text-decoration: none;
+        border: 1px solid #ddd;
+    }
+    .pointadding-item-select-type.m_active {
+        border: 1px solid red;
+    }
+    .pointadding-item-select-type img {
+        width: 24px;
+    }
+    .pointadding-item-text {
         height: 250px;
         width: 300px;
     }
     .pointadding-item-city-typed {
         font-style: italic;
+    }
+    .pointadding-item-analogs-error {
+        color:red;
+        font-size: 80%;
+        max-width: 200px;
+    }
+    .m_hide {
+        display:none;
     }
 </style>
