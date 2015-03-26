@@ -54,6 +54,8 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
                 'cp_phone' => $_POST['phone'],
                 'cp_worktime' => $_POST['worktime'],
                 'cp_web' => $_POST['web'],
+                'cp_latitude' => $_POST['lat'],
+                'cp_longitude' => $_POST['lon'],
                 'cp_state' => 25,
             ));
             break;
