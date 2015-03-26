@@ -23,9 +23,10 @@ $(document).ready(function () {
     if ($("#pointadding-item-city-pcid").val() !== 0) {
         $("#pointadding-item-city-pcid").change();
     }
-    $(".pointadding-item-analogs-run").click(function () {
+    $(".pointadding-item-analogs-run input").click(function () {
         // поиск аналогов, добавленных ранее
         var pname = $(".pointadding-item-title").val();
+        $(".pointadding-item-analogs-ignore").addClass("m_hide");
         $(".pointadding-item-analogs-error").empty();
         $(".pointadding-item-analogs-list").empty();
         $.getJSON("addpoints.php", {
@@ -34,16 +35,29 @@ $(document).ready(function () {
             pname: pname
         }, function (data) {
             if (data.state) {
-                console.log(data);
                 $.each(data.founded, function (i, item) {
                     $(".pointadding-item-analogs-list").append("<li>" + item.title.replace(" | Культурный туризм", "") + "</li>");
                 });
+                $(".pointadding-item-analogs-ignore").removeClass("m_hide");
             } else {
                 $(".pointadding-item-analogs-error").text(data.error);
             }
         });
         return false;
 
+    });
+    $(".pointadding-item-analogs-ignore input").click(function () {
+        // при наличии аналогов точку отправляем в игнор
+        $.getJSON("addpoints.php", {
+            act: "set_already",
+            id: item_id
+        }, function (data) {
+            if (data.state) {
+                document.location.href = "addpoints.php";
+            } else {
+                $(".pointadding-item-analogs-error").text(data.error);
+            }
+        });
     });
     $(".pointadding-item-city-typed").click(function () {
         // подбор страницы для размещения точки
@@ -103,7 +117,8 @@ $(document).ready(function () {
             worktime: $(".pointadding-item-worktime").val(),
             web: $(".pointadding-item-web").val(),
             lat: $("#pointadding-item-geo-lat").val(),
-            lon: $("#pointadding-item-geo-lon").val()
+            lon: $("#pointadding-item-geo-lon").val(),
+            state_id: $(this).data("state")
         }, function (answer) {
             if (answer.state) {
                 document.location.href = "addpoints.php";

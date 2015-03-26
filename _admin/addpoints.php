@@ -54,9 +54,14 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
                 'cp_phone' => $_POST['phone'],
                 'cp_worktime' => $_POST['worktime'],
                 'cp_web' => $_POST['web'],
-                'cp_latitude' => $_POST['lat'],
-                'cp_longitude' => $_POST['lon'],
-                'cp_state' => 25,
+                'cp_latitude' => cut_trash_float($_POST['lat']),
+                'cp_longitude' => cut_trash_float($_POST['lon']),
+                'cp_state' => intval($_POST['state_id']),
+            ));
+            break;
+        case "set_already":
+            $out['state'] = $c->updateByPk($out['id'], array(
+                'cp_state' => 5,
             ));
             break;
     }
