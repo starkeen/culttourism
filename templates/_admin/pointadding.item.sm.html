@@ -7,8 +7,6 @@
         <td>
             <input type="text" class="pointadding-item-title m_width_full" value="{$claim.cp_title}" />
             <input type="hidden" id="pointadding-item-id" value="{$claim.cp_id}" />
-            <input type="hidden" id="pointadding-item-geo-lat" value="{$claim.cp_latitude}" />
-            <input type="hidden" id="pointadding-item-geo-lon" value="{$claim.cp_longitude}" />
         </td>
         <td>Возможные аналоги</td>
     </tr>
@@ -21,7 +19,7 @@
             </a>
             {/foreach}
         </td>
-        <td rowspan="3" class="h_valign_top">
+        <td rowspan="4" class="h_valign_top">
             <ul class="pointadding-item-analogs-list"></ul>
             <div class="pointadding-item-analogs-error"></div>
             <div class="pointadding-item-analogs-run m_center"><input type="button" value="искать" /></div>
@@ -37,19 +35,30 @@
         </td>
     </tr>
     <tr>
-        <td colspan="2">
-            <textarea class="pointadding-item-text" id="pointadding-item-text">{$claim.cp_text}</textarea>
+        <th>Координаты</th>
+        <td>
+            N<input type="text" id="pointadding-item-geo-lat" value="{$claim.cp_latitude}" />
+            E<input type="text" id="pointadding-item-geo-lon" value="{$claim.cp_longitude}" />
+            <input type="button" class="pointadding-item-geo-set" value="MAP" data-mapstate="0" />
         </td>
     </tr>
-
+    <tr>
+        <td colspan="2">
+            <div class="pointadding-item-textcontainer">
+                <textarea class="pointadding-item-text" id="pointadding-item-text">{$claim.cp_text}</textarea>
+            </div>
+            <div class="pointadding-item-mapcontainer m_hide">
+                <div class="pointadding-item-map" id="pointadding-item-map"></div>
+            </div>
+        </td>
+    </tr>
     <tr>
         <th>Адрес</th>
         <td>
             <input type="text" class="pointadding-item-addr m_width_full" value="{$claim.cp_addr}" />
         </td>
         <td class="m_center">
-            <input type="button" class="pointadding-item-geo-set m_hide" value="GPS" />
-            <input type="button" class="pointadding-item-geo-change m_hide" value="N55.72851 E37.64223" />
+
         </td>
     </tr>
     <tr>
@@ -89,6 +98,7 @@
     </tr>
 </table>
 
+<script type="text/javascript" src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&coordorder=longlat" defer="defer"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         var item_id = $("#pointadding-item-id").val();
@@ -149,9 +159,16 @@
         });
         $(".pointadding-item-geo-set").click(function () {
             // указание координат по карте
-        });
-        $(".pointadding-item-geo-change").click(function () {
-            // изменение координат по карте
+            if ($(this).data("mapstate") == 0) {
+                $(this).data("mapstate", 1);
+                $(".pointadding-item-textcontainer").addClass("m_hide");
+                $(".pointadding-item-mapcontainer").removeClass("m_hide");
+            } else {
+                $(this).data("mapstate", 0);
+                $(".pointadding-item-textcontainer").removeClass("m_hide");
+                $(".pointadding-item-mapcontainer").addClass("m_hide");
+            }
+
         });
         $(".pointadding-item-select-type").click(function () {
             //выбор типа точки
@@ -214,7 +231,18 @@
             height: '230px',
             toolbar: "Lite"
         });
+        ymaps.ready(function () {
+            var map = new ymaps.Map('pointadding-item-map', {
+                center: [$("#pointadding-item-geo-lon").val(), $("#pointadding-item-geo-lat").val()],
+                zoom: 7,
+                type: "yandex#publicMap",
+                controls: ["zoomControl", "typeSelector", "geolocationControl", "routeEditor", "fullscreenControl"]
+            }, {
+                minZoom: 1
+            });
+        });
     });
+
 </script>
 
 <style type="text/css">
@@ -237,6 +265,15 @@
     .pointadding-item-text {
         height: 250px;
         width: 300px;
+    }
+    #pointadding-item-geo-lat, #pointadding-item-geo-lon {
+        width:80px;
+    }
+    .pointadding-item-map {
+        height: 300px;
+        width: 654px;
+        background-color: #efefef;
+        border:1px solid #ddd;
     }
     .pointadding-item-city-typed {
         font-style: italic;
