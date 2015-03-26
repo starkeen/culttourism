@@ -10,27 +10,18 @@ class Page extends PageCommon {
             $this->getError('404');
         }
         if ($page_id == 'suggest' && isset($_GET['query'])) {
-            $this->getSuggests($db, $smarty);
+            $this->getSuggests($db);
         }
         $this->content = $this->getSearchYandex($db, $smarty);
     }
 
-    private function getSuggests($db, $smarty) {
+    private function getSuggests($db) {
         $out = array('query' => '', 'suggestions' => array());
         $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES | ENT_HTML5, "UTF-8");
+        $pc = new MCities($db);
+        $variants = $pc->getSuggestion($out['query']);
 
-        $query_add = Helper::getQwerty($out['query']);
-
-        $dbc = $db->getTableName('pagecity');
-        $dbu = $db->getTableName('region_url');
-        $db->sql = "SELECT pc_id, pc_title, url
-                    FROM $dbc c
-                        LEFT JOIN $dbu u ON u.uid = c.pc_url_id
-                    WHERE pc_title LIKE '%{$out['query']}%'
-                        OR pc_title LIKE '%$query_add%'
-                    ORDER BY pc_title";
-        $db->exec();
-        while ($row = $db->fetch()) {
+        foreach ($variants as $row) {
             $out['suggestions'][] = array(
                 'value' => "{$row['pc_title']}",
                 'data' => $row['pc_id'],
