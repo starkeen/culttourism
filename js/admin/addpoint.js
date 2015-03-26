@@ -135,17 +135,41 @@ $(document).ready(function () {
         height: '230px',
         toolbar: "Lite"
     });
+
+
+
+
+
+
     ymaps.ready(function () {
+        var mapcenter = [$("#pointadding-item-geo-lon").val(), $("#pointadding-item-geo-lat").val()];
         var map = new ymaps.Map('pointadding-item-map', {
-            center: [$("#pointadding-item-geo-lon").val(), $("#pointadding-item-geo-lat").val()],
+            center: mapcenter,
             zoom: 14,
             type: "yandex#publicMap",
             controls: ["zoomControl", "typeSelector", "geolocationControl", "routeEditor", "fullscreenControl"]
         }, {
             minZoom: 1
         });
+        var myPlacemark = new ymaps.Placemark(mapcenter, {
+            hintContent: "Перетащите для изменения координат",
+            balloonContent: "Новая точка"
+        }, {
+            iconLayout: 'default#image',
+            iconImageHref: '/img/points/xmap/star.png', // картинка иконки
+            iconImageSize: [55, 55], // размеры картинки
+            iconImageOffset: [-27, -55], // смещение картинки
+            draggable: true // Метку можно перетаскивать, зажав левую кнопку мыши.
+        });
+        myPlacemark.events.add("dragend", function () {
+            var coords = myPlacemark.geometry.getCoordinates();
+            $("#pointadding-item-geo-lat").val(coords[1]);
+            $("#pointadding-item-geo-lon").val(coords[0]);
+        });
+        map.geoObjects.add(myPlacemark);
         map.events.add('click', function (e) {
             var coords = e.get('coords');
+            myPlacemark.geometry.setCoordinates(coords);
             $("#pointadding-item-geo-lat").val(coords[1]);
             $("#pointadding-item-geo-lon").val(coords[0]);
         });
