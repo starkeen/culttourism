@@ -63,7 +63,7 @@ $(document).ready(function () {
     $(".pointadding-item-city-typed").click(function () {
         // подбор страницы для размещения точки
         $(".pointadding-item-city-typed").hide();
-        $(".pointadding-item-city-suggest").show().focus();
+        $(".pointadding-item-city-suggest").show().focus().change();
         $(".pointadding-item-city-suggest").blur(function () {
             $(".pointadding-item-city-suggest").hide();
             $(".pointadding-item-city-typed").show();
