@@ -46,6 +46,17 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
             $out['citypage'] = $pc->getItemByPk(intval($_GET['pc_id']));
             $out['state'] = true;
             break;
+        case "save_candidate":
+            $out['state'] = $c->updateByPk($out['id'], array(
+                'cp_title' => $_POST['title'],
+                'cp_text' => $_POST['text'],
+                'cp_addr' => $_POST['addr'],
+                'cp_phone' => $_POST['phone'],
+                'cp_worktime' => $_POST['worktime'],
+                'cp_web' => $_POST['web'],
+                'cp_state' => 25,
+            ));
+            break;
     }
     $out['data'] = $c->getItemByPk($out['id']);
     header("Content-type: text/json");

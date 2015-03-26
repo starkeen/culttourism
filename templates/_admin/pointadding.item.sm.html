@@ -45,7 +45,7 @@
     <tr>
         <th>Адрес</th>
         <td>
-            <input type="text" value="{$claim.cp_addr}" class="m_width_full" />
+            <input type="text" class="pointadding-item-addr m_width_full" value="{$claim.cp_addr}" />
         </td>
         <td class="m_center">
             <input type="button" class="pointadding-item-geo-set m_hide" value="GPS" />
@@ -55,7 +55,7 @@
     <tr>
         <th>Телефон</th>
         <td>
-            <input type="text" value="{$claim.cp_phone}" class="m_width_full" />
+            <input type="text" class="pointadding-item-phone m_width_full" value="{$claim.cp_phone}" />
         </td>
         <td rowspan="2" class="h_valign_top" nowrap="nowrap">
             <b>Отправитель:</b><br/>
@@ -65,13 +65,13 @@
     <tr>
         <th>График</th>
         <td>
-            <input type="text" value="{$claim.cp_worktime}" class="m_width_full" />
+            <input type="text" class="pointadding-item-worktime m_width_full" value="{$claim.cp_worktime}" class="m_width_full" />
         </td>
     </tr>
     <tr>
         <th>Веб-сайт</th>
         <td>
-            <input type="text" value="{$claim.cp_web}" class="m_width_full" />
+            <input type="text" class="pointadding-item-web m_width_full" value="{$claim.cp_web}" />
         </td>
         <td rowspan="2" class="h_valign_top">
             <b>Источник:</b><br/>
@@ -99,7 +99,7 @@
         } else {
             $(".pointadding-item-geo-set").removeClass("m_hide");
         }
-        $('#pointadding-item-city-pcid').change(function() {
+        $('#pointadding-item-city-pcid').change(function () {
             $.getJSON("addpoints.php", {
                 act: "get_citypage",
                 id: item_id,
@@ -176,6 +176,18 @@
         });
         $(".pointadding-item-confirm").click(function () {
             //сохранение точки в базу
+            $.post("addpoints.php?act=save_candidate&id=" + $("#pointadding-item-id").val(), {
+                title: $(".pointadding-item-title").val(),
+                text: $(".pointadding-item-text").val(),
+                addr: $(".pointadding-item-addr").val(),
+                phone: $(".pointadding-item-phone").val(),
+                worktime: $(".pointadding-item-worktime").val(),
+                web: $(".pointadding-item-web").val()
+            }, function (answer) {
+                if (answer.state) {
+                    document.location.href = "addpoints.php";
+                }
+            });
         });
         $(".pointadding-item-city-suggest").autocomplete({
             serviceUrl: "addpoints.php?act=citysuggest&id=" + item_id,
