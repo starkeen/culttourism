@@ -4,15 +4,21 @@
 <table class="commontable">
     <tr>
         <th>Дата</th>
+        <th>Тип</th>
         <th>Регион</th>
+        <th>Страница</th>
         <th>Название</th>
+        <th>Статус</th>
         <th>&nbsp;</th>
     </tr>
     {foreach from=$list item=req}
     <tr>
         <td>{$req.cp_date}</td>
+        <td>&nbsp;</td>
         <td>{$req.cp_city}</td>
+        <td>&nbsp;</td>
         <td>{$req.cp_title}</td>
+        <td>&nbsp;</td>
         <td><a href="?id={$req.cp_id}"><img src="/img/btn/btn.tick.png"</a></td>
     </tr>
     {/foreach}
