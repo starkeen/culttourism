@@ -56,6 +56,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
                 'cp_web' => $_POST['web'],
                 'cp_latitude' => cut_trash_float($_POST['lat']),
                 'cp_longitude' => cut_trash_float($_POST['lon']),
+                'cp_zoom' => cut_trash_float($_POST['zoom']),
                 'cp_state' => intval($_POST['state_id']),
             ));
             break;
@@ -83,7 +84,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
                     'pt_citypage_id' => $candidate['cp_citypage_id'],
                     'pt_latitude' => $candidate['cp_latitude'],
                     'pt_longitude' => $candidate['cp_longitude'],
-                    'pt_latlon_zoom' => 10,
+                    'pt_latlon_zoom' => $candidate['cp_zoom'],
                     'pt_type_id' => $candidate['cp_type_id'],
                     'pt_website' => $candidate['cp_web'],
                     'pt_worktime' => $candidate['cp_worktime'],

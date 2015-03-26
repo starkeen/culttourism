@@ -120,6 +120,7 @@ $(document).ready(function () {
             web: $(".pointadding-item-web").val(),
             lat: $("#pointadding-item-geo-lat").val(),
             lon: $("#pointadding-item-geo-lon").val(),
+            zoom: $("#pointadding-item-geo-zoom").val(),
             state_id: $(this).data("state")
         }, function (answer) {
             if (answer.state) {
@@ -185,7 +186,7 @@ $(document).ready(function () {
         var mapcenter = [$("#pointadding-item-geo-lon").val(), $("#pointadding-item-geo-lat").val()];
         var map = new ymaps.Map('pointadding-item-map', {
             center: mapcenter,
-            zoom: 14,
+            zoom: $("#pointadding-item-geo-zoom").val(),
             type: "yandex#publicMap",
             controls: ["zoomControl", "typeSelector", "geolocationControl", "routeEditor", "fullscreenControl"]
         }, {
@@ -205,6 +206,7 @@ $(document).ready(function () {
             var coords = myPlacemark.geometry.getCoordinates();
             $("#pointadding-item-geo-lat").val(coords[1]);
             $("#pointadding-item-geo-lon").val(coords[0]);
+            $("#pointadding-item-geo-zoom").val(map.getZoom());
         });
         map.geoObjects.add(myPlacemark);
         map.events.add('click', function (e) {
@@ -212,6 +214,7 @@ $(document).ready(function () {
             myPlacemark.geometry.setCoordinates(coords);
             $("#pointadding-item-geo-lat").val(coords[1]);
             $("#pointadding-item-geo-lon").val(coords[0]);
+            $("#pointadding-item-geo-zoom").val(map.getZoom());
         });
 
         $(".pointadding-item-geo-get").click(function () {

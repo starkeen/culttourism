@@ -24,6 +24,7 @@ class MCandidatePoints extends Model {
             'cp_citypage_id',
             'cp_latitude',
             'cp_longitude',
+            'cp_zoom',
             'cp_source_id',
             'cp_point_id',
             'cp_state',
