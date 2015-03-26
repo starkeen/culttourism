@@ -13,6 +13,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
         case "set_type":
             $out['state'] = $c->updateByPk($out['id'], array(
                 'cp_type_id' => intval($_GET['ptype']),
+                'cp_state' => 25,
             ));
             break;
         case "get_analogs":
@@ -39,6 +40,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
         case "set_citypage":
             $out['state'] = $c->updateByPk($out['id'], array(
                 'cp_citypage_id' => intval($_GET['pc_id']),
+                'cp_state' => 25,
             ));
             break;
         case "get_citypage":
