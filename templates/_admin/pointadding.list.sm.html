@@ -19,7 +19,7 @@
         <td>{$req.cp_city}</td>
         <td>{$req.page_title}</td>
         <td>{$req.cp_title}</td>
-        <td>{if $req.cp_latitude && $req.cp_longitude}есть{else}нет{/if}</td>
+        <td>{if $req.cp_latitude>0 && $req.cp_longitude>0}есть{else}нет{/if}</td>
         <td>{$req.state_title}</td>
         <td><a href="?id={$req.cp_id}"><img src="/img/btn/btn.tick.png"</a></td>
     </tr>
