@@ -59,10 +59,46 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
                 'cp_state' => intval($_POST['state_id']),
             ));
             break;
-        case "set_already":
+        case "set_ignore":
             $out['state'] = $c->updateByPk($out['id'], array(
-                'cp_state' => 5,
+                'cp_state' => intval($_GET['state_id']),
+                'cp_active' => 0,
             ));
+        case "move":
+            $pt = new MPoints($db);
+            $candidate = $c->getItemByPk($out['id']);
+            if (mb_strlen($candidate['cp_title'], 'utf-8') <= 4) {
+                $out['error'][] = 'Слишком короткое название (минимум 4 символа)';
+            }
+            if ($candidate['cp_citypage_id'] == 0) {
+                $out['error'][] = 'Не указана страница назначения';
+            }
+            if ($candidate['cp_type_id'] == 0) {
+                $out['error'][] = 'Не указан тип';
+            }
+            if (empty($out['error'])) {
+                $new_id = $pt->insert(array(
+                    'pt_name' => $candidate['cp_title'],
+                    'pt_description' => $candidate['cp_text'],
+                    'pt_citypage_id' => $candidate['cp_citypage_id'],
+                    'pt_latitude' => $candidate['cp_latitude'],
+                    'pt_longitude' => $candidate['cp_longitude'],
+                    'pt_latlon_zoom' => 10,
+                    'pt_type_id' => $candidate['cp_type_id'],
+                    'pt_website' => $candidate['cp_web'],
+                    'pt_worktime' => $candidate['cp_worktime'],
+                    'pt_adress' => $candidate['cp_addr'],
+                    'pt_phone' => $candidate['cp_phone'],
+                    'pt_email' => $candidate['cp_email'],
+                    'pt_is_best' => 0,
+                    'pt_active' => 1,
+                ));
+                $out['state'] = $c->updateByPk($out['id'], array(
+                    'cp_state' => 6,
+                    'cp_point_id' => $new_id,
+                    'cp_active' => 0,
+                ));
+            }
             break;
     }
     $out['data'] = $c->getItemByPk($out['id']);

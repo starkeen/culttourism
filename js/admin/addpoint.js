@@ -49,8 +49,9 @@ $(document).ready(function () {
     $(".pointadding-item-analogs-ignore input").click(function () {
         // при наличии аналогов точку отправляем в игнор
         $.getJSON("addpoints.php", {
-            act: "set_already",
-            id: item_id
+            act: "set_ignore",
+            id: item_id,
+            state_id: $(this).data("state")
         }, function (data) {
             if (data.state) {
                 document.location.href = "addpoints.php";
@@ -107,8 +108,9 @@ $(document).ready(function () {
         });
         return false;
     });
-    $(".pointadding-item-confirm").click(function () {
+    $(".pointadding-item-save").click(function () {
         //сохранение точки в базу
+        var ret = $(this).data("return");
         $.post("addpoints.php?act=save_candidate&id=" + $("#pointadding-item-id").val(), {
             title: $(".pointadding-item-title").val(),
             text: $(".pointadding-item-text").val(),
@@ -121,10 +123,33 @@ $(document).ready(function () {
             state_id: $(this).data("state")
         }, function (answer) {
             if (answer.state) {
-                document.location.href = "addpoints.php";
+                if (ret) {
+                    document.location.href = "addpoints.php";
+                } else {
+                    $("body").trigger('afterSavingCandidate');
+                }
             }
         });
     });
+    $(".pointadding-item-confirm").click(function () {
+        //отправка точки на страницу
+        $(".pointadding-item-save").data("return", 0).click();
+        $(".pointadding-item-save").data("return", 1);
+    });
+    $("body").live("afterSavingCandidate", function () {
+        $.getJSON("addpoints.php", {
+            act: "move",
+            id: item_id
+        }, function (data) {
+            if (data.state) {
+                document.location.href = "addpoints.php";
+            } else {
+                alert("Error: " + data.error.join(";\n"));
+            }
+        });
+    });
+
+
     $(".pointadding-item-city-suggest").autocomplete({
         serviceUrl: "addpoints.php?act=citysuggest&id=" + item_id,
         minChars: 2,

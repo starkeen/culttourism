@@ -19,10 +19,10 @@
             </a>
             {/foreach}
         </td>
-        <td rowspan="4" class="h_valign_top">
+        <td rowspan="5" class="h_valign_top">
             <ul class="pointadding-item-analogs-list"></ul>
             <div class="pointadding-item-analogs-error"></div>
-            <div class="pointadding-item-analogs-ignore m_center m_hide"><input type="button" value="искать" /></div>
+            <div class="pointadding-item-analogs-ignore m_center m_hide"><input type="button" value="уже есть" data-state="5" /></div>
             <div class="pointadding-item-analogs-run m_center"><input type="button" value="искать" /></div>
         </td>
     </tr>
@@ -60,9 +60,6 @@
         <td>
             <input type="text" class="pointadding-item-addr m_width_full" value="{$claim.cp_addr}" />
         </td>
-        <td class="m_center">
-
-        </td>
     </tr>
     <tr>
         <th>Телефон</th>
@@ -92,9 +89,19 @@
     </tr>
     <tr>
         <td colspan="2" class="m_center">
-            <input type="button" class="pointadding-item-confirm" value="Сохранить" data-state="25">
+            <input type="button" class="pointadding-item-save" value="Сохранить" data-state="25" data-return="1" />
             &nbsp;&nbsp;&nbsp;
             <a href="?">вернуться</a>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="pointadding-item-analogs-ignore m_center">
+            <input type="button" class="pointadding-item-confirm m_color_red" value="Не подходит" data-state="8" />
+            &nbsp;&nbsp;&nbsp;
+            <input type="button" class="pointadding-item-confirm m_color_red" value="Спам" data-state="7" />
+        </td>
+        <td class="m_center">
+            <input type="button" class="pointadding-item-confirm m_color_green" value="Внести" />
         </td>
     </tr>
 </table>
@@ -145,5 +152,13 @@
     }
     .m_hide {
         display:none;
+    }
+    .m_color_red {
+        color: #fff;
+        background-color: red;
+    }
+    .m_color_green {
+        color: #fff;
+        background-color: green;
     }
 </style>

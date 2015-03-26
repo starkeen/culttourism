@@ -264,6 +264,14 @@ class MPoints extends Model {
                 unset($values['pt_longitude']);
             }
         }
+        if (!isset($values['pt_create_date'])) {
+            $values['pt_create_date'] = $this->now();
+        }
+        if (!isset($values['pt_create_user'])) {
+            $values['pt_create_user'] = $this->getUserId();
+        }
+        $values['pt_lastup_date'] = $values['pt_create_date'];
+        $values['pt_lastup_user'] = $values['pt_create_user'];
         $new_id = parent::insert($values, $files);
         $this->createSluglineById($new_id);
         return $new_id;
