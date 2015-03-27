@@ -30,9 +30,9 @@
     <tr>
         <th>Регион</th>
         <td>
-            <a href="#" class="pointadding-item-city-typed" title="Как ввел пользователь">{$claim.cp_city} =></a>
+            <a href="#" class="pointadding-item-city-typed" title="Как ввел пользователь">{$claim.cp_city|escape:'html'} =></a>
             <input type="hidden" id="pointadding-item-city-pcid" value="{$claim.cp_citypage_id}" />
-            <input type="text" class="pointadding-item-city-suggest m_hide" value="{$claim.cp_city}" />
+            <input type="text" class="pointadding-item-city-suggest m_hide" value="{$claim.cp_city|escape:'html'}" />
             <span class="pointadding-item-city-pctitle"></span>
         </td>
     </tr>
@@ -50,7 +50,7 @@
     <tr>
         <td colspan="2">
             <div class="pointadding-item-textcontainer">
-                <textarea class="pointadding-item-text" id="pointadding-item-text">{$claim.cp_text}</textarea>
+                <textarea class="pointadding-item-text" id="pointadding-item-text">{$claim.cp_text|escape:'html'}</textarea>
             </div>
             <div class="pointadding-item-mapcontainer m_hide">
                 <div class="pointadding-item-map" id="pointadding-item-map"></div>
@@ -60,7 +60,7 @@
     <tr>
         <th>Адрес</th>
         <td>
-            <input type="text" class="pointadding-item-addr m_width_full" value="{$claim.cp_addr}" />
+            <input type="text" class="pointadding-item-addr m_width_full" value="{$claim.cp_addr|escape:'html'}" />
         </td>
     </tr>
     <tr>
@@ -76,7 +76,7 @@
     <tr>
         <th>График</th>
         <td>
-            <input type="text" class="pointadding-item-worktime m_width_full" value="{$claim.cp_worktime}" />
+            <input type="text" class="pointadding-item-worktime m_width_full" value="{$claim.cp_worktime|escape:'html'}" />
         </td>
     </tr>
     <tr>
