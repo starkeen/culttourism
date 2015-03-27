@@ -5,13 +5,13 @@ include (_DIR_INCLUDES . '/class.Pager.php');
 
 $smarty->assign('title', 'Списки объектов');
 
-$lst = new Lists($db);
+$lst = new MLists($db);
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
     $list = $lst->getItemByPk($id);
 
-    $lstitems = new ListsItems($db, $id);
+    $lstitems = new MListsItems($db, $id);
 
     if (isset($_POST) && !empty($_POST)) {
         if (isset($_GET['act']) && $_GET['act'] = 'add' && isset($_POST['add_id']) && intval($_POST['add_id']) > 0) {
@@ -41,7 +41,7 @@ if (isset($_GET['id'])) {
     $lid = intval($_GET['lid']);
 
     if (strlen($out['query']) > 4) {
-        $lstitems = new ListsItems($db, $lid);
+        $lstitems = new MListsItems($db, $lid);
         $variants = $lstitems->getSuggestion($out['query']);
         foreach ($variants as $variant) {
             $out['suggestions'][] = array(
@@ -62,7 +62,7 @@ if (isset($_GET['id'])) {
 } elseif (isset($_GET['json'])) {
     $out = array('state' => false, 'newval' => null);
 
-    $lstitems = new ListsItems($db, intval($_GET['lid']));
+    $lstitems = new MListsItems($db, intval($_GET['lid']));
     $out['newval'] = $lstitems->setField($_GET['field'], intval($_GET['ptid']), $_GET['val']);
     if ($out['newval'] !== null) {
         $out['state'] = true;

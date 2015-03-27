@@ -702,7 +702,7 @@ class Page extends PageCommon {
         }
         //print_x($_POST);
 
-        $pts = new Points($this->db);
+        $pts = new MPagePoints($this->db);
         $add_item = array(
             'pt_name' => trim($_POST['nname']) != '' ? trim($_POST['nname']) : '[не указано]',
             'pt_description' => trim($_POST['ndesc']),
@@ -822,7 +822,7 @@ class Page extends PageCommon {
             return $this->getError('404');
         }
 
-        $pts = new Points($this->db);
+        $pts = new MPagePoints($this->db);
         $object = $pts->getItemByPk($id);
 
         if (!$object) {
@@ -849,7 +849,7 @@ class Page extends PageCommon {
             return $this->getError('404');
         }
 
-        $pts = new Points($this->db);
+        $pts = new MPagePoints($this->db);
         $objects = $pts->searchSlugline($slugline);
         $object = isset($objects[0]) ? $objects[0] : false;
         if (!$object) {

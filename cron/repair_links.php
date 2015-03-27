@@ -1,8 +1,8 @@
 <?php
 
-$c = new Cities($db);
-$p = new Points($db);
-$l = new Lists($db);
+$c = new MPageCities($db);
+$p = new MPagePoints($db);
+$l = new MLists($db);
 $b = new MBlogEntries($db);
 
 $c->repairLinksAbsRel();

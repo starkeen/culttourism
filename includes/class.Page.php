@@ -49,8 +49,8 @@ class Page extends PageCommon {
             return false;
         }
 
-        $pts = new Points($this->db);
-        $pcs = new Cities($this->db);
+        $pts = new MPagePoints($this->db);
+        $pcs = new MPageCities($this->db);
 
         $objects = $pts->searchSlugline($slugline);
         $object = isset($objects[0]) ? $objects[0] : false;

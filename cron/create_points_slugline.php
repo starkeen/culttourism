@@ -2,7 +2,7 @@
 
 error_reporting(E_ALL);
 
-$pts = new Points($db);
+$pts = new MPagePoints($db);
 
 foreach ($pts->getUnslug(60) as $point) {
     $pts->createSluglineById($point['pt_id']);

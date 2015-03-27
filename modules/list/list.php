@@ -25,7 +25,7 @@ class Page extends PageCommon {
     }
 
     private function getListBySlug($slug) {
-        $lst = new Lists($this->db);
+        $lst = new MLists($this->db);
         $list = $lst->getItemBySlugline($slug);
         if (isset($list['data']['ls_id']) && $list['data']['ls_id'] > 0) {
             $this->h1 = $list['data']['ls_title'];
@@ -35,7 +35,7 @@ class Page extends PageCommon {
 
             $this->lastedit_timestamp = $list['data']['last_update'];
 
-            $lis = new ListsItems($this->db, $list['data']['ls_id']);
+            $lis = new MListsItems($this->db, $list['data']['ls_id']);
 
             $this->smarty->assign('list', $list);
             $this->smarty->assign('list_items', $lis->getActive());
@@ -48,7 +48,7 @@ class Page extends PageCommon {
     }
 
     private function getIndex() {
-        $lst = new Lists($this->db);
+        $lst = new MLists($this->db);
 
         $index_list = array();
         foreach ($lst->getActive() as $list) {
