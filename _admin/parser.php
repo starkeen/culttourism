@@ -8,11 +8,12 @@ $smarty->assign('title', 'Парсер');
 $c = new MCandidatePoints($db);
 
 if (isset($_GET['act'])) {
-    $out = array('state' => false, 'act' => $_GET['act'], 'data' => null, 'error' => null);
+    $out = array('state' => false, 'act' => $_GET['act'], 'data' => null, 'error' => array());
     switch ($_GET['act']) {
         case "load_list":
             $p = new Parser($db, $_GET['url']);
             $out['data'] = $p->getList();
+            $out['state'] = true;
             break;
     }
     header("Content-type: text/json");
