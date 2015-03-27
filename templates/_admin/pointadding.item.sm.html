@@ -5,7 +5,7 @@
     <tr>
         <th>Название</th>
         <td>
-            <input type="text" class="pointadding-item-title m_width_full" value="{$claim.cp_title}" />
+            <input type="text" class="pointadding-item-title m_width_full" value="{$claim.cp_title|escape:'html'}" />
             <input type="hidden" id="pointadding-item-id" value="{$claim.cp_id}" />
         </td>
         <td>Возможные аналоги</td>
@@ -23,6 +23,7 @@
             <ul class="pointadding-item-analogs-list"></ul>
             <div class="pointadding-item-analogs-error"></div>
             <div class="pointadding-item-analogs-ignore m_center m_hide"><input type="button" value="уже есть" data-state="5" /></div>
+            <br />
             <div class="pointadding-item-analogs-run m_center"><input type="button" value="искать" /></div>
         </td>
     </tr>
