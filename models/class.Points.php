@@ -1,5 +1,5 @@
 <?php
 
-class Points extends MPoints {
+class Points extends MPagePoints {
     //
 }

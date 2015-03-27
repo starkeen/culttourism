@@ -18,7 +18,7 @@ class Page extends PageCommon {
     private function getSuggests($db) {
         $out = array('query' => '', 'suggestions' => array());
         $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES | ENT_HTML5, "UTF-8");
-        $pc = new MCities($db);
+        $pc = new MPageCities($db);
         $variants = $pc->getSuggestion($out['query']);
 
         foreach ($variants as $row) {

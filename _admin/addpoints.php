@@ -26,7 +26,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
             $out['state'] = $res['error_code'] == 0;
             break;
         case "citysuggest":
-            $pc = new MCities($db);
+            $pc = new MPageCities($db);
             $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
             $out['suggestions'] = array();
             $variants = $pc->getSuggestion($out['query']);
@@ -44,7 +44,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
             ));
             break;
         case "get_citypage":
-            $pc = new MCities($db);
+            $pc = new MPageCities($db);
             $out['citypage'] = $pc->getItemByPk(intval($_GET['pc_id']));
             $out['state'] = true;
             break;
@@ -68,7 +68,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
                 'cp_active' => 0,
             ));
         case "move":
-            $pt = new MPoints($db);
+            $pt = new MPagePoints($db);
             $candidate = $c->getItemByPk($out['id']);
             if (mb_strlen($candidate['cp_title'], 'utf-8') <= 4) {
                 $out['error'][] = 'Слишком короткое название (минимум 4 символа)';

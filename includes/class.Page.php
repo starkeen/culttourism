@@ -209,8 +209,8 @@ class Page extends PageCommon {
             exit();
         }
 
-        $pcs = new MCities($this->db);
-        $pts = new MPoints($this->db);
+        $pcs = new MPageCities($this->db);
+        $pts = new MPagePoints($this->db);
         $row = $pcs->getCityByUrl($url);
 
         if (!empty($row) && isset($row['pc_title']) && $row['pc_title'] != '') {
@@ -282,7 +282,7 @@ class Page extends PageCommon {
             return false;
         }
 
-        $pts = new MPoints($this->db);
+        $pts = new MPagePoints($this->db);
         $object = $pts->getItemByPk($id);
         if (!$object || $object['pt_active'] == 0) {
             return false;

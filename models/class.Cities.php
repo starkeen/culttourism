@@ -1,5 +1,5 @@
 <?php
 
-class Cities extends MCities {
+class Cities extends MPageCities {
     //
 }

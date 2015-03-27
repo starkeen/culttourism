@@ -227,7 +227,7 @@ abstract class Core {
     private function getSuggestions404Local($req) {
         $out = array();
         if (strpos($req, '.html') !== false) {
-            $c = new MCities($this->db);
+            $c = new MPageCities($this->db);
 
             $uri = explode('/', $req);
             array_pop($uri);
