@@ -137,7 +137,7 @@ $towns['date_weights'] = $row['min_weight'];
 $towns['date_positions'] = $row['min_position'];
 
 
-
+// статистика по популярности городов в поиске
 $db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name AS country_name,
                 ws_city_id, ws_weight, ws.ws_weight_date,
                 ws_weight_min, ws.ws_weight_min_date,
@@ -152,7 +152,7 @@ $db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name A
                     LEFT JOIN $dbco co ON co.id = rc.country_id
             WHERE ws_weight > 0
                 AND pc_id IS NULL
-            ORDER BY ws_weight_min DESC, ws_weight_max DESC, ws_weight DESC
+            ORDER BY (ws_weight_max+ws_weight_min)/2 DESC, ws_weight_min DESC, ws_weight_max DESC, ws_weight DESC
             LIMIT 50";
 $db->exec();
 $stat = array();
@@ -167,6 +167,7 @@ while ($row = $db->fetch()) {
     $stat[] = $row;
 }
 
+// статистика по позициям имеющихся страниц
 $db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name AS country_name,
                 pc.pc_add_date, ws_city_id,
                 ws_weight, ws.ws_weight_date,
