@@ -275,7 +275,7 @@ class MPoints extends Model {
         }
         $values['pt_lastup_date'] = $values['pt_create_date'];
         $values['pt_lastup_user'] = $values['pt_create_user'];
-        if (strlen($values['pt_website']) != 0 && strpos($values['pt_website'], 'http') === false) {
+        if (isset($values['pt_website']) && strlen($values['pt_website']) != 0 && strpos($values['pt_website'], 'http') === false) {
             $values['pt_website'] = 'http://' . $values['pt_website'];
         }
         $new_id = parent::insert($values, $files);
