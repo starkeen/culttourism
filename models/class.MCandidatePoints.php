@@ -5,6 +5,18 @@ class MCandidatePoints extends Model {
     protected $_table_pk = 'cp_id';
     protected $_table_order = 'cp_date';
     protected $_table_active = 'cp_active';
+    
+    private $_types_markers = array(
+        1 => array('памятник',), //памятники
+        2 => array('цирт', 'зоопарк',), //места
+        3 => array('церковь', 'храм', 'монастырь',), //церкви
+        4 => array('музей', 'галерея',), //музеи
+        5 => array('парк',), //парки
+        6 => array('усадьба',), //усадьбы
+        7 => array('вокзал',), //вокзалы
+        8 => array('кафе', 'ресторан',), //кафе
+        9 => array('гостиница', 'отель', 'хостел',), //гостиницы
+    );
 
     public function __construct($db) {
         $this->_table_name = $db->getTableName('candidate_points');
