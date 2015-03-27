@@ -61,6 +61,10 @@ class MCandidatePoints extends Model {
                 }
             }
         }
+        if (strlen($data['cp_web']) != 0) {
+            $data['cp_web'] = str_replace('http://', '', $data['cp_web']);
+            $data['cp_web'] = 'http://' . $data['cp_web'];
+        }
         return $this->insert($data);
     }
 
