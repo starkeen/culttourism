@@ -7,9 +7,9 @@ class MCandidatePoints extends Model {
     protected $_table_active = 'cp_active';
     
     private $_types_markers = array(
-        1 => array('памятник',), //памятники
-        2 => array('цирт', 'зоопарк',), //места
-        3 => array('церковь', 'храм', 'монастырь',), //церкви
+        1 => array('памятник', 'монумент', 'мемориал', 'скульптура',), //памятники
+        2 => array('цирк', 'зоопарк', 'театр',), //места
+        3 => array('церковь', 'храм', 'монастырь', 'мечеть', 'синагога',), //церкви
         4 => array('музей', 'галерея',), //музеи
         5 => array('парк',), //парки
         6 => array('усадьба',), //усадьбы
@@ -55,14 +55,13 @@ class MCandidatePoints extends Model {
         if ($data['cp_type_id'] == 0) {
             foreach($this->_types_markers as $type => $markers) {
                 foreach($markers as $marker) {
-                    if (strpos($data['cp_state'], $marker) !== false) {
+                    if (strpos($data['cp_title'], $marker) !== false) {
                         $data['cp_type_id'] = $type;
                     }
                 }
             }
         }
-        if (strlen($data['cp_web']) != 0) {
-            $data['cp_web'] = str_replace('http://', '', $data['cp_web']);
+        if (strlen($data['cp_web']) != 0 && strpos($data['cp_web'], 'http') === false) {
             $data['cp_web'] = 'http://' . $data['cp_web'];
         }
         return $this->insert($data);
