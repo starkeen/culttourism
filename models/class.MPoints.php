@@ -248,6 +248,9 @@ class MPoints extends Model {
                 unset($values['pt_longitude']);
             }
         }
+        if (strlen($values['pt_website']) != 0 && strpos($values['pt_website'], 'http') === false) {
+            $values['pt_website'] = 'http://' . $values['pt_website'];
+        }
         parent::updateByPk($id, $values, $files);
     }
 
@@ -272,6 +275,9 @@ class MPoints extends Model {
         }
         $values['pt_lastup_date'] = $values['pt_create_date'];
         $values['pt_lastup_user'] = $values['pt_create_user'];
+        if (strlen($values['pt_website']) != 0 && strpos($values['pt_website'], 'http') === false) {
+            $values['pt_website'] = 'http://' . $values['pt_website'];
+        }
         $new_id = parent::insert($values, $files);
         $this->createSluglineById($new_id);
         return $new_id;
