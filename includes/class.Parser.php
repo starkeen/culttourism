@@ -12,7 +12,6 @@ class Parser {
         'komandirovka.ru' => array(
             'encoding' => 'utf-8',
             'doctype' => 'XHTML 1.0 Transitional',
-            'list_nodes' => "//div[@class='ajax_objects']/div",
             'list_items' => array(
                 "//div[@class='ajax_objects']/div/div/div[@class='detail_h']/a[1]", //приоритетные
                 "//div[@class='ajax_objects']/div/a[1]", //топ
@@ -32,7 +31,7 @@ class Parser {
         $pconfig->set('Core.Encoding', 'UTF-8');
         $pconfig->set('HTML.Doctype', $this->_config['doctype']);
         $pconfig->set('URI.MakeAbsolute', true);
-        $pconfig->set('HTML.Allowed', 'div[class][id],p[class][id],b,strong,a[href],i');
+        $pconfig->set('HTML.Allowed', 'div[class][id],p[class][id],a[href][class][id]');
         $pconfig->set('URI.Base', $this->_url['scheme'] . '://' . $this->_url['host']);
         $pconfig->set('AutoFormat.AutoParagraph', true);
         $pconfig->set('Cache.DefinitionImpl', null);
@@ -60,8 +59,6 @@ class Parser {
             if (!is_null($elements)) {
                 foreach ($elements as $element) {
                     $out[] = array(
-                        'data' => print_r($element->getAttribute('href'), 1),
-                        'a' => $element->ownerDocument->saveHTML($element),
                         'title' => $element->nodeValue,
                         'link' => $element->getAttribute('href'),
                         'xpath' => $element->getNodePath(),
@@ -69,6 +66,23 @@ class Parser {
                 }
             }
         }
+        return $out;
+    }
+
+    public function getItem() {
+        $out = array(
+            'title' => '',
+            'type_title' => '',
+            'text' => '',
+            'addr' => '',
+            'phone' => '',
+            'web' => '',
+            'worktime' => '',
+            'email' => '',
+            'geo_lat' => '',
+            'geo_lon' => '',
+            'geo_zoom' => '',
+        );
         return $out;
     }
 
