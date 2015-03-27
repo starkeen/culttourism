@@ -248,7 +248,7 @@ class MPoints extends Model {
                 unset($values['pt_longitude']);
             }
         }
-        if (strlen($values['pt_website']) != 0 && strpos($values['pt_website'], 'http') === false) {
+        if (isset($values['pt_website']) && strlen($values['pt_website']) != 0 && strpos($values['pt_website'], 'http') === false) {
             $values['pt_website'] = 'http://' . $values['pt_website'];
         }
         parent::updateByPk($id, $values, $files);
