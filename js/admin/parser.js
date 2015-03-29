@@ -55,9 +55,15 @@ $(document).ready(function () {
         });
     });
     $(".parser-work-all").click(function () {
-        $(".parser-work-container table input").each(function () {
-            $(this).attr("checked", "checked");
-        });
+        if ($(this).attr("checked")) {
+            $(".parser-work-container table input").each(function () {
+                $(this).attr("checked", "checked");
+            });
+        } else {
+            $(".parser-work-container table input").each(function () {
+                $(this).removeAttr("checked");
+            });
+        }
         return false;
     });
     $(".parser-work-region").autocomplete({
