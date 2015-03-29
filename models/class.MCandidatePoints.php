@@ -5,7 +5,6 @@ class MCandidatePoints extends Model {
     protected $_table_pk = 'cp_id';
     protected $_table_order = 'cp_date';
     protected $_table_active = 'cp_active';
-    
     private $_types_markers = array(
         1 => array('памятник', 'монумент', 'мемориал', 'скульптура',), //памятники
         2 => array('цирк', 'зоопарк', 'театр',), //места
@@ -53,9 +52,9 @@ class MCandidatePoints extends Model {
         $data['cp_state'] = 3;
         $data['cp_active'] = 1;
         if (isset($data['cp_type_id']) && $data['cp_type_id'] == 0) {
-            foreach($this->_types_markers as $type => $markers) {
-                foreach($markers as $marker) {
-                    if (strpos($data['cp_title'], $marker) !== false) {
+            foreach ($this->_types_markers as $type => $markers) {
+                foreach ($markers as $marker) {
+                    if (stripos($data['cp_title'], $marker) !== false) {
                         $data['cp_type_id'] = $type;
                     }
                 }
