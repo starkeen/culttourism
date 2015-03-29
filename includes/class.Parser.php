@@ -76,6 +76,10 @@ class Parser {
             'geo_zoom' => 8,
         );
         $meta = array();
+        $replaces = array(
+            'from' => array('+7', '  ',),
+            'to' => array('', ' ',),
+        );
         $finder = new DomXPath($this->_dom);
         foreach ($this->_config['item'] as $k => $item) {
             $data = array();
@@ -93,7 +97,7 @@ class Parser {
                 }
             }
             asort($data);
-            $out[$k] = str_replace('  ', ' ', implode('; ', array_unique($data, SORT_LOCALE_STRING)));
+            $out[$k] = str_replace($replaces['from'], $replaces['to'], implode('; ', array_unique($data, SORT_LOCALE_STRING)));
         }
         if (strpos($out['web'], 'redirect') !== false) {
             $data = parse_url($out['web']);
