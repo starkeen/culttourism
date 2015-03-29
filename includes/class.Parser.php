@@ -13,6 +13,9 @@ class Parser {
     private $_config = null;
 
     public function __construct($db, $url) {
+        if ($url == '') {
+            exit;
+        }
         $this->_sites = include _DIR_ROOT . '/config/config.parser.php';
         $this->_url = parse_url($url);
         $this->_url['domain'] = str_replace('www.', '', $this->_url['host']);

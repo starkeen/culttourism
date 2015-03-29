@@ -61,6 +61,9 @@ h1, h2, h3 {
 .m_center {
     text-align: center;
 }
+.m_hide {
+    display:none;
+}
 .h_valign_top {
     vertical-align: top;
 }

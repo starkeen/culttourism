@@ -5,7 +5,16 @@
     <input type="text" class="parser-start-url" value="" />
     <input type="button" class="parser-start-run" value="Разобрать" />
 </div>
-<div class="parser-work-container"></div>
+<div class="parser-work-container m_hide">
+    <a href="#" class="parser-work-all">все</a>
+    <table></table>
+    <a href="#" class="parser-work-all">все</a>
+    <br /><br /><br />
+    <input type="text" class="parser-work-region" value="" placeholder="регион" />
+    <input type="hidden" class="parser-work-region-id" value="0" />
+    <input type="button" class="parser-work-import" value="загрузить" />
+    <br />
+</div>
 
 <script type="text/javascript" src="/js/admin/parser.js" defer="defer"></script>
 <style type="text/css">
@@ -14,5 +23,8 @@
     }
     .parser-start-url {
         width:350px;
+    }
+    .parser-work-container {
+        padding: 5px;
     }
 </style>
