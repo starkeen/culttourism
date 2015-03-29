@@ -7,6 +7,12 @@ $(document).ready(function () {
     } else {
         $(".pointadding-item-geo-set").removeClass("m_hide");
     }
+    $(".pointadding-item-title-quotes").click(function () {
+        // добавляем кавычки к последнему слову в наборе
+        var words = $(".pointadding-item-title").val().split(" ");
+        var last = '«' + words.pop().trim() + '»';
+        $(".pointadding-item-title").val((words.join(" ").trim() + ' ' + last).trim());
+    });
     $('#pointadding-item-city-pcid').change(function () {
         $.getJSON("addpoints.php", {
             act: "get_citypage",

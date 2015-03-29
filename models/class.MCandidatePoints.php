@@ -54,7 +54,7 @@ class MCandidatePoints extends Model {
         if (isset($data['cp_type_id']) && $data['cp_type_id'] == 0) {
             foreach ($this->_types_markers as $type => $markers) {
                 foreach ($markers as $marker) {
-                    if (stripos($data['cp_title'], $marker) !== false) {
+                    if (mb_stripos($data['cp_title'], $marker, 0, 'utf-8') !== false) {
                         $data['cp_type_id'] = $type;
                     }
                 }

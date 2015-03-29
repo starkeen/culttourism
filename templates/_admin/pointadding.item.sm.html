@@ -5,8 +5,9 @@
     <tr>
         <th>Название</th>
         <td>
-            <input type="text" class="pointadding-item-title m_width_full" value="{$claim.cp_title|escape:'html'}" />
+            <input type="text" class="pointadding-item-title" value="{$claim.cp_title|escape:'html'}" />
             <input type="hidden" id="pointadding-item-id" value="{$claim.cp_id}" />
+            <input type="button" class="pointadding-item-title-quotes" value="&laquo;&raquo;" />
         </td>
         <td>Возможные аналоги</td>
     </tr>
@@ -112,6 +113,9 @@
 <script type="text/javascript" src="/js/admin/addpoint.js" defer="defer"></script>
 
 <style type="text/css">
+    .pointadding-item-title {
+        width: 300px;
+    }
     .pointadding-item-select-type {
         display:inline-block;
         width:30px;

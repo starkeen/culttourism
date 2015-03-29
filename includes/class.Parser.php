@@ -73,7 +73,7 @@ class Parser {
             'email' => '',
             'geo_lat' => '',
             'geo_lon' => '',
-            'geo_zoom' => '',
+            'geo_zoom' => 8,
         );
         $meta = array();
         $finder = new DomXPath($this->_dom);
