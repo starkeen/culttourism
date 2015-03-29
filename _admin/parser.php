@@ -15,6 +15,11 @@ if (isset($_GET['act'])) {
             $out['data'] = $p->getList();
             $out['state'] = true;
             break;
+        case "load_item":
+            $p = new Parser($db, $_GET['url']);
+            $out['data'] = $p->getItem();
+            $out['state'] = true;
+            break;
     }
     header("Content-type: text/json");
     echo json_encode($out);
