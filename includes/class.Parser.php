@@ -105,6 +105,7 @@ class Parser {
             parse_str($data['query'], $parts);
             $out['web'] = $parts['goto'];
         }
+        $out['title'] = mb_strtoupper(mb_substr($out['title'], 0, 1, 'utf-8'), 'utf-8') . mb_substr($out['title'], 1, mb_strlen($out['title'], 'utf-8') - 1, 'utf-8');
         $out['text'] = strip_tags(html_entity_decode($out['text'], ENT_QUOTES, 'utf-8'));
         return $out;
     }
