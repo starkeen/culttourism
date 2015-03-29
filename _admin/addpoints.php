@@ -67,6 +67,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
                 'cp_state' => intval($_GET['state_id']),
                 'cp_active' => 0,
             ));
+            break;
         case "move":
             $pt = new MPagePoints($db);
             $candidate = $c->getItemByPk($out['id']);
