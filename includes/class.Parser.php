@@ -73,7 +73,7 @@ class Parser {
             'email' => '',
             'geo_lat' => '',
             'geo_lon' => '',
-            'geo_zoom' => 8,
+            'geo_zoom' => 14,
         );
         $meta = array();
         $replaces = array(
