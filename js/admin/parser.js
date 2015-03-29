@@ -55,7 +55,7 @@ $(document).ready(function () {
         });
     });
     $(".parser-work-all").click(function () {
-        if ($(this).attr("checked")) {
+        if ($(".parser-work-container table input:checked").length === 0) {
             $(".parser-work-container table input").each(function () {
                 $(this).attr("checked", "checked");
             });
