@@ -1,59 +1,68 @@
 <img class="pageicon" src="/img/admin/ico.a_refs.gif" />
 <h3>{$title}</h3>
-<form method="get">
-<table class="commontable">
-    <tr>
-        <th>Дата</th>
-        <th>Тип</th>
-        <th>Регион</th>
-        <th>Страница</th>
-        <th>Название</th>
-        <th>GPS</th>
-        <th>Статус</th>
-        <th>&nbsp;</th>
-    </tr>
-    <tr>
-        <td>&nbsp;</td>
-        <td>
-            <select name="type" style="width:80px;" onchange="submit();">
-                <option value="0">--все--</option>
-                {foreach from=$ref_pt item=pt}
-                <option value="{$pt.tp_id}" {if $pt.tp_id==$filter.type}selected{/if}>{$pt.tp_short}</option>
-                {/foreach}
-            </select>
-        </td>
-        <td>&nbsp;</td>
-        <td>
-            <select name="pcid" style="width:200px;" onchange="submit();">
-                <option value="0">--все--</option>
-                {foreach from=$ref_pc item=pg}
-                <option value="{$pg.id}" {if $pg.id==$filter.pcid}selected{/if}>{$pg.title}</option>
-                {/foreach}
-            </select>
-        </td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>
-            <select name="state" style="width:80px;" onchange="submit();">
-                <option value="0">--все--</option>
-                {foreach from=$ref_st item=st}
-                <option value="{$st.uv_id}" {if $st.uv_id==$filter.state}selected{/if}>{$st.uv_title}</option>
-                {/foreach}
-            </select>
-        </td>
-        <td>&nbsp;</td>
-    </tr>
-    {foreach from=$list item=req}
-    <tr>
-        <td>{$req.cp_date|date_format:"%d.%m.%Y"}</td>
-        <td title="{$req.type_title}" class="m_center"><img src="/img/points/x16/{$req.type_icon|default:'star.png'}"/></td>
-        <td>{$req.cp_city}</td>
-        <td><a href="{$req.page_url}" target="_blank">{$req.page_title}</a></td>
-        <td>{$req.cp_title}</td>
-        <td>{if $req.cp_latitude>0 && $req.cp_longitude>0}есть{else}нет{/if}</td>
-        <td>{$req.state_title}</td>
-        <td><a href="?id={$req.cp_id}"><img src="/img/btn/btn.tick.png"</a></td>
-    </tr>
-    {/foreach}
-</table>
+<form method="get" action="addpoints.php">
+    <table class="commontable">
+        <tr>
+            <th>&nbsp;</th>
+            <th>Дата</th>
+            <th>Тип</th>
+            <th>Регион</th>
+            <th>Страница</th>
+            <th>Название</th>
+            <th>GPS</th>
+            <th>Статус</th>
+            <th>&nbsp;</th>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                <select name="type" style="width:80px;" onchange="submit();">
+                    <option value="0">--все--</option>
+                    {foreach from=$ref_pt item=pt}
+                    <option value="{$pt.tp_id}" {if $pt.tp_id==$filter.type}selected{/if}>{$pt.tp_short}</option>
+                    {/foreach}
+                </select>
+            </td>
+            <td>&nbsp;</td>
+            <td>
+                <select name="pcid" style="width:200px;" onchange="submit();">
+                    <option value="0">--все--</option>
+                    {foreach from=$ref_pc item=pg}
+                    <option value="{$pg.id}" {if $pg.id==$filter.pcid}selected{/if}>{$pg.title}</option>
+                    {/foreach}
+                </select>
+            </td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+                <select name="state" style="width:80px;" onchange="submit();">
+                    <option value="0">--все--</option>
+                    {foreach from=$ref_st item=st}
+                    <option value="{$st.uv_id}" {if $st.uv_id==$filter.state}selected{/if}>{$st.uv_title}</option>
+                    {/foreach}
+                </select>
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+        {foreach from=$list item=req}
+        <tr>
+            <td>{counter}</td>
+            <td>{$req.cp_date|date_format:"%d.%m.%Y"}</td>
+            <td title="{$req.type_title}" class="m_center"><img src="/img/points/x16/{$req.type_icon|default:'star.png'}"/></td>
+            <td>{$req.cp_city}</td>
+            <td><a href="{$req.page_url}" target="_blank">{$req.page_title}</a></td>
+            <td>{$req.cp_title}</td>
+            <td>{if $req.cp_latitude>0 && $req.cp_longitude>0}есть{else}нет{/if}</td>
+            <td>{$req.state_title}</td>
+            <td><a href="?id={$req.cp_id}"><img src="/img/btn/btn.tick.png"</a></td>
+        </tr>
+        {/foreach}
+    </table>
 </form>
+
+<style type="text/css">
+    .commontable tr td:first-child {
+        text-align: center;
+    }
+</style>
