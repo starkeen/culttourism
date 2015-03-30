@@ -2,11 +2,14 @@ $(document).ready(function () {
     var item_id = $("#pointadding-item-id").val();
     var item_latitude = $("#pointadding-item-geo-lat").val();
     var item_longitude = $("#pointadding-item-geo-lon").val();
+    var referer = $("#pointadding-item-referer").val();
+    
     if (item_latitude != null && item_longitude != null) {
         $(".pointadding-item-geo-change").removeClass("m_hide");
     } else {
         $(".pointadding-item-geo-set").removeClass("m_hide");
     }
+    
     $(".pointadding-item-title-quotes").click(function () {
         // добавляем кавычки к последнему слову в наборе
         var words = $(".pointadding-item-title").val().split(" ");
@@ -60,7 +63,7 @@ $(document).ready(function () {
             state_id: $(this).data("state")
         }, function (data) {
             if (data.state) {
-                document.location.href = "addpoints.php";
+                document.location.href = referer;
             } else {
                 $(".pointadding-item-analogs-error").text(data.error);
             }
@@ -131,7 +134,7 @@ $(document).ready(function () {
         }, function (answer) {
             if (answer.state) {
                 if (ret) {
-                    document.location.href = "addpoints.php";
+                    document.location.href = referer;
                 } else {
                     $("body").trigger('afterSavingCandidate');
                 }
@@ -149,7 +152,7 @@ $(document).ready(function () {
             id: item_id
         }, function (data) {
             if (data.state) {
-                document.location.href = "addpoints.php";
+                document.location.href = referer;
             } else {
                 alert("Error: " + data.error.join(";\n"));
             }
