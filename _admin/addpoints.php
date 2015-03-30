@@ -129,6 +129,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
         'state' => isset($_GET['state']) ? intval($_GET['state']) : 0,
     );
     
+    $smarty->assign('filter', $filter);
     $smarty->assign('ref_pt', $pt->getActive());
     $smarty->assign('ref_st', $uv_st->getActive());
     $smarty->assign('list', $c->getActive($filter));
