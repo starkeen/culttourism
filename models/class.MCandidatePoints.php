@@ -66,7 +66,7 @@ class MCandidatePoints extends Model {
         return $this->insert($data);
     }
 
-    public function getActive() {
+    public function getActive($filter) {
         $this->_db->sql = "SELECT t.*,
                                 pc.pc_title AS page_title,
                                 uv_stat.uv_title AS state_title,
@@ -78,8 +78,20 @@ class MCandidatePoints extends Model {
                                     ON uv_stat.uv_id = t.cp_state
                                 LEFT JOIN {$this->_tables_related['ref_pointtypes']} AS pt
                                     ON pt.tp_id = t.cp_type_id
-                            WHERE $this->_table_active = 1
-                            ORDER BY $this->_table_order ASC\n";
+                            WHERE $this->_table_active = 1\n";
+        if ($filter['type'] > 0) {
+            $this->_db->sql .= "AND t.cp_type_id = '".intval($filter['type'])."'\n";
+        }
+        if ($filter['type'] == -1) {
+            $this->_db->sql .= "AND t.cp_type_id = '0'\n";
+        }
+        if ($filter['pcid'] > 0) {
+            $this->_db->sql .= "AND t.cp_citypage_id = '".intval($filter['pcid'])."'\n";
+        }
+        if ($filter['state'] != 0) {
+            $this->_db->sql .= "AND t.cp_state = '".intval($filter['state'])."'\n";
+        }
+        $this->_db->sql .= "ORDER BY $this->_table_order ASC\n";
         $this->_db->exec();
         return $this->_db->fetchAll();
     }
