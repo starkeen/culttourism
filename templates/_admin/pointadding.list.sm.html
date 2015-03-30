@@ -48,7 +48,7 @@
         <td>{$req.cp_date|date_format:"%d.%m.%Y"}</td>
         <td title="{$req.type_title}" class="m_center"><img src="/img/points/x16/{$req.type_icon|default:'star.png'}"/></td>
         <td>{$req.cp_city}</td>
-        <td>{$req.page_title}</td>
+        <td><a href="{$req.page_url}" target="_blank">{$req.page_title}</a></td>
         <td>{$req.cp_title}</td>
         <td>{if $req.cp_latitude>0 && $req.cp_longitude>0}есть{else}нет{/if}</td>
         <td>{$req.state_title}</td>
