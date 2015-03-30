@@ -34,6 +34,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
                 $out['suggestions'][] = array(
                     'value' => "{$variant['pc_title']}",
                     'pcid' => "{$variant['pc_id']}",
+                    'url' => "{$variant['url']}/",
                 );
             }
             break;
@@ -122,21 +123,21 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
 } else {
     // -----------   список активных ----------
     $pt = new MRefPointtypes($db);
-    $uv_st = new UnirefValues($db,3);
-    
+    $uv_st = new UnirefValues($db, 3);
+
     $filter = array(
         'type' => isset($_GET['type']) ? intval($_GET['type']) : 0,
         'pcid' => isset($_GET['pcid']) ? intval($_GET['pcid']) : 0,
         'state' => isset($_GET['state']) ? intval($_GET['state']) : 0,
     );
-    
+
     $list = $c->getActive($filter);
     $ref_pc = array();
-    foreach($list as $li) {
-        $ref_pc[$li['cp_citypage_id']] = array('id'=>$li['cp_citypage_id'], 'title'=>$li['page_title'] ? $li['page_title'] : '-не указано-');
+    foreach ($list as $li) {
+        $ref_pc[$li['cp_citypage_id']] = array('id' => $li['cp_citypage_id'], 'title' => $li['page_title'] ? $li['page_title'] : '-не указано-');
     }
     asort($ref_pc);
-    
+
     $smarty->assign('filter', $filter);
     $smarty->assign('ref_pt', $pt->getActive());
     $smarty->assign('ref_pc', $ref_pc);

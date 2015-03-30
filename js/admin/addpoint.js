@@ -3,13 +3,13 @@ $(document).ready(function () {
     var item_latitude = $("#pointadding-item-geo-lat").val();
     var item_longitude = $("#pointadding-item-geo-lon").val();
     var referer = $("#pointadding-item-referer").val();
-    
+
     if (item_latitude != null && item_longitude != null) {
         $(".pointadding-item-geo-change").removeClass("m_hide");
     } else {
         $(".pointadding-item-geo-set").removeClass("m_hide");
     }
-    
+
     $(".pointadding-item-title-quotes").click(function () {
         // добавляем кавычки к последнему слову в наборе
         var words = $(".pointadding-item-title").val().split(" ");
@@ -24,6 +24,7 @@ $(document).ready(function () {
         }, function (data) {
             if (data.state) {
                 $(".pointadding-item-city-pctitle").text(data.citypage.pc_title);
+                $(".pointadding-item-city-pctitle").attr("href", data.citypage.url);
             } else {
                 console.log("error", data);
             }
@@ -177,6 +178,7 @@ $(document).ready(function () {
             }, function (data) {
                 if (data.state) {
                     $(".pointadding-item-city-pctitle").text(suggestion.value);
+                    $(".pointadding-item-city-pctitle").attr("href", suggestion.url);
                 } else {
                     console.log("error", data);
                 }

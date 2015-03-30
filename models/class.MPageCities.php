@@ -120,6 +120,16 @@ class MPageCities extends Model {
         return $out;
     }
 
+    public function getItemByPk($id) {
+        $cid = intval($id);
+        $this->_db->sql = "SELECT t.*, CONCAT(url.url, '/') AS url
+                            FROM $this->_table_name t
+                                LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = t.pc_url_id
+                            WHERE $this->_table_pk = '$cid'";
+        $this->_db->exec();
+        return $this->_db->fetch();
+    }
+
     public function updateByPk($id, $values = array(), $files = array()) {
         if (isset($values['pc_latitude'])) {
             $values['pc_latitude'] = floatval(str_replace(',', '.', trim($values['pc_latitude'])));
