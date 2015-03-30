@@ -76,7 +76,7 @@ class MCandidatePoints extends Model {
                                 LEFT JOIN {$this->_tables_related['pagecity']} AS pc
                                     ON pc.pc_id = t.cp_citypage_id
                                     LEFT JOIN {$this->_tables_related['region_url']} AS u
-                                        ON u.uid_id = pc.pc_url_id
+                                        ON u.uid = pc.pc_url_id
                                 LEFT JOIN {$this->_tables_related['uniref_values']} AS uv_stat
                                     ON uv_stat.uv_id = t.cp_state
                                 LEFT JOIN {$this->_tables_related['ref_pointtypes']} AS pt
