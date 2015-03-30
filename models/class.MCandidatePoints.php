@@ -45,6 +45,7 @@ class MCandidatePoints extends Model {
         $this->_addRelatedTable('pagecity');
         $this->_addRelatedTable('uniref_values');
         $this->_addRelatedTable('ref_pointtypes');
+        $this->_addRelatedTable('region_url');
     }
 
     public function add($data) {
@@ -68,12 +69,14 @@ class MCandidatePoints extends Model {
 
     public function getActive($filter) {
         $this->_db->sql = "SELECT t.*,
-                                pc.pc_title AS page_title,
+                                pc.pc_title AS page_title, CONCAT(url.url, '/') AS page_url,
                                 uv_stat.uv_title AS state_title,
                                 pt.tp_icon AS type_icon, pt.tp_short AS type_title
                             FROM $this->_table_name AS t
                                 LEFT JOIN {$this->_tables_related['pagecity']} AS pc
                                     ON pc.pc_id = t.cp_citypage_id
+                                    LEFT JOIN {$this->_tables_related['region_url']} AS url
+                                        ON u.uid_id = pc.pc_url_id
                                 LEFT JOIN {$this->_tables_related['uniref_values']} AS uv_stat
                                     ON uv_stat.uv_id = t.cp_state
                                 LEFT JOIN {$this->_tables_related['ref_pointtypes']} AS pt
