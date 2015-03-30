@@ -1,6 +1,6 @@
 <img class="pageicon" src="/img/admin/ico.a_refs.gif" />
 <h3>{$title}</h3>
-
+<form method="get">
 <table class="commontable">
     <tr>
         <th>Дата</th>
@@ -11,6 +11,28 @@
         <th>GPS</th>
         <th>Статус</th>
         <th>&nbsp;</th>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td>
+            <select name="type">
+                <option value="0">--все--</option>
+            </select>
+        </td>
+        <td>&nbsp;</td>
+        <td>
+            <select name="pcid">
+                <option value="0">--все--</option>
+            </select>
+        </td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>
+            <select name="state">
+                <option value="0">--все--</option>
+            </select>
+        </td>
+        <td>&nbsp;</td>
     </tr>
     {foreach from=$list item=req}
     <tr>
@@ -25,3 +47,4 @@
     </tr>
     {/foreach}
 </table>
+</form>
