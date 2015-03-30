@@ -120,7 +120,18 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/pointadding.item.sm.html'));
 } else {
     // -----------   список активных ----------
-    $smarty->assign('list', $c->getActive());
+    $pt = new MRefPointtypes($db);
+    $uv_st = new UnirefValues($db,3);
+    
+    $filter = array(
+        'type' => isset($_GET['type']) ? intval($_GET['type']) : 0;
+        'pcid' => isset($_GET['pcid']) ? intval($_GET['pcid']) : 0;
+        'state' => isset($_GET['state']) ? intval($_GET['state']) : 0;
+    );
+    
+    $smarty->assign('ref_pt', $pt->getActive());
+    $smarty->assign('ref_st', $uv_st->getActive());
+    $smarty->assign('list', $c->getActive($filter));
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/pointadding.list.sm.html'));
 }
 
