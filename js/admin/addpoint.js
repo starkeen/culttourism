@@ -16,6 +16,19 @@ $(document).ready(function () {
         var last = '«' + words.pop().trim() + '»';
         $(".pointadding-item-title").val((words.join(" ").trim() + ' ' + last).trim());
     });
+
+    $(".pointadding-item-addr-cut").click(function () {
+        //обрезаем адрес от начала до города
+        var addr = $(".pointadding-item-addr").val();
+        var city = $(".pointadding-item-city-pctitle").text();
+        var pos = addr.indexOf(city);
+        if (pos !== -1) {
+            $(".pointadding-item-addr").val('г. ' + addr.substr(pos, addr.length));
+        }
+        var cleaned = $(".pointadding-item-addr").val().replace(/\.(\d+)/g, ". $1").replace(/\s{2,}/g, ' ');
+        $(".pointadding-item-addr").val(cleaned);
+    });
+
     $('#pointadding-item-city-pcid').change(function () {
         $.getJSON("addpoints.php", {
             act: "get_citypage",
@@ -36,7 +49,6 @@ $(document).ready(function () {
     $(".pointadding-item-analogs-run input").click(function () {
         // поиск аналогов, добавленных ранее
         var pname = $(".pointadding-item-title").val();
-        $(".pointadding-item-analogs-ignore").addClass("m_hide");
         $(".pointadding-item-analogs-error").empty();
         $(".pointadding-item-analogs-list").empty();
         $.getJSON("addpoints.php", {

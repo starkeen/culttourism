@@ -51,12 +51,12 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
             break;
         case "save_candidate":
             $out['state'] = $c->updateByPk($out['id'], array(
-                'cp_title' => $_POST['title'],
-                'cp_text' => $_POST['text'],
-                'cp_addr' => $_POST['addr'],
-                'cp_phone' => $_POST['phone'],
-                'cp_worktime' => $_POST['worktime'],
-                'cp_web' => $_POST['web'],
+                'cp_title' => trim($_POST['title']),
+                'cp_text' => trim($_POST['text']),
+                'cp_addr' => trim($_POST['addr']),
+                'cp_phone' => trim($_POST['phone']),
+                'cp_worktime' => trim($_POST['worktime']),
+                'cp_web' => trim($_POST['web']),
                 'cp_latitude' => cut_trash_float($_POST['lat']),
                 'cp_longitude' => cut_trash_float($_POST['lon']),
                 'cp_zoom' => cut_trash_float($_POST['zoom']),

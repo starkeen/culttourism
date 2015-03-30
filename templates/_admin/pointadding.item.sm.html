@@ -22,10 +22,9 @@
             </a>
             {/foreach}
         </td>
-        <td rowspan="5" class="h_valign_top">
+        <td rowspan="4" class="h_valign_top">
             <ul class="pointadding-item-analogs-list"></ul>
             <div class="pointadding-item-analogs-error"></div>
-            <div class="pointadding-item-analogs-ignore m_center m_hide"><input type="button" value="уже есть" data-state="5" /></div>
             <br />
             <div class="pointadding-item-analogs-run m_center"><input type="button" value="искать" /></div>
         </td>
@@ -63,7 +62,11 @@
     <tr>
         <th>Адрес</th>
         <td>
-            <input type="text" class="pointadding-item-addr m_width_full" value="{$claim.cp_addr|escape:'html'}" />
+            <input type="button" class="pointadding-item-addr-cut" value="г." />
+            <input type="text" class="pointadding-item-addr" value="{$claim.cp_addr|escape:'html'}" />
+        </td>
+        <td class="pointadding-item-analogs-ignore m_center">
+            <input type="button" value="уже есть" data-state="5" />
         </td>
     </tr>
     <tr>
@@ -152,6 +155,9 @@
         width: 654px;
         background-color: #efefef;
         border:1px solid #ddd;
+    }
+    .pointadding-item-addr {
+        width: 600px;
     }
     .pointadding-item-city-typed {
         font-style: italic;
