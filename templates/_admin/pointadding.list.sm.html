@@ -26,6 +26,9 @@
         <td>
             <select name="pcid" style="width:200px;" onchange="submit();">
                 <option value="0">--все--</option>
+                {foreach from=$ref_pc item=pg}
+                <option value="{$pg.id}" {if $pg.id==$filter.pcid}selected{/if}>{$pg.title}</option>
+                {/foreach}
             </select>
         </td>
         <td>&nbsp;</td>
