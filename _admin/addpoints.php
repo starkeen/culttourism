@@ -133,7 +133,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
     $list = $c->getActive($filter);
     $ref_pc = array();
     foreach($list as $li) {
-        $ref_pc[$li['cp_citypage_id']] = array('id'=>$li['cp_citypage_id'], 'title'=>$li['pc_title'] ? $li['pc_title'] : '-не указано-');
+        $ref_pc[$li['cp_citypage_id']] = array('id'=>$li['cp_citypage_id'], 'title'=>$li['page_title'] ? $li['page_title'] : '-не указано-');
     }
     asort($ref_pc);
     
