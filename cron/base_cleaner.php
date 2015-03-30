@@ -7,6 +7,7 @@ $tables = array(
     array($db->getTableName('news_items'), 'ni_pubdate', 3,),
     array($db->getTableName('log_actions'), 'la_date', 60,),
     array($db->getTableName('log_errors'), 'le_date', 30,),
+    array($db->getTableName('curl_cache'), 'cc_date', 60,),
 );
 
 $db->sql = "DELETE FROM $dbau WHERE au_service IN ('ajax', 'map'))";

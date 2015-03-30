@@ -9,10 +9,10 @@ $tables = array(
     $db->getTableName('siteprorerties'),
     $db->getTableName('news_items'),
     $db->getTableName('wordstat'),
+    $db->getTableName('candidate_points'),
 );
 
 foreach ($tables as $table) {
     $db->sql = "OPTIMIZE TABLE $table";
     $db->exec();
 }
-?>
