@@ -18,7 +18,7 @@
             <select name="type" style="width:80px;" onchange="submit();">
                 <option value="0">--все--</option>
                 {foreach from=$ref_pt item=pt}
-                <option value="{$pt.tp_id}">{$pt.tp_short}</option>
+                <option value="{$pt.tp_id}" {if $pt.tp_id==$filter.type}selected{/if}>{$pt.tp_short}</option>
                 {/foreach}
             </select>
         </td>
@@ -34,7 +34,7 @@
             <select name="state" style="width:80px;" onchange="submit();">
                 <option value="0">--все--</option>
                 {foreach from=$ref_st item=st}
-                <option value="{$st.uv_id}">{$st.uv_title}</option>
+                <option value="{$st.uv_id}" {if $st.uv_id==$filter.state}selected{/if}>{$st.uv_title}</option>
                 {/foreach}
             </select>
         </td>
