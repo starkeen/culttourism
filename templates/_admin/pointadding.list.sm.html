@@ -15,23 +15,23 @@
     <tr>
         <td>&nbsp;</td>
         <td>
-            <select name="type">
+            <select name="type" style="width:100px;">
                 <option value="0">--все--</option>
                 {foreach from=$ref_pt item=pt}
-                <option value="{$pt.pt_id}">{$pt.pt_short}</option>
+                <option value="{$pt.tp_id}">{$pt.tp_short}</option>
                 {/foreach}
             </select>
         </td>
         <td>&nbsp;</td>
         <td>
-            <select name="pcid">
+            <select name="pcid" style="width:200px;">
                 <option value="0">--все--</option>
             </select>
         </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>
-            <select name="state">
+            <select name="state" style="width:100px;">
                 <option value="0">--все--</option>
                 {foreach from=$ref_st item=st}
                 <option value="{$st.uv_id}">{$st.uv_title}</option>
