@@ -17,6 +17,9 @@
         <td>
             <select name="type">
                 <option value="0">--все--</option>
+                {foreach from=$ref_pt item=pt}
+                <option value="{$pt.pt_id}">{$pt.pt_short}</option>
+                {/foreach}
             </select>
         </td>
         <td>&nbsp;</td>
@@ -30,6 +33,9 @@
         <td>
             <select name="state">
                 <option value="0">--все--</option>
+                {foreach from=$ref_st item=st}
+                <option value="{$st.uv_id}">{$st.uv_title}</option>
+                {/foreach}
             </select>
         </td>
         <td>&nbsp;</td>
