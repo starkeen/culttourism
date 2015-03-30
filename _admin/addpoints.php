@@ -115,6 +115,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
     $item = $c->getItemByPk(intval($_GET['id']));
 
     $smarty->assign('claim', $item);
+    $smarty->assign('referer', isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'addpoints.php');
     $smarty->assign('ref_types', $rpt->getActive());
     // -----------   обработка заявки ----------
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/pointadding.item.sm.html'));
