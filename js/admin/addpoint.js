@@ -87,6 +87,9 @@ $(document).ready(function () {
             $(".pointadding-item-mapcontainer").removeClass("m_hide");
             $(".pointadding-item-geo-go").removeClass("m_hide");
             $(".pointadding-item-geo-get").removeClass("m_hide");
+            if (item_latitude == 0 && item_longitude == 0) {
+                $(".pointadding-item-geo-get").click();
+            }
         } else {
             $(this).data("mapstate", 0);
             $(".pointadding-item-textcontainer").removeClass("m_hide");
