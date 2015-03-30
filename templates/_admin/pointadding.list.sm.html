@@ -3,7 +3,7 @@
 <form method="get" action="addpoints.php">
     <table class="commontable">
         <tr>
-            <th>&nbsp;</th>
+            <th>№ п/п</th>
             <th>Дата</th>
             <th>Тип</th>
             <th>Регион</th>
@@ -19,6 +19,7 @@
             <td>
                 <select name="type" style="width:80px;" onchange="submit();">
                     <option value="0">--все--</option>
+                    <option value="-1" {if $filter.type == -1}selected{/if}>-нет-</option>
                     {foreach from=$ref_pt item=pt}
                     <option value="{$pt.tp_id}" {if $pt.tp_id==$filter.type}selected{/if}>{$pt.tp_short}</option>
                     {/foreach}
