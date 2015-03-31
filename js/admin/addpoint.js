@@ -48,7 +48,7 @@ $(document).ready(function () {
     }
     $(".pointadding-item-analogs-run input").click(function () {
         // поиск аналогов, добавленных ранее
-        var pname = $(".pointadding-item-title").val();
+        var pname = $(".pointadding-item-title").val() + ' ' + $(".pointadding-item-city-pctitle").text();
         $(".pointadding-item-analogs-error").empty();
         $(".pointadding-item-analogs-list").empty();
         $.getJSON("addpoints.php", {
