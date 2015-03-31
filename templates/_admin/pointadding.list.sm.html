@@ -17,7 +17,7 @@
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td>
-                <select name="type" style="width:80px;" onchange="submit();">
+                <select name="type" style="width:50px;" onchange="submit();">
                     <option value="0">--все--</option>
                     <option value="-1" {if $filter.type == -1}selected{/if}>-нет-</option>
                     {foreach from=$ref_pt item=pt}
@@ -27,7 +27,7 @@
             </td>
             <td>&nbsp;</td>
             <td>
-                <select name="pcid" style="width:200px;" onchange="submit();">
+                <select name="pcid" style="width:100px;" onchange="submit();">
                     <option value="0">--все--</option>
                     {foreach from=$ref_pc item=pg}
                     <option value="{$pg.id}" {if $pg.id==$filter.pcid}selected{/if}>{$pg.title}</option>
