@@ -50,11 +50,18 @@ img {
     border: none;
 }
 h1, h2, h3 {
-    background-image: url('../img/bg/tab2.gif');
+    background-image: url('/img/bg/tab2.gif');
     margin: 0;
     padding: 10px;
     padding-left: 20px;
     color: #009FD4;
+}
+ymaps h3 {
+    border:0;
+    color: #000;
+    padding:0;
+    font-size: 12pt;
+    background: none;
 }
 
 /* -------------------------------  MODIFIERS --------------------------- */
