@@ -212,6 +212,9 @@
     margin:5px;
 }
 ymaps h3 {
+    border:0;
+    color: #000;
+    padding:0;
     font-size: 12pt;
     background: none;
 }
