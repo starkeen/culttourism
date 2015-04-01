@@ -35,4 +35,23 @@ return array(
                 'type' => 2,
             ),
         ),
-    ),);
+    ),
+    'sobory.ru' => array(
+        'encoding' => 'utf-8',
+        'doctype' => 'XHTML 1.0 Transitional',
+        'list_items' => array(),
+        'item' => array(),
+    ),
+    'autotravel.ru' => array(
+        'encoding' => 'utf-8',
+        'doctype' => 'XHTML 1.0 Transitional',
+        'list_items' => array(),
+        'item' => array(),
+    ),
+    'doroga.ua' => array(
+        'encoding' => 'utf-8',
+        'doctype' => 'XHTML 1.0 Transitional',
+        'list_items' => array(),
+        'item' => array(),
+    ),
+);
