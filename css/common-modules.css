@@ -76,6 +76,15 @@
 .city-tree-full li a.m_left_moremore {
     margin-left:60px;
 }
+#city_anons {
+    height: 60px;
+    background:#efefef;
+    border:1px solid #ddd;
+    border-left:3px solid #ddd;
+    padding:3px;
+    font-size: 90%;
+    font-style: italic;
+}
 
 /*------------------------------------- LIST --------------------------*/
 .list-half-left {
