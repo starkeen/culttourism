@@ -37,6 +37,9 @@
             </table>
         </div>
     </div>
+    {if $city.pc_announcement}
+    <div id="city_announcement">{$city.pc_announcement}</div>
+    {/if}
     <div id="pc_text_hidd" class="hiddenedit">{$city.pc_text}</div>
     <textarea id="pc_text_edit" class="hiddenedit_active" style="width:100%;display:none;"></textarea>
     <div class="formhandler" id="pc_text_handler">

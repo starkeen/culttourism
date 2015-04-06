@@ -345,6 +345,18 @@ textarea.feedinput {
     color:#fff;
     text-decoration: none;
 }
+
+#city_announcement {
+    margin:10px;
+    margin-right: 725px;
+    background:#efefef;
+    border:1px solid #ddd;
+    border-left:3px solid #ddd;
+    padding:3px;
+    font-size: 90%;
+    font-style: italic;
+}
+
 #citypoints {
     clear:both;
 }

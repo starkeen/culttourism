@@ -66,6 +66,9 @@
         font-size: 110%;
         padding: 6px;
     }
+    #city_announcement {
+        margin-right: 210px;
+    }
     .city_nearmenu ul li {
         margin: 4px;
     }
@@ -208,6 +211,9 @@
     }
     #city_path {
         display:none;
+    }
+    #city_announcement {
+        margin: 0;
     }
     #object_icon {
         display:none;
