@@ -16,6 +16,7 @@
             <th>Название</th>
             <th>Описание</th>
             <th>Мета</th>
+            <th>Анонс</th>
             <th>Точки</th>
             <th>Я.Частота</th>
             <th>Я.Позиция</th>
@@ -38,6 +39,7 @@
                    ><b>{$city.pc_title}</b></a></td>
             <td style="color: {if $city.len < 1200}#8B0000{else}#228B22{/if};">{$city.len} знаков</td>
             <td>{$city.meta}</td>
+            <td>{$city.anons_len} зн</td>
             <td>{$city.pts} точек</td>
             <td>{$city.ws_weight_max}</td>
             <td style="color:{if $city.ws_position == 0}#8B0000{elseif $city.ws_position > 10}#FF0000{else}#228B22{/if};">{$city.ws_position}</td>

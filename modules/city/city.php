@@ -225,6 +225,7 @@ class Page extends PageCommon {
         $dbu = $db->getTableName('region_url');
         $dbcd = $db->getTableName('city_data');
         $dbcf = $db->getTableName('city_fields');
+        $dbws = $db->getTableName('wordstat');
 
         if (isset($_POST) && !empty($_POST)) {
             //print_x($_POST);
@@ -303,11 +304,19 @@ class Page extends PageCommon {
         while ($row = $db->fetch()) {
             $ref_meta[] = $row;
         }
+        
+        $db->sql = "SELECT *
+                    FROM $dbws
+                    WHERE ws_city_title = '{$citypage['pc_title']}'
+                    LIMIT 1";
+        $db->exec();
+        $yandex = $db->fetch();
 
         $smarty->assign('city', $citypage);
         $smarty->assign('baseurl', $this->basepath);
         $smarty->assign('meta', $meta);
         $smarty->assign('ref_meta', $ref_meta);
+        $smarty->assign('yandex', $yandex);
 
         $this->lastedit_timestamp = $row['last_update'];
 
@@ -456,7 +465,10 @@ class Page extends PageCommon {
         $where = (!$this->checkEdit()) ? "WHERE city.pc_text is not null" : '';
         $db->sql = "SELECT city.pc_id, city.pc_title, city.pc_latitude, city.pc_longitude,
                             city.pc_city_id, city.pc_region_id, city.pc_country_id,
-                            url.url, CHAR_LENGTH(city.pc_text) as len, city.pc_inwheretext,
+                            url.url,
+                            CHAR_LENGTH(city.pc_text) as len,
+                            CHAR_LENGTH(city.pc_announcement) as anons_len,
+                            city.pc_inwheretext,
                             city.pc_pagepath,
                             (SELECT count(pt_id) FROM $dbp WHERE pt_citypage_id = city.pc_id) as pts,
                             (SELECT count(cd_id) FROM $dbcd WHERE cd_pc_id = city.pc_id) as meta,

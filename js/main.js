@@ -55,6 +55,7 @@ $(document).ready(function () {
             $("#pc_text_handler input").show();
             $("#map_container").hide();
             $("#city_float").hide();
+            $("#city_announcement").hide();
             $(document).css("cursor", "default");
         }
         if (this.id == "pt_name_hidd") {//-------- название точки ------
@@ -108,6 +109,7 @@ $(document).ready(function () {
                 $("#pc_text_hidd").html(a).show().removeClass("hiddenedit_active");
                 $("#map_container").show();
                 $("#city_float").show();
+                $("#city_announcement").show();
             });
             $(document).css("cursor", "default");
         }
@@ -231,6 +233,7 @@ $(document).ready(function () {
             $("div#pc_text_handler input").hide();
             $("#map_container").show();
             $("#city_float").show();
+            $("#city_announcement").show();
         }
         if ($(this).parent().attr("id") == "pt_name_handler") {//------ имя точки
             $("#pt_name_edit").hide().removeClass("hiddenedit_active");
