@@ -239,9 +239,11 @@ class Page extends PageCommon {
             $pc_title_translit = cut_trash_string($_POST['translit']);
             $pc_title_synonym = cut_trash_string($_POST['synonym']);
             $pc_website = cut_trash_string($_POST['web']);
+            $pc_announcement = cut_trash_text($_POST['anons']);
             $url = cut_trash_string($_POST['url']);
             $db->sql = "UPDATE $dbc SET
                         pc_keywords = '$pc_keywords', pc_description = '$pc_description',
+                        pc_announcement = '$pc_announcement',
                         pc_latitude = '$pc_latitude', pc_longitude = '$pc_longitude',
                         pc_inwheretext = '$pc_inwheretext', pc_title_synonym = '$pc_title_synonym',
                         pc_title_english = '$pc_title_english', pc_title_translit = '$pc_title_translit',
@@ -270,13 +272,13 @@ class Page extends PageCommon {
             exit();
         }
 
-        $db->sql = "SELECT c.pc_id, c.pc_title, c.pc_keywords, c.pc_description,
-                    c.pc_latitude, c.pc_longitude, c.pc_inwheretext, c.pc_title_translit, c.pc_title_english,
-                    c.pc_title_synonym, c.pc_website,
-                    UNIX_TIMESTAMP(c.pc_lastup_date) AS last_update,
-                    u.url
+        $db->sql = "SELECT c.pc_id, c.pc_title, c.pc_keywords, c.pc_description, c.pc_announcement,
+                            c.pc_latitude, c.pc_longitude, c.pc_inwheretext, c.pc_title_translit, c.pc_title_english,
+                            c.pc_title_synonym, c.pc_website,
+                            UNIX_TIMESTAMP(c.pc_lastup_date) AS last_update,
+                            u.url
                     FROM $dbc c
-                    LEFT JOIN $dbu u ON u.uid = c.pc_url_id
+                        LEFT JOIN $dbu u ON u.uid = c.pc_url_id
                     WHERE pc_id = '$city_id'";
         $db->exec();
         $citypage = $db->fetch();
@@ -493,5 +495,3 @@ class Page extends PageCommon {
     }
 
 }
-
-?>

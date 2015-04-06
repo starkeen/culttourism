@@ -40,8 +40,9 @@
                 <td>&nbsp;</td>
             </tr>
             <tr>
-                <td nowrap>официальный сайт города (региона)</td>
-                <td colspan="4"><input type="text" name="web" value="{$city.pc_website}" /></td>
+                <td nowrap>красивый анонс</td>
+                <td colspan="3"><textarea name="anons" id="city_anons" style="width:99%;height:40px;">{$city.pc_announcement}</textarea></td>
+                <td><span class="city_form_hint" id="city_sign_anons" title="обычно 150-200">0</span></td>
             </tr>
             <tr>
                 <td nowrap>URL страницы</td>
@@ -50,9 +51,13 @@
         </table>
     </div>
     <hr />
+    <input type="hidden" name="web" value="{$city.pc_website}" />
     <input type="submit" value="сохранить" />
 </form>
+
+
 <hr />
+
 <div style="width:400px;margin:0 auto;border:1px solid #777;">
     <input type="hidden" id="city_meta_pcid" value="{$city.pc_id}" />
     <table id="city_meta_table">
@@ -81,7 +86,7 @@
         </tr>
     </table>
 </div>
-{literal}
+
 <style>
     td {
         vertical-align: top;
@@ -95,4 +100,3 @@
         cursor:pointer;
     }
 </style>
-{/literal}

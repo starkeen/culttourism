@@ -491,6 +491,9 @@ $(document).ready(function () {
     $(document).on("keyup", "#city_descr", function () {
         $("#city_sign_descr").text($("#city_descr").val().length);
     });
+    $(document).on("keyup", "#city_anons", function () {
+        $("#city_sign_anons").text($("#city_anons").val().length);
+    });
     $(".button_active").click(function () {
         switch ($(this).data("act")) {
             case "add":

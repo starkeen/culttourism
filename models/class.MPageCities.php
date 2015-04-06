@@ -13,6 +13,7 @@ class MPageCities extends Model {
             'pc_text',
             'pc_keywords',
             'pc_description',
+            'pc_announcement',
             'pc_city_id',
             'pc_url_id',
             'pc_region_id',
