@@ -578,6 +578,10 @@ function showWindByURL(url, get) {
         height: 200,
         overlayCss: {
             backgroundColor: "#ddd"
+        },
+        onShow: function (dialog) {//перепозиционирование окна после показа
+            var modal = this;
+            modal.setPosition();
         }
     });
     $.get(url, get, function (data) {
