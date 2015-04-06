@@ -2,7 +2,17 @@ $(document).ready(function () {
     //------------------------------------- BEST OBJECTS -------------------------------
     $(".obj_best").append("<img class=\"obj_best_pic\" src=\"/img/points/best-24.png\" />");
     //---------------------------------- OPEN OBJECT WINDOW ----------------------------
+    var isMobile = window.matchMedia("only screen and (max-width: 750px)");
+    if (isMobile.matches) {
+        $(".objlink").each(function () {
+            $(this).addClass("m_mobile");
+        });
+    }
+
     $(".objlink").live("click", function () {
+        if ($(this).hasClass("m_mobile")) {
+            return true;
+        }
         var id = this.href.split("/").pop();
         if (/object[0-9]+.html/gi.test(id)) {
             showWindByURL("/ajax/point/", {

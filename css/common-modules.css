@@ -428,6 +428,10 @@ textarea.feedinput {
 .objlink:hover {
     border-bottom: none;
 }
+.objlink.m_mobile {
+    border-bottom: 1px solid #3187c4;
+}
+
 .point_short {
     display: block;
     height:3em;
