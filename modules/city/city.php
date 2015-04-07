@@ -235,7 +235,7 @@ class Page extends PageCommon {
             $pc_latitude = str_replace(',', '.', $pc_latitude);
             $pc_longitude = cut_trash_string($_POST['longitude']);
             $pc_longitude = str_replace(',', '.', $pc_longitude);
-            $pc_osm_id = str_replace(',', '.', $_POST['osm_id']);
+            $pc_osm_id = intval($_POST['osm_id']);
             $pc_inwheretext = cut_trash_string($_POST['inwhere']);
             $pc_title_english = cut_trash_string($_POST['title_eng']);
             $pc_title_translit = cut_trash_string($_POST['translit']);
@@ -307,7 +307,7 @@ class Page extends PageCommon {
         while ($row = $db->fetch()) {
             $ref_meta[] = $row;
         }
-        
+
         $db->sql = "SELECT *
                     FROM $dbws
                     WHERE ws_city_title = '{$citypage['pc_title']}'
