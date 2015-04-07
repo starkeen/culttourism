@@ -23,7 +23,7 @@ class Parser {
         $this->_curl = new Curl($db);
 
         $pconfig = HTMLPurifier_Config::createDefault();
-        $pconfig->set('Core.Encoding', 'UTF-8');
+        $pconfig->set('Core.Encoding', $this->_config['encoding']);
         $pconfig->set('HTML.Doctype', $this->_config['doctype']);
         $pconfig->set('URI.MakeAbsolute', true);
         $pconfig->set('HTML.Allowed', 'h1,div[class][id],p[class][id],a[href][class],a[class][href]');
@@ -51,11 +51,14 @@ class Parser {
             $elements = $finder->query($xpath);
             if (!is_null($elements)) {
                 foreach ($elements as $element) {
-                    $out[] = array(
+                    $item = array(
                         'title' => $element->nodeValue,
                         'link' => $element->getAttribute('href'),
                         'xpath' => $element->getNodePath(),
                     );
+                    if ($item['link'] && $item['title']) {
+                        $out[] = $item;
+                    }
                 }
             }
         }
