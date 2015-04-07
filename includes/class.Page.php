@@ -90,9 +90,6 @@ class Page extends PageCommon {
         $sp = new Statpoints($this->db);
         $sp->add($object['pt_id'], $this->getUserHash());
 
-        $this->isCounters = 1;
-        $this->getCounters();
-
         $this->addTitle($city['pc_title']);
         $this->addTitle($object['esc_name']);
         if ($object['tr_sight']) {
@@ -256,8 +253,6 @@ class Page extends PageCommon {
             if ($row['pc_title_synonym']) {
                 $this->addKeywords($row['pc_title_synonym']);
             }
-            $this->isCounters = 1;
-            $this->getCounters();
 
             $this->smarty->assign('city', $row);
             $this->smarty->assign('points', $points_data['points']);
@@ -337,9 +332,6 @@ class Page extends PageCommon {
         $db->sql = "INSERT INTO $dbsp (sp_pagepoint_id, sp_date, sp_hash) VALUES ('$id', now(), '$hash')
                         ON DUPLICATE KEY UPDATE sp_date = now()";
         $db->exec();
-
-        $this->isCounters = 1;
-        $this->getCounters();
 
         $this->addTitle($city['pc_title']);
         $this->addTitle($object['esc_name']);
