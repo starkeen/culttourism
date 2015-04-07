@@ -22,6 +22,7 @@ class MPageCities extends Model {
             'pc_latitude',
             'pc_longitude',
             'pc_latlon_zoom',
+            'pc_osm_id',
             'pc_cnt_shows',
             'pc_rank',
             'pc_inwheretext',

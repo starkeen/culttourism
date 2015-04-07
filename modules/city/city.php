@@ -235,6 +235,7 @@ class Page extends PageCommon {
             $pc_latitude = str_replace(',', '.', $pc_latitude);
             $pc_longitude = cut_trash_string($_POST['longitude']);
             $pc_longitude = str_replace(',', '.', $pc_longitude);
+            $pc_osm_id = str_replace(',', '.', $_POST['osm_id']);
             $pc_inwheretext = cut_trash_string($_POST['inwhere']);
             $pc_title_english = cut_trash_string($_POST['title_eng']);
             $pc_title_translit = cut_trash_string($_POST['translit']);
@@ -246,6 +247,7 @@ class Page extends PageCommon {
                         pc_keywords = '$pc_keywords', pc_description = '$pc_description',
                         pc_announcement = '$pc_announcement',
                         pc_latitude = '$pc_latitude', pc_longitude = '$pc_longitude',
+                        pc_osm_id = '$pc_osm_id',
                         pc_inwheretext = '$pc_inwheretext', pc_title_synonym = '$pc_title_synonym',
                         pc_title_english = '$pc_title_english', pc_title_translit = '$pc_title_translit',
                         pc_website = '$pc_website',
@@ -274,7 +276,8 @@ class Page extends PageCommon {
         }
 
         $db->sql = "SELECT c.pc_id, c.pc_title, c.pc_keywords, c.pc_description, c.pc_announcement,
-                            c.pc_latitude, c.pc_longitude, c.pc_inwheretext, c.pc_title_translit, c.pc_title_english,
+                            c.pc_latitude, c.pc_longitude, c.pc_osm_id,
+                            c.pc_inwheretext, c.pc_title_translit, c.pc_title_english,
                             c.pc_title_synonym, c.pc_website,
                             UNIX_TIMESTAMP(c.pc_lastup_date) AS last_update,
                             u.url

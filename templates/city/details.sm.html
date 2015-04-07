@@ -22,11 +22,13 @@
                 </td>
             </tr>
             <tr>
-                <td nowrap>рейтинг</td>
-                <td colspan="4">{$city.pc_rank}</td>
+                <td nowrap>OSM id</td>
+                <td colspan="4">
+                    <input type="text" name="osm_id" value="{$city.pc_osm_id}" style="width:80px;text-align:right;" />
+                </td>
             </tr>
             <tr>
-                <td nowrap>родительный падеж... (чего?) </td>
+                <td nowrap>родительный падеж&hellip; (чего?) </td>
                 <td><input type="text" name="inwhere" value="{$city.pc_inwheretext}" style="width: 100%" /></td>
                 <td>транслит</td>
                 <td><input type="text" name="translit" value="{$city.pc_title_translit}" style="width: 100%" /></td>
