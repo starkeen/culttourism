@@ -26,7 +26,7 @@ class Parser {
         $pconfig->set('Core.Encoding', $this->_config['encoding']);
         $pconfig->set('HTML.Doctype', $this->_config['doctype']);
         $pconfig->set('URI.MakeAbsolute', true);
-        $pconfig->set('HTML.Allowed', 'h1,div[class][id],p[class][id],a[href][class],a[class][href]');
+        $pconfig->set('HTML.Allowed', 'h1,div[class][id],p[class][id],a[href][class],a[class][href],address');
         $pconfig->set('URI.Base', $this->_url['scheme'] . '://' . $this->_url['host']);
         $pconfig->set('AutoFormat.AutoParagraph', true);
         $pconfig->set('Cache.DefinitionImpl', null);

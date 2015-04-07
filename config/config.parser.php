@@ -43,7 +43,28 @@ return array(
             '//a',
         ),
         'item' => array(
-        //
+            'title' => array(
+                'path' => array("//h1"),
+                'type' => 1, //1-nodeValue; 2-getAttribute('href')
+            ),
+            'text' => array(
+                'path' => array(
+                    "//div[@class='vkladki_content_right_colum']",
+                ),
+                'type' => 1,
+            ),
+            'addr' => array(
+                'path' => array(
+                    "//address",
+                ),
+                'type' => 1,
+            ),
+            'web' => array(
+                'path' => array(
+                    "//div[@class='standart_content']/p[2]/a[2]",
+                ),
+                'type' => 2,
+            ),
         ),
     ),
     'autotravel.ru' => array(
