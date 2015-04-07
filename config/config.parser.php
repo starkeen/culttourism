@@ -40,7 +40,7 @@ return array(
         'encoding' => 'windows-1251',
         'doctype' => 'HTML 4.01 Transitional',
         'list_items' => array(
-            '//a',
+            '//div[@class="ob_line_level_left"]/div/div[@class="ob_name"]/a',
         ),
         'item' => array(
             'title' => array(
