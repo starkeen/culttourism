@@ -45,6 +45,7 @@ class Parser {
 
     public function getList() {
         $out = array();
+        //echo $this->_dom->saveHTML();
         $finder = new DomXPath($this->_dom);
         foreach ($this->_config['list_items'] as $xpath) {
             $elements = $finder->query($xpath);
@@ -77,9 +78,18 @@ class Parser {
         );
         $meta = array();
         $replaces = array(
-            'from' => array('+7', '  ',),
-            'to' => array('', ' ',),
+            'from' => array(
+                '+7', '  ', 'Адрес гостиницы:',
+                '+38 (0', 'Работает:', 'Адрес:',
+                'Координаты:',
+            ),
+            'to' => array(
+                '', ' ', '',
+                '+380 (', 'Работает:', '',
+                '',
+            ),
         );
+        //echo $this->_dom->saveHTML();
         $finder = new DomXPath($this->_dom);
         foreach ($this->_config['item'] as $k => $item) {
             $data = array();
@@ -90,13 +100,13 @@ class Parser {
                         if ($item['type'] == 1) {
                             $data[] = trim($element->nodeValue);
                         } elseif ($item['type'] == 2) {
-                            $data[] = $element->getAttribute('href');
+                            $data[] = trim($element->getAttribute('href'));
                         }
                         $meta[$k][] = $element->getNodePath();
                     }
                 }
             }
-            asort($data);
+            //asort($data);
             $out[$k] = str_replace($replaces['from'], $replaces['to'], implode('; ', array_unique($data, SORT_LOCALE_STRING)));
         }
         if (strpos($out['web'], 'redirect') !== false) {
@@ -107,6 +117,7 @@ class Parser {
         }
         $out['title'] = mb_strtoupper(mb_substr($out['title'], 0, 1, 'utf-8'), 'utf-8') . mb_substr($out['title'], 1, mb_strlen($out['title'], 'utf-8') - 1, 'utf-8');
         $out['text'] = strip_tags(html_entity_decode($out['text'], ENT_QUOTES, 'utf-8'));
+        //print_x($out);
         return $out;
     }
 
