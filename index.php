@@ -4,8 +4,10 @@ session_start();
 include('config/configuration.php');
 if (_ER_REPORT) {
     error_reporting(E_ALL);
+    ini_set('display_errors', true);
 } else {
     error_reporting(0);
+    ini_set('display_errors', false);
 }
 include('includes/functions.php');
 if (_ER_REPORT) {

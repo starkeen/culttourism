@@ -103,7 +103,6 @@ abstract class Core {
                 $this->lastedit = $row['md_timestamp'];
                 $this->lastedit_timestamp = strtotime($row['md_timestamp']);
                 $this->expiredate = $row['md_expiredate'];
-                $this->getCounters();
 
                 if (isset($_SESSION['user'])) {
                     $this->user['object'] = $_SESSION['user'];
