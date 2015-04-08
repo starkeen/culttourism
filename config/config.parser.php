@@ -4,6 +4,8 @@ return array(
     'komandirovka.ru' => array(
         'encoding' => 'utf-8',
         'doctype' => 'XHTML 1.0 Transitional',
+        'encoding' => 'utf-8',
+        'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],address',
         'list_items' => array(
             "//div[@class='ajax_objects']/div/div/div[@class='detail_h']/a[1]", //приоритетные
             "//div[@class='ajax_objects']/div/a[1]", //топ
@@ -39,6 +41,7 @@ return array(
     'sobory.ru' => array(
         'encoding' => 'windows-1251',
         'doctype' => 'HTML 4.01 Transitional',
+        'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],address',
         'list_items' => array(
             '//div[@class="ob_line_level_left"]/div/div[@class="ob_name"]/a',
         ),
@@ -70,6 +73,7 @@ return array(
     'autotravel.ru' => array(
         'encoding' => 'utf-8',
         'doctype' => 'XHTML 1.0 Transitional',
+        'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],address',
         'list_items' => array(
             '//a[@class="travell5n"]',
         ),
@@ -115,6 +119,7 @@ return array(
     'doroga.ua' => array(
         'encoding' => 'utf-8',
         'doctype' => 'XHTML 1.0 Transitional',
+        'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],address',
         'list_items' => array(
             '//a[@class="ObjectNameLink"]',
         ),
