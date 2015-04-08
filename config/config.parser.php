@@ -4,7 +4,6 @@ return array(
     'komandirovka.ru' => array(
         'encoding' => 'utf-8',
         'doctype' => 'XHTML 1.0 Transitional',
-        'encoding' => 'utf-8',
         'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],address',
         'list_items' => array(
             "//div[@class='ajax_objects']/div/div/div[@class='detail_h']/a[1]", //приоритетные
