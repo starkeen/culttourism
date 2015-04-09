@@ -22,13 +22,14 @@ ymaps.ready(function() {
         ymaps.load(['package.regions']);
         ymaps.regions.load('BY', {
             lang: 'ru',
-            quality: 1
+            quality: 2
         }).then(function (result) {
-            console.log(result);
-            var regions = ymaps.geoquery(result.geoObjects);
-            console.log(regions);
-            regions.search('properties.osmId = ' + $('#mapcity_pc_osmid').val()).setOptions('strokeColor', '#3187c4');
-            regions.addToMap(myMap);
+            regions.each(function (reg) {
+                if (reg.properties.get('osmId') == $('#mapcity_pc_osmid').val()) {
+                    reg.options.set('strokeColor', '#ff001a');
+                }
+            });
+            myMap.geoObjects.add(regions); 
         }, function () {});
     }
 });
