@@ -24,9 +24,12 @@ ymaps.ready(function() {
             lang: 'ru',
             quality: 2
         }).then(function (result) {
+            console.log('search', $('#mapcity_pc_osmid').val());
             regions.each(function (reg) {
+                console.log('tst', reg);
                 if (reg.properties.get('osmId') == $('#mapcity_pc_osmid').val()) {
                     reg.options.set('strokeColor', '#ff001a');
+                    console.log('x',reg);
                 }
             });
             myMap.geoObjects.add(regions); 
