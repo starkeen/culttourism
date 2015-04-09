@@ -24,9 +24,11 @@ ymaps.ready(function() {
             lang: 'ru',
             quality: 1
         }).then(function (result) {
+            console.log(result);
             var regions = ymaps.geoquery(result.geoObjects);
+            console.log(regions);
             regions.search('properties.osmId = ' + $('#mapcity_pc_osmid').val()).setOptions('strokeColor', '#3187c4');
             regions.addToMap(myMap);
-        });
+        }, function () {});
     }
 });
