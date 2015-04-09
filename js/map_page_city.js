@@ -18,4 +18,14 @@ ymaps.ready(function() {
             res.mapState.applyToMap(myMap);
         }
     });
+    if ($('#mapcity_pc_osmid').val() != 0) {
+        ymaps.regions.load('BY', {
+            lang: 'ru',
+            quality: 1
+        }).then(function (result) {
+            var regions = ymaps.geoquery(result.geoObjects);
+            regions.search('properties.osmId = ' + $('#mapcity_pc_osmid').val()).setOptions('strokeColor', '#3187c4');
+            regions.addToMap(myMap);
+        });
+    }
 });
