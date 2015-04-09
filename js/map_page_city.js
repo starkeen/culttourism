@@ -25,6 +25,7 @@ ymaps.ready(function() {
             quality: 2
         }).then(function (result) {
             console.log('search', $('#mapcity_pc_osmid').val());
+            var regions = result.geoObjects;
             regions.each(function (reg) {
                 console.log('tst', reg);
                 if (reg.properties.get('osmId') == $('#mapcity_pc_osmid').val()) {
