@@ -26,11 +26,14 @@ ymaps.ready(function() {
         }).then(function (result) {
             var regions = result.geoObjects;
             regions.each(function (reg) {
-                reg.options.set('preset', '');
+                reg.options.set('preset', {
+                        fill: false,
+                        strokeWidth: 0
+                    });
                 if (reg.properties.get('osmId') == $('#mapcity_pc_osmid').val()) {
                     reg.options.set('preset', {
                         strokeWidth: 1,
-                        strokeColor: '9f9'
+                        strokeColor: '3187c4'
                     });
                 }
             });
