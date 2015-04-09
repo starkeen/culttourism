@@ -32,7 +32,8 @@ ymaps.ready(function() {
                     });
                 if (reg.properties.get('osmId') == $('#mapcity_pc_osmid').val()) {
                     reg.options.set('preset', {
-                        strokeWidth: 1,
+                        fill: false,
+                        strokeWidth: 2,
                         strokeColor: '3187c4'
                     });
                 }
