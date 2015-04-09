@@ -19,6 +19,7 @@ ymaps.ready(function() {
         }
     });
     if ($('#mapcity_pc_osmid').val() != 0) {
+        ymaps.load(['package.regions']);
         ymaps.regions.load('BY', {
             lang: 'ru',
             quality: 1
