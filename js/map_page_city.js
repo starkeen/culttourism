@@ -18,9 +18,9 @@ ymaps.ready(function() {
             res.mapState.applyToMap(myMap);
         }
     });
-    if ($('#mapcity_pc_osmid').val() != 0) {
+    if ($('#mapcity_pc_osmid').val() != 0 && $('#mapcity_pc_country').val() != '') {
         ymaps.load(['package.regions']);
-        ymaps.regions.load('BY', {
+        ymaps.regions.load($('#mapcity_pc_country').val(), {
             lang: 'ru',
             quality: 2
         }).then(function (result) {
