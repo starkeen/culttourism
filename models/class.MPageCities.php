@@ -18,6 +18,7 @@ class MPageCities extends Model {
             'pc_url_id',
             'pc_region_id',
             'pc_country_id',
+            'pc_country_code',
             'pc_pagepath',
             'pc_latitude',
             'pc_longitude',
