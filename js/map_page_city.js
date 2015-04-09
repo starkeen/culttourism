@@ -26,10 +26,12 @@ ymaps.ready(function() {
         }).then(function (result) {
             var regions = result.geoObjects;
             regions.each(function (reg) {
+                reg.options.set('preset', '');
                 if (reg.properties.get('osmId') == $('#mapcity_pc_osmid').val()) {
-                    reg.options.set('strokeColor', '#ff001a');
-                    reg.options.set('fillColor', null);
-                    console.log('x', reg.options);
+                    reg.options.set('preset', {
+                        strokeWidth: 1,
+                        strokeColor: '9f9'
+                    });
                 }
             });
             myMap.geoObjects.add(regions); 
