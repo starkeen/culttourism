@@ -34,7 +34,7 @@ ymaps.ready(function() {
                     reg.options.set('preset', {
                         fill: false,
                         strokeWidth: 2,
-                        strokeColor: '3187c4'
+                        strokeColor: '691E95'
                     });
                 }
             });
