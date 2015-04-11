@@ -36,6 +36,7 @@ if (isset($_GET['act'])) {
                             'cp_longitude' => $out['data']['geo_lon'],
                             'cp_zoom' => $out['data']['geo_zoom'],
                             'cp_source_id' => 26,
+                            'cp_referer' => $_GET['url'],
                         )) > 0;
             }
             break;
