@@ -31,6 +31,7 @@ class Parser {
         $pconfig->set('AutoFormat.AutoParagraph', true);
         $pconfig->set('Cache.DefinitionImpl', null);
         $pconfig->set('HTML.TidyLevel', 'heavy');
+
         $this->_purifier = new HTMLPurifier($pconfig);
         $text = $this->_curl->get($url);
         $this->_text = $this->_purifier->purify($text);
@@ -75,6 +76,7 @@ class Parser {
             'web' => '',
             'worktime' => '',
             'email' => '',
+            'geo_latlon' => '',
             'geo_lat' => '',
             'geo_lon' => '',
             'geo_zoom' => 14,
@@ -84,12 +86,12 @@ class Parser {
             'from' => array(
                 '+7', '  ', 'Адрес гостиницы:',
                 '+38 (0', 'Работает:', 'Адрес:',
-                'Координаты:',
+                'Координаты:', 'Режим работы:',
             ),
             'to' => array(
                 '', ' ', '',
                 '+380 (', 'Работает:', '',
-                '',
+                '', '',
             ),
         );
         //echo $this->_dom->saveHTML();
@@ -110,7 +112,11 @@ class Parser {
                 }
             }
             //asort($data);
-            $out[$k] = str_replace($replaces['from'], $replaces['to'], implode('; ', array_unique($data, SORT_LOCALE_STRING)));
+            $out[$k] = trim(str_replace($replaces['from'], $replaces['to'], implode('; ', array_unique($data, SORT_LOCALE_STRING))));
+            if ($k == 'geo_latlon') {
+                $out[$k] = trim(str_replace(', ', '', $out[$k]));
+                $out[$k] = mb_substr($out[$k], 0, mb_strpos($out[$k], ' '));
+            }
         }
         if (strpos($out['web'], 'redirect') !== false) {
             $data = parse_url($out['web']);
@@ -120,6 +126,11 @@ class Parser {
         }
         $out['title'] = mb_strtoupper(mb_substr($out['title'], 0, 1, 'utf-8'), 'utf-8') . mb_substr($out['title'], 1, mb_strlen($out['title'], 'utf-8') - 1, 'utf-8');
         $out['text'] = strip_tags(html_entity_decode($out['text'], ENT_QUOTES, 'utf-8'));
+        if ($out['geo_latlon'] && mb_strpos($out['geo_latlon'], ',') !== false) {
+            $latlon = explode(',', $out['geo_latlon']);
+            $out['geo_lat'] = $latlon[0];
+            $out['geo_lon'] = $latlon[1];
+        }
         //print_x($out);
         return $out;
     }

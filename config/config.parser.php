@@ -63,16 +63,22 @@ return array(
             ),
             'web' => array(
                 'path' => array(
-                    "//div[@class='standart_content']/p[2]/a[2]",
+                    "//div[@class='standart_content']/p[2]/a[last()]",
                 ),
                 'type' => 2,
+            ),
+            'geo_latlon' => array(
+                'path' => array(
+                    "//div[@class='standart_content']/p[3]",
+                ),
+                'type' => 1,
             ),
         ),
     ),
     'autotravel.ru' => array(
         'encoding' => 'utf-8',
         'doctype' => 'XHTML 1.0 Transitional',
-        'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],address',
+        'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],br',
         'list_items' => array(
             '//a[@class="travell5n"]',
         ),
@@ -83,33 +89,31 @@ return array(
             ),
             'text' => array(
                 'path' => array(
-                    "//p[@class='travell0u']",
+                    "//p[@class='travell0u']/text()[1]",
                 ),
                 'type' => 1,
             ),
             'addr' => array(
                 'path' => array(
-                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[3]",
-                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[4]",
+                    "//p[@class='travell0u']/text()[2]",
                 ),
                 'type' => 1,
             ),
             'phone' => array(
                 'path' => array(
-                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[4]",
-                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[5]",
+                    "//p[@class='travell0u']/text()[4]",
                 ),
                 'type' => 1,
             ),
             'web' => array(
                 'path' => array(
-                    "//div[@class='main-content']/div[7]/div[2]/div[1]/a[1]",
+                //
                 ),
                 'type' => 2,
             ),
             'worktime' => array(
                 'path' => array(
-                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[6]",
+                    "//p[@class='travell0u']/text()[3]",
                 ),
                 'type' => 1,
             ),
