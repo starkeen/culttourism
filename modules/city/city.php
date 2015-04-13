@@ -401,23 +401,30 @@ class Page extends PageCommon {
                         LEFT JOIN $dbc city ON city.pc_city_id = rc.id
                         LEFT JOIN $dbu url ON url.uid = city.pc_url_id
                         WHERE rc.name LIKE '%$newcity%'
+                        
                         UNION
-                        SELECT '' as name, 0 as city_id, rr.name as region, rr.id as region_id,
-                            rs.name as country, rs.id as country_id,
+                        
+                        SELECT '' as name, 0 as city_id,
+                            rr.name as region, rr.id as region_id,
+                            rs.name as country, rs.id as country_id, rs.alpha2 AS country_code,
                             city.pc_title as pc_title, url.url
                         FROM $dbrr rr
                         LEFT JOIN $dbrs rs ON rs.id = rr.country_id
                         LEFT JOIN $dbc city ON city.pc_region_id = rr.id AND city.pc_city_id = 0
                         LEFT JOIN $dbu url ON url.uid = city.pc_url_id
                         WHERE rr.name LIKE '%$newcity%'
+                        
                         UNION
-                        SELECT '' as name, 0 as city_id, '' as region, 0 as region_id,
-                            rs.name as country, rs.id as country_id,
+                        
+                        SELECT '' as name, 0 as city_id,
+                            '' as region, 0 as region_id,
+                            rs.name as country, rs.id as country_id, rs.alpha2 AS country_code,
                             city.pc_title as pc_title, url.url
                         FROM $dbrs rs
                         LEFT JOIN $dbc city ON city.pc_country_id = rs.id AND city.pc_city_id = 0 AND city.pc_region_id = 0
                         LEFT JOIN $dbu url ON url.uid = city.pc_url_id
                         WHERE rs.name LIKE '%$newcity%'
+                        
                         ORDER BY country, region, name";
             $db->exec();
             while ($row = $db->fetch()) {
