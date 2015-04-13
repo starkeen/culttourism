@@ -337,6 +337,7 @@ class Page extends PageCommon {
             $city_id = cut_trash_int($_POST['city_id']);
             $region_id = cut_trash_int($_POST['region_id']);
             $country_id = cut_trash_int($_POST['country_id']);
+            $country_code = cut_trash_string($_POST['country_code']);
             $lat = cut_trash_string($_POST['latitude']);
             $lat = str_replace(',', '.', $lat);
             $lon = cut_trash_string($_POST['longitude']);
@@ -346,7 +347,8 @@ class Page extends PageCommon {
             $dbu = $db->getTableName('region_url');
             $translit = translit($city_name);
             $db->sql = "INSERT INTO $dbc SET
-                        pc_title = '$city_name', pc_city_id = '$city_id', pc_region_id = '$region_id', pc_country_id = '$country_id',
+                        pc_title = '$city_name', pc_city_id = '$city_id', pc_region_id = '$region_id',
+                        pc_country_id = '$country_id', pc_country_code = '$country_code',
                         pc_url_id = 0, pc_latitude = '$lat', pc_longitude = '$lon', pc_rank = 0,
                         pc_title_translit = '$translit', pc_title_english = '$translit', pc_inwheretext = '$city_name',
                         pc_add_date = now(), pc_add_user = '$uid', pc_lastup_date = now()";
