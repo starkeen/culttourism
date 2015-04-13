@@ -181,6 +181,7 @@ class MPageCities extends Model {
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
                             WHERE pc.pc_title LIKE '%$name1%' OR pc_title LIKE '%$name2%'
                                 AND pc.pc_active = 1
+                            GROUP BY pc.pc_title
                             ORDER BY pc.pc_title";
         $this->_db->exec();
         return $this->_db->fetchAll();
