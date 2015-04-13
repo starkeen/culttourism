@@ -391,8 +391,9 @@ class Page extends PageCommon {
                 $smarty->assign('already', $already);
             }
             //------------------- поиск в справочнике регионов --------------
-            $db->sql = "SELECT rc.name as name, rc.id as city_id, rr.name as region, rr.id as region_id,
-                            rs.name as country, rs.id as country_id,
+            $db->sql = "SELECT rc.name as name, rc.id as city_id,
+                            rr.name as region, rr.id as region_id,
+                            rs.name as country, rs.id as country_id, rs.alpha2 AS country_code,
                             city.pc_title as pc_title, url.url
                         FROM $dbrc rc
                         LEFT JOIN $dbrr rr ON rr.id = rc.region_id
