@@ -10,4 +10,4 @@ Disallow: /sign/
 Disallow: /cgi-bin/
 Disallow: /ajax/
 Disallow: /city/detail/
-Host: culttourism.ru
+Host: https://culttourism.ru
