@@ -136,6 +136,7 @@ class Page extends PageCommon {
     }
 
     private function getAddingForm() {
+        $this->addTitle('Добавить объект (музей, гостиницу, кафе и др.)');
         return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addpoint.sm.html');
     }
 
