@@ -78,7 +78,7 @@ return array(
     'autotravel.ru' => array(
         'encoding' => 'utf-8',
         'doctype' => 'XHTML 1.0 Transitional',
-        'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],br',
+        'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],br,font[class]',
         'list_items' => array(
             '//a[@class="travell5n"]',
         ),
@@ -114,6 +114,12 @@ return array(
             'worktime' => array(
                 'path' => array(
                     "//p[@class='travell0u']/text()[3]",
+                ),
+                'type' => 1,
+            ),
+            'geo_latlon_degmin' => array(
+                'path' => array(
+                    "//div[5]",
                 ),
                 'type' => 1,
             ),

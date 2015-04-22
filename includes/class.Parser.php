@@ -132,8 +132,14 @@ class Parser {
             $out['geo_lat'] = $latlon[0];
             $out['geo_lon'] = $latlon[1];
         }
-        if ($out['geo_latlon_degmin'] && mb_strpos(trim($out['geo_latlon_degmin']), ' ') !== false) {
-            //
+        if ($out['geo_latlon_degmin'] && mb_strpos(trim($out['geo_latlon_degmin']), ',') !== false) {
+            $latlon = explode(',', $out['geo_latlon_degmin']);
+            $geo_lat = trim(str_replace('N', '', $latlon[0]));
+            $geo_lon = trim(str_replace('E', '', $latlon[1]));
+            $out['geo_lat'] = intval(substr($geo_lat, 0, strpos($geo_lat, ' ')));
+            $out['geo_lon'] = intval(substr($geo_lon, 0, strpos($geo_lon, ' ')));
+            $out['geo_lat'] += floatval(substr($geo_lat, strpos($geo_lat, ' ') + 1)) / 60;
+            $out['geo_lon'] += floatval(substr($geo_lon, strpos($geo_lon, ' ') + 1)) / 60;
         }
         //print_x($out);
         return $out;
