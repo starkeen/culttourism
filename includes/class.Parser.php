@@ -77,6 +77,7 @@ class Parser {
             'worktime' => '',
             'email' => '',
             'geo_latlon' => '',
+            'geo_latlon_degmin' => '',
             'geo_lat' => '',
             'geo_lon' => '',
             'geo_zoom' => 14,
@@ -130,6 +131,9 @@ class Parser {
             $latlon = explode(',', $out['geo_latlon']);
             $out['geo_lat'] = $latlon[0];
             $out['geo_lon'] = $latlon[1];
+        }
+        if ($out['geo_latlon_degmin'] && mb_strpos(trim($out['geo_latlon_degmin']), ' ') !== false) {
+            //
         }
         //print_x($out);
         return $out;
