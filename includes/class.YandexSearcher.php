@@ -2,7 +2,7 @@
 
 class YandexSearcher {
 
-    private $_request_url = "https://xmlsearch.yandex.ru/xmlsearch?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80&l10n=ru&sortby=rlv&filter=strict";
+    private $_request_url = "https://yandex.ru/search/xml?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80&l10n=ru&sortby=rlv&filter=strict";
     private $_meta = array(
         'page' => 0,
         'pages' => 20,
