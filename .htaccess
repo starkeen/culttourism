@@ -4,30 +4,10 @@ DirectoryIndex index.php index.html
 php_value expose_php Off
 php_flag expose_php Off
 
-<IfModule mod_rewrite.c>
+
 RewriteEngine On
 RewriteCond %{REQUEST_URI} ^/[^.]+[^/]$
 RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1/ [R=301,L]
 RewriteCond %{REQUEST_FILENAME} !-f 
 RewriteCond %{REQUEST_FILENAME} !-d 
 RewriteRule . index.php [L,QSA]
-</IfModule>
-
-<IfModule mod_expires.c>
-	ExpiresActive On
-	ExpiresByType image/gif "access plus 1 month"
-	ExpiresByType image/jpeg "access plus 1 month"
-	ExpiresByType image/png "access plus 1 month"
-	ExpiresByType text/css "access plus 1 week"
-	ExpiresByType text/javascript "access plus 1 week"
-	ExpiresByType application/javascript "access plus 1 week"
-	ExpiresByType application/x-javascript "access plus 1 week"
-	ExpiresByType image/x-icon "access plus 1 year"
-</IfModule>
-
-FileETag INode MTime Size
-<IfModule mod_deflate.c>
-	<IfModule mod_filter.c>
-		AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/x-javascript
-	</IfModule>
-</IfModule>
