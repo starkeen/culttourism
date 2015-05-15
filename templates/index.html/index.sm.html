@@ -10,7 +10,7 @@
     {foreach from=$blogentries item=entry}
     <div class="index-blog-record">
         <h4 class="index-blog-title">
-            <img src="/img/ico/ico.calendar.gif" class="textmarker" />
+            <img src="/img/ico/ico.calendar.gif" alt="Дата" class="textmarker" />
             {$entry.bg_datex}
             <a href="/blog/{$entry.bg_year}/{$entry.bg_month}/{$entry.bg_day}.html">{$entry.br_title}</a>
         </h4>
@@ -23,7 +23,7 @@
     {foreach from=$agrnewsentries item=entry}
     <div class="index-blog-record">
         <h4 class="index-blog-title">
-            <img src="/data/favicons/{$entry.ns_host}.png" class="textmarker" />
+            <img src="/data/favicons/{$entry.ns_host}.png" alt="{$entry.ns_host}" class="textmarker" />
             {$entry.datex}
             <a href="{$entry.ni_url}" target="_blanc">{$entry.ni_title}</a>
         </h4>
