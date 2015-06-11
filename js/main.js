@@ -1,3 +1,7 @@
+jQuery.error = function (message) {
+    _gaq.push(['_trackEvent', 'jQuery Error', message, navigator.userAgent, 0, true]);
+}
+
 $(document).ready(function () {
     //------------------------------------- BEST OBJECTS -------------------------------
     $(".obj_best").append("<img class=\"obj_best_pic\" src=\"/img/points/best-24.png\" />");
