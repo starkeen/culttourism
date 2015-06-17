@@ -1,6 +1,6 @@
 jQuery.error = function (message) {
     _gaq.push(['_trackEvent', 'jQuery Error', message, navigator.userAgent, 0, true]);
-}
+};
 
 $(document).ready(function () {
     //------------------------------------- BEST OBJECTS -------------------------------
