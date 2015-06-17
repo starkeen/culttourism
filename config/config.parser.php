@@ -177,7 +177,7 @@ return array(
     'vetert.ru' => array(
         'encoding' => 'utf-8',
         'doctype' => 'XHTML 1.0 Transitional',
-        'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href]',
+        'tagsallow' => 'h1,div[class][id],div[id],p,a[href]',
         'list_items' => array(
             '//div[@class="evlist"]/p/a[1]',
             '//div[@class="evlist"]/p/a[2]',
