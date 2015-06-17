@@ -76,9 +76,6 @@
                         <span title="{$item.ws_weight_date}" style="font-weight:bold;">{$item.ws_weight}</span>
                         /
                         <span title="{$item.ws_weight_max_date}" style="font-style: italic;">{$item.ws_weight_max}</span>
-                        {if $item.weight_delta_sign == 1}<span style="color:green;" title="ближе к верхнему">&#8593;</span>{/if}
-                        {if $item.weight_delta_sign == -1}<span style="color:red;" title="ближе к нижнему">&#8595;</span>{/if}
-                        {if $item.weight_delta_sign == 0}<span style="">-</span>{/if}
                     </td>
                     <td align="center">
                         <form method="post">
@@ -119,8 +116,6 @@
                             <sup title="{$item.ws_weight_max_date}">{$item.ws_weight_max}</sup>
                             <sub title="{$item.ws_weight_min_date}">{$item.ws_weight_min}</sub>
                         </span>
-                        {if $item.weight_delta_sign == 1}<span style="color:green;" title="ближе к верхнему">&#8593;</span>{/if}
-                        {if $item.weight_delta_sign == -1}<span style="color:red;" title="ближе к нижнему">&#8595;</span>{/if}
                     </td>
                     <td align="center" title="{$item.ws_position_date}">
                         <a href="http://yandex.ru/yandsearch?text={$item.city_name}+достопримечательности&lr=213">{$item.ws_position}</a>
