@@ -180,6 +180,7 @@ return array(
         'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href]',
         'list_items' => array(
             '//div[@class="evlist"]/p/a[1]',
+            '//div[@class="evlist"]/p/a[2]',
         ),
         'item' => array(
             'title' => array(
