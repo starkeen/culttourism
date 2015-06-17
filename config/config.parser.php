@@ -177,7 +177,7 @@ return array(
     'vetert.ru' => array(
         'encoding' => 'utf-8',
         'doctype' => 'XHTML 1.0 Transitional',
-        'tagsallow' => 'h1,div[class][id],div[id],p,a[href]',
+        'tagsallow' => 'h1,div[id],div[class],*[class],p,a[href]',
         'list_items' => array(
             '//div[@class="evlist"]/p/a[1]',
             '//div[@class="evlist"]/p/a[2]',
@@ -189,7 +189,15 @@ return array(
             ),
             'text' => array(
                 'path' => array(
-                    "//div[@id='content']/p",
+                    "//div[@id='content']",
+                    "//div[1]/div[5]/div[3]/p",
+                ),
+                'delimiter' => "\n",
+                'type' => 1,
+            ),
+            'geo_latlon_degmin1' => array(
+                'path' => array(
+                    "//div[1]/div[5]/div[3]/p[1]",
                 ),
                 'type' => 1,
             ),

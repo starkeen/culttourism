@@ -77,7 +77,8 @@ class Parser {
             'worktime' => '',
             'email' => '',
             'geo_latlon' => '',
-            'geo_latlon_degmin' => '',
+            'geo_latlon_degmin' => '', // разделитель запятая N064 32.450, E040 30.860
+            'geo_latlon_degmin1' => '', // разделитель пробел N48 44.49 E44 32.304
             'geo_lat' => '',
             'geo_lon' => '',
             'geo_zoom' => 14,
@@ -113,7 +114,8 @@ class Parser {
                 }
             }
             //asort($data);
-            $out[$k] = trim(str_replace($replaces['from'], $replaces['to'], implode('; ', array_unique($data, SORT_LOCALE_STRING))));
+            $text_delimiter = isset($item['delimiter']) ? $item['delimiter'] : '; ';
+            $out[$k] = trim(str_replace($replaces['from'], $replaces['to'], implode($text_delimiter, array_unique($data, SORT_LOCALE_STRING))));
             if ($k == 'geo_latlon') {
                 $out[$k] = trim(str_replace(', ', '', $out[$k]));
                 $out[$k] = mb_substr($out[$k], 0, mb_strpos($out[$k], ' '));
@@ -126,7 +128,7 @@ class Parser {
             $out['web'] = $parts['goto'];
         }
         $out['title'] = mb_strtoupper(mb_substr($out['title'], 0, 1, 'utf-8'), 'utf-8') . mb_substr($out['title'], 1, mb_strlen($out['title'], 'utf-8') - 1, 'utf-8');
-        $out['text'] = strip_tags(html_entity_decode($out['text'], ENT_QUOTES, 'utf-8'));
+        $out['text'] = nl2br(strip_tags(html_entity_decode($out['text'], ENT_QUOTES, 'utf-8')));
         if ($out['geo_latlon'] && mb_strpos($out['geo_latlon'], ',') !== false) {
             $latlon = explode(',', $out['geo_latlon']);
             $out['geo_lat'] = $latlon[0];
@@ -140,6 +142,16 @@ class Parser {
             $out['geo_lon'] = intval(substr($geo_lon, 0, strpos($geo_lon, ' ')));
             $out['geo_lat'] += floatval(substr($geo_lat, strpos($geo_lat, ' ') + 1)) / 60;
             $out['geo_lon'] += floatval(substr($geo_lon, strpos($geo_lon, ' ') + 1)) / 60;
+        }
+        if ($out['geo_latlon_degmin1'] != '') {
+            $latlon = trim($out['geo_latlon_degmin1'], '.');
+            $matches = array();
+            if (preg_match('/^N([0-9]*)\s(.*) E([0-9]*)\s(.*)/', $latlon, $matches)) {
+                $out['geo_lat'] = intval($matches[1]);
+                $out['geo_lon'] = intval($matches[3]);
+                $out['geo_lat'] += floatval($matches[2]) / 60;
+                $out['geo_lon'] += floatval($matches[4]) / 60;
+            }
         }
         //print_x($out);
         return $out;
