@@ -71,7 +71,8 @@ class MCandidatePoints extends Model {
         $this->_db->sql = "SELECT t.*,
                                 pc.pc_title AS page_title, CONCAT(u.url, '/') AS page_url,
                                 uv_stat.uv_title AS state_title,
-                                pt.tp_icon AS type_icon, pt.tp_short AS type_title
+                                pt.tp_icon AS type_icon, pt.tp_short AS type_title,
+                                 CHAR_LENGTH(cp_text) AS text_len
                             FROM $this->_table_name AS t
                                 LEFT JOIN {$this->_tables_related['pagecity']} AS pc
                                     ON pc.pc_id = t.cp_citypage_id

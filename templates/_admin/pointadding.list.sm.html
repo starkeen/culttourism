@@ -9,6 +9,7 @@
             <th>Регион</th>
             <th>Страница</th>
             <th>Название</th>
+            <th>L</th>
             <th>GPS</th>
             <th>Статус</th>
             <th>&nbsp;</th>
@@ -36,6 +37,7 @@
             </td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
+            <td>&nbsp;</td>
             <td>
                 <select name="state" style="width:80px;" onchange="submit();">
                     <option value="0">--все--</option>
@@ -54,7 +56,10 @@
             <td>{$req.cp_city}</td>
             <td><a href="{$req.page_url}" target="_blank">{$req.page_title}</a></td>
             <td>{$req.cp_title}</td>
-            <td>{if $req.cp_latitude>0 && $req.cp_longitude>0}есть{else}нет{/if}</td>
+            <td style="text-align: right; background-color:{if $req.text_len < 100}#FF4500{elseif $req.text_len < 200}#FFA583{elseif $req.text_len < 500}#FFA583{else}#CCE4CC{/if};">
+                {$req.text_len}
+            </td>
+            <td style="text-align: center;">{if $req.cp_latitude>0 && $req.cp_longitude>0}есть{else}нет{/if}</td>
             <td>{$req.state_title}</td>
             <td><a href="?id={$req.cp_id}"><img src="/img/btn/btn.tick.png"</a></td>
         </tr>
