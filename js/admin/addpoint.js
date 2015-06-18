@@ -28,7 +28,7 @@ $(document).ready(function () {
         var cleaned = $(".pointadding-item-addr").val().replace(/\.(\d+)/g, ". $1").replace(/\s{2,}/g, ' ');
         $(".pointadding-item-addr").val(cleaned);
     });
-    
+
     $(".pointadding-item-addr-city").click(function () {
         //Берем город из имени страницы
         $(".pointadding-item-addr").val($(".pointadding-item-city-pctitle").text());
@@ -105,6 +105,7 @@ $(document).ready(function () {
             $(".pointadding-item-mapcontainer").removeClass("m_hide");
             $(".pointadding-item-geo-go").removeClass("m_hide");
             $(".pointadding-item-geo-get").removeClass("m_hide");
+            $(".pointadding-item-geo-reverse").removeClass("m_hide");
             if (item_latitude == 0 && item_longitude == 0) {
                 $(".pointadding-item-geo-get").click();
             }
@@ -114,6 +115,7 @@ $(document).ready(function () {
             $(".pointadding-item-mapcontainer").addClass("m_hide");
             $(".pointadding-item-geo-go").addClass("m_hide");
             $(".pointadding-item-geo-get").addClass("m_hide");
+            $(".pointadding-item-geo-reverse").addClass("m_hide");
         }
     });
 
@@ -263,6 +265,22 @@ $(document).ready(function () {
                     });
                 });
             });
+        });
+
+        $(".pointadding-item-geo-reverse").click(function () {
+            //обратное геокодирование
+            ymaps.geocode([parseFloat($("#pointadding-item-geo-lon").val()), parseFloat($("#pointadding-item-geo-lat").val())], {
+                kind: 'house',
+                json: true,
+                provider: 'yandex#map',
+                results: 20
+            }).then(function (res) {
+                var variant = res.GeoObjectCollection.featureMember[0]
+                        .GeoObject.metaDataProperty
+                        .GeocoderMetaData.AddressDetails.Country.AddressLine;
+                $(".pointadding-item-addr").val(variant);
+            });
+
         });
 
         $(".pointadding-item-geo-go").click(function () {
