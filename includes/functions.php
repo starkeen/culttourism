@@ -111,4 +111,19 @@ function translit($word, $space = ' ') {
     return $st;
 }
 
-?>
+$old_error_handler = set_error_handler(function($errno, $errstr, $errfile, $errline, array $errcontext) {
+    if (!(error_reporting() & $errno)) {
+        // Этот код ошибки не включен в error_reporting
+        return;
+    }
+    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+}, E_ALL);
+
+set_exception_handler(function($e) {
+    $msg = "Error: " . $e->getMessage() . "\n"
+            . 'file: ' . $e->getFile() . ':' . $e->getLine()
+            . "\n__________________________\n\n\n"
+            . 'trace: ' . print_r($e->getTrace(), true) . "\n";
+
+    mail('starkeen@gmail.com', 'Error on culttourism.ru', $msg);
+});
