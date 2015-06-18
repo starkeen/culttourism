@@ -28,6 +28,11 @@ $(document).ready(function () {
         var cleaned = $(".pointadding-item-addr").val().replace(/\.(\d+)/g, ". $1").replace(/\s{2,}/g, ' ');
         $(".pointadding-item-addr").val(cleaned);
     });
+    
+    $(".pointadding-item-addr-city").click(function () {
+        //Берем город из имени страницы
+        $(".pointadding-item-addr").val($(".pointadding-item-city-pctitle").text());
+    });
 
     $('#pointadding-item-city-pcid').change(function () {
         $.getJSON("addpoints.php", {
