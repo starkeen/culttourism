@@ -627,6 +627,17 @@ input.dogo {
     padding:2px;
     background-color: #A6F1A6;
 }
+input.doreverse {
+    border: none;
+    padding:2px;
+    background-color: #a6d1f1;
+}
+input.savereverse {
+    border: none;
+    padding:2px;
+    background-color: #a6d1f1;
+    display: none;
+}
 #obj_addr_searcher {
     cursor:pointer;
     color:#639063;

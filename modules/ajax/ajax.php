@@ -36,9 +36,11 @@ class Page extends PageCommon {
             } elseif ($id == 'getformGPS') {
                 $this->content = $this->getFormPointGPS(intval($_GET['pid']), $smarty);
             } elseif ($id == 'saveformGPS') {
-                $this->content = $this->setFormPointGPS(intval($_GET['pid']), $smarty);
+                $this->content = $this->setFormPointGPS(intval($_GET['pid']));
+            } elseif ($id == 'saveAddrGPS') {
+                $this->content = $this->setFormPointAddr(intval($_GET['pid']));
             } elseif ($id == 'savebest') {
-                $this->content = $this->setFormPointBest(intval($_GET['pid']), $smarty);
+                $this->content = $this->setFormPointBest(intval($_GET['id']));
             }
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
         } elseif ($page_id == 'city') {
@@ -268,21 +270,27 @@ class Page extends PageCommon {
         }
     }
 
-    private function setFormPointBest($pid, $smarty) {
-        if (!$this->checkEdit())
+    private function setFormPointAddr($pid) {
+        if (!$this->checkEdit()) {
             return $this->getError('403');
-        $pid = cut_trash_int($_POST['id']);
-        $state = cut_trash_int($_POST['nstate'] == "checked");
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $db->sql = "UPDATE $dbpp SET pt_is_best = '$state', pt_lastup_date = now() WHERE pt_id = '$pid'";
-        echo $db->sql;
-        return $db->exec();
+        }
+        $p = new MPagePoints($this->db);
+        return $p->updateByPk($pid, array('pt_adress' => $_POST['addr']));
     }
 
-    private function setFormPointGPS($pid, $smarty) {
-        if (!$this->checkEdit())
+    private function setFormPointBest($pid) {
+        if (!$this->checkEdit()) {
             return $this->getError('403');
+        }
+        $state = cut_trash_int(!empty($_POST['nstate']) && $_POST['nstate'] == "checked");
+        $p = new MPagePoints($this->db);
+        return $p->updateByPk($pid, array('pt_is_best' => $state));
+    }
+
+    private function setFormPointGPS($pid) {
+        if (!$this->checkEdit()) {
+            return $this->getError('403');
+        }
         $db = $this->db;
         $dbpp = $db->getTableName('pagepoints');
         //print_x($_POST);
@@ -296,17 +304,20 @@ class Page extends PageCommon {
         if ($db->exec()) {
             $point_lat_short = mb_substr($n_lat, 0, 8);
             $point_lon_short = mb_substr($n_lon, 0, 8);
-            if ($point_lat_short >= 0)
+            if ($point_lat_short >= 0) {
                 $point_lat_w = "N$point_lat_short";
-            else
+            } else {
                 $point_lat_w = "S$point_lat_short";
-            if ($point_lon_short >= 0)
+            }
+            if ($point_lon_short >= 0) {
                 $point_lon_w = "E$point_lon_short";
-            else
+            } else {
                 $point_lon_w = "W$point_lon_short";
+            }
             return "$point_lat_w $point_lon_w";
-        } else
+        } else {
             return false;
+        }
     }
 
     private function getFormPointGPS($pid, $smarty) {

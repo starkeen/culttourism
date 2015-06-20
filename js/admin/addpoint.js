@@ -273,11 +273,12 @@ $(document).ready(function () {
                 kind: 'house',
                 json: true,
                 provider: 'yandex#map',
-                results: 20
+                results: 1
             }).then(function (res) {
                 var variant = res.GeoObjectCollection.featureMember[0]
                         .GeoObject.metaDataProperty
-                        .GeocoderMetaData.AddressDetails.Country.AddressLine;
+                        //.GeocoderMetaData.AddressDetails.Country.AddressLine;
+                        .GeocoderMetaData.text;
                 $(".pointadding-item-addr").val(variant);
             });
 

@@ -382,7 +382,7 @@ $(document).ready(function () {
                 $("#gps_" + $("#obj_id").val()).text(a);
                 $.modal.close()
             }
-        })
+        });
     });
     $("#pt_latlon_handler input.doesc").live("click", function () {//------------ escape
         $.modal.close();
@@ -688,6 +688,8 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
             });
             map.geoObjects.add(myPlacemark);
         }
+
+        //поиск координат по адресу
         $(".dogo").live("click", function () {
             var point = [parseFloat($("#obj_lon").val()), parseFloat($("#obj_lat").val())];
             map.panTo(point, {
@@ -697,6 +699,37 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
             });
             return false;
         });
+
+        //поиск адреса по координатам
+        $(".doreverse").live("click", function () {
+            ymaps.geocode([parseFloat($("#obj_lon").val()), parseFloat($("#obj_lat").val())], {
+                kind: 'house',
+                json: true,
+                provider: 'yandex#map',
+                results: 1
+            }).then(function (res) {
+                var variant = res.GeoObjectCollection.featureMember[0].GeoObject;
+                var addrLocal = variant.name;
+                var addrCity = variant.metaDataProperty.GeocoderMetaData.text;
+                if (addrCity) {
+                    $("#obj_addr_searcher").text(addrCity);
+                    $(".savereverse").show();
+                }
+            });
+        });
+        $(".savereverse").live("click", function () {
+            $.post("/ajax/point/saveAddrGPS/?pid=" + $("#obj_id").val(), {
+                id: $("#obj_id").val(),
+                addr: $("#obj_addr_searcher").text()
+            },
+            function (resp) {
+                if (resp) {
+                    $(".savereverse").hide();
+                }
+            });
+        });
+
+
         $("#obj_addr_searcher").live("click", function () {
             ymaps.geocode($("#obj_addr_searcher").text(), {
                 kind: 'house',

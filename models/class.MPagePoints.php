@@ -251,7 +251,9 @@ class MPagePoints extends Model {
         if (isset($values['pt_website']) && strlen($values['pt_website']) != 0 && strpos($values['pt_website'], 'http') === false) {
             $values['pt_website'] = 'http://' . $values['pt_website'];
         }
-        parent::updateByPk($id, $values, $files);
+        $values['pt_lastup_date'] = $this->now();
+        $values['pt_lastup_user'] = $this->getUserId();
+        return parent::updateByPk($id, $values, $files);
     }
 
     public function insert($values = array(), $files = array()) {
