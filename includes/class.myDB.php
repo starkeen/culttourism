@@ -35,7 +35,7 @@ class MyDB {
                             MyDB::$instances = 1;
                         }
                     } catch (Exception $e) {
-                        //echo 'Выброшено исключение: ', $e->getMessage(), "\n";
+                        throw new Exception($e->getMessage());
                         $this->link = null;
                         return $this;
                     }
@@ -45,7 +45,7 @@ class MyDB {
                 }
                 //$this->timer_start = microtime(true);
             } catch (Exception $e) {
-                //echo 'Выброшено исключение: ', $e->getMessage(), "\n";
+                throw new Exception($e->getMessage());
             }
         } else {
             return $this;
@@ -65,17 +65,22 @@ class MyDB {
         if ($sql !== null) {
             $this->sql = $sql;
         }
-        if (_ER_REPORT) {
-            $this->res = mysql_query($this->sql) or die(mysql_error() . ' # ' . $this->sql);
-        } else {
+        try {
             $this->res = mysql_query($this->sql);
+
+            if (!$this->res) {
+                throw new Exception('DB error: ' . mysql_error());
+            }
+
+            $this->last_inserted_id = mysql_insert_id($this->link);
+            $this->affected_rows = mysql_affected_rows($this->link);
+            $this->cnt_queries++;
+            $this->cnt_worktime_this = microtime(true) - $this->timer_start;
+            $this->cnt_worktime_all += $this->cnt_worktime_this;
+            return $this->res;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
-        $this->last_inserted_id = mysql_insert_id($this->link);
-        $this->affected_rows = mysql_affected_rows($this->link);
-        $this->cnt_queries++;
-        $this->cnt_worktime_this = microtime(true) - $this->timer_start;
-        $this->cnt_worktime_all += $this->cnt_worktime_this;
-        return $this->res;
     }
 
     public function fetch($res = null) {
