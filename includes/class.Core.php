@@ -39,6 +39,7 @@ abstract class Core {
     protected $auth = null;
 
     protected function __construct($db, $mod) {
+        set_exception_handler(array($this, 'errorsExceptionsHandler'));
         $this->db = $db;
         $this->smarty = new mySmarty();
         if (!$this->db->link) {
@@ -132,6 +133,76 @@ abstract class Core {
         }
     }
 
+    public function addTitle($text) {
+        $this->_title[] = $text;
+        krsort($this->_title);
+        $this->title = implode(' ' . $this->globalsettings['title_delimiter'] . ' ', $this->_title);
+    }
+
+    public function addKeywords($text) {
+        $this->_keywords[] = $text;
+        krsort($this->_keywords);
+        $this->keywords = implode(', ', $this->_keywords);
+    }
+
+    public function addDescription($text) {
+        $this->_description[] = trim($text);
+        krsort($this->_description);
+        $this->description = implode('. ', $this->_description);
+    }
+
+    private function getSuggestions404Local($req) {
+        $out = array();
+        if (strpos($req, '.html') !== false) {
+            $c = new MPageCities($this->db);
+
+            $uri = explode('/', $req);
+            array_pop($uri);
+            $page = $c->getCityByUrl('/' . trim(implode('/', $uri), '/'));
+            if (!empty($page)) {
+                $out[] = array(
+                    'url' => $page['url'] . '/',
+                    'title' => $page['pc_title'],
+                );
+            }
+        }
+        return $out;
+    }
+
+    private function getSuggestions404Yandex($req) {
+        $out = array();
+        if (strpos($req, '.css') === false && strpos($req, '.js') === false && strpos($req, '.png') === false && strpos($req, '.txt') === false && strpos($req, '.xml') === false) {
+            $ys = new YandexSearcher();
+            $ys->enableLogging($this->db);
+            $searchstring = trim(implode(' ', explode('/', $req)));
+            $variants = $ys->search("$searchstring host:culttourism.ru");
+            if (!empty($variants['results'])) {
+                $i = 0;
+                foreach ($variants['results'] as $variant) {
+                    $out[] = array(
+                        'url' => $variant['url'],
+                        'title' => trim(str_replace('| Культурный туризм', '', $variant['title'])),
+                    );
+                    if ($i++ == 3) {
+                        break;
+                    }
+                }
+            }
+        }
+        return $out;
+    }
+
+    public function errorsExceptionsHandler($e) {
+        $msg = "Error: " . $e->getMessage() . "\n"
+                . 'file: ' . $e->getFile() . ':' . $e->getLine()
+                . "\n__________________________\n\n\n"
+                . 'trace: ' . print_r($e->getTrace(), true) . "\n";
+
+        mail('starkeen@gmail.com', 'Error on culttourism.ru', $msg);
+        ob_clean();
+        $this->getError('503');
+    }
+
     public function getError($err_code = '404', $err_data = null) {
         if ($err_code != '301') {
             $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
@@ -203,65 +274,6 @@ abstract class Core {
             $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
         }
         exit();
-    }
-
-    public function addTitle($text) {
-        $this->_title[] = $text;
-        krsort($this->_title);
-        $this->title = implode(' ' . $this->globalsettings['title_delimiter'] . ' ', $this->_title);
-    }
-
-    public function addKeywords($text) {
-        $this->_keywords[] = $text;
-        krsort($this->_keywords);
-        $this->keywords = implode(', ', $this->_keywords);
-    }
-
-    public function addDescription($text) {
-        $this->_description[] = trim($text);
-        krsort($this->_description);
-        $this->description = implode('. ', $this->_description);
-    }
-
-    private function getSuggestions404Local($req) {
-        $out = array();
-        if (strpos($req, '.html') !== false) {
-            $c = new MPageCities($this->db);
-
-            $uri = explode('/', $req);
-            array_pop($uri);
-            $page = $c->getCityByUrl('/' . trim(implode('/', $uri), '/'));
-            if (!empty($page)) {
-                $out[] = array(
-                    'url' => $page['url'] . '/',
-                    'title' => $page['pc_title'],
-                );
-            }
-        }
-        return $out;
-    }
-
-    private function getSuggestions404Yandex($req) {
-        $out = array();
-        if (strpos($req, '.css') === false && strpos($req, '.js') === false && strpos($req, '.png') === false && strpos($req, '.txt') === false && strpos($req, '.xml') === false) {
-            $ys = new YandexSearcher();
-            $ys->enableLogging($this->db);
-            $searchstring = trim(implode(' ', explode('/', $req)));
-            $variants = $ys->search("$searchstring host:culttourism.ru");
-            if (!empty($variants['results'])) {
-                $i = 0;
-                foreach ($variants['results'] as $variant) {
-                    $out[] = array(
-                        'url' => $variant['url'],
-                        'title' => trim(str_replace('| Культурный туризм', '', $variant['title'])),
-                    );
-                    if ($i++ == 3) {
-                        break;
-                    }
-                }
-            }
-        }
-        return $out;
     }
 
     /* запрещаем клонировать экземпляр класса */
