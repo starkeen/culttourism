@@ -51,12 +51,16 @@ class Auth {
 
     public function checkSession($service = 'web') {
         $dba = $this->db->getTableName('authorizations');
-        $this->db->sql = "SELECT au_session FROM $dba
+        $this->db->sql = "SELECT au_session, IF(au_date_expire < NOW(), 1, 0) expired FROM $dba
                             WHERE au_key = '$this->key'
-                            AND au_date_expire > now()
                             LIMIT 1";
         $this->db->exec();
         $row = $this->db->fetch();
+        if ($row['expired'] == 1) {
+            $this->db->sql = "DELETE FROM $dba
+                              WHERE au_key = '$this->key' LIMIT 1";
+            $this->db->exec();
+        }
         if (isset($row['au_session']) && $row['au_session'] == $this->session) {
             $this->db->sql = "UPDATE $dba
                                 SET au_date_last_act = now(),
