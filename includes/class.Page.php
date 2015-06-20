@@ -260,6 +260,7 @@ class Page extends PageCommon {
             $this->smarty->assign('points_servo', $points_data['points_service']);
             $this->smarty->assign('page_url', $this->basepath);
             $this->smarty->assign('types_select', $points_data['types']);
+            $this->smarty->assign('ptypes', array());
             $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=city') : $this->globalsettings['res_js_city'];
 
             if ($this->checkEdit()) {
