@@ -32,64 +32,69 @@ class YandexSearcher {
         </groupings>
 </request>
 DOC;
-        if ($this->_enable_logging) {
-            $this->_logger->add(array(
-                'sl_query' => $request,
-                'sl_request' => $doc,
-                'sl_error_code' => 0,
-            ));
-        }
-        $context = stream_context_create(array(
-            'http' => array(
-                'method' => "POST",
-                'header' => "Content-type: application/xml\r\nContent-length: " . strlen($doc),
-                'content' => $doc,
-        )));
-        $response = file_get_contents($this->_request_url, true, $context);
-        if ($response) {
+
+        try {
             if ($this->_enable_logging) {
-                $this->_logger->setAnswer(array(
-                    'sl_answer' => $response,
+                $this->_logger->add(array(
+                    'sl_query' => $request,
+                    'sl_request' => $doc,
+                    'sl_error_code' => 0,
                 ));
             }
-            $xmldoc = new SimpleXMLElement($response);
-
-            $out['error'] = $xmldoc->response->error;
-            $out['found'] = $xmldoc->xpath("response/results/grouping/group/doc");
-            if (empty($out['error'])) {
-                $out['pages_cnt'] = (int) $xmldoc->response->found;
-                foreach ($out['found'] as $item) {
-                    $result_item = array(
-                        'domain' => (string) $item->domain,
-                        'url' => (string) $item->url,
-                        'title' => $this->clean($item->title),
-                        'title_hw' => $this->highlight($item->title),
-                        'descr' => '',
-                        'descr_hw' => '',
-                    );
-                    if ($item->passages) {
-                        foreach ($item->passages->passage as $passage) {
-                            $result_item['descr'] .= $this->clean($passage) . "\n";
-                            $result_item['descr_hw'] .= $this->highlight($passage);
-                        }
-                    }
-                    $result_item['descr'] = trim($result_item['descr']);
-                    $result_item['descr_hw'] = trim($result_item['descr_hw']);
-                    $out['results'][] = $result_item;
-                }
-            } else {
-                $err_attr = $out['error']->attributes();
-                $out['error_code'] = $err_attr['code'];
-                $out['error_text'] = "Ошибка: " . $out['error'];
+            $context = stream_context_create(array(
+                'http' => array(
+                    'method' => "POST",
+                    'header' => "Content-type: application/xml\r\nContent-length: " . strlen($doc),
+                    'content' => $doc,
+            )));
+            $response = file_get_contents($this->_request_url, true, $context);
+            if ($response) {
                 if ($this->_enable_logging) {
                     $this->_logger->setAnswer(array(
-                        'sl_error_code' => $out['error_code'],
-                        'sl_error_text' => (string) $out['error'],
+                        'sl_answer' => $response,
                     ));
                 }
+                $xmldoc = new SimpleXMLElement($response);
+
+                $out['error'] = $xmldoc->response->error;
+                $out['found'] = $xmldoc->xpath("response/results/grouping/group/doc");
+                if (empty($out['error'])) {
+                    $out['pages_cnt'] = (int) $xmldoc->response->found;
+                    foreach ($out['found'] as $item) {
+                        $result_item = array(
+                            'domain' => (string) $item->domain,
+                            'url' => (string) $item->url,
+                            'title' => $this->clean($item->title),
+                            'title_hw' => $this->highlight($item->title),
+                            'descr' => '',
+                            'descr_hw' => '',
+                        );
+                        if ($item->passages) {
+                            foreach ($item->passages->passage as $passage) {
+                                $result_item['descr'] .= $this->clean($passage) . "\n";
+                                $result_item['descr_hw'] .= $this->highlight($passage);
+                            }
+                        }
+                        $result_item['descr'] = trim($result_item['descr']);
+                        $result_item['descr_hw'] = trim($result_item['descr_hw']);
+                        $out['results'][] = $result_item;
+                    }
+                } else {
+                    $err_attr = $out['error']->attributes();
+                    $out['error_code'] = $err_attr['code'];
+                    $out['error_text'] = "Ошибка: " . $out['error'];
+                    if ($this->_enable_logging) {
+                        $this->_logger->setAnswer(array(
+                            'sl_error_code' => $out['error_code'],
+                            'sl_error_text' => (string) $out['error'],
+                        ));
+                    }
+                }
+            } else {
+                $out['error_text'] = "Внутренняя ошибка сервера.\n";
             }
-        } else {
-            $out['error_text'] = "Внутренняя ошибка сервера.\n";
+        } catch (Exception $e) {
+            $out['error_text'] .= ' ' . $e->getMessage();
         }
         unset($out['found']);
         unset($out['error']);
