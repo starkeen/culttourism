@@ -10,7 +10,7 @@ $tables = array(
     array($db->getTableName('curl_cache'), 'cc_date', 60,),
 );
 
-$db->sql = "DELETE FROM $dbau WHERE au_service IN ('ajax', 'map'))";
+$db->sql = "DELETE FROM $dbau WHERE au_service IN ('ajax', 'map')";
 $db->exec();
 
 foreach ($tables as $i => $table) {
