@@ -2,7 +2,7 @@
 
 $dbau = $db->getTableName('authorizations');
 
-$tables = array(
+$tables_clean = array(
     array($db->getTableName('authorizations'), 'au_date_expire', 1),
     array($db->getTableName('news_items'), 'ni_pubdate', 3,),
     array($db->getTableName('log_actions'), 'la_date', 60,),
@@ -13,13 +13,24 @@ $tables = array(
 $db->sql = "DELETE FROM $dbau WHERE au_service IN ('ajax', 'map')";
 $db->exec();
 
-foreach ($tables as $i => $table) {
+foreach ($tables_clean as $i => $table) {
     $db->sql = "DELETE FROM {$table[0]}
                 WHERE {$table[1]} < SUBDATE(NOW(), INTERVAL {$table[2]} DAY)"
             . (isset($table[3]) ? " AND {$table[3]}" : '');
     $db->exec();
-    if ($i != 0) {
-        $db->sql = "OPTIMIZE TABLE {$table[0]}";
-        $db->exec();
-    }
+}
+
+$tables_optimize = array(
+    $db->getTableName('city_data'),
+    $db->getTableName('pagepoints'),
+    $db->getTableName('pagecity'),
+    $db->getTableName('siteprorerties'),
+    $db->getTableName('news_items'),
+    $db->getTableName('wordstat'),
+    $db->getTableName('candidate_points'),
+);
+
+foreach ($tables_optimize as $table) {
+    $db->sql = "OPTIMIZE TABLE $table";
+    $db->exec();
 }
