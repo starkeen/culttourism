@@ -76,10 +76,6 @@
 .city-tree-full li a.m_left_moremore {
     margin-left:60px;
 }
-#citytext {
-  position: relative;
-  margin-right: 520px;
-}
 #city_anons {
     height: 60px;
     background:#efefef;
@@ -368,6 +364,10 @@ textarea.feedinput {
     padding:3px;
     font-size: 90%;
     font-style: italic;
+}
+#citytext {
+  position: relative;
+  margin-right: 520px;
 }
 
 #citypoints {
