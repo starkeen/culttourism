@@ -76,6 +76,10 @@
 .city-tree-full li a.m_left_moremore {
     margin-left:60px;
 }
+#citytext {
+  position: relative;
+  margin-right: 520px;
+}
 #city_anons {
     height: 60px;
     background:#efefef;
