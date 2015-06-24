@@ -357,17 +357,13 @@ textarea.feedinput {
 
 #city_announcement {
     margin:10px;
-    margin-right: 210px;
+    margin-right: 720px;
     background:#efefef;
     border:1px solid #ddd;
     border-left:3px solid #ddd;
     padding:3px;
     font-size: 90%;
     font-style: italic;
-}
-#citytext {
-  position: relative;
-  margin-right: 520px;
 }
 
 #citypoints {
