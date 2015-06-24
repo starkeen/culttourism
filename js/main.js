@@ -377,12 +377,12 @@ $(document).ready(function () {
             pt_lon: $("#obj_lon").val(),
             pt_zoom: $("#obj_zoom").val()
         },
-        function (a) {
-            if (a) {
-                $("#gps_" + $("#obj_id").val()).text(a);
+        function (resp) {
+            if (resp) {
+                $("#gps_" + $("#obj_id").val()).text(resp);
                 $.modal.close()
             }
-        });
+        })
     });
     $("#pt_latlon_handler input.doesc").live("click", function () {//------------ escape
         $.modal.close();
