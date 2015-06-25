@@ -156,7 +156,6 @@ return array(
             'addr' => array(
                 'path' => array(
                     "//div[@class='main-content']/div[7]/div[2]/div[1]/div[5]",
-                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[3]",
                 ),
                 'type' => 1,
             ),
