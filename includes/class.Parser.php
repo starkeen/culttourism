@@ -93,7 +93,7 @@ class Parser {
             ),
             'to' => array(
                 '', ' ', '',
-                '+380 (', 'Работает:', '',
+                '+380 (', '', '',
                 '', '',
             ),
         );
@@ -157,7 +157,7 @@ class Parser {
         if ($out['geo_latlon_degminsec'] != '') {
             $latlon = trim($out['geo_latlon_degminsec']);
             $matches = array();
-            if (preg_match("/^([0-9]*)°([0-9]*)'([0-9]*)''N, ([0-9]*)°([0-9]*)'([0-9]*)''E/", $latlon, $matches)) {
+            if (preg_match("/^([0-9]*)°([0-9]*)'([0-9\.]*)''N, ([0-9]*)°([0-9]*)'([0-9\.]*)''E/", $latlon, $matches)) {
                 $out['geo_lat'] = intval($matches[1]);
                 $out['geo_lon'] = intval($matches[4]);
                 $out['geo_lat'] += floatval($matches[2]) / 60;

@@ -149,12 +149,14 @@ return array(
             ),
             'geo_latlon_degminsec' => array(
                 'path' => array(
+                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[3]/div[1]",
                     "//div[@class='main-content']/div[7]/div[2]/div[1]/div[4]/div[1]",
                 ),
                 'type' => 1,
             ),
             'addr' => array(
                 'path' => array(
+                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[4]",
                     "//div[@class='main-content']/div[7]/div[2]/div[1]/div[5]",
                 ),
                 'type' => 1,
