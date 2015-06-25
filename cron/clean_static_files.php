@@ -1,6 +1,6 @@
 <?php
 
-$timestamp_cut = strtotime("-1 months");
+$timestamp_cut = strtotime("-6 months");
 $files = array();
 
 $mask = array(
@@ -31,8 +31,8 @@ foreach ($files as $id => $variant) {
     $last = array_pop($variant);
     foreach ($variant as $file) {
         if ($file['delete']) {
+            unlink($file['filename']);
             echo "delete old file: {$file['filename']} => " . date('d.m.Y', $file['timestamp']) . PHP_EOL;
-            //unlink($file['filename']);
         }
     }
 }
