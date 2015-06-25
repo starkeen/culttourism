@@ -139,6 +139,7 @@ return array(
             ),
             'text' => array(
                 'path' => array(
+                    "//div[@class='main-content']/div[7]/div[2]/div[5]/div[1]",
                     "//div[@class='main-content']/div[7]/div[2]/div[4]/div[2]",
                     "//div[@class='main-content']/div[7]/div[2]/div[4]/div[3]",
                     "//div[@class='main-content']/div[7]/div[2]/div[4]/div[4]",
@@ -146,17 +147,22 @@ return array(
                 ),
                 'type' => 1,
             ),
+            'geo_latlon_degminsec' => array(
+                'path' => array(
+                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[4]/div[1]",
+                ),
+                'type' => 1,
+            ),
             'addr' => array(
                 'path' => array(
+                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[5]",
                     "//div[@class='main-content']/div[7]/div[2]/div[1]/div[3]",
-                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[4]",
                 ),
                 'type' => 1,
             ),
             'phone' => array(
                 'path' => array(
-                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[4]",
-                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[5]",
+                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[6]",
                 ),
                 'type' => 1,
             ),
@@ -168,7 +174,7 @@ return array(
             ),
             'worktime' => array(
                 'path' => array(
-                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[6]",
+                    "//div[@class='main-content']/div[7]/div[2]/div[1]/div[7]",
                 ),
                 'type' => 1,
             ),
