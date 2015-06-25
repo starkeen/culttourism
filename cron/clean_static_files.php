@@ -16,7 +16,7 @@ $mask = array(
 );
 
 foreach ($mask as $id => $variant) {
-    foreach (glob($mask) as $filename) {
+    foreach (glob($variant) as $filename) {
         $timestamp = filemtime($filename);
         $files[$id][$timestamp] = array(
             'filename' => $filename,
