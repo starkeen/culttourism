@@ -34,6 +34,25 @@
                 {/if}
                 </head>
                 <body>
+                    {literal}
+                    <script type="text/javascript">
+                        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+                        ga('create', 'UA-6799673-8', 'auto');
+                        ga('send', 'pageview');
+                        window.onerror = function (msg, url, line) {
+                            var preventErrorAlert = true;
+                            ga('send', 'JS Error', msg, navigator.userAgent + ' -> ' + url + " : " + line, 0);
+                            return preventErrorAlert;
+                        };
+                    </script>
+                    <script type="text/javascript">
+                        (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter1209661 = new Ya.Metrika({ id:1209661, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true, trackHash:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");
+                    </script>
+                    <noscript><div><img src="https://mc.yandex.ru/watch/1209661" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+                    {/literal}
                     <div id="wrapper">
                         <header id="header">
                             <div id="mainmenu-container">
@@ -65,36 +84,6 @@
                     <footer id="footer">
                         <div id="footer_conters">
                             <!--noindex-->{literal}
-                            <!-- Yandex.Metrika counter -->
-                            <script type="text/javascript">(function (d, w, c) {
-                                    (w[c] = w[c] || []).push(function () {
-                                        try {
-                                            w.yaCounter1209661 = new Ya.Metrika({id: 1209661, webvisor: true, clickmap: true, trackLinks: true, accurateTrackBounce: true});
-                                        } catch (e) {
-                                        }
-                                    });
-                                    var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () {
-                                        n.parentNode.insertBefore(s, n);
-                                    };
-                                    s.type = "text/javascript";
-                                    s.async = true;
-                                    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
-                                    if (w.opera == "[object Opera]") {
-                                        d.addEventListener("DOMContentLoaded", f, false);
-                                    } else {
-                                        f();
-                                    }
-                                })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="//mc.yandex.ru/watch/1209661" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-                            <!-- Google Analytics counter -->
-                            <script type="text/javascript">
-                                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-                                ga('create', 'UA-6799673-8', 'auto');
-                                ga('send', 'pageview');
-                            </script>
                             <!--LiveInternet counter-->
                             <script type="text/javascript">document.write("<a href='http://www.liveinternet.ru/click' target=_blank><img src='//counter.yadro.ru/hit?t44.11;r" + escape(document.referrer) + ((typeof (screen) == "undefined") ? "" : ";s" + screen.width + "*" + screen.height + "*" + (screen.colorDepth ? screen.colorDepth : screen.pixelDepth)) + ";u" + escape(document.URL) + ";" + Math.random() + "' border=0 width=31 height=31 alt='' title='LiveInternet'><\/a>")</script>
                             <!--/LiveInternet-->
@@ -135,14 +124,6 @@
                                     var s = document.getElementsByTagName("script")[0];
                                     s.parentNode.insertBefore(po, s);
                                 })();
-                            </script>
-                            <script type="text/javascript">
-                                var _gaq = window._gaq || [];
-                                window.onerror = function (msg, url, line) {
-                                    var preventErrorAlert = true;
-                                    _gaq.push(['_trackEvent', 'JS Error', msg, navigator.userAgent + ' -> ' + url + " : " + line, 0, true]);
-                                    return preventErrorAlert;
-                                };
                             </script>
                             {/literal}<!--/noindex-->
                         </div>

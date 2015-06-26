@@ -1,5 +1,5 @@
 jQuery.error = function (message) {
-    _gaq.push(['_trackEvent', 'jQuery Error', message, navigator.userAgent, 0, true]);
+    ga('send', 'jQuery Error', message, navigator.userAgent);
 };
 
 $(document).ready(function () {
