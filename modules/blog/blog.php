@@ -92,7 +92,7 @@ class Page extends PageCommon {
         }
         $dbb = $db->getTableName('blogentries');
         $dbu = $db->getTableName('users');
-        $db->sql = "SELECT bg.br_id, bg.br_title, us.us_name,
+        $db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text, us.us_name,
                     UNIX_TIMESTAMP(bg.br_date) AS last_update,
                     DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month, 
                     IF (bg.br_url != '', bg.br_url, DATE_FORMAT(bg.br_date,'%d')) as bg_day,
