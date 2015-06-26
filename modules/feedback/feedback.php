@@ -69,7 +69,7 @@ class Page extends PageCommon {
         if ((!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] == null) && isset($_SERVER['HTTP_REFERER'])) {
             $_SESSION['feedback_referer'] = $_SERVER['HTTP_REFERER'];
         }
-        $referer = $_SESSION['feedback_referer'];
+        $referer = !empty($_SESSION['feedback_referer']) ? $_SESSION['feedback_referer'] : null;
         if (isset($_POST) && !empty($_POST)) {
             $data['fname'] = cut_trash_text($_POST['fname']);
             $data['fmail'] = cut_trash_text($_POST['fmail']);
@@ -105,7 +105,8 @@ class Page extends PageCommon {
                     'user_name' => $data['fname'],
                     'user_mail' => $data['fmail'],
                     'feed_text' => $data['ftext'],
-                    'referer' => $referer);
+                    'referer' => $referer,
+                );
                 Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 4, $mail_attrs);
                 unset($_POST);
                 unset($_SESSION['captcha_keystring']);
