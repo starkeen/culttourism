@@ -28,7 +28,7 @@ if (strpos($server_request_uri, '?')) {
 $request_uri_arr = explode('/', $server_request_uri);
 if ($_SERVER['HTTP_HOST'] != _URL_ROOT) {
     $request_suburi_arr = explode('/', _URL_ROOT);
-    if ($request_suburi_arr[1] == $request_uri_arr[1]) {
+    if (isset($request_suburi_arr[1]) && isset($request_uri_arr[1]) && $request_suburi_arr[1] == $request_uri_arr[1]) {
         array_shift($request_uri_arr);
     }
 }
