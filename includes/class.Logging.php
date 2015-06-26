@@ -7,7 +7,7 @@ class Logging {
         $url = $_SERVER['REQUEST_URI'];
         $ip = $_SERVER['REMOTE_ADDR'];
         $script = $_SERVER['SCRIPT_FILENAME'];
-        $browser = $_SERVER['HTTP_USER_AGENT'];
+        $browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
         $referer = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : 'undefined';
         if ($type != '301' && !strpos($url, 'precomposed')) {
             $dbe = $db->getTableName('log_errors');
