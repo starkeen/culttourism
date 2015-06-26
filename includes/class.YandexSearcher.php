@@ -47,7 +47,7 @@ DOC;
                     'header' => "Content-type: application/xml\r\nContent-length: " . strlen($doc),
                     'content' => $doc,
             )));
-            $response = file_get_contents($this->_request_url, true, $context);
+            $response = @file_get_contents($this->_request_url, true, $context);
             if ($response) {
                 if ($this->_enable_logging) {
                     $this->_logger->setAnswer(array(
@@ -92,6 +92,7 @@ DOC;
                 }
             } else {
                 $out['error_text'] = "Внутренняя ошибка сервера.\n";
+                throw new Exception('HTTP request failed!');
             }
         } catch (Exception $e) {
             $out['error_text'] .= ' ' . $e->getMessage();
