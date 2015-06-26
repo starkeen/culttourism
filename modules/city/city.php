@@ -56,7 +56,7 @@ class Page extends PageCommon {
         $result = curl_exec($ch);
         curl_close($ch);
         $response = json_decode($result);
-        if ($response->cod == 200) {
+        if (is_object($response) && $response->cod == 200) {
             $weather_data['temperature'] = round($response->main->temp - 273.15);
             if ($weather_data['temperature'] > 0) {
                 $weather_data['temperature'] = '+' . $weather_data['temperature'];
