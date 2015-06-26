@@ -66,7 +66,7 @@ class Page extends PageCommon {
             'ftext' => null,
             'fmail' => null,
         );
-        if (!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] == null) {
+        if ((!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] == null) && isset($_SERVER['HTTP_REFERER'])) {
             $_SESSION['feedback_referer'] = $_SERVER['HTTP_REFERER'];
         }
         $referer = $_SESSION['feedback_referer'];
