@@ -65,7 +65,7 @@ class MPageCities extends Model {
         $out['metas'] = array();
 
         //----------------------  в н у т р и  ------------------------
-        if ($out['pc_region_id'] > 0 && $out['pc_city_id'] == 0) {
+        if (!empty($out['pc_region_id']) && empty($out['pc_city_id'])) {
             $this->_db->sql = "SELECT pc.pc_title, url.url, pc.pc_inwheretext,
                                     UNIX_TIMESTAMP(pc.pc_add_date) AS last_update
                                 FROM $this->_table_name pc
