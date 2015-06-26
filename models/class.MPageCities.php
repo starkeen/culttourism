@@ -110,15 +110,17 @@ class MPageCities extends Model {
         }
 
         //-----------------------  м е т а  -------------------------
-        $this->_db->sql = "SELECT cf_title, cd_value
+        if (!empty($out['pc_id'])) {
+            $this->_db->sql = "SELECT cf_title, cd_value
                         FROM $dbcd cd
                             LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
                         WHERE cd.cd_pc_id = '{$out['pc_id']}'
                             AND cd.cd_value != ''
                             AND cf.cf_active = 1
                         ORDER BY cf_order";
-        $this->_db->exec();
-        $out['metas'] = $this->_db->fetchAll();
+            $this->_db->exec();
+            $out['metas'] = $this->_db->fetchAll();
+        }
 
         return $out;
     }
