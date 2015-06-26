@@ -224,6 +224,7 @@ class MPagePoints extends Model {
         $dbrt = $this->_db->getTableName('ref_pointtypes');
         $dbru = $this->_db->getTableName('region_url');
         $this->_db->sql = "SELECT *,
+                                '' AS gps_dec,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update
                             FROM $this->_table_name pt
