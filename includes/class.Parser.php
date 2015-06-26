@@ -106,7 +106,7 @@ class Parser {
                 if (!is_null($elements)) {
                     foreach ($elements as $element) {
                         if ($item['type'] == 1) {
-                            $data[] = trim($element->nodeValue);
+                            $data[] = trim(preg_replace('/\s+/', ' ', $element->nodeValue));
                         } elseif ($item['type'] == 2) {
                             $data[] = trim($element->getAttribute('href'));
                         }
