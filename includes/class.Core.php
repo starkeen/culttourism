@@ -194,7 +194,7 @@ abstract class Core {
 
     public function errorsExceptionsHandler($e) {
         $msg = "Error: " . $e->getMessage() . "\n"
-                . 'file: ' . $e->getFile() . ':' . $e->getLine()
+                . 'file: ' . $e->getFile() . ':' . $e->getLine(). "\n"
                 . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
                 . "\n__________________________\n\n\n"
                 . 'trace: ' . print_r($e->getTrace(), true) . "\n";
