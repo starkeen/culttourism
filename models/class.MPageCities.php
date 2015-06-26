@@ -83,7 +83,7 @@ class MPageCities extends Model {
         }
 
         //----------------------  р я д о м  ------------------------
-        if ($out['pc_region_id'] > 0 && $out['pc_city_id'] > 0) {
+        if (!empty($out['pc_region_id']) && !empty($out['pc_city_id'])) {
             $this->_db->sql = "SELECT pc.pc_title, url.url, pc.pc_inwheretext,
                                     ROUND(1000 * (ABS(pc.pc_latitude - {$out['pc_latitude']}) + ABS(pc.pc_longitude - {$out['pc_longitude']}))) AS delta_sum,
                                     UNIX_TIMESTAMP(pc.pc_add_date) AS last_update
