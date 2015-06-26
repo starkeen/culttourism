@@ -138,6 +138,7 @@ class MPagePoints extends Model {
         $slugline = $this->_db->getEscapedString($slugline);
 
         $this->_db->sql = "SELECT *,
+                                '' AS gps_dec,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical
                             FROM $this->_table_name pt
