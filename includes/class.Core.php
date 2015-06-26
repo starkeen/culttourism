@@ -195,8 +195,8 @@ abstract class Core {
     public function errorsExceptionsHandler($e) {
         $msg = "Error: " . $e->getMessage() . "\n"
                 . 'file: ' . $e->getFile() . ':' . $e->getLine()
+                . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
                 . "\n__________________________\n\n\n"
-                . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined'). "\n"
                 . 'trace: ' . print_r($e->getTrace(), true) . "\n";
 
         mail('starkeen@gmail.com', 'Error on culttourism.ru', $msg);
