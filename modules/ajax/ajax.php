@@ -841,6 +841,7 @@ class Page extends PageCommon {
         }
 
         $object['page_link'] = $object['url_canonical'];
+        $object['gps_dec'] = '';        
 
         $sp = new Statpoints($this->db);
         $sp->add($object['pt_id'], $this->getUserHash());
