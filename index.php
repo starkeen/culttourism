@@ -9,17 +9,14 @@ if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS']
 
 session_start();
 include('config/configuration.php');
+error_reporting(E_ALL);
 if (_ER_REPORT) {
-    error_reporting(E_ALL);
     ini_set('display_errors', true);
+    include('includes/debug.php');
 } else {
-    error_reporting(0);
     ini_set('display_errors', false);
 }
 include('includes/functions.php');
-if (_ER_REPORT) {
-    include('includes/debug.php');
-}
 
 include(_DIR_INCLUDES . '/class.Helper.php');
 spl_autoload_register('Helper::autoloader');
