@@ -56,7 +56,10 @@ class MPagePoints extends Model {
             'points' => array(),
             'points_sight' => array(),
             'points_service' => array(),
-            'types' => array(),
+            'types' => array(
+                0 => array(),
+                1 => array(),
+            ),
             'last_update' => 0,
         );
         $dbrt = $this->_db->getTableName('ref_pointtypes');
