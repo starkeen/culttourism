@@ -8,7 +8,7 @@ class MCandidatePoints extends Model {
     private $_types_markers = array(
         1 => array('памятник', 'монумент', 'мемориал', 'скульптура',), //памятники
         2 => array('цирк', 'зоопарк', 'театр', 'здание', 'площадь', 'мост', 'фонтан', 'планетарий', 'набережная',), //места
-        3 => array('церковь', 'храм', 'монастырь', 'мечеть', 'синагога', 'собор', 'часовня', 'костел', 'костёл',), //церкви
+        3 => array('церковь', 'храм', 'монастырь', 'мечеть', 'синагога', 'собор', 'часовня', 'костел', 'костёл', 'кирха',), //церкви
         4 => array('музей', 'галерея',), //музеи
         5 => array('парк', 'сад', 'сквер', 'роща', 'гора', 'озеро', 'заповедник', 'пещера',), //парки
         6 => array('усадьба', 'дворец',), //усадьбы
@@ -84,16 +84,16 @@ class MCandidatePoints extends Model {
                                     ON pt.tp_id = t.cp_type_id
                             WHERE $this->_table_active = 1\n";
         if ($filter['type'] > 0) {
-            $this->_db->sql .= "AND t.cp_type_id = '".intval($filter['type'])."'\n";
+            $this->_db->sql .= "AND t.cp_type_id = '" . intval($filter['type']) . "'\n";
         }
         if ($filter['type'] == -1) {
             $this->_db->sql .= "AND t.cp_type_id = '0'\n";
         }
         if ($filter['pcid'] > 0) {
-            $this->_db->sql .= "AND t.cp_citypage_id = '".intval($filter['pcid'])."'\n";
+            $this->_db->sql .= "AND t.cp_citypage_id = '" . intval($filter['pcid']) . "'\n";
         }
         if ($filter['state'] != 0) {
-            $this->_db->sql .= "AND t.cp_state = '".intval($filter['state'])."'\n";
+            $this->_db->sql .= "AND t.cp_state = '" . intval($filter['state']) . "'\n";
         }
         $this->_db->sql .= "ORDER BY $this->_table_order ASC\n";
         $this->_db->exec();
