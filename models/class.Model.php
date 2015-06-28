@@ -97,7 +97,7 @@ class Model {
         $new_fields = array();
         foreach ($values as $k => $v) {
             if (array_search($k, $this->_table_fields) !== false) {
-                $new_fields[] = "$k = '" . $this->_db->getEscapedString($v) . "'";
+                $new_fields[] = "$k = '" . $this->_db->getEscapedString(trim(preg_replace('/\s+/', ' ', $v))) . "'";
             }
         }
         if (!empty($new_fields)) {
@@ -127,7 +127,7 @@ class Model {
         $new_fields = array();
         foreach ($values as $k => $v) {
             if (array_search($k, $this->_table_fields) !== false) {
-                $new_fields[] = "$k = '" . $this->_db->getEscapedString($v) . "'";
+                $new_fields[] = "$k = '" . $this->_db->getEscapedString(trim(preg_replace('/\s+/', ' ', $v))) . "'";
             }
         }
         if (!empty($new_fields)) {
