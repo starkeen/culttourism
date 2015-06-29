@@ -244,7 +244,8 @@ abstract class Core {
                     $suggestions = array();
                     //$suggestions = $this->getSuggestions404Local($_SERVER['REQUEST_URI']);
                     if (empty($suggestions)) {
-                        $suggestions = $this->getSuggestions404Yandex($_SERVER['REQUEST_URI']);
+                        $search_text = trim(str_replace(array('_', '/', '.html',), ' ', $_SERVER['REQUEST_URI']));
+                        $suggestions = $this->getSuggestions404Yandex($search_text);
                     }
 
                     $this->title = "$this->title - 404 Not Found - страница не найдена на сервере";
