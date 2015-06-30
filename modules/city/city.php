@@ -386,11 +386,9 @@ class Page extends PageCommon {
                         LEFT JOIN $dbu url ON url.uid = city.pc_url_id
                         WHERE city.pc_title LIKE '%$newcity%' OR city.pc_title_synonym LIKE '%$newcity%'";
             $db->exec();
+            $already = array();
             while ($row = $db->fetch()) {
                 $already[$row['url']] = $row['pc_title'];
-            }
-            if (isset($already)) {
-                $smarty->assign('already', $already);
             }
             //------------------- поиск в справочнике регионов --------------
             $db->sql = "SELECT rc.name as name, rc.id as city_id,
@@ -460,6 +458,7 @@ class Page extends PageCommon {
         }
 
         $smarty->assign('addregion', $newcity);
+        $smarty->assign('already', $already);
         if (isset($this->user['userid'])) {
             $smarty->assign('adminlogined', $this->user['userid']);
         }
