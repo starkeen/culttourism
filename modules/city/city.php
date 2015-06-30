@@ -427,14 +427,14 @@ class Page extends PageCommon {
                         
                         ORDER BY country, region, name";
             $db->exec();
+            $inbase = array();
             while ($row = $db->fetch()) {
                 $inbase[] = $row;
             }
-            if (isset($inbase)) {
                 foreach ($inbase as $id => $city) {
                     $translit = translit($city['name']);
                     $inbase[$id]['translit'] = $translit;
-                    $db->sql = "SELECT * FROM $dbll WHERE lower(ll_name) = lower('$translit') LIMIT 1";
+                    $db->sql = "SELECT * FROM $dbll WHERE LOWER(ll_name) = LOWER('$translit') LIMIT 1";
                     if ($db->exec()) {
                         $row = $db->fetch();
                         $inbase[$id]['lat'] = $row['ll_lat'];
@@ -448,20 +448,15 @@ class Page extends PageCommon {
                         }
                     }
                 }
-                $smarty->assign('inbase', $inbase);
-            }
-            //------------------- добавление произвольного региона --------------
-            elseif (mb_strlen($newcity) >= 5) {
-                $smarty->assign('freeplace', $newcity);
-            }
+                
             //-------------------------------------------------------------------
         }
 
+        $smarty->assign('inbase', $inbase);
         $smarty->assign('addregion', $newcity);
         $smarty->assign('already', $already);
-        if (isset($this->user['userid'])) {
-            $smarty->assign('adminlogined', $this->user['userid']);
-        }
+        $smarty->assign('freeplace', mb_strlen($newcity) >= 5 ? $newcity : null);
+        $smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : null);
         $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/add.sm.html');
     }
 
