@@ -445,6 +445,8 @@ class Page extends PageCommon {
                         $lolgitude = $lolgitude . abs($row['ll_lon']);
                         if ($latitude != 'N0' && $lolgitude != 'E0') {
                             $inbase[$id]['latlon'] = "{$row['ll_name']}: $latitude, $lolgitude";
+                        } else {
+                            $inbase[$id]['latlon'] = null;
                         }
                     }
                 }
