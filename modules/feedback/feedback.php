@@ -21,7 +21,7 @@ class Page extends PageCommon {
     private function getAdd() {
         $cp = new MCandidatePoints($this->db);
         if (!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] == null) {
-            $_SESSION['feedback_referer'] = $_SERVER['HTTP_REFERER'];
+            $_SESSION['feedback_referer'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
         }
         if (isset($_POST) && !empty($_POST)) {
             $cp->add(array(
