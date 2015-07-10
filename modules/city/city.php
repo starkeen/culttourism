@@ -77,7 +77,7 @@ class Page extends PageCommon {
             $weather_data['pressure'] = round($response->main->pressure / 10);
             $weather_data['humidity'] = round($response->main->humidity);
             $weather_data['windspeed'] = round($response->wind->speed, 1);
-            $weather_data['winddeg'] = $response->wind->deg;
+            $weather_data['winddeg'] = !empty($response->wind->deg) ? $response->wind->deg : 0;
             $weather_data['clouds'] = $response->clouds->all;
             if (isset($response->weather[0])) {
                 $weather_data['weather_id'] = $response->weather[0]->id;
