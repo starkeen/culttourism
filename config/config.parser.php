@@ -33,7 +33,7 @@ return array(
                 'path' => array(
                     "//div[@class='www']/a",
                 ),
-                'type' => 2,
+                'type' => 1,
             ),
         ),
     ),
