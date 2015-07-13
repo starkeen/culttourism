@@ -100,4 +100,39 @@ class MCandidatePoints extends Model {
         return $this->_db->fetchAll();
     }
 
+    public function getMatrix() {
+        $this->_db->sql = "SELECT count(1) AS cnt,
+                                pc.pc_id, pc.pc_title,
+                                pt.tp_id, pt.tp_name, pt.tp_icon
+                            FROM $this->_table_name AS t
+                                LEFT JOIN {$this->_tables_related['pagecity']} AS pc
+                                    ON pc.pc_id = t.cp_citypage_id
+                                LEFT JOIN {$this->_tables_related['ref_pointtypes']} AS pt
+                                    ON pt.tp_id = t.cp_type_id
+                            WHERE $this->_table_active = 1
+                            GROUP BY pc.pc_id, pt.tp_id
+                            ORDER BY pc.pc_title, pt.tr_order, $this->_table_order ASC";
+        $this->_db->exec();
+        $out = array(
+            'types' => array(),
+            'counts' => array(),
+        );
+        while ($row = $this->_db->fetch()) {
+            $out['types'][$row['tp_id']] = array(
+                'title' => $row['tp_name'],
+                'icon' => $row['tp_icon'],
+            );
+            $out['counts'][$row['pc_id']]['title'] = $row['pc_title'];
+            $out['counts'][$row['pc_id']]['types'][$row['tp_id']] = $row['cnt'];
+        }
+        foreach ($out['counts'] as $pcid => $data) {
+            foreach ($out['types'] as $tid => $type) {
+                if (!isset($data['types'][$tid])) {
+                    $out['counts'][$pcid]['types'][$tid] = 0;
+                }
+            }
+        }
+        return $out;
+    }
+
 }
