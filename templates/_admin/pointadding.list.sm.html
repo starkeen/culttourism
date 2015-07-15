@@ -5,14 +5,20 @@
     <tr>
         <th>Регион</th>
         {foreach from=$matrix.types item=t}
-        <th><img src="/img/points/x16/{$t.icon|default:'star.png'}"/></th>
+        <th>
+            <a href="?type={$t.id}"><img src="/img/points/x16/{$t.icon|default:'star.png'}"/></a>
+        </th>
         {/foreach}
     </tr>
     {foreach from=$matrix.counts item=c}
     <tr>
-        <td style="text-align:left;">{$c.title}</td>
+        <td style="text-align:left;">
+            <a href="?pcid={$t.id}">{$c.id}</a>
+        </td>
         {foreach from=$matrix.types key=tid item=t}
-        <td style="text-align:center;">{$c.types.$tid}</td>
+        <td style="text-align:center;">
+            <a href="?pcid={$t.id}&type={$tid}">{$c.types.$tid}</a>
+        </td>
         {/foreach}
     </tr>
     {/foreach}
