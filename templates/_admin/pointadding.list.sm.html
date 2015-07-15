@@ -4,20 +4,20 @@
 <table class="commontable" style="float:left;">
     <tr>
         <th>Регион</th>
-        {foreach from=$matrix.types item=t}
+        {foreach from=$matrix.types key=tid item=t}
         <th>
-            <a href="?type={$t.id}"><img src="/img/points/x16/{$t.icon|default:'star.png'}"/></a>
+            <a href="?type={$tid}"><img src="/img/points/x16/{$t.icon|default:'star.png'}"/></a>
         </th>
         {/foreach}
     </tr>
-    {foreach from=$matrix.counts item=c}
+    {foreach from=$matrix.counts key=pcid item=c}
     <tr>
         <td style="text-align:left;">
-            <a href="?pcid={$t.id}">{$c.id}</a>
+            <a href="?pcid={$pcid}">{$c.id}</a>
         </td>
         {foreach from=$matrix.types key=tid item=t}
         <td style="text-align:center;">
-            <a href="?pcid={$t.id}&type={$tid}">{$c.types.$tid}</a>
+            <a href="?pcid={$pcid}&type={$tid}">{$c.types.$tid}</a>
         </td>
         {/foreach}
     </tr>
