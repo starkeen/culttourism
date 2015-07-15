@@ -100,6 +100,9 @@ class MCandidatePoints extends Model {
         return $this->_db->fetchAll();
     }
 
+    /**
+    * Статистика по набору активных заявок
+    */
     public function getMatrix() {
         $this->_db->sql = "SELECT count(1) AS cnt,
                                 pc.pc_id, pc.pc_title,
@@ -111,7 +114,7 @@ class MCandidatePoints extends Model {
                                     ON pt.tp_id = t.cp_type_id
                             WHERE $this->_table_active = 1
                             GROUP BY pc.pc_id, pt.tp_id
-                            ORDER BY pc.pc_title, pt.tr_order, $this->_table_order ASC";
+                            ORDER BY cnt, pc.pc_title, pt.tr_order";
         $this->_db->exec();
         $out = array(
             'types' => array(),
