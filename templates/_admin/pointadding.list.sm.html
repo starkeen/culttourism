@@ -13,7 +13,7 @@
     {foreach from=$matrix.counts key=pcid item=c}
     <tr>
         <td style="text-align:left;">
-            <a href="?pcid={$pcid}">{$c.id}</a>
+            <a href="?pcid={$pcid}">{$c.title}</a>
         </td>
         {foreach from=$matrix.types key=tid item=t}
         <td style="text-align:center;">
