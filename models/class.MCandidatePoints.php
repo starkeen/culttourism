@@ -101,8 +101,8 @@ class MCandidatePoints extends Model {
     }
 
     /**
-    * Статистика по набору активных заявок
-    */
+     * Статистика по набору активных заявок
+     */
     public function getMatrix() {
         $this->_db->sql = "SELECT count(1) AS cnt,
                                 pc.pc_id, pc.pc_title,
@@ -125,8 +125,12 @@ class MCandidatePoints extends Model {
                 'title' => $row['tp_name'],
                 'icon' => $row['tp_icon'],
             );
+            if (!isset($out['types'][$row['tp_id']]['total'])) {
+                $out['types'][$row['tp_id']]['total'] = 0;
+            }
             $out['counts'][$row['pc_id']]['title'] = $row['pc_title'];
             $out['counts'][$row['pc_id']]['types'][$row['tp_id']] = $row['cnt'];
+            $out['types'][$row['tp_id']]['total'] += $row['cnt'];
         }
         foreach ($out['counts'] as $pcid => $data) {
             foreach ($out['types'] as $tid => $type) {

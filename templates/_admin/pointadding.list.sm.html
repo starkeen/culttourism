@@ -22,6 +22,12 @@
         {/foreach}
     </tr>
     {/foreach}
+    <tr>
+        <th>Итого:</th>
+        {foreach from=$matrix.types key=tid item=t}
+        <th>{$t.total}</th>
+        {/foreach}
+    </tr>
 </table>
 
 <form method="get" action="addpoints.php">
