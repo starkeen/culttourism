@@ -134,7 +134,7 @@ class MCandidatePoints extends Model {
                 if (!isset($data['types'][$tid])) {
                     $out['counts'][$pcid]['types'][$tid] = 0;
                 }
-                $out['types'][$tid]['total'] += $cnt;
+                $out['types'][$tid]['total'] += $data[$pcid]['types'][$tid];
             }
         }
         return $out;
