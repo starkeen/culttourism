@@ -124,19 +124,17 @@ class MCandidatePoints extends Model {
             $out['types'][$row['tp_id']] = array(
                 'title' => $row['tp_name'],
                 'icon' => $row['tp_icon'],
+                'total' => 0,
             );
-            if (!isset($out['types'][$row['tp_id']]['total'])) {
-                $out['types'][$row['tp_id']]['total'] = 0;
-            }
             $out['counts'][$row['pc_id']]['title'] = $row['pc_title'];
             $out['counts'][$row['pc_id']]['types'][$row['tp_id']] = $row['cnt'];
-            $out['types'][$row['tp_id']]['total'] += $row['cnt'];
         }
         foreach ($out['counts'] as $pcid => $data) {
-            foreach ($out['types'] as $tid => $type) {
+            foreach ($out['types'] as $tid => $cnt) {
                 if (!isset($data['types'][$tid])) {
                     $out['counts'][$pcid]['types'][$tid] = 0;
                 }
+                $out['types'][$tid]['total'] += $cnt;
             }
         }
         return $out;
