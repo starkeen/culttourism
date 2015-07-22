@@ -357,6 +357,7 @@ textarea.feedinput {
 
 #city_announcement {
     margin:10px;
+    margin-left: 0;
     margin-right: 720px;
     background:#efefef;
     border:1px solid #ddd;
