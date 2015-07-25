@@ -583,6 +583,33 @@ $(document).ready(function () {
         }
     }
 
+
+    //---------------------- SCROLL TO TOP ---------------------------------------
+    if ($("#mapcity_pc_id").val() > 0) { //пока только на страницах регионов
+        var $scrollerTopButton = $('.content-scroll-buttons');
+        var scrollerTopOffsetTrigger = $('#menu_type1').position().top+$('#menu_type1').outerHeight(true); //px to show button
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > scrollerTopOffsetTrigger) {
+                $scrollerTopButton.stop().animate({
+                    top: '50%'
+                }, 500);
+            }
+            else {
+                $scrollerTopButton.stop().animate({
+                    top: '-100px'
+                }, 500);
+            }
+        });
+        $scrollerTopButton.click(function () {
+            $('html, body').stop().animate({
+                scrollTop: $('h2:nth-of-type(1)').position().top
+            }, 500, function () {
+                $scrollerTopButton.stop().animate({
+                    top: '-100px'
+                }, 500);
+            });
+        });
+    }
 });
 
 
