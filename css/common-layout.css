@@ -248,6 +248,16 @@ ol {
     clear:both;
 }
 
+.content-scroll-buttons {
+    width: 48px;
+    height: 48px;
+    position: fixed;
+    left: 25px;
+    top: 50%;
+    top:-100px;
+    cursor: pointer;
+}
+
 /* Footer
 -----------------------------------------------------------------------------*/
 #footer {

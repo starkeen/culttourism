@@ -72,6 +72,9 @@
     .city_nearmenu ul li {
         margin: 4px;
     }
+    .content-scroll-buttons {
+        display: none;
+    }
     #object_description {
         margin:0;
         margin-top: 2em;
