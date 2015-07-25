@@ -8,9 +8,7 @@
         <a href="#" title="{$ptype.tp_name}"><img src="/img/points/32/{$ptype.tp_icon}" alt="{$ptype.tp_name}" /></a>
         {/foreach}
     </div>
-    {if $city.pc_city_id > 0}
     <a id="city_map_link" href="/map/#center={$city.pc_longitude},{$city.pc_latitude}&zoom={$city.pc_zoom+1}" title="Большая карта достопримечательностей {$city.pc_inwheretext}">на весь экран</a>
-    {/if}
 </div>
 {/if}
 <div id="citytext">
