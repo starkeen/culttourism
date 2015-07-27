@@ -74,7 +74,7 @@ ymaps.ready(function () {
             'center=' + map.getCenter(),
             'zoom=' + map.getZoom()
         ];
-        window.location.hash = params.join('&');
+        window.history.replaceState({}, '', location.href.replace(location.hash,"") + '#' + params.join('&'));
         bounds = map.getBounds();
         boundsparams = [
             'lln=' + bounds[0][0],
