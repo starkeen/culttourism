@@ -70,6 +70,7 @@ $filter = array(
     'city' => null,
     'type' => null,
     'addr' => null,
+    'noaddr' => null,
     'phone' => null,
     'web' => null,
     'gps' => array(
@@ -104,6 +105,9 @@ if (isset($_GET['type']) && intval($_GET['type']) > 0) {
 }
 if (isset($_GET['addr']) && strlen($_GET['addr']) > 0) {
     $filter['addr'] = cut_trash_text($_GET['addr']);
+}
+if (isset($_GET['noaddr']) && strlen($_GET['noaddr']) > 0) {
+    $filter['noaddr'] = cut_trash_int($_GET['noaddr']);
 }
 if (isset($_GET['phone']) && strlen($_GET['phone']) > 0) {
     $filter['phone'] = cut_trash_text($_GET['phone']);
@@ -151,6 +155,9 @@ if ($filter['type'] > 0) {
 }
 if ($filter['addr'] != '') {
     $db->sql .= "AND pp.pt_adress LIKE '%{$filter['addr']}%'\n";
+}
+if ($filter['noaddr'] != '') {
+    $db->sql .= "AND ABS(CHAR_LENGTH(pp.pt_adress)-CHAR_LENGTH(pp.pt_adress)) < 6 AND pp.pt_latitude IS NOT NULL\n";
 }
 if ($filter['phone'] != '') {
     $db->sql .= "AND pp.pt_phone LIKE '%{$filter['phone']}%'\n";

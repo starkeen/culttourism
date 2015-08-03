@@ -58,6 +58,9 @@
                 <td>
                     N<input type="text" name="gps_lat" value="{$filter.gps.lat}" style="width: 80px;" />
                     E<input type="text" name="gps_lon" value="{$filter.gps.lon}" style="width: 80px;" />
+                    <label style="text-decoration: line-through;">
+                        Адр. <input type="checkbox" name="noaddr" value="1" {if 1 == $filter.noaddr}checked{/if} />
+                    </label>
                 </td>
             </tr>
             <tr>
