@@ -157,7 +157,7 @@ if ($filter['addr'] != '') {
     $db->sql .= "AND pp.pt_adress LIKE '%{$filter['addr']}%'\n";
 }
 if ($filter['noaddr'] == 1) {
-    $db->sql .= "AND ABS(CHAR_LENGTH(pp.pt_adress)-CHAR_LENGTH(pp.pt_adress)) < 6 AND pp.pt_latitude IS NOT NULL\n";
+    $db->sql .= "AND ABS(CHAR_LENGTH(pp.pt_adress)-CHAR_LENGTH(pc.pc_title)) < 6 AND pp.pt_latitude IS NOT NULL\n";
 }
 if ($filter['phone'] != '') {
     $db->sql .= "AND pp.pt_phone LIKE '%{$filter['phone']}%'\n";
@@ -175,7 +175,7 @@ if ($filter['gps']['lon'] != 0) {
 }
 $db->sql .= "ORDER BY pp.pt_create_date
             LIMIT 10000";
-$db->showSQL();
+//$db->showSQL();
 $db->exec();
 while ($row = $db->fetch()) {
     $points[] = $row;
