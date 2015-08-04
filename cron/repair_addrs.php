@@ -13,7 +13,7 @@ $db->sql = "SELECT pt.pt_id, pt.pt_name, pt.pt_adress,
             AND ABS(CHAR_LENGTH(pt.pt_adress)-CHAR_LENGTH(pc.pc_title)) < 6
             AND pt.pt_latitude IS NOT NULL
         ORDER BY RAND()
-        LIMIT 50";
+        LIMIT 100";
 //$db->showSQL();
 $db->exec();
 $points = array();
