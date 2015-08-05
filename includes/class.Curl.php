@@ -15,9 +15,13 @@ class Curl {
     public function get($url) {
         $text = $this->_cc->get($url);
         if ($text === null) {
-            curl_setopt($this->_curl, CURLOPT_URL, $url);
-            curl_setopt($this->_curl, CURLOPT_REFERER, $url);
-            $text = curl_exec($this->_curl);
+            try {
+                curl_setopt($this->_curl, CURLOPT_URL, $url);
+                curl_setopt($this->_curl, CURLOPT_REFERER, $url);
+                $text = curl_exec($this->_curl);
+            } catch (Exception $e) {
+                echo $e->getMessage();
+            }
             $this->_cc->put($url, $text);
         }
         return $text;
