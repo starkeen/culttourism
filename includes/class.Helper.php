@@ -178,7 +178,7 @@ class Helper {
         $y = sqrt(pow($cl2 * $sdelta, 2) + pow($cl1 * $sl2 - $sl1 * $cl2 * $cdelta, 2));
         $x = $sl1 * $sl2 + $cl1 * $cl2 * $cdelta;
         $ad = atan2($y, $x);
-        $dist = $ad * $R; //расстояние между двумя координатами в метрах
+        $dist = round($ad * $R); //расстояние между двумя координатами в метрах
 
         return $dist;
     }
