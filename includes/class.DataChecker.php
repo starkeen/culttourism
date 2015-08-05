@@ -34,6 +34,10 @@ class DataChecker {
             $data = json_decode($answer);
             $founded = $data->response->GeoObjectCollection->metaDataProperty->GeocoderResponseMetaData->found > 0;
             $featureMember = $data->response->GeoObjectCollection->featureMember;
+            $addr_variant = array(
+                'text' => $pt['pt_adress'],
+                'delta_meters' => 100500,
+            );
             foreach ($featureMember as $fm) {
                 $latlon = explode(' ', $fm->GeoObject->Point->pos);
                 $addr_variant = array(
