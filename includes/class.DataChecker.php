@@ -6,12 +6,15 @@
 class DataChecker {
 
     protected $db;
+    protected $entity_type = 'point';
+    protected $entity_field;
 
     public function __construct($db) {
         $this->db = $db;
     }
 
     public function repairPointsAddrs($count = 100) {
+        $this->entity_field = 'pt_adress';
         $p = new MPagePoints($this->db);
         $dc = new MDataCheck($this->db);
 
@@ -56,7 +59,7 @@ class DataChecker {
                     round($addr_variant['delta_meters'], 2),
                 );
             }
-            $dc->markChecked('point', $pt['pt_id'], 'pt_adress', $addr_variant['text']);
+            $dc->markChecked($this->entity_type, $pt['pt_id'], $this->entity_field, $addr_variant['text']);
         }
         return $log;
     }
@@ -71,7 +74,9 @@ class DataChecker {
                             pc.pc_title, pc.pc_latitude, pc.pc_longitude
                     FROM $dbp pt
                         LEFT JOIN $dbc pc ON pc.pc_id = pt.pt_citypage_id
-                        LEFT JOIN $dbdc dc ON dc.dc_item_id = pt.pt_id AND dc.dc_type = 'point' AND dc.dc_field = 'pt_adress'
+                        LEFT JOIN $dbdc dc ON dc.dc_item_id = pt.pt_id
+                            AND dc.dc_type = '$this->entity_type'
+                            AND dc.dc_field = '$this->entity_field'
                     WHERE pt.pt_active = 1
                         AND ABS(CHAR_LENGTH(pt.pt_adress)-CHAR_LENGTH(pc.pc_title)) < 6
                         AND pt.pt_latitude IS NOT NULL
