@@ -62,8 +62,10 @@ class DataChecker {
                     $addr_variant['text'],
                     round($addr_variant['delta_meters'], 2),
                 );
+                $dc->markChecked($this->entity_type, $pt['pt_id'], $this->entity_field, $addr_variant['text']);
+            } else {
+                $dc->markChecked($this->entity_type, $pt['pt_id'], $this->entity_field, 'default: ' . $addr_variant['delta_meters']);
             }
-            $dc->markChecked($this->entity_type, $pt['pt_id'], $this->entity_field, $addr_variant['text']);
         }
         return $log;
     }
