@@ -13,6 +13,7 @@ class DataChecker {
 
     public function repairPointsAddrs($count = 100) {
         $p = new MPagePoints($this->db);
+        $dc = new MDataCheck($this->db);
 
         $curl = new Curl($this->db);
         $curl->config(CURLOPT_TIMEOUT, 5);
@@ -55,6 +56,7 @@ class DataChecker {
                     round($addr_variant['delta_meters'], 2),
                 );
             }
+            $dc->markChecked('point', $pt['pt_id'], 'pt_adress', $addr_variant['text']);
         }
         return $log;
     }
