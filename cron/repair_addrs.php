@@ -78,4 +78,6 @@ foreach ($points as $point) {
     }
 }
 
-print_r($log);
+if (!empty($log)) {
+    print_r($log);
+}
