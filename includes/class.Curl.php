@@ -4,6 +4,7 @@ class Curl {
 
     private $_cc = null;
     private $_curl = null;
+    private $_ttl = 30; //время жизни кэша в днях
 
     public function __construct($db) {
         $this->_cc = new MCurlCache($db);
@@ -22,13 +23,17 @@ class Curl {
             } catch (Exception $e) {
                 echo $e->getMessage();
             }
-            $this->_cc->put($url, $text);
+            $this->_cc->put($url, $text, $this->_ttl);
         }
         return $text;
     }
 
     public function config($option, $value) {
         curl_setopt($this->_curl, $option, $value);
+    }
+    
+    public function setTTL($ttl_days) {
+        $this->_ttl = intval($ttl_days);
     }
 
     public function __destruct() {
