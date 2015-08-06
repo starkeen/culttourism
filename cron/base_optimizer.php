@@ -1,6 +1,7 @@
 <?php
 
 $dbau = $db->getTableName('authorizations');
+$dbсс = $db->getTableName('curl_cache');
 
 $tables_clean = array(
     array($db->getTableName('authorizations'), 'au_date_expire', 1),
@@ -11,6 +12,8 @@ $tables_clean = array(
 );
 
 $db->sql = "DELETE FROM $dbau WHERE au_service IN ('ajax', 'map')";
+$db->exec();
+$db->sql = "DELETE FROM $dbсс WHERE cc_expire < NOW()";
 $db->exec();
 
 foreach ($tables_clean as $i => $table) {
