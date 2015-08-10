@@ -131,9 +131,9 @@ set_exception_handler(function($e) {
 
 register_shutdown_function(function() {
     $error = error_get_last();
-    if (null !== $error && $error['type']) {
+    if (null !== $error && !in_array($error['type'], array(E_DEPRECATED, E_STRICT))) {
         $msg = "Error: " . print_r($error, 1) . "\n"
                 . 'date: ' . date('d.m.Y H:i:s') . "\n";
-        mail('starkeen@gmail.com', 'Fatal error on culttourism.ru', $msg);
+        mail('starkeen@gmail.com', "Fatal error #{$error['type']} on culttourism.ru", $msg);
     }
 });

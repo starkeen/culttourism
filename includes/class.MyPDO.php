@@ -89,7 +89,7 @@ class MyPDO implements IDB {
     }
 
     public function fetch($res = null) {
-        $out = array();
+        $out = null;
         try {
             $out = $this->_stm->fetch();
             if (!$out) {
