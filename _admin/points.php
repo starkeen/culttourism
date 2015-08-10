@@ -123,7 +123,9 @@ if (isset($_GET['gps_lon']) && strlen($_GET['gps_lon']) > 0) {
 }
 
 $points = array();
-$db->sql = "SELECT pp.*,
+$db->sql = "SELECT SQL_CALC_FOUND_ROWS
+                pp.pt_id, pp.pt_slugline, pp.pt_adress, pp.pt_phone, pp.pt_website,
+                pp.pt_latitude, pp.pt_longitude, pp.pt_active,
                 CHAR_LENGTH(TRIM(pt_description)) AS descr_len,
                 pt.tp_icon, pt.tp_short, pt.tp_name,
                 pc.pc_title, url.url,
@@ -174,13 +176,16 @@ if ($filter['gps']['lon'] != 0) {
     $db->sql .= "AND pp.pt_longitude >= '{$filter['gps']['lon']}' AND pp.pt_longitude < '$lon_max'\n";
 }
 $db->sql .= "ORDER BY pp.pt_create_date
-            LIMIT 1000";
+            LIMIT 500";
 //$db->showSQL();
 $db->exec();
 while ($row = $db->fetch()) {
     $points[] = $row;
 }
-$points_cnt = count($points);
+
+$db->sql = "SELECT FOUND_ROWS()";
+$db->exec();
+$points_cnt = $db->fetchCol();
 
 $pager = new Pager($points);
 
