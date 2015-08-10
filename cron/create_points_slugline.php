@@ -1,7 +1,5 @@
 <?php
 
-error_reporting(E_ALL);
-
 $pts = new MPagePoints($db);
 
 foreach ($pts->getUnslug(60) as $point) {
