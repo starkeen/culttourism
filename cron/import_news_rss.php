@@ -24,9 +24,9 @@ foreach ($sourses as $sourse) {
     $rssfeed = rss_to_array('item', $rss_tags, $sourse['ns_url']);
     foreach ($rssfeed as $item) {
         $datepub = date('Y-m-d H:i:s', strtotime($item['pubDate']));
-        $item['title'] = isset($item['title']) ? mysql_real_escape_string($item['title']) : '[no title]';
+        $item['title'] = isset($item['title']) ? $db->getEscapedString($item['title']) : '[no title]';
         $item['description'] = htmlentities($item['description'], ENT_QUOTES, 'UTF-8');
-        $item['description'] = mysql_real_escape_string($item['description']);
+        $item['description'] = $db->getEscapedString($item['description']);
         $db->sql = "INSERT INTO $dbni
                         (ni_ns_id, ni_pubdate, ni_title, ni_url, ni_text, ni_active)
                     VALUES

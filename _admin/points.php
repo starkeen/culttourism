@@ -20,7 +20,7 @@ if (isset($_GET['act'])) {
         'out' => null,
     );
     $oid = intval($_GET['oid']);
-    $prop = isset($_GET['prop']) ? mysql_real_escape_string($_GET['prop']) : null;
+    $prop = isset($_GET['prop']) ? $db->getEscapedString($_GET['prop']) : null;
     switch ($_GET['act']) {
         case 'getprop':
             $db->sql = "SELECT $prop FROM $dbpp WHERE pt_id = '$oid'";
@@ -30,7 +30,7 @@ if (isset($_GET['act'])) {
             $data['state'] = true;
             break;
         case 'setprop':
-            $val = mysql_real_escape_string(trim($_POST['value']));
+            $val = $db->getEscapedString(trim($_POST['value']));
             if ($prop == 'pt_website' && substr($val, 0, 4) != 'http') {
                 $val = "http://$val";
             }

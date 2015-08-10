@@ -68,7 +68,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
     if ($md_id != 'add') {
         $sql = "SELECT * FROM $dbm WHERE md_id = '$md_id' LIMIT 1";
         $res = $db->exec($sql);
-        $row = mysql_fetch_assoc($res);
+        $row = $db->fetch($res);
     } else {
         $row = array();
         $row['md_name'] = 'новая страница';
@@ -91,7 +91,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
     if (isset($row['md_pid'])) {
         $sql = "SELECT md_url, md_name FROM $dbm WHERE md_id = '{$row['md_pid']}' LIMIT 1";
         $res = $db->exec($sql);
-        $rowparent = mysql_fetch_assoc($res);
+        $rowparent = $db->fetch($res);
         $row['parent'] = $rowparent;
     }
     $smarty->assign('mod_item', $row);
@@ -113,8 +113,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
         $smarty->assign('mod_id', $md_id);
     else
         $smarty->assign('mod_id', 'add');
-}
-else
+} else
     $smarty->assign('mod_id', null);
 /* * ************************************************************************************************ */
 $sql = "SELECT md_id, md_pid, md_name, md_active, md_redirect, md_css
@@ -122,7 +121,7 @@ $sql = "SELECT md_id, md_pid, md_name, md_active, md_redirect, md_css
         ORDER BY md_pid, md_sort";
 $res = $db->exec($sql);
 $modules = array();
-while ($row = mysql_fetch_assoc($res)) {
+while ($row = $db->fetch($res)) {
     if ($row['md_pid'] != 0)
         $modules[$row['md_pid']]['md_tree'][$row['md_id']] = $row;
     else {
@@ -137,4 +136,3 @@ $smarty->assign('is_admin', $isAdmin);
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/modules.sm.html'));
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
 exit();
-?>

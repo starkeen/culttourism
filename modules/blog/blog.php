@@ -129,7 +129,7 @@ class Page extends PageCommon {
 
     private function checkURL($db, $url) {
         $dbb = $db->getTableName('blogentries');
-        $url = mysql_real_escape_string($url);
+        $url = $db->getEscapedString($url);
         $db->sql = "SELECT br_id FROM $dbb WHERE br_url = '$url' AND br_active='1' LIMIT 1";
         $res = $db->exec();
         if ($res) {

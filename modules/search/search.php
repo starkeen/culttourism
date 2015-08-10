@@ -98,7 +98,7 @@ class Page extends PageCommon {
             $q = trim($q);
             $q = cut_trash_string($_GET['q']);
 
-            $q = mysql_real_escape_string($q);
+            $q = $db->getEscapedString($q);
             $smarty->assign('search', $q);
             $this->addTitle($q);
 

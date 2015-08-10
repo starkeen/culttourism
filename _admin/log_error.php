@@ -1,4 +1,5 @@
 <?php
+
 require_once('common.php');
 
 $smarty->assign('title', 'Настройки сайта');
@@ -10,15 +11,14 @@ if (isset($_POST['clear_btn'])) {
     $res = $db->exec($sql);
 }
 
-$sql = "SELECT * FROM $dbe ORDER BY le_date";
-$res = $db->exec($sql);
+$db->sql = "SELECT * FROM $dbe ORDER BY le_date";
+$res = $db->exec();
 $records = array();
-while ($row = mysql_fetch_assoc($res)) {
+while ($row = $db->fetch($res)) {
     $records[$row['le_id']] = $row;
 }
 $smarty->assign('records', $records);
 
-$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES.'/_admin/errorlog.sm.html'));
-$smarty->display(_DIR_TEMPLATES.'/_admin/admpage.sm.html');
+$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/errorlog.sm.html'));
+$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
 exit();
-?>

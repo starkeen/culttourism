@@ -373,7 +373,7 @@ class Page extends PageCommon {
         } elseif (isset($_GET['cityname'])) {
             $newcity = cut_trash_string($_GET['cityname']);
             $newcity = trim($newcity);
-            $newcity = mysql_real_escape_string($newcity);
+            $newcity = $db->getEscapedString($newcity);
             $dbc = $db->getTableName('pagecity');
             $dbu = $db->getTableName('region_url');
             $dbrc = $db->getTableName('ref_city');

@@ -124,7 +124,7 @@ class Page extends PageCommon {
         if (!$res) {
             $this->getError('404');
         }
-        while ($row = mysql_fetch_assoc($res)) {
+        while ($row = $db->fetch($res)) {
             if ($row['md_url'] == $p_url) {
                 $this->h1 .= ' ' . $this->globalsettings['title_delimiter'] . ' ' . $row['md_title'];
                 $this->content = $row['md_pagecontent'];
@@ -146,7 +146,7 @@ class Page extends PageCommon {
         $db->sql = "SELECT md_title, md_url FROM $dbm WHERE md_active = '1' AND md_pid = '$module_id'";
         $res = $db->exec();
         if ($res) {
-            while ($row = mysql_fetch_assoc($res)) {
+            while ($row = $db->fetch($res)) {
                 $navi = array('url' => $row['md_url'], 'title' => $row['md_title'], 'active' => false);
                 if ($row['md_url'] == $sub_url)
                     $navi['active'] = true;
@@ -172,7 +172,7 @@ class Page extends PageCommon {
         $dbpt = $db->getTableName('ref_pointtypes');
         $url = str_replace('/map.html', '', $url);
 
-        $url = mysql_real_escape_string($url);
+        $url = $db->getEscapedString($url);
         $db->sql = "SELECT city.*,
                             UNIX_TIMESTAMP(city.pc_lastup_date) AS last_update1,
                             (SELECT UNIX_TIMESTAMP(MAX(pt_lastup_date)) FROM $dbpp WHERE pt_citypage_id = city.pc_id) AS last_update2                           
