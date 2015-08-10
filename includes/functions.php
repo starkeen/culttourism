@@ -25,7 +25,7 @@ function cut_trash_int($data) {
 function cut_trash_string($data) {
     $string = (string) $data;
     //return htmlentities(trim($string), ENT_QUOTES | ENT_HTML5, "UTF-8");
-    return mysql_real_escape_string(trim($string));
+    return (trim($string));
 }
 
 function cut_trash_word($data) {
@@ -39,7 +39,7 @@ function cut_trash_text($data) {
 
 function cut_trash_html($data) {
     $text = trim($data);
-    return mysql_real_escape_string($text);
+    return ($text);
 }
 
 function cut_trash_float($data) {
