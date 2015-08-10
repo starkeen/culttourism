@@ -3,6 +3,8 @@
 include('common.php');
 include (_DIR_INCLUDES . '/class.Pager.php');
 
+ ini_set("memory_limit", "512M");
+
 $smarty->assign('title', 'Объекты в базе');
 
 $dbpc = $db->getTableName('pagecity');
