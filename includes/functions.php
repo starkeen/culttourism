@@ -123,7 +123,17 @@ set_exception_handler(function($e) {
     $msg = "Error: " . $e->getMessage() . "\n"
             . 'file: ' . $e->getFile() . ':' . $e->getLine()
             . "\n__________________________\n\n\n"
-            . 'trace: ' . print_r($e->getTrace(), true) . "\n";
+            . 'trace: ' . print_r($e->getTrace(), true) . "\n"
+            . 'date: ' . date('d.m.Y H:i:s') . "\n";
 
     mail('starkeen@gmail.com', 'Error on culttourism.ru', $msg);
+});
+
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if (null !== $error && $error['type']) {
+        $msg = "Error: " . print_r($error, 1) . "\n"
+                . 'date: ' . date('d.m.Y H:i:s') . "\n";
+        mail('starkeen@gmail.com', 'Fatal error on culttourism.ru', $msg);
+    }
 });

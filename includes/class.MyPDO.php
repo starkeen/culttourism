@@ -106,8 +106,14 @@ class MyPDO implements IDB {
     }
 
     public function fetchAll($res = null) {
-        $out = $this->_stm->fetchAll();
-        $this->_stm->closeCursor();
+        try {
+            $out = $this->_stm->fetchAll();
+            $this->_stm->closeCursor();
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            $this->_errors[] = $error;
+            throw new Exception($error);
+        }
         //file_put_contents(_DIR_DATA . '/temp/x_' . session_id(), "\n fetchAll \n$this->_sql\n", FILE_APPEND);
         return $out;
     }

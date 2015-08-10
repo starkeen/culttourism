@@ -9,7 +9,7 @@ if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS']
 
 session_start();
 include('config/configuration.php');
-error_reporting(E_ALL);
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 if (_ER_REPORT) {
     ini_set('display_errors', true);
     include('includes/debug.php');

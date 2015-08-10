@@ -6,8 +6,8 @@ if (true && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == "")
     exit();
 }
 
-error_reporting(E_ALL);
-ini_set("display_errors", "On");
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+ini_set("display_errors", false);
 ini_set("memory_limit", "512M");
 session_start();
 /* Общие функции и опции */

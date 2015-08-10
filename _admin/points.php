@@ -3,8 +3,6 @@
 include('common.php');
 include (_DIR_INCLUDES . '/class.Pager.php');
 
- ini_set("memory_limit", "1G");
-
 $smarty->assign('title', 'Объекты в базе');
 
 $dbpc = $db->getTableName('pagecity');
@@ -178,12 +176,11 @@ if ($filter['gps']['lon'] != 0) {
     $db->sql .= "AND pp.pt_longitude >= '{$filter['gps']['lon']}' AND pp.pt_longitude < '$lon_max'\n";
 }
 $db->sql .= "ORDER BY pp.pt_create_date
-            LIMIT 500";
+            LIMIT 10";
 //$db->showSQL();
 $db->exec();
-while ($row = $db->fetch()) {
-    $points[] = $row;
-}
+//$points = $db->fetchAll();
+$points = array();
 
 $db->sql = "SELECT FOUND_ROWS()";
 $db->exec();
@@ -206,9 +203,8 @@ if ($filter['country'] > 0) {
 }
 $db->sql .= "ORDER BY name";
 $db->exec();
-while ($row = $db->fetch()) {
-    $refs['regions'][] = $row;
-}
+$refs['regions'] = $db->fetchAll();
+
 $db->sql = "SELECT id, name AS title
             FROM $dbrc
             WHERE id IN (SELECT pc_city_id FROM $dbpc)\n";
@@ -220,16 +216,13 @@ if ($filter['region'] > 0) {
 }
 $db->sql .= "ORDER BY name";
 $db->exec();
-while ($row = $db->fetch()) {
-    $refs['cities'][] = $row;
-}
+$refs['cities'] = $db->fetchAll();
+
 $db->sql = "SELECT tp_id AS id, tp_short AS title
             FROM $dbpt
             ORDER BY tr_order";
 $db->exec();
-while ($row = $db->fetch()) {
-    $refs['types'][] = $row;
-}
+$refs['types'] = $db->fetchAll();
 
 $smarty->assign('points', $pager->out);
 $smarty->assign('pager', $pager->pages);
