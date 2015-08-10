@@ -69,4 +69,3 @@ if (isset($_SESSION['user_name'])) {
     $smarty->assign('adm_user', '');
 }
 $smarty->assign('site_url', _URL_ROOT);
-?>

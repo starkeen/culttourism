@@ -78,7 +78,7 @@ abstract class Core {
         //$db->showSQL();
         $res = $db->exec();
         $this->basepath = _URL_ROOT;
-        while ($row = mysql_fetch_assoc($res)) {
+        while ($row = $db->fetch($res)) {
             if ($row['md_url'] == $mod_id) {
                 if ($row['md_redirect'] !== null) {
                     $this->getError('301', $row['md_redirect']);

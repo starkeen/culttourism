@@ -5,9 +5,9 @@
  *
  * @author Andrey_Pns
  */
-include 'class.MyMysql.php';
+include 'class.MyPDO.php';
 
-class MyDB extends MyMysql {
+class MyDB extends MyPDO {
 
     public function getTableName($alias) {
         if ($this->prefix === null) {
