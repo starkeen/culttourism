@@ -3,7 +3,7 @@
 include('common.php');
 include (_DIR_INCLUDES . '/class.Pager.php');
 
- ini_set("memory_limit", "512M");
+ ini_set("memory_limit", "1G");
 
 $smarty->assign('title', 'Объекты в базе');
 
