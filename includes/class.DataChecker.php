@@ -33,6 +33,9 @@ class DataChecker {
                     . '&kind=house&results=1';
             $answer = $curl->get($request);
             $data = json_decode($answer);
+            if (empty($data->response->GeoObjectCollection)) {
+                break;
+            }
             $founded = $data->response->GeoObjectCollection->metaDataProperty->GeocoderResponseMetaData->found > 0;
             $featureMember = $data->response->GeoObjectCollection->featureMember;
             $addr_variant = array(
