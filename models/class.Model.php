@@ -104,7 +104,6 @@ class Model {
             $this->_db->sql = "UPDATE $this->_table_name
                             SET " . implode(",\n", $new_fields) . "
                             WHERE $this->_table_pk = '$id'";
-if ($id == 13407) {echo $this->_db->sql;}
             if ($this->_db->exec()) {
                 if (!empty($files)) {
                     foreach ($files as $file_field => $file) {
