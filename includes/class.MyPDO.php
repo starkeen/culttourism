@@ -189,5 +189,10 @@ class MyPDO implements IDB {
             $this->_sql = $value;
         }
     }
+    public function __get($name) {
+        if ($name == 'sql') {
+            return $this->_sql;
+        }
+    }
 
 }
