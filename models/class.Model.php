@@ -102,9 +102,8 @@ class Model {
         }
         if (!empty($new_fields)) {
             $this->_db->sql = "UPDATE $this->_table_name
-                            SET\n";
-            $this->_db->sql .= implode(",\n", $new_fields) . "\n";
-            $this->_db->sql .= "WHERE $this->_table_pk = '$id'";
+                            SET " . implode(",\n", $new_fields) . "
+                            WHERE $this->_table_pk = '$id'";
 if ($id == 13407) {echo $this->_db->sql;}
             if ($this->_db->exec()) {
                 if (!empty($files)) {
@@ -132,8 +131,7 @@ if ($id == 13407) {echo $this->_db->sql;}
         }
         if (!empty($new_fields)) {
             $this->_db->sql = "INSERT INTO $this->_table_name
-                            SET\n";
-            $this->_db->sql .= implode(",\n", $new_fields) . "\n";
+                            SET " . implode(",\n", $new_fields) . "\n";
             if ($this->_db->exec()) {
                 $id = $this->_db->getLastInserted();
                 if (!empty($files)) {
