@@ -105,7 +105,7 @@ class Model {
                             SET\n";
             $this->_db->sql .= implode(",\n", $new_fields) . "\n";
             $this->_db->sql .= "WHERE $this->_table_pk = '$id'";
-
+if ($id == 13407) {echo $this->_db->sql;}
             if ($this->_db->exec()) {
                 if (!empty($files)) {
                     foreach ($files as $file_field => $file) {
