@@ -176,11 +176,10 @@ if ($filter['gps']['lon'] != 0) {
     $db->sql .= "AND pp.pt_longitude >= '{$filter['gps']['lon']}' AND pp.pt_longitude < '$lon_max'\n";
 }
 $db->sql .= "ORDER BY pp.pt_create_date
-            LIMIT 10";
+            LIMIT 1000";
 //$db->showSQL();
 $db->exec();
-//$points = $db->fetchAll();
-$points = array();
+$points = $db->fetchAll();
 
 $db->sql = "SELECT FOUND_ROWS()";
 $db->exec();
