@@ -200,7 +200,9 @@ abstract class Core {
                 . 'trace: ' . print_r($e->getTrace(), true) . "\n";
 
         mail('starkeen@gmail.com', 'Error on culttourism.ru', $msg);
-        ob_clean();
+        if (ob_get_length()) {
+            ob_end_clean();
+        }
         $this->getError('503');
     }
 
