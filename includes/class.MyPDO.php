@@ -59,6 +59,36 @@ class MyPDO implements IDB {
         return $out;
     }
 
+    /**
+     * Подготавливаем запрос
+     * @param string $sql
+     */
+    public function prepare($sql) {
+        $this->_stm = $this->_pdo->prepare($sql);
+    }
+
+    /**
+     * Привязываем параметры по одному
+     * @param string $key
+     * @param mixed $value
+     */
+    public function bind($key, $value) {
+        //$this->_stm_params[$key] = $value;
+        $this->_stm->bindParam($key, $value);
+    }
+
+    /**
+     * Выполняем PDO::execute
+     */
+    public function execute() {
+        $this->_stm->execute($this->_stm_params);
+    }
+
+    /**
+     * Выполняем PDO::query - совместимость со старыми вызовами
+     * @param mixed $data
+     * @return type
+     */
     public function exec($data = null) {
         if ($data !== null) {
             if (is_string($data)) {
@@ -73,6 +103,7 @@ class MyPDO implements IDB {
             //$this->_stm = $this->_pdo->prepare($this->_sql);
             //$this->_stm->execute($this->_stm_params);
             $this->_stm = $this->_pdo->query($this->_sql);
+
             if (is_object($this->_stm)) {
                 $this->_affected_rows = $this->_stm->rowCount();
             }
@@ -83,8 +114,6 @@ class MyPDO implements IDB {
             return $this->_stm;
         } catch (PDOException $e) {
             $this->_errors[] = $e->getMessage();
-            //file_put_contents(_DIR_DATA . '/temp/x_' . session_id(), "==============\n$this->_sql\n", FILE_APPEND);
-            //file_put_contents(_DIR_DATA . '/temp/x_' . session_id(), $e->getMessage() . "$this->_stat_worktime_last\n", FILE_APPEND);
         }
     }
 
@@ -114,7 +143,6 @@ class MyPDO implements IDB {
             $this->_errors[] = $error;
             throw new Exception($error);
         }
-        //file_put_contents(_DIR_DATA . '/temp/x_' . session_id(), "\n fetchAll \n$this->_sql\n", FILE_APPEND);
         return $out;
     }
 
@@ -189,6 +217,7 @@ class MyPDO implements IDB {
             $this->_sql = $value;
         }
     }
+
     public function __get($name) {
         if ($name == 'sql') {
             return $this->_sql;
