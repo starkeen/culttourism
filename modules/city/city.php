@@ -75,7 +75,7 @@ class Page extends PageCommon {
                 }
             }
             $weather_data['pressure'] = round($response->main->pressure / 10);
-            $weather_data['humidity'] = round($response->main->humidity);
+            $weather_data['humidity'] = !empty($response->main->humidity) ? round($response->main->humidity) : null;
             $weather_data['windspeed'] = round($response->wind->speed, 1);
             $weather_data['winddeg'] = !empty($response->wind->deg) ? $response->wind->deg : 0;
             $weather_data['clouds'] = $response->clouds->all;
@@ -431,26 +431,26 @@ class Page extends PageCommon {
             while ($row = $db->fetch()) {
                 $inbase[] = $row;
             }
-                foreach ($inbase as $id => $city) {
-                    $translit = translit($city['name']);
-                    $inbase[$id]['translit'] = $translit;
-                    $db->sql = "SELECT * FROM $dbll WHERE LOWER(ll_name) = LOWER('$translit') LIMIT 1";
-                    if ($db->exec()) {
-                        $row = $db->fetch();
-                        $inbase[$id]['lat'] = $row['ll_lat'];
-                        $inbase[$id]['lon'] = $row['ll_lon'];
-                        $latitude = $row['ll_lat'] >= 0 ? 'N' : 'S';
-                        $latitude = $latitude . abs($row['ll_lat']);
-                        $lolgitude = $row['ll_lon'] >= 0 ? 'E' : 'W';
-                        $lolgitude = $lolgitude . abs($row['ll_lon']);
-                        if ($latitude != 'N0' && $lolgitude != 'E0') {
-                            $inbase[$id]['latlon'] = "{$row['ll_name']}: $latitude, $lolgitude";
-                        } else {
-                            $inbase[$id]['latlon'] = null;
-                        }
+            foreach ($inbase as $id => $city) {
+                $translit = translit($city['name']);
+                $inbase[$id]['translit'] = $translit;
+                $db->sql = "SELECT * FROM $dbll WHERE LOWER(ll_name) = LOWER('$translit') LIMIT 1";
+                if ($db->exec()) {
+                    $row = $db->fetch();
+                    $inbase[$id]['lat'] = $row['ll_lat'];
+                    $inbase[$id]['lon'] = $row['ll_lon'];
+                    $latitude = $row['ll_lat'] >= 0 ? 'N' : 'S';
+                    $latitude = $latitude . abs($row['ll_lat']);
+                    $lolgitude = $row['ll_lon'] >= 0 ? 'E' : 'W';
+                    $lolgitude = $lolgitude . abs($row['ll_lon']);
+                    if ($latitude != 'N0' && $lolgitude != 'E0') {
+                        $inbase[$id]['latlon'] = "{$row['ll_name']}: $latitude, $lolgitude";
+                    } else {
+                        $inbase[$id]['latlon'] = null;
                     }
                 }
-                
+            }
+
             //-------------------------------------------------------------------
         }
 
