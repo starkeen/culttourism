@@ -13,13 +13,16 @@ class Page extends PageCommon {
         $regs = array();
 
         $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $module_id) : $this->globalsettings['res_js_' . $module_id];
+        
+        $url_array = explode('/', $page_id);
+        $url_last = array_pop($url_array);
 
         //========================  I N D E X  ================================
         if ($page_id == '') {
             return $this->getIndex();
         }
         //========================   L I S T   ================================
-        elseif (preg_match('/([a-z0-9_-]+)\.html/i', array_pop(explode('/', $page_id)), $regs)) {
+        elseif (preg_match('/([a-z0-9_-]+)\.html/i', $url_last, $regs)) {
             return $this->getListBySlug($regs[1]);
         }
     }
