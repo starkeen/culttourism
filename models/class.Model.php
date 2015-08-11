@@ -201,7 +201,7 @@ class Model {
     }
 
     public function getUserId() {
-        return intval($_SESSION['user_id']);
+        return isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 1;
     }
 
 }
