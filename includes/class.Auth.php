@@ -32,9 +32,13 @@ class Auth {
 
     public function setService($service = 'web') {
         $dba = $this->db->getTableName('authorizations');
-        $this->db->sql = "UPDATE $dba SET au_service = '$service'
-                          WHERE au_key = '$this->key' LIMIT 1";
-        $this->db->exec();
+        $this->db->sql = "UPDATE $dba SET au_service = :service
+                          WHERE au_key = :key LIMIT 1";
+        $this->db->prepare();
+        $this->db->execute(array(
+            ':key' => $this->key,
+            ':service' => $service,
+        ));
     }
 
     public function getKey() {
@@ -52,40 +56,71 @@ class Auth {
     public function checkSession($service = 'web') {
         $dba = $this->db->getTableName('authorizations');
         $this->db->sql = "SELECT au_session, IF(au_date_expire < NOW(), 1, 0) expired FROM $dba
-                            WHERE au_key = '$this->key'
+                            WHERE au_key = :key
                             LIMIT 1";
-        $this->db->exec();
+        $this->db->prepare();
+        $this->db->execute(array(
+            ':key' => $this->key,
+        ));
         $row = $this->db->fetch();
         if ($row['expired'] == 1) {
             $this->db->sql = "DELETE FROM $dba
-                              WHERE au_key = '$this->key' LIMIT 1";
-            $this->db->exec();
+                              WHERE au_key = :key LIMIT 1";
+            $this->db->prepare();
+            $this->db->execute(array(
+                ':key' => $this->key,
+            ));
         }
         if (isset($row['au_session']) && $row['au_session'] == $this->session) {
             $this->db->sql = "UPDATE $dba
-                                SET au_date_last_act = now(),
-                                au_date_expire = DATE_ADD(now(),INTERVAL $this->key_lifetime_hours SECOND),
-                                au_last_act = '{$this->meta['uri']}'
-                              WHERE au_key = '$this->key' LIMIT 1";
-            $this->db->exec();
+                                SET au_date_last_act = NOW(),
+                                au_date_expire = DATE_ADD(now(),INTERVAL :key_lifetime_hours SECOND),
+                                au_last_act = :uri
+                              WHERE au_key = :key
+                              LIMIT 1";
+            $this->db->prepare();
+            $this->db->execute(array(
+                ':key' => $this->key,
+                ':key_lifetime_hours' => $this->key_lifetime_hours,
+                ':uri' => $this->meta['uri'],
+            ));
             setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/');
         } elseif (isset($row['au_session']) && $row['au_session'] != $this->session) {
             $this->db->sql = "UPDATE $dba
-                                SET au_date_last_act = now(),
-                                au_date_expire = DATE_ADD(now(),INTERVAL $this->key_lifetime_hours SECOND),
-                                au_last_act = '{$this->meta['uri']}',
-                                au_session = '$this->session'
-                              WHERE au_key = '$this->key' LIMIT 1";
-            $this->db->exec();
+                                SET au_date_last_act = NOW(),
+                                au_date_expire = DATE_ADD(now(),INTERVAL :key_lifetime_hours SECOND),
+                                au_last_act = :uri,
+                                au_session = :session
+                              WHERE au_key = :key LIMIT 1";
+            $this->db->prepare();
+            $this->db->execute(array(
+                ':key' => $this->key,
+                ':key_lifetime_hours' => $this->key_lifetime_hours,
+                ':uri' => $this->meta['uri'],
+                ':session' => $this->session,
+            ));
             setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/');
         } else {
             $this->db->sql = "INSERT INTO $dba
                                 SET au_date_last_act = now(), au_date_login = now(),
-                                au_date_expire = DATE_ADD(now(),INTERVAL $this->key_lifetime_hours SECOND),
-                                au_us_id = '0',
-                                au_last_act = '{$this->meta['uri']}', au_service = '$service', au_browser = '{$this->meta['browser']}', au_ip = '{$this->meta['ip']}',
-                                au_session = '$this->session', au_key = '$this->key'";
-            $this->db->exec();
+                                au_date_expire = DATE_ADD(now(), INTERVAL :key_lifetime_hours SECOND),
+                                au_us_id = 0,
+                                au_last_act = :uri,
+                                au_service = :service,
+                                au_browser = :browser,
+                                au_ip = :ip,
+                                au_session = :session,
+                                au_key = :key";
+            $this->db->prepare();
+            $this->db->execute(array(
+                ':key' => $this->key,
+                ':key_lifetime_hours' => $this->key_lifetime_hours,
+                ':uri' => $this->meta['uri'],
+                ':session' => $this->session,
+                ':service' => $service,
+                ':browser' => $this->meta['browser'],
+                ':ip' => $this->meta['ip'],
+            ));
         }
     }
 
@@ -97,10 +132,17 @@ class Auth {
         while ($row = $this->db->fetch()) {
             if ($row['us_email'] == $email) {
                 if ($row['us_passwrd'] == md5($password)) {
-                    $this->db->sql = "DELETE FROM $dba WHERE au_us_id = '{$row['us_id']}'";
-                    $this->db->exec();
-                    $this->db->sql = "UPDATE $dba SET au_us_id = '{$row['us_id']}' WHERE au_key = '$this->key'";
-                    $this->db->exec();
+                    $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
+                    $this->db->prepare();
+                    $this->db->execute(array(
+                        ':usid' => $row['us_id'],
+                    ));
+                    $this->db->sql = "UPDATE $dba SET au_us_id = :usid WHERE au_key = :key";
+                    $this->db->prepare();
+                    $this->db->execute(array(
+                        ':usid' => $row['us_id'],
+                        ':key' => $this->key,
+                    ));
 
                     $this->user_id = $row['us_id'];
                     $this->username = $row['us_name'];
@@ -108,7 +150,6 @@ class Auth {
                     $_SESSION['user_name'] = $row['us_name'];
                     $_SESSION['user_auth'] = $this->key;
                     return $this->key;
-                    break;
                 }
             }
         }
@@ -123,10 +164,18 @@ class Auth {
         while ($row = $this->db->fetch()) {
             if ($row['us_login'] == $login) {
                 if ($row['us_passwrd'] == md5($password)) {
-                    $this->db->sql = "DELETE FROM $dba WHERE au_us_id = '{$row['us_id']}'";
-                    $this->db->exec();
-                    $this->db->sql = "UPDATE $dba SET au_us_id = '{$row['us_id']}' WHERE au_key = '$this->key'";
-                    $this->db->exec();
+                    $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
+                    $this->db->prepare();
+                    $this->db->execute(array(
+                        ':usid' => $row['us_id'],
+                    ));
+                    $this->db->sql = "UPDATE $dba SET au_us_id = :usid WHERE au_key = :key";
+                    $this->db->prepare();
+                    $this->db->execute(array(
+                        ':usid' => $row['us_id'],
+                        ':key' => $this->key,
+                    ));
+
                     $this->user_id = $row['us_id'];
                     $this->username = $row['us_name'];
                     $_SESSION['user_id'] = $row['us_id'];
@@ -134,7 +183,6 @@ class Auth {
                     $_SESSION['user_admin'] = $row['us_admin'];
                     $_SESSION['user_auth'] = $this->key;
                     return $this->key;
-                    break;
                 }
             }
         }
@@ -144,10 +192,16 @@ class Auth {
     public function checkKey($key) {
         $db = $this->db;
         $dba = $db->getTableName('authorizations');
-        $key = $db->getEscapedString($key);
-        $session_id = session_id();
-        $db->sql = "SELECT au_key, au_session FROM $dba WHERE au_date_expire > now() AND au_key = '$key' AND au_session = '$session_id'";
-        $db->exec();
+        $db->sql = "SELECT au_key, au_session
+                    FROM $dba
+                    WHERE au_date_expire > NOW()
+                        AND au_key = :key
+                        AND au_session = :session";
+        $this->db->prepare();
+        $this->db->execute(array(
+            ':session' => session_id(),
+            ':key' => $key,
+        ));
         while ($row = $db->fetch()) {
             if ($row['au_key'] == $key && session_id() == $row['au_session']) {
                 return true;
@@ -158,19 +212,25 @@ class Auth {
 
     public function refreshKey($key) {
         $dba = $this->db->getTableName('authorizations');
-        $last_act_script = $_SERVER['REQUEST_URI'];
-        $this->db->sql = "UPDATE $dba
-                    SET au_date_last_act=now(), au_last_act='$last_act_script', au_date_expire = DATE_ADD(now(),INTERVAL 1 HOUR)
-                    WHERE au_key='$key'";
-        $this->db->exec();
+        $this->db->sql = "UPDATE $dba SET
+                                au_date_last_act = NOW(),
+                                au_last_act = :last_act_script,
+                                au_date_expire = DATE_ADD(now(), INTERVAL 1 HOUR)
+                            WHERE au_key = :key";
+        $this->db->prepare();
+        $this->db->execute(array(
+            ':last_act_script' => $_SERVER['REQUEST_URI'],
+            ':key' => $key,
+        ));
     }
 
     public function deleteKey() {
         $dba = $this->db->getTableName('authorizations');
-        $this->db->sql = "DELETE FROM $dba WHERE au_key='$this->key'";
-        $this->db->exec();
+        $this->db->sql = "DELETE FROM $dba WHERE au_key = :key";
+        $this->db->prepare();
+        $this->db->execute(array(
+            ':key' => $this->key,
+        ));
     }
 
 }
-
-?>
