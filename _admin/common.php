@@ -16,7 +16,6 @@ include(_DIR_INCLUDES . '/class.Helper.php');
 spl_autoload_register('Helper::autoloader');
 require_once('debug.php');
 require_once('class.mySmarty.php');
-require_once('class.myDB.php');
 require_once('class.Auth.php');
 require_once('functions.php');
 
