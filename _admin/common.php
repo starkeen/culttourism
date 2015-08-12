@@ -1,11 +1,5 @@
 <?php
 
-if (true && !_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == "")) {
-    header("HTTP/1.1 301 Moved Permanently");
-    header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-    exit();
-}
-
 error_reporting(E_ALL);
 ini_set("display_errors", false);
 ini_set("memory_limit", "512M");
@@ -18,6 +12,12 @@ require_once('debug.php');
 require_once('class.mySmarty.php');
 require_once('class.Auth.php');
 require_once('functions.php');
+
+if (true && !_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == "")) {
+    header("HTTP/1.1 301 Moved Permanently");
+    header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    exit();
+}
 
 $db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
 $ticket = new Auth($db);
