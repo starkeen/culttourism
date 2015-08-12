@@ -3,7 +3,7 @@
 $dbpc = $db->getTableName('pagecity');
 $dbws = $db->getTableName('wordstat');
 
-$limit_cities_per_time = 15;
+$limit_cities_per_time = 10;
 $limit_sites_per_answer = 90;
 
 if (date("H") > 7 && date("H") < 20) {
