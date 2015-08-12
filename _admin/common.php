@@ -25,7 +25,8 @@ $ticket = new Auth($db);
 $ticket->checkSession('admin');
 
 $script = explode('/', $_SERVER['PHP_SELF']);
-$requesturi = isset($_SERVER['REQUEST_URI']) ? urlencode(array_pop(explode('/', $_SERVER['REQUEST_URI']))) : '';
+$uri_array = explode('/', $_SERVER['REQUEST_URI']);
+$requesturi = isset($_SERVER['REQUEST_URI']) ? urlencode(array_pop($uri_array)) : '';
 
 if (isset($_SESSION['auth']) && $ticket->checkKey($_SESSION['auth'])) {
     $ticket->refreshKey($_SESSION['auth']);
