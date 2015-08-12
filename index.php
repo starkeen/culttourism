@@ -107,4 +107,3 @@ if ($module_id == 'ajax') {
     $smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
 }
 exit();
-?>
