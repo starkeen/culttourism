@@ -9,6 +9,7 @@ $dbsp = $db->getTableName('siteprorerties');
 
 clearstatcache(true);
 $files = array();
+$files_skip = array();
 $timestamp_max = 0;
 $filename_last = '';
 
@@ -31,6 +32,7 @@ $scan_dirs = array(
 $files[] = _DIR_ROOT . '/index.php';
 $files[] = _DIR_ROOT . '/robots.txt';
 $files[] = _DIR_ROOT . '/.htaccess';
+$files_skip[] = _DIR_ROOT . '/data/feed/blog.xml';
 
 foreach ($scan_dirs as $dir) {
     foreach (glob(_DIR_ROOT . "/$dir/*.*") as $filename) {
@@ -41,6 +43,12 @@ foreach ($scan_dirs as $dir) {
     }
     foreach (glob(_DIR_ROOT . "/$dir/*/*/*.*") as $filename) {
         $files[] = $filename;
+    }
+}
+foreach ($files_skip as $filename) {
+    $idx = array_search($filename, $files);
+    if ($idx > 0) {
+        unset($files[$idx]);
     }
 }
 
