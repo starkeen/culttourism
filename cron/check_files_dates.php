@@ -15,8 +15,11 @@ $filename_last = '';
 $scan_dirs = array(
     '_admin',
     '_utils',
+    'addons',
     'config',
     'cron',
+    'data',
+    'img',
     'includes',
     'models',
     'js',
