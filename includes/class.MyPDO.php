@@ -63,8 +63,11 @@ class MyPDO implements IDB {
      * Подготавливаем запрос
      * @param string $sql
      */
-    public function prepare($sql) {
-        $this->_stm = $this->_pdo->prepare($sql);
+    public function prepare($sql = '') {
+        if (!empty($sql)) {
+            $this->_sql = $sql;
+        }
+        $this->_stm = $this->_pdo->prepare($this->_sql);
     }
 
     /**
@@ -73,14 +76,17 @@ class MyPDO implements IDB {
      * @param mixed $value
      */
     public function bind($key, $value) {
-        //$this->_stm_params[$key] = $value;
-        $this->_stm->bindParam($key, $value);
+        $this->_stm_params[$key] = $value;
+        //$this->_stm->bindParam($key, $value);
     }
 
     /**
      * Выполняем PDO::execute
      */
-    public function execute() {
+    public function execute($params = array()) {
+        if (!empty($params)) {
+            $this->_stm_params = $params;
+        }
         $this->_stm->execute($this->_stm_params);
     }
 

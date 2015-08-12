@@ -30,12 +30,24 @@ foreach ($sourses as $sourse) {
         $db->sql = "INSERT INTO $dbni
                         (ni_ns_id, ni_pubdate, ni_title, ni_url, ni_text, ni_active)
                     VALUES
-                        ('{$sourse['ns_id']}', '$datepub', '{$item['title']}', '{$item['link']}', '{$item['description']}', 1)
-                    ON DUPLICATE KEY UPDATE ni_title = '{$item['title']}', ni_text = '{$item['description']}'";
-        $db->exec();
+                        (:ns_id, :pubdate, :title, :link, :text, 1)
+                    ON DUPLICATE KEY UPDATE ni_title = :title2, ni_text = :text2";
+        $db->prepare();
+        $db->execute(array(
+            ':ns_id' => $sourse['ns_id'],
+            ':pubdate' => date('Y-m-d H:i:s', strtotime($item['pubDate'])),
+            ':title' => $item['title'],
+            ':title2' => $item['title'],
+            ':link' => $item['link'],
+            ':text' => $item['description'],
+            ':text2' => $item['description'],
+        ));
     }
-    $db->sql = "UPDATE $dbns SET ns_last_read = now() WHERE ns_id = '{$sourse['ns_id']}'";
-    $db->exec();
+    $db->sql = "UPDATE $dbns SET ns_last_read = now() WHERE ns_id = :ns_id";
+    $db->prepare();
+    $db->execute(array(
+        ':ns_id' => $sourse['ns_id'],
+    ));
 }
 
 $db->sql = "OPTIMIZE TABLE $dbns";
