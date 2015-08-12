@@ -21,5 +21,5 @@ $row2 = $db->fetch();
 $text = $row2['cnt_pt'] . ' ' . Helper::getNumEnding($row2['cnt_pt'], array('достопримечательности', 'достопримечательностях', 'достопримечательностях'));
 $text .= ' в ' . $row1['cnt_pc'] . ' ' . Helper::getNumEnding($row1['cnt_pc'], array('городе', 'городах', 'городах')) . ' и регионах';
 
-$sp->updateById(24, array('sp_value' => $text));
+$sp->updateByPk(24, array('sp_value' => $text));
 
