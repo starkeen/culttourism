@@ -108,7 +108,7 @@ if ($new_reps_cnt > 0) {
                         LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
                     WHERE ws_rep_id = 0
                     ORDER BY ws_weight_date, pc_rank DESC
-                    LIMIT 10";
+                    LIMIT 5";
         $db->exec();
         $_ids = array();
         $request = array(
@@ -137,6 +137,9 @@ if ($new_reps_cnt > 0) {
 //****************   6 - Оптимизация таблицы данных ****************************
 $db->sql = "OPTIMIZE TABLE $dbws";
 $db->exec();
+
+
+
 
 function yandex_req($request) {
     //$url = "https://api-sandbox.direct.yandex.ru/json-api/v4/";
