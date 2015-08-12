@@ -11,7 +11,7 @@ if (_ER_REPORT) {
 }
 include('includes/functions.php');
 
-if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == "") && false) {
+if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == "") && true) {
     //Redirect all to HTTPS
     header("HTTP/1.1 301 Moved Permanently");
     header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
