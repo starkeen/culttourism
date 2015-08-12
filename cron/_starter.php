@@ -5,7 +5,7 @@ ini_set('display_errors', false);
 $_timer_start_main = microtime(true);
 header('Content-Type: text/html; charset=utf-8');
 include(realpath(dirname(__FILE__) . '/../config/configuration.php'));
-include(_DIR_ROOT . '/includes/class.myDB.php');
+
 include(_DIR_ROOT . '/includes/class.mySmarty.php');
 include(_DIR_ROOT . '/includes/class.Logging.php');
 include(_DIR_ROOT . '/includes/debug.php');
