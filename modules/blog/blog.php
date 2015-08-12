@@ -47,8 +47,9 @@ class Page extends PageCommon {
         $entry = array();
         while ($row = $db->fetch()) {
             $entry[$row['br_id']] = $row;
-            if ($row['last_update'] > $this->lastedit_timestamp)
+            if ($row['last_update'] > $this->lastedit_timestamp) {
                 $this->lastedit_timestamp = $row['last_update'];
+            }
         }
         if ($show_full_admin) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
@@ -67,12 +68,13 @@ class Page extends PageCommon {
 
         $entry = NULL;
 
-        if ($bid = $this->checkDate($db, $year, $month, $idn))
+        if ($bid = $this->checkDate($db, $year, $month, $idn)) {
             $entry = $this->getEntryByID($db, $bid);
-        elseif ($bid = $this->checkURL($db, $id))
+        } elseif ($bid = $this->checkURL($db, $id)) {
             $entry = $this->getEntryByID($db, $bid);
-        else
+        } else {
             $this->getError('404');
+        }
         $sm->assign('entry', $entry);
         return $sm->fetch(_DIR_TEMPLATES . '/blog/blog.one.sm.html');
     }
@@ -102,16 +104,18 @@ class Page extends PageCommon {
                     LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
                     WHERE br_active = '1'
                     AND DATE_FORMAT(br_date, '%Y') = '$year'\n";
-        if ($month)
+        if ($month) {
             $db->sql .= "AND DATE_FORMAT(br_date, '%c') = '$month'\n";
+        }
         $db->sql .= "AND br_date < now()
                     ORDER BY bg.br_date DESC";
         $res = $db->exec();
         $entry = array();
         while ($row = $db->fetch()) {
             $entry[$row['bg_month']][$row['br_id']] = $row;
-            if ($row['last_update'] > $this->lastedit_timestamp)
+            if ($row['last_update'] > $this->lastedit_timestamp) {
                 $this->lastedit_timestamp = $row['last_update'];
+            }
         }
         $sm->assign('entries', $entry);
 
@@ -123,7 +127,6 @@ class Page extends PageCommon {
         $sm->assign('years', $years);
         $sm->assign('cur_year', $year);
 
-        //$sm->assign('months', $entry);
         return $sm->fetch(_DIR_TEMPLATES . '/blog/blog.calendar.sm.html');
     }
 
@@ -135,11 +138,13 @@ class Page extends PageCommon {
         if ($res) {
             $row = $db->fetch();
             $bid = intval($row['br_id']);
-            if (!$bid)
+            if (!$bid) {
                 return false;
+            }
             return $bid;
-        } else
+        } else {
             return FALSE;
+        }
     }
 
     private function checkDate($db, $y, $m, $d) {
@@ -150,11 +155,13 @@ class Page extends PageCommon {
         if ($res) {
             $row = $db->fetch();
             $bid = intval($row['br_id']);
-            if (!$bid)
+            if (!$bid) {
                 return false;
+            }
             return $bid;
-        } else
+        } else {
             return FALSE;
+        }
     }
 
     private function getEntryByID($db, $id) {
@@ -172,8 +179,9 @@ class Page extends PageCommon {
                     LIMIT 1";
         //$db->showSQL();
         $res = $db->exec();
-        if (!$res)
+        if (!$res) {
             return FALSE;
+        }
         $out = $db->fetch();
         $this->addTitle($out['br_title']);
         $this->addDescription($out['br_title']);
@@ -186,5 +194,3 @@ class Page extends PageCommon {
     }
 
 }
-
-?>
