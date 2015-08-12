@@ -24,12 +24,15 @@ class MyDB extends MyPDO {
 
     public function log() {
         $query = $this->sql;
-        $filename_log = _DIR_DATA . '/logs/sql_log_' . md5(preg_replace('/\d/', '', $query)) . '.log';
-        $filename_sql = _DIR_DATA . '/logs/sql_sql_' . md5(preg_replace('/\d/', '', $query)) . '.log';
-        if (!file_exists($filename_log)) {
-            file_put_contents($filename_sql, $query . PHP_EOL);
+        $query_mask = preg_replace('/\d/', '', $query);
+        if (!strstr($query_mask, 'cult_authorizations')) {
+            $filename_log = _DIR_DATA . '/logs/sql_log_' . md5($query_mask) . '.log';
+            $filename_sql = _DIR_DATA . '/logs/sql_sql_' . md5($query_mask) . '.log';
+            if (!file_exists($filename_sql)) {
+                file_put_contents($filename_sql, $query . PHP_EOL);
+            }
+            file_put_contents($filename_log, date('Y-m-d H:i:s') . PHP_EOL, FILE_APPEND);
         }
-        file_put_contents($filename_log, date('Y-m-d H:i:s') . PHP_EOL, FILE_APPEND);
     }
 
 }
