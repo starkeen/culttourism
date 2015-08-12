@@ -18,7 +18,7 @@ while ($row = $db->fetch()) {
         $url['full'] .= '/';
     }
     $url['lastmod'] = $basedate;
-    $url['freq'] = 'daily';
+    $url['freq'] = 'weekly';
     $url['priority'] = ($row['md_url'] != 'index.html') ? '0.90' : '1.00';
     $urls[] = $url;
 }
@@ -32,7 +32,7 @@ while ($row = $db->fetch()) {
     $url['uri'] = $row['url'];
     $url['full'] = "$baseurl{$row['url']}/";
     $url['lastmod'] = $row['dateup'];
-    $url['freq'] = 'daily';
+    $url['freq'] = 'weekly';
     $url['priority'] = '0.80';
     $urls[] = $url;
 }
@@ -47,7 +47,7 @@ while ($row = $db->fetch()) {
     $url['uri'] = $row['url'];
     $url['full'] = "$baseurl{$row['url']}";
     $url['lastmod'] = $row['dateup'];
-    $url['freq'] = 'daily';
+    $url['freq'] = 'monthly';
     $url['priority'] = '0.70';
     $urls[] = $url;
 }
