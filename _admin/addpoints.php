@@ -131,7 +131,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
         'state' => isset($_GET['state']) ? intval($_GET['state']) : 0,
     );
 
-    $list = $c->getActive($filter);
+    $list = $c->getByFilter($filter);
     $ref_pc = array();
     foreach ($list as $li) {
         $ref_pc[$li['cp_citypage_id']] = array('id' => $li['cp_citypage_id'], 'title' => $li['page_title'] ? $li['page_title'] : '-не указано-');

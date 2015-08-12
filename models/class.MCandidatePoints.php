@@ -67,7 +67,7 @@ class MCandidatePoints extends Model {
         return $this->insert($data);
     }
 
-    public function getActive($filter) {
+    public function getByFilter($filter) {
         $this->_db->sql = "SELECT t.*,
                                 pc.pc_title AS page_title, CONCAT(u.url, '/') AS page_url,
                                 uv_stat.uv_title AS state_title,
