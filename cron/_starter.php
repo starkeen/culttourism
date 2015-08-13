@@ -15,9 +15,11 @@ spl_autoload_register('Helper::autoloader');
 
 $db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
 $smarty = new mySmarty();
+$sp = new MSysProperties($db);
 
 $cron = $db->getTableName('cron');
 $dbsp = $db->getTableName('siteprorerties');
+
 
 $db->sql = "SELECT sp_value FROM $dbsp WHERE sp_name = 'mail_report_cron'";
 $db->exec();
@@ -34,7 +36,7 @@ $db->exec();
 
 //* * ********    В Ы Б О Р К А   С К Р И П Т О В     ********* */
 $db->sql = "SELECT *, DATE_FORMAT(cr_period, '%d %H:%i') as period FROM $cron
-                WHERE cr_active = 1 AND cr_isrun = 0 AND cr_datenext <= now()";
+                WHERE cr_active = 1 AND cr_isrun = 0 AND cr_datenext <= NOW()";
 $db->exec();
 while ($row = $db->fetch()) {
     $scripts[$row['cr_id']] = $row;
@@ -55,7 +57,7 @@ foreach ($scripts as $job) {
         Logging::addHistory('cron', "Начала работу задача №$script_id ({$job['cr_title']})");
     }
 
-    $db->exec("UPDATE $cron SET cr_isrun = '1', cr_datelast_attempt = now() WHERE cr_id = $script_id");
+    $db->exec("UPDATE $cron SET cr_isrun = '1', cr_datelast_attempt = NOW() WHERE cr_id = $script_id");
 
     $_timer_start_script = microtime(true);
     ob_start();
