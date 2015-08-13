@@ -6,21 +6,13 @@ $dbws = $db->getTableName('wordstat');
 $limit_cities_per_time = 10;
 $limit_sites_per_answer = 90;
 
+$ws = new MWordstat($db);
+
 if (date("H") > 7 && date("H") < 20) {
     //$limit_cities_per_time = 5;
 }
 
-$db->sql = "SELECT ws_id, ws_city_title
-            FROM $dbws ws
-                LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
-            WHERE pc.pc_id IS NOT NULL
-            ORDER BY ws_position_date, pc_rank DESC
-            LIMIT $limit_cities_per_time";
-$db->exec();
-$cities = array();
-while ($row = $db->fetch()) {
-    $cities[] = $row;
-}
+$cities = $ws->getPortionPosition($limit_cities_per_time);
 
 $ys = new YandexSearcher();
 $ys->setPagesMax($limit_sites_per_answer);
@@ -40,8 +32,10 @@ foreach ($cities as $city) {
             $position = $founded;
         }
 
-        $db->sql = "UPDATE $dbws SET ws_position = '$position', ws_position_date = now() WHERE ws_id = '{$city['ws_id']}'";
-        $db->exec();
+        $ws->updateByPk($city['ws_id'], array(
+            'ws_position' => $position,
+            'ws_position_date' => $ws->now(),
+        ));
     } else {
         echo "Ошибка: " . $res['error_text'];
     }
