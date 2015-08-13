@@ -56,7 +56,4 @@ foreach ($scripts as $job) {
         Logging::addHistory('cron', "Отработала задача №$script_id  ({$job['cr_title']}), время $exectime с.", $content);
     }
 }
-
-$cr->optimize();
-
 //echo '<hr>Общее время работы скриптов: ' . substr(microtime(true) - $_timer_start_main, 0, 6) . ' c.';
