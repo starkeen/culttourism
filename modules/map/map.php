@@ -263,8 +263,8 @@ class Page extends PageCommon {
 
         $this->db->sql = "SELECT pp.*,
                                 IF (pp.pt_id = :selected_object_id2, 1, 0) AS obj_selected,
-                                CONCAT(:url_root, ru.url, '/') AS cityurl,
-                                CONCAT(:url_root, ru.url, '/', pp.pt_slugline, '.html') AS objurl,
+                                CONCAT(:url_root1, ru.url, '/') AS cityurl,
+                                CONCAT(:url_root2, ru.url, '/', pp.pt_slugline, '.html') AS objurl,
                                 CONCAT(ru.url, '/', pp.pt_slugline, '.html') AS objuri
                             FROM $dbpp AS pp
                                 LEFT JOIN $dbpr pt ON pt.tp_id = pp.pt_type_id
@@ -273,13 +273,14 @@ class Page extends PageCommon {
                             WHERE pp.pt_active = 1
                                 AND pp.pt_latitude BETWEEN :bounds_min_lat AND :bounds_max_lat
                                 AND pp.pt_longitude BETWEEN :bounds_min_lon AND :bounds_max_lon
-                                OR pp.pt_id = :selected_object_id
+                                OR pp.pt_id = :selected_object_id1
                             ORDER BY pt.tr_order DESC, pp.pt_rank
                             LIMIT 300";
         $this->db->prepare();
         $this->db->execute(array(
-            ':url_root' => _URL_ROOT,
-            ':selected_object_id' => $selected_object_id,
+            ':url_root1' => _URL_ROOT,
+            ':url_root2' => _URL_ROOT,
+            ':selected_object_id1' => $selected_object_id,
             ':selected_object_id2' => $selected_object_id,
             ':bounds_min_lat' => $bounds['min_lat'],
             ':bounds_max_lat' => $bounds['max_lat'],
