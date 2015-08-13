@@ -1,9 +1,10 @@
 <?php
+
 class MSearchLog extends Model {
+
     protected $_table_pk = 'sl_id';
     protected $_table_order = 'sl_date';
     protected $_table_active = 'sl_id';
-    
     private $_record_id = null;
 
     public function __construct($db) {
@@ -24,9 +25,9 @@ class MSearchLog extends Model {
         $this->_record_id = $this->insert($data);
         return $this->_record_id;
     }
-    
+
     public function setAnswer($data) {
         $this->updateByPk($this->_record_id, $data);
     }
+
 }
-?>

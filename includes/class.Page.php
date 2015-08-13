@@ -89,7 +89,7 @@ class Page extends PageCommon {
         $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
 
         //------------------  s t a t i s t i c s  ------------------------
-        $sp = new Statpoints($this->db);
+        $sp = new MStatpoints($this->db);
         $sp->add($object['pt_id'], $this->getUserHash());
 
         $this->addTitle($city['pc_title']);
@@ -172,16 +172,16 @@ class Page extends PageCommon {
         $dbpp = $db->getTableName('pagepoints');
         $dbsc = $db->getTableName('statcity');
         $dbpt = $db->getTableName('ref_pointtypes');
-        $url = str_replace('/map.html', '', $url);
 
-        $url = $db->getEscapedString($url);
         $db->sql = "SELECT city.*,
                             UNIX_TIMESTAMP(city.pc_lastup_date) AS last_update1,
                             (SELECT UNIX_TIMESTAMP(MAX(pt_lastup_date)) FROM $dbpp WHERE pt_citypage_id = city.pc_id) AS last_update2                           
                     FROM $dburl url
                     LEFT JOIN $dbpc city ON city.pc_id = url.citypage
-                    WHERE url.url = '$url'";
-        $db->exec();
+                    WHERE url.url = :url";
+        $db->execute(array(
+            ':url' => str_replace('/map.html', '', $url),
+        ));
         //$db->showSQL();
         if ($row = $db->fetch()) {
             $this->lastedit_timestamp = max(array($row['last_update1'], $row['last_update2']));
@@ -282,6 +282,7 @@ class Page extends PageCommon {
         }
 
         $pts = new MPagePoints($this->db);
+        $pcs = new MPageCities($this->db);
         $object = $pts->getItemByPk($id);
         if (!$object || $object['pt_active'] == 0) {
             return false;
@@ -292,17 +293,6 @@ class Page extends PageCommon {
             header("Location: $this->canonical");
             exit();
         }
-
-        $dbpt = $db->getTableName('pagepoints');
-        $dbpc = $db->getTableName('pagecity');
-        $dbsp = $db->getTableName('statpoints');
-        $dbrp = $db->getTableName('ref_pointtypes');
-        $dburl = $db->getTableName('region_url');
-
-        $uridata = explode('/', $_SERVER['REQUEST_URI']);
-        array_pop($uridata);
-        $url = implode('/', $uridata);
-
 
         $short = strip_tags($object['pt_description']);
         $short = mb_strlen($short) >= 100 ? mb_substr($short, 0, mb_strpos($short, ' ', 100), 'utf-8') : $short;
@@ -324,18 +314,12 @@ class Page extends PageCommon {
         $this->lastedit_timestamp = $object['last_update'];
         $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
 
-        $db->sql = "SELECT pc.pc_title, pc.pc_inwheretext, pc.pc_pagepath, pc.pc_url_id
-                    FROM $dbpc pc
-                    WHERE pc.pc_id = '{$object['pt_citypage_id']}'";
-        $db->exec();
-        $city = $db->fetch();
+        $city = $pcs->getItemByPk($object['pt_citypage_id']);
         $smarty->assign('city', $city);
 
         //------------------  s t a t i s t i c s  ------------------------
-        $hash = $this->getUserHash();
-        $db->sql = "INSERT INTO $dbsp (sp_pagepoint_id, sp_date, sp_hash) VALUES ('$id', now(), '$hash')
-                        ON DUPLICATE KEY UPDATE sp_date = now()";
-        $db->exec();
+        $sp = new MStatpoints($this->db);
+        $sp->add($id, $this->getUserHash());
 
         $this->addTitle($city['pc_title']);
         $this->addTitle($object['esc_name']);

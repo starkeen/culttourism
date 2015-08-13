@@ -22,20 +22,24 @@ class MBlogEntries extends Model {
 
     public function getLastActive($qnt = 10) {
         $this->_db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text,
-                                REPLACE(bg.br_text, '=\"/', '=\"" . _SITE_URL . "') AS br_text_absolute,
+                                REPLACE(bg.br_text, '=\"/', CONCAT('=\"', :site_url1)) AS br_text_absolute,
                                 'Роберт' AS us_name,
                                 DATE_FORMAT(bg.br_date,'%a, %d %b %Y %H:%i:%s GMT') as bg_pubdate,
                                 DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
                                 IF(bg.br_url != '',
-                                    CONCAT('" . _SITE_URL . "blog/', DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'),
+                                    CONCAT(:site_url2, 'blog/', DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'),
                                     CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/%d'),'.html')
                                 ) as br_link
                             FROM $this->_table_name AS bg
                             WHERE br_active = 1
-                                AND br_date < now()
+                                AND br_date < NOW()
                             ORDER BY bg.br_date DESC
-                            LIMIT $qnt";
-        $this->_db->exec();
+                            LIMIT :limit";
+        $this->_db->execute(array(
+            ':site_url1' => _SITE_URL,
+            ':site_url2' => _SITE_URL,
+            ':limit' => $qnt,
+        ));
         return $this->_db->fetchAll();
     }
 
