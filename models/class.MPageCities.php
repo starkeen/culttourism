@@ -56,8 +56,11 @@ class MPageCities extends Model {
                             FROM $dbu url
                                 LEFT JOIN $this->_table_name pc ON pc.pc_id = url.citypage
                                     LEFT JOIN $dbu uc ON uc.uid = pc.pc_url_id
-                            WHERE url.url = '$xurl'";
-        $this->_db->exec();
+                            WHERE url.url = :xurl";
+        $this->_db->prepare();
+        $this->_db->execute(array(
+            ':xurl' => trim($url),
+        ));
         $out = $this->_db->fetch();
 
         $out['region_in'] = array();
@@ -70,10 +73,13 @@ class MPageCities extends Model {
                                     UNIX_TIMESTAMP(pc.pc_add_date) AS last_update
                                 FROM $this->_table_name pc
                                     LEFT JOIN $dbu url ON url.uid = pc.pc_url_id
-                                WHERE pc.pc_region_id = '{$out['pc_region_id']}'
+                                WHERE pc.pc_region_id = :pc_region_id
                                     AND pc.pc_city_id != 0
                                 ORDER BY pc.pc_rank DESC, pc.pc_title";
-            $this->_db->exec();
+            $this->_db->prepare();
+            $this->_db->execute(array(
+                ':pc_region_id' => $out['pc_region_id'],
+            ));
             while ($subcity = $this->_db->fetch()) {
                 $out['region_in'][] = array('title' => $subcity['pc_title'], 'url' => $subcity['url'], 'where' => $subcity['pc_inwheretext']);
                 if ($subcity['last_update'] > $out['last_update']) {
@@ -85,18 +91,23 @@ class MPageCities extends Model {
         //----------------------  р я д о м  ------------------------
         if (!empty($out['pc_region_id']) && !empty($out['pc_city_id'])) {
             $this->_db->sql = "SELECT pc.pc_title, url.url, pc.pc_inwheretext,
-                                    ROUND(1000 * (ABS(pc.pc_latitude - {$out['pc_latitude']}) + ABS(pc.pc_longitude - {$out['pc_longitude']}))) AS delta_sum,
+                                    ROUND(1000 * (ABS(pc.pc_latitude - :pc_latitude) + ABS(pc.pc_longitude - :pc_longitude))) AS delta_sum,
                                     UNIX_TIMESTAMP(pc.pc_add_date) AS last_update
                                 FROM $this->_table_name pc
                                     LEFT JOIN $dbu url ON url.uid = pc.pc_url_id
                                 WHERE pc.pc_city_id != 0
-                                    AND pc.pc_title != '{$out['pc_title']}'
+                                    AND pc.pc_title != :pc_title
                                     AND pc.pc_latitude > 0 AND pc.pc_longitude > 0
                                 HAVING delta_sum < 5000
                                 ORDER BY delta_sum
                                 LIMIT 10";
             //$db->showSQL();
-            $this->_db->exec();
+            $this->_db->prepare();
+            $this->_db->execute(array(
+                ':pc_title' => $out['pc_title'],
+                ':pc_latitude' => $out['pc_latitude'],
+                ':pc_longitude' => $out['pc_longitude'],
+            ));
             while ($subcity = $this->_db->fetch()) {
                 $out['region_near'][] = array(
                     'title' => $subcity['pc_title'],
@@ -114,11 +125,14 @@ class MPageCities extends Model {
             $this->_db->sql = "SELECT cf_title, cd_value
                         FROM $dbcd cd
                             LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
-                        WHERE cd.cd_pc_id = '{$out['pc_id']}'
+                        WHERE cd.cd_pc_id = :pc_id
                             AND cd.cd_value != ''
                             AND cf.cf_active = 1
                         ORDER BY cf_order";
-            $this->_db->exec();
+            $this->_db->prepare();
+            $this->_db->execute(array(
+                ':pc_id' => $out['pc_id'],
+            ));
             $out['metas'] = $this->_db->fetchAll();
         }
 
@@ -130,8 +144,11 @@ class MPageCities extends Model {
         $this->_db->sql = "SELECT t.*, CONCAT(url.url, '/') AS url
                             FROM $this->_table_name t
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = t.pc_url_id
-                            WHERE $this->_table_pk = '$cid'";
-        $this->_db->exec();
+                            WHERE $this->_table_pk = :cid";
+        $this->_db->prepare();
+        $this->_db->execute(array(
+            ':cid' => intval($id),
+        ));
         return $this->_db->fetch();
     }
 
@@ -181,11 +198,15 @@ class MPageCities extends Model {
         $this->_db->sql = "SELECT pc_id, pc_title, url
                             FROM $this->_table_name pc
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
-                            WHERE pc.pc_title LIKE '%$name1%' OR pc_title LIKE '%$name2%'
+                            WHERE pc.pc_title LIKE :name1 OR pc_title LIKE :name2
                                 AND pc.pc_active = 1
                             GROUP BY pc.pc_title
                             ORDER BY pc.pc_title";
-        $this->_db->exec();
+        $this->_db->prepare();
+        $this->_db->execute(array(
+            ':name1' => '%'.trim($query).'%',
+            ':name2' => '%'.trim(Helper::getQwerty($query)).'%',
+        ));
         return $this->_db->fetchAll();
     }
 
