@@ -16,28 +16,18 @@ spl_autoload_register('Helper::autoloader');
 $db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
 $smarty = new mySmarty();
 $sp = new MSysProperties($db);
+$cr = new MCron($db);
 
 $cron = $db->getTableName('cron');
 
 $global_cron_email = $sp->getByName('mail_report_cron');
 
 //-- если больше двух часов работает скрипт - зарубить
-$db->sql = "UPDATE $cron
-            SET cr_isrun = 0
-            WHERE cr_isrun = 1
-            AND cr_active = 1
-            AND cr_datelast_attempt < SUBTIME(NOW(), '02:00:00')";
-$db->exec();
+$cr->killPhantoms();
 
 //* * ********    В Ы Б О Р К А   С К Р И П Т О В     ********* */
-$db->sql = "SELECT *, DATE_FORMAT(cr_period, '%d %H:%i') as period FROM $cron
-                WHERE cr_active = 1 AND cr_isrun = 0 AND cr_datenext <= NOW()";
-$db->exec();
-while ($row = $db->fetch()) {
-    $scripts[$row['cr_id']] = $row;
-}
-if (!isset($scripts)) {
-    //echo 'Nothing to do. [' . date('d.m.Y H:i:s') . ']';
+$scripts = $cr->getPortion();
+if (empty($scripts)) {
     exit();
 }
 
@@ -52,7 +42,7 @@ foreach ($scripts as $job) {
         Logging::addHistory('cron', "Начала работу задача №$script_id ({$job['cr_title']})");
     }
 
-    $db->exec("UPDATE $cron SET cr_isrun = '1', cr_datelast_attempt = NOW() WHERE cr_id = $script_id");
+    $cr->markWorkStart($script_id);
 
     $_timer_start_script = microtime(true);
     ob_start();
@@ -65,20 +55,13 @@ foreach ($scripts as $job) {
 
         Mailing::sendDirect($global_cron_email, 'Cron on ' . _URL_ROOT, $content, 'X-Mailru-Msgtype:cronreport');
     }
-    $db->exec("UPDATE $cron SET
-                    cr_isrun = '0',
-                    cr_lastexectime = '$exectime',
-                    cr_lastresult = '$content',
-                    cr_datenext = DATE_ADD(cr_datenext, INTERVAL '$period' DAY_MINUTE),
-                    cr_datelast = now()
-                    WHERE cr_id = $script_id");
+    $cr->markWorkFinish($script_id, $content, $exectime);
 
     if (!in_array($script_id, $nologging_ids) && $exectime >= 0.01) {
         Logging::addHistory('cron', "Отработала задача №$script_id  ({$job['cr_title']}), время $exectime с.", $content);
     }
 }
 
-//-- поправить ключи
-$db->exec("OPTIMIZE TABLE $cron");
+$cr->optimize();
 
 //echo '<hr>Общее время работы скриптов: ' . substr(microtime(true) - $_timer_start_main, 0, 6) . ' c.';
