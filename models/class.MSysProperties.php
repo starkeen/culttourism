@@ -25,8 +25,11 @@ class MSysProperties extends Model {
     }
 
     public function getSettingsByBranchId($rsid) {
-        $this->_db->sql = "SELECT * FROM $this->_table_name WHERE sp_rs_id = " . intval($rsid);
-        $this->_db->exec();
+        $this->_db->sql = "SELECT sp_name, sp_value FROM $this->_table_name WHERE sp_rs_id = :rsid";
+        $this->_db->prepare();
+        $this->_db->execute(array(
+            ':rsid' => intval($rsid),
+        ));
         $config = array();
         while ($row = $this->_db->fetch()) {
             $config[$row['sp_name']] = $row['sp_value'];
@@ -35,8 +38,9 @@ class MSysProperties extends Model {
     }
 
     public function getPublic() {
-        $this->_db->sql = "SELECT * FROM $this->_table_name WHERE sp_public = 1";
-        $this->_db->exec();
+        $this->_db->sql = "SELECT sp_name, sp_value FROM $this->_table_name WHERE sp_public = 1";
+        $this->_db->prepare();
+        $this->_db->execute();
         $config = array();
         while ($row = $this->_db->fetch()) {
             $config[$row['sp_name']] = $row['sp_value'];
@@ -46,9 +50,13 @@ class MSysProperties extends Model {
 
     public function updateByName($name, $value) {
         $this->_db->sql = "UPDATE $this->_table_name
-                            SET sp_value = '" . $this->escape($value) . "'
-                            WHERE sp_name = '" . $this->escape($name) . "'";
-        $this->_db->exec();
+                            SET sp_value = :value
+                            WHERE sp_name = :name";
+        $this->_db->prepare();
+        $this->_db->execute(array(
+            ':name' => $name,
+            ':value' => $value,
+        ));
     }
 
 }
