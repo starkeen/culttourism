@@ -105,7 +105,7 @@ class Mailing {
     public static function sendInCache($to, $text, $theme, $sender = null, $xheader = null) {
         global $db;
         $mp = new MMailPool($db);
-        $mp->insert(array(
+        $lt_id = $mp->insert(array(
             'ml_datecreate' => $mp->now(),
             'ml_text' => trim($text),
             'ml_adr_to' => $to,
@@ -115,7 +115,7 @@ class Mailing {
             'ml_sender_id' => 0,
             'ml_customheader' => $xheader,
         ));
-        return true;
+        return $lt_id;
     }
 
     public static function sendImmediately($db, $to, $text, $theme, $custom_header = '') {
@@ -125,11 +125,12 @@ class Mailing {
             'ml_text' => trim($text),
             'ml_adr_to' => $to,
             'ml_theme' => trim($theme),
-            'ml_inwork' => 1,
+            'ml_inwork' => 0,
             'ml_worked' => 0,
             'ml_sender_id' => 0,
             'ml_customheader' => $custom_header,
         ));
+        echo 'letter:', $lt_id;
         return self::sendLetter($db, $lt_id);
     }
 
