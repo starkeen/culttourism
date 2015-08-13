@@ -25,7 +25,7 @@ class MyDB extends MyPDO {
     public function log() {
         $query = $this->sql;
         $query_mask = preg_replace('/\d/', '', $query);
-        if (false && !strstr($query_mask, 'cult_authorizations')) {
+        if (true && !strstr($query_mask, 'cult_authorizations')) {
             $filename_log = _DIR_DATA . '/logs/sql_log_' . md5($query_mask) . '.log';
             $filename_sql = _DIR_DATA . '/logs/sql_sql_' . md5($query_mask) . '.log';
             if (!file_exists($filename_sql)) {
