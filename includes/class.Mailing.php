@@ -38,43 +38,21 @@ class Mailing {
     }
 
     private static function sendLetter($db, $ml_id) {
-        $dbmp = $db->getTableName('mail_pool');
-        $db->sql = "SELECT * FROM $dbmp WHERE ml_id = :mid";
-        $db->prepare();
-        $result = $db->execute(array(
-            ':mid' => $ml_id,
-        ));
-        if ($result) {
-            $letter = $db->fetch();
-            self::sendOnly($letter);
-            $db->sql = "UPDATE $dbmp SET ml_worked = 1, ml_inwork=0, ml_datesend = NOW() WHERE ml_id = :mid";
-            $db->prepare();
-            return $db->execute(array(
-                ':mid' => $ml_id,
-            ));
-        } else {
-            return FALSE;
-        }
+        $mp = new MMailPool($db);
+        $letter = $mp->getItemByPk($ml_id);
+        $mp->markInwork($ml_id);
+        self::sendOnly($letter);
+        return $mp->markWorked($ml_id);
     }
 
-    public static function sendFromPool($limit = null) {
+    public static function sendFromPool($limit = 20) {
         global $db;
-        $dbm = $db->getTableName('mail_pool');
-        $db->sql = "SELECT ml_id FROM $dbm WHERE ml_worked = 0 AND ml_inwork = 0";
-        if ($limit) {
-            $db->sql .= " LIMIT $limit";
-        }
-        $db->exec();
-        $pool = array();
+        $mp = new MMailPool($db);
+        $pool = $mp->getPortion($limit);
         $cnt = 0;
-        while ($ml = $db->fetch()) {
-            $pool[] = $ml['ml_id'];
-        }
         if (!empty($pool)) {
             foreach ($pool as $mid) {
-                $db->exec("UPDATE $dbm SET ml_inwork = 1 WHERE ml_id = '$mid'");
                 self::sendLetter($db, $mid);
-                $db->exec("UPDATE $dbm SET ml_inwork = 0, ml_worked = 1 WHERE ml_id = '$mid'");
                 $cnt++;
             }
         }
@@ -128,7 +106,7 @@ class Mailing {
         global $db;
         $mp = new MMailPool($db);
         $mp->insert(array(
-            'ml_datecreate' => date('Y-m-d H:i:s'),
+            'ml_datecreate' => $mp->now(),
             'ml_text' => trim($text),
             'ml_adr_to' => $to,
             'ml_theme' => trim($theme),
@@ -143,7 +121,7 @@ class Mailing {
     public static function sendImmediately($db, $to, $text, $theme, $custom_header = '') {
         $mp = new MMailPool($db);
         $lt_id = $mp->insert(array(
-            'ml_datecreate' => date('Y-m-d H:i:s'),
+            'ml_datecreate' => $mp->now(),
             'ml_text' => trim($text),
             'ml_adr_to' => $to,
             'ml_theme' => trim($theme),
@@ -169,15 +147,8 @@ class Mailing {
 
     private static function prepareLetter($tmpl_id, $elements = array()) {
         global $db;
-        $dbmt = $db->getTableName('mail_templates');
-        $db->sql = "SELECT * FROM $dbmt
-                    WHERE mt_id = :tpl_id
-                    LIMIT 1";
-        $db->prepare();
-        $db->execute(array(
-            ':tpl_id' => $tmpl_id,
-        ));
-        $template = $db->fetch();
+        $mt = new MMailTemplates($db);
+        $template = $mt->getItemByPk($tmpl_id);
         foreach ($elements as $elkey => $element) {
             $template['mt_content'] = str_replace("%$elkey%", $element, $template['mt_content']);
         }

@@ -20,7 +20,7 @@ class MMailTemplates extends Model {
     public function getCompiled($id, $data = array()) {
         $text = parent::getItemByPk($id);
         foreach ($data as $k => $v) {
-            $text = str_replace('%'.strtoupper($k).'%', $v, $text);
+            $text = str_replace('%' . strtoupper($k) . '%', $v, $text);
         }
         return $text;
     }

@@ -48,4 +48,35 @@ class MMailPool extends Model {
         return $row['cnt'];
     }
 
+    public function markWorked($id) {
+        $this->_db->sql = "UPDATE $this->_table_name SET
+                            ml_worked = 1, ml_inwork=0, ml_datesend = NOW()
+                            WHERE ml_id = :mid";
+        $this->_db->prepare();
+        return $this->_db->execute(array(
+                    ':mid' => $id,
+        ));
+    }
+
+    public function markInwork($id) {
+        $this->_db->sql = "UPDATE $this->_table_name SET
+                            ml_inwork=1
+                            WHERE ml_id = :mid";
+        $this->_db->prepare();
+        return $this->_db->execute(array(
+                    ':mid' => $id,
+        ));
+    }
+
+    public function getPortion($count) {
+        $this->_db->sql = "SELECT ml_id FROM $this->_table_name
+                    WHERE ml_worked = 0
+                    AND ml_inwork = 0
+                    LIMIT :limit";
+        $this->_db->prepare();
+        return $this->_db->execute(array(
+                    ':limit' => $count,
+        ));
+    }
+
 }
