@@ -13,9 +13,6 @@ class Page extends PageCommon {
         $dbns = $db->getTableName('news_sourses');
         $dbni = $db->getTableName('news_items');
 
-        $limit_blogs = intval($this->globalsettings['index_cnt_blogs']);
-        $limit_news = intval($this->globalsettings['index_cnt_news']);
-
         $db->sql = "SELECT bg.*, us.us_name,
                            UNIX_TIMESTAMP(bg.br_date) AS last_update,
                            DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month,
@@ -24,10 +21,12 @@ class Page extends PageCommon {
                            IF (bg.br_url != '', CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'), CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/%d'),'.html')) as br_link
                     FROM $dbb bg
                         LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
-                    WHERE bg.br_date < now()
+                    WHERE bg.br_date < NOW()
                     ORDER BY bg.br_date DESC
-                    LIMIT $limit_blogs";
-        $db->exec();
+                    LIMIT :limit_blogs";
+        $db->execute(array(
+            ':limit_blogs' => intval($this->globalsettings['index_cnt_blogs']),
+        ));
         $blogentries = array();
         $patern = "/(.*?)<\/p>/i";
         while ($row = $db->fetch()) {
@@ -50,8 +49,10 @@ class Page extends PageCommon {
                     WHERE ni.ni_active = 1
                     GROUP BY ni_title
                     ORDER BY ni_pubdate DESC
-                    LIMIT $limit_news";
-        $db->exec();
+                    LIMIT :limit_news";
+        $db->execute(array(
+            ':limit_news' => intval($this->globalsettings['index_cnt_news']),
+        ));
         $agrnewsentries = array();
         while ($row = $db->fetch()) {
             $row['ni_text'] = strip_tags(html_entity_decode($row['ni_text'], ENT_QUOTES));
@@ -77,5 +78,3 @@ class Page extends PageCommon {
     }
 
 }
-
-?>
