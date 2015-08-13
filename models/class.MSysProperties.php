@@ -40,7 +40,7 @@ class MSysProperties extends Model {
     public function getPublic() {
         $this->_db->sql = "SELECT sp_name, sp_value FROM $this->_table_name WHERE sp_public = 1";
         $this->_db->prepare();
-        $this->_db->execute();
+        $this->_db->execute(array());
         $config = array();
         while ($row = $this->_db->fetch()) {
             $config[$row['sp_name']] = $row['sp_value'];
