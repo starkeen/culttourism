@@ -39,12 +39,19 @@ class Mailing {
 
     private static function sendLetter($db, $ml_id) {
         $dbmp = $db->getTableName('mail_pool');
-        $db->sql = "SELECT * FROM $dbmp WHERE ml_id = '$ml_id'";
-        if ($db->exec()) {
+        $db->sql = "SELECT * FROM $dbmp WHERE ml_id = :mid";
+        $db->prepare();
+        $result = $db->execute(array(
+            ':mid' => $ml_id,
+        ));
+        if ($result) {
             $letter = $db->fetch();
             self::sendOnly($letter);
-            $db->sql = "UPDATE $dbmp SET ml_worked = 1, ml_inwork=0, ml_datesend=now() WHERE ml_id = '$ml_id'";
-            return $db->exec();
+            $db->sql = "UPDATE $dbmp SET ml_worked = 1, ml_inwork=0, ml_datesend = NOW() WHERE ml_id = :mid";
+            $db->prepare();
+            return $db->execute(array(
+                ':mid' => $ml_id,
+            ));
         } else {
             return FALSE;
         }
@@ -164,9 +171,12 @@ class Mailing {
         global $db;
         $dbmt = $db->getTableName('mail_templates');
         $db->sql = "SELECT * FROM $dbmt
-                    WHERE mt_id = '$tmpl_id'
+                    WHERE mt_id = :tpl_id
                     LIMIT 1";
-        $db->exec();
+        $db->prepare();
+        $db->execute(array(
+            ':tpl_id' => $tmpl_id,
+        ));
         $template = $db->fetch();
         foreach ($elements as $elkey => $element) {
             $template['mt_content'] = str_replace("%$elkey%", $element, $template['mt_content']);
