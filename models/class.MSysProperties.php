@@ -60,5 +60,16 @@ class MSysProperties extends Model {
             ':value' => $value,
         ));
     }
+    
+    public function getByName($name) {
+        $this->_db->sql = "SELECT sp_value
+                            FROM $this->_table_name
+                            WHERE sp_name = :name";
+        $this->_db->prepare();
+        $this->_db->execute(array(
+            ':name' => $name,
+        ));
+        return $this->_db->fetchCol();
+    }
 
 }
