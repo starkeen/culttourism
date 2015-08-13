@@ -42,14 +42,12 @@ class Page extends PageCommon {
     }
 
     private function getYMapsMLList($list_id) {
-
         $dbli = $this->db->getTableName('lists_items');
         $dbpr = $this->db->getTableName('ref_pointtypes');
         $dbpp = $this->db->getTableName('pagepoints');
         $dbpc = $this->db->getTableName('pagecity');
         $dbru = $this->db->getTableName('region_url');
 
-        $ptypes = array();
         $points = array();
         $bounds = array(
             'max_lat' => 0, 'max_lon' => 0,
@@ -58,11 +56,7 @@ class Page extends PageCommon {
             'delta_lat' => 0.1, 'delta_lon' => 0.3,
         );
 
-        $this->db->sql = "SELECT * FROM $dbpr";
-        $this->db->exec();
-        while ($rpt = $this->db->fetch()) {
-            $ptypes[] = $rpt;
-        }
+        $ptypes = $this->getRefPointTypes();
 
         $this->db->sql = "SELECT pp.*,
                                 0 AS obj_selected,
@@ -135,12 +129,7 @@ class Page extends PageCommon {
         $dbpc = $this->db->getTableName('pagecity');
         $dbru = $this->db->getTableName('region_url');
 
-        $this->db->sql = "SELECT * FROM $dbpr";
-        $this->db->exec();
-        $ptypes = array();
-        while ($rpt = $this->db->fetch()) {
-            $ptypes[] = $rpt;
-        }
+        $ptypes = $this->getRefPointTypes();
 
         $this->db->sql = "SELECT pp.*,
                         CONCAT(:url_root1, ru.url, '/') AS cityurl,
@@ -225,7 +214,7 @@ class Page extends PageCommon {
         $dbpc = $this->db->getTableName('pagecity');
         $dbru = $this->db->getTableName('region_url');
 
-        $ptypes = array();
+        $ptypes = $this->getRefPointTypes();
         $bounds = array(
             'max_lat' => 55.9864578247, 'max_lon' => 37.9002265930,
             'min_lat' => 55.4144554138, 'min_lon' => 37.1716384888,
@@ -233,12 +222,6 @@ class Page extends PageCommon {
             'delta_lat' => 0.1, 'delta_lon' => 0.3,
         );
         $points = array();
-
-        $this->db->sql = "SELECT * FROM $dbpr";
-        $this->db->exec();
-        while ($rpt = $this->db->fetch()) {
-            $ptypes[] = $rpt;
-        }
 
         if (!isset($get['center']) && isset($get['clt']) && isset($get['cln']) && !isset($get['llt']) && !isset($get['lln']) && !isset($get['rlt']) && !isset($get['rln'])) {
             //---------- по координатам центра (раздельно)
@@ -325,6 +308,12 @@ class Page extends PageCommon {
         header("Expires: " . date("r"));
         echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
         exit();
+    }
+    
+    private function getRefPointTypes() {
+        $this->db->sql = "SELECT * FROM $dbpr";
+        $this->db->exec();
+        $ptypes = $this->db->fetchAll();
     }
 
     public static function getInstance($db, $mod) {
