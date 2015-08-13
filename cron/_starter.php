@@ -15,8 +15,6 @@ $smarty = new mySmarty();
 $sp = new MSysProperties($db);
 $cr = new MCron($db);
 
-$cron = $db->getTableName('cron');
-
 $global_cron_email = $sp->getByName('mail_report_cron');
 
 //-- если больше двух часов работает скрипт - зарубить
