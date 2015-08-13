@@ -126,8 +126,11 @@ class Page extends PageCommon {
         $code = cut_trash_int($code);
         $db = $this->db;
         $dbwc = $db->getTableName('weather_codes');
-        $db->sql = "SELECT * FROM $dbwc WHERE wc_id = '$code'";
-        $db->exec();
+        $db->sql = "SELECT * FROM $dbwc WHERE wc_id = :code";
+        $db->prepare();
+        $db->execute(array(
+            ':code' => $code,
+        ));
         $row = $db->fetch();
         if ($row['wc_id'] != 0) {
             return array('main' => $row['wc_main'], 'description' => $row['wc_description']);
