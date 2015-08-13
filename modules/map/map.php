@@ -210,6 +210,7 @@ class Page extends PageCommon {
         $dbpp = $this->db->getTableName('pagepoints');
         $dbpc = $this->db->getTableName('pagecity');
         $dbru = $this->db->getTableName('region_url');
+        $dbpr = $this->db->getTableName('ref_pointtypes');
 
         $ptypes = $this->getRefPointTypes();
         $bounds = array(
