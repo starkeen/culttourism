@@ -262,21 +262,30 @@ class Page extends PageCommon {
         }
 
         $this->db->sql = "SELECT pp.*,
-                                IF (pp.pt_id = $selected_object_id, 1, 0) AS obj_selected,
-                                CONCAT('" . _URL_ROOT . "', ru.url, '/') AS cityurl,
-                                CONCAT('" . _URL_ROOT . "', ru.url, '/', pp.pt_slugline, '.html') AS objurl,
+                                IF (pp.pt_id = :selected_object_id2, 1, 0) AS obj_selected,
+                                CONCAT(:url_root, ru.url, '/') AS cityurl,
+                                CONCAT(:url_root, ru.url, '/', pp.pt_slugline, '.html') AS objurl,
                                 CONCAT(ru.url, '/', pp.pt_slugline, '.html') AS objuri
                             FROM $dbpp AS pp
                                 LEFT JOIN $dbpr pt ON pt.tp_id = pp.pt_type_id
                                 LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
                                     LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
                             WHERE pp.pt_active = 1
-                                AND pp.pt_latitude BETWEEN '{$bounds['min_lat']}' AND '{$bounds['max_lat']}'
-                                AND pp.pt_longitude BETWEEN '{$bounds['min_lon']}' AND '{$bounds['max_lon']}'
-                                OR pp.pt_id = '$selected_object_id'
+                                AND pp.pt_latitude BETWEEN :bounds_min_lat AND :bounds_max_lat
+                                AND pp.pt_longitude BETWEEN :bounds_min_lon AND :bounds_max_lon
+                                OR pp.pt_id = :selected_object_id
                             ORDER BY pt.tr_order DESC, pp.pt_rank
                             LIMIT 300";
-        $this->db->exec();
+        $this->db->prepare();
+        $this->db->execute(array(
+            ':url_root' => _URL_ROOT,
+            ':selected_object_id' => $selected_object_id,
+            ':selected_object_id2' => $selected_object_id,
+            ':bounds_min_lat' => $bounds['min_lat'],
+            ':bounds_max_lat' => $bounds['max_lat'],
+            ':bounds_min_lon' => $bounds['min_lon'],
+            ':bounds_max_lon' => $bounds['max_lon'],
+        ));
         //$this->db->showSQL();
         while ($pt = $this->db->fetch()) {
             $pt['pt_description'] = strip_tags($pt['pt_description']);
@@ -304,4 +313,3 @@ class Page extends PageCommon {
 
 }
 
-?>
