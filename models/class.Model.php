@@ -95,16 +95,24 @@ class Model {
     public function updateByPk($id, $values = array(), $files = array()) {
         $id = intval($id);
         $new_fields = array();
+        $new_fields_places = array();
+        $new_fields_values = array(
+            ':primary_key' => $id,
+        );
         foreach ($values as $k => $v) {
             if (array_search($k, $this->_table_fields) !== false) {
-                $new_fields[] = "$k = '" . $this->_db->getEscapedString(trim(preg_replace('/\s+/', ' ', $v))) . "'";
+                //$new_fields[] = "$k = '" . $this->_db->getEscapedString(trim(preg_replace('/\s+/', ' ', $v))) . "'";
+                $new_fields_places[] = "$k = :$k";
+                $new_fields_values[':'.$k] = trim(preg_replace('/\s+/', ' ', $v));
             }
         }
         if (!empty($new_fields)) {
             $this->_db->sql = "UPDATE $this->_table_name
-                            SET " . implode(",\n", $new_fields) . "
-                            WHERE $this->_table_pk = '$id'";
-            if ($this->_db->exec()) {
+                            SET " . implode(",\n", $new_fields_places) . "
+                            WHERE $this->_table_pk = :primary_key";
+            $this->_db->prepare();
+            $result = $this->_db->execute($new_fields_values);
+            if ($result) {
                 if (!empty($files)) {
                     foreach ($files as $file_field => $file) {
                         $this->saveFile($id, $file_field, $file);
