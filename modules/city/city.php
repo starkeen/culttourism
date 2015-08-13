@@ -123,15 +123,12 @@ class Page extends PageCommon {
     }
 
     private function getWeaterConditionsByCode($code) {
-        $code = cut_trash_int($code);
-        $db = $this->db;
-        $dbwc = $db->getTableName('weather_codes');
-        $db->sql = "SELECT * FROM $dbwc WHERE wc_id = :code";
-        $db->prepare();
-        $db->execute(array(
-            ':code' => $code,
+        $dbwc = $this->db->getTableName('weather_codes');
+        $this->db->sql = "SELECT * FROM $dbwc WHERE wc_id = :code";
+        $this->db->execute(array(
+            ':code' => intval($code),
         ));
-        $row = $db->fetch();
+        $row = $this->db->fetch();
         if ($row['wc_id'] != 0) {
             return array('main' => $row['wc_main'], 'description' => $row['wc_description']);
         } else {

@@ -78,7 +78,6 @@ abstract class Core {
                     WHERE dbm.md_url = :mod_id
                         AND dbm.md_active = 1";
         //$db->showSQL();
-        $db->prepare();
         $db->execute(array(
             ':mod_id' => $mod_id,
             ':cache_days' => _CACHE_DAYS,
