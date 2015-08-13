@@ -4,18 +4,20 @@ require_once('common.php');
 
 $smarty->assign('title', 'Настройки сайта');
 
+$sp = new MSysProperties($db);
+
 if (isset($_GET['rid']) && intval($_GET['rid']) != 0) {
     $dbs = $db->getTableName('siteprorerties');
     $rid = cut_trash_int($_GET['rid']);
-    
+
     if (isset($_POST) && !empty($_POST)) {
         foreach ($_POST['param'] as $sid => $sval) {
-            $value = htmlentities(cut_trash_text($sval), ENT_QUOTES, 'UTF-8');
-            $id = intval($sid);
-            $db->sql = "UPDATE $dbs SET sp_value = '$value' WHERE sp_id = '$id'";
-            $db->exec();
+            $sp->updateByPk(intval($sid), array(
+                'sp_value' => htmlentities(cut_trash_text($sval), ENT_QUOTES, 'UTF-8'),
+            ));
         }
         header('location: settings.php');
+        exit();
     }
 
     $db->sql = "SELECT sp_id, sp_name, sp_value, sp_title, sp_whatis
@@ -42,4 +44,3 @@ if (isset($_GET['rid']) && intval($_GET['rid']) != 0) {
 }
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
 exit();
-?>

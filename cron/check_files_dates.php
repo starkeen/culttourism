@@ -60,21 +60,18 @@ foreach ($files as $filename) {
     }
 }
 
-$db->sql = "SELECT sp_value FROM $dbsp WHERE sp_name = 'site_lastupdate'";
-$db->exec();
-$row = $db->fetch();
-$db->sql = "UPDATE $dbsp SET sp_value = '$timestamp_max' WHERE sp_name = 'site_lastupdate'";
-$db->exec();
+$sp = new MSysProperties($db);
+$lastupdate = $sp->getByName('site_lastupdate');
 
-$db->sql = "UPDATE $dbsp SET sp_value = FROM_UNIXTIME($timestamp_max, '%Y%m%d-%H%i') WHERE sp_name = 'site_version'";
-$db->exec();
+$sp->updateByName('site_lastupdate', $timestamp_max);
+$sp->updateByName('site_version', date('Ymd-Hi', $timestamp_max));
 
-if ($row['sp_value'] != $timestamp_max) {
+if ($lastupdate != $timestamp_max) {
     //тревожное пимьмо
     include_once _DIR_INCLUDES . '/class.Mailing.php';
     $mail_attrs = array(
         'datetime_max' => date('d.m.Y H:i:s', $timestamp_max),
-        'datetime_last' => date('d.m.Y H:i:s', $row['sp_value']),
+        'datetime_last' => date('d.m.Y H:i:s', $lastupdate),
         'filename_last' => $filename_last,
     );
     Mailing::sendLetterCommon($global_cron_email, 3, $mail_attrs);
