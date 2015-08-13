@@ -31,7 +31,7 @@ class MCurlCache extends Model {
         $this->_db->sql = "INSERT INTO $this->_table_name
                             SET
                                 cc_date = NOW(),
-                                cc_url = :url1,
+                                cc_url = :url,
                                 cc_text = :text1,
                                 cc_expire = DATE_ADD(NOW(), INTERVAL :expire1 DAY)
                             ON DUPLICATE KEY UPDATE
