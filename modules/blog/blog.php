@@ -43,7 +43,7 @@ class Page extends PageCommon {
                     ORDER BY bg.br_date DESC
                     LIMIT 20";
         //$db->showSQL();
-        $res = $db->exec();
+        $db->exec();
         $entry = array();
         while ($row = $db->fetch()) {
             $entry[$row['br_id']] = $row;
@@ -94,22 +94,26 @@ class Page extends PageCommon {
         }
         $dbb = $db->getTableName('blogentries');
         $dbu = $db->getTableName('users');
+        $binds = array(
+            ':year' => $year,
+        );
         $db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text, us.us_name,
-                    UNIX_TIMESTAMP(bg.br_date) AS last_update,
-                    DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month, 
-                    IF (bg.br_url != '', bg.br_url, DATE_FORMAT(bg.br_date,'%d')) as bg_day,
-                    IF (bg.br_url != '', CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'), CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/%d'),'.html')) as br_link,
-                    DATE_FORMAT(bg.br_date,'%d.%m.%Y') as br_datex
+                        UNIX_TIMESTAMP(bg.br_date) AS last_update,
+                        DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month, 
+                        IF (bg.br_url != '', bg.br_url, DATE_FORMAT(bg.br_date,'%d')) as bg_day,
+                        IF (bg.br_url != '', CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'), CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/%d'),'.html')) as br_link,
+                        DATE_FORMAT(bg.br_date,'%d.%m.%Y') as br_datex
                     FROM $dbb as bg
-                    LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
-                    WHERE br_active = '1'
-                    AND DATE_FORMAT(br_date, '%Y') = '$year'\n";
+                        LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
+                    WHERE br_active = 1
+                        AND DATE_FORMAT(br_date, '%Y') = :year\n";
         if ($month) {
-            $db->sql .= "AND DATE_FORMAT(br_date, '%c') = '$month'\n";
+            $db->sql .= "AND DATE_FORMAT(br_date, '%c') = :month\n";
+            $binds[':month'] = $month;
         }
-        $db->sql .= "AND br_date < now()
+        $db->sql .= "AND br_date < NOW()
                     ORDER BY bg.br_date DESC";
-        $res = $db->exec();
+        $db->execute($binds);
         $entry = array();
         while ($row = $db->fetch()) {
             $entry[$row['bg_month']][$row['br_id']] = $row;
@@ -119,8 +123,8 @@ class Page extends PageCommon {
         }
         $sm->assign('entries', $entry);
 
-        $db->sql = "SELECT DISTINCT DATE_FORMAT(bg.br_date,'%Y') as bg_year FROM $dbb as bg ORDER BY bg_year";
-        $res = $db->exec();
+        $db->sql = "SELECT DISTINCT DATE_FORMAT(bg.br_date,'%Y') as bg_year FROM $dbb AS bg ORDER BY bg_year";
+        $db->exec();
         while ($row = $db->fetch()) {
             $years[] = $row['bg_year'];
         }
@@ -132,9 +136,10 @@ class Page extends PageCommon {
 
     private function checkURL($db, $url) {
         $dbb = $db->getTableName('blogentries');
-        $url = $db->getEscapedString($url);
-        $db->sql = "SELECT br_id FROM $dbb WHERE br_url = '$url' AND br_active='1' LIMIT 1";
-        $res = $db->exec();
+        $db->sql = "SELECT br_id FROM $dbb WHERE br_url = :url AND br_active = 1 LIMIT 1";
+        $res = $db->execute(array(
+            ':url' => $url,
+        ));
         if ($res) {
             $row = $db->fetch();
             $bid = intval($row['br_id']);
@@ -149,9 +154,10 @@ class Page extends PageCommon {
 
     private function checkDate($db, $y, $m, $d) {
         $dbb = $db->getTableName('blogentries');
-        $date = "$y-$m-$d";
-        $db->sql = "SELECT br_id FROM $dbb WHERE DATE_FORMAT(br_date, '%Y-%c-%e') = '$date' AND br_active='1' LIMIT 1";
-        $res = $db->exec();
+        $db->sql = "SELECT br_id FROM $dbb WHERE DATE_FORMAT(br_date, '%Y-%c-%e') = :date AND br_active = 1 LIMIT 1";
+        $res = $db->execute(array(
+            ':date' => "$y-$m-$d",
+        ));
         if ($res) {
             $row = $db->fetch();
             $bid = intval($row['br_id']);
@@ -167,18 +173,20 @@ class Page extends PageCommon {
     private function getEntryByID($db, $id) {
         $dbb = $db->getTableName('blogentries');
         $dbu = $db->getTableName('users');
-        $id = intval($id);
         $db->sql = "SELECT bg.*, us.us_name,
-                    UNIX_TIMESTAMP(bg.br_date) AS last_update,
-                    DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
-                    DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month
+                        UNIX_TIMESTAMP(bg.br_date) AS last_update,
+                        DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
+                        DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month
                     FROM $dbb bg
-                    LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
-                    WHERE br_active = '1' AND br_date < now()
-                    AND br_id = '$id'
+                        LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
+                    WHERE br_active = 1
+                        AND br_date < now()
+                        AND br_id = :id
                     LIMIT 1";
         //$db->showSQL();
-        $res = $db->exec();
+        $res = $db->execute(array(
+            ':id' => intval($id),
+        ));
         if (!$res) {
             return FALSE;
         }
