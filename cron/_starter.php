@@ -18,13 +18,8 @@ $smarty = new mySmarty();
 $sp = new MSysProperties($db);
 
 $cron = $db->getTableName('cron');
-$dbsp = $db->getTableName('siteprorerties');
 
-
-$db->sql = "SELECT sp_value FROM $dbsp WHERE sp_name = 'mail_report_cron'";
-$db->exec();
-$row = $db->fetch();
-$global_cron_email = $row['sp_value'];
+$global_cron_email = $sp->getByName('mail_report_cron');
 
 //-- если больше двух часов работает скрипт - зарубить
 $db->sql = "UPDATE $cron
