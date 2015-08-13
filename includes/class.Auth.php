@@ -24,10 +24,10 @@ class Auth {
         }
         $this->session = session_id();
         $this->getKey();
-        $this->meta['uri'] = $this->db->getEscapedString($_SERVER['REQUEST_URI']);
-        $this->meta['host'] = $this->db->getEscapedString(@$_SERVER['REMOTE_HOST']);
-        $this->meta['ip'] = $this->db->getEscapedString(@$_SERVER['REMOTE_ADDR']);
-        $this->meta['browser'] = $this->db->getEscapedString(@$_SERVER['HTTP_USER_AGENT']);
+        $this->meta['uri'] = trim($_SERVER['REQUEST_URI']);
+        $this->meta['host'] = trim(isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : 'undef');
+        $this->meta['ip'] = trim(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'undef');
+        $this->meta['browser'] = trim(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'undef');
     }
 
     public function setService($service = 'web') {
@@ -43,7 +43,7 @@ class Auth {
 
     public function getKey() {
         if (isset($_COOKIE['apikey'])) {
-            $this->key = $this->db->getEscapedString($_COOKIE['apikey']);
+            $this->key = trim($_COOKIE['apikey']);
         } else {
             $this->key = md5(uniqid() . $this->secretstring);
             if (!setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/')) {
