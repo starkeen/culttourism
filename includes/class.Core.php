@@ -49,6 +49,7 @@ abstract class Core {
         $mod_id = $mod;
         $page_id = null;
         $id = null;
+        $this->basepath = _URL_ROOT;
 
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
             $this->isAjax = true;
@@ -69,16 +70,20 @@ abstract class Core {
         if ($this->globalsettings['site_active'] == 'Off') {
             $this->getError('503');
         }
-
+        
         $db->sql = "SELECT dbm.*,
                         DATE_FORMAT(dbm.md_lastedit,'%a, %d %b %Y %H:%i:%s GMT') AS md_timestamp,
-                        DATE_FORMAT(date_add(md_lastedit,interval " . _CACHE_DAYS . " day),'%a, %d %b %Y %H:%i:%s GMT') md_expiredate
+                        DATE_FORMAT(date_add(md_lastedit, INTERVAL :cache_days day),'%a, %d %b %Y %H:%i:%s GMT') md_expiredate
                     FROM $dbm AS dbm
-                    WHERE dbm.md_active = '1'";
+                    WHERE dbm.md_url = :mod_id
+                        AND dbm.md_active = 1";
         //$db->showSQL();
-        $res = $db->exec();
-        $this->basepath = _URL_ROOT;
-        while ($row = $db->fetch($res)) {
+        $db->prepare();
+        $db->execute(array(
+            ':mod_id' => $mod_id,
+            ':cache_days' => _CACHE_DAYS,
+        ));
+        while ($row = $db->fetch()) {
             if ($row['md_url'] == $mod_id) {
                 if ($row['md_redirect'] !== null) {
                     $this->getError('301', $row['md_redirect']);
