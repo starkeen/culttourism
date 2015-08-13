@@ -32,7 +32,6 @@ foreach ($sourses as $sourse) {
                     VALUES
                         (:ns_id, :pubdate, :title, :link, :text, 1)
                     ON DUPLICATE KEY UPDATE ni_title = :title2, ni_text = :text2";
-        $db->prepare();
         $db->execute(array(
             ':ns_id' => $sourse['ns_id'],
             ':pubdate' => date('Y-m-d H:i:s', strtotime($item['pubDate'])),
@@ -44,7 +43,6 @@ foreach ($sourses as $sourse) {
         ));
     }
     $db->sql = "UPDATE $dbns SET ns_last_read = now() WHERE ns_id = :ns_id";
-    $db->prepare();
     $db->execute(array(
         ':ns_id' => $sourse['ns_id'],
     ));

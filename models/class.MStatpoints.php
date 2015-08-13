@@ -23,7 +23,7 @@ class MStatpoints extends Model {
                             sp_date = NOW(),
                             sp_hash = :hash
                            ON DUPLICATE KEY UPDATE sp_date = NOW()";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
            ':hash' => $hash,
            ':point_id' => $point_id,

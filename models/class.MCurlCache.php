@@ -19,7 +19,7 @@ class MCurlCache extends Model {
 
     public function get($url) {
         $this->_db->sql = "SELECT * FROM $this->_table_name WHERE cc_url = :url";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':url' => $url,
         ));
@@ -38,7 +38,7 @@ class MCurlCache extends Model {
                                 cc_date = NOW(),
                                 cc_text = :text2,
                                 cc_expire = DATE_ADD(NOW(), INTERVAL :expire2 DAY)";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':url' => $url,
             ':text1' => $text,

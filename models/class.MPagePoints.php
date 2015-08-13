@@ -47,7 +47,7 @@ class MPagePoints extends Model {
                             WHERE li.li_pt_id = :oid
                                 AND ls.ls_active = 1
                                 AND li.li_active = 1";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':oid' => $oid,
         ));
@@ -76,7 +76,7 @@ class MPagePoints extends Model {
             $this->_db->sql .= "AND pt.pt_active = 1\n";
         }
         $this->_db->sql .= "ORDER BY pt.pt_active DESC, rt.tr_sight desc, pt.pt_rank desc, rt.tr_order, pt.pt_name";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':city_id' => $city_id,
         ));
@@ -154,7 +154,7 @@ class MPagePoints extends Model {
                                 LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
                             WHERE pt.pt_slugline = :slugline
                             ORDER BY pt.pt_rank DESC";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':slugline' => trim($slugline),
         ));
@@ -243,7 +243,7 @@ class MPagePoints extends Model {
                                     LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
                                 LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
                             WHERE $this->_table_pk = :oid";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':oid' => intval($id),
         ));

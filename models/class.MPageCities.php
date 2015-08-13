@@ -57,7 +57,7 @@ class MPageCities extends Model {
                                 LEFT JOIN $this->_table_name pc ON pc.pc_id = url.citypage
                                     LEFT JOIN $dbu uc ON uc.uid = pc.pc_url_id
                             WHERE url.url = :xurl";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':xurl' => trim($url),
         ));
@@ -76,7 +76,7 @@ class MPageCities extends Model {
                                 WHERE pc.pc_region_id = :pc_region_id
                                     AND pc.pc_city_id != 0
                                 ORDER BY pc.pc_rank DESC, pc.pc_title";
-            $this->_db->prepare();
+            
             $this->_db->execute(array(
                 ':pc_region_id' => $out['pc_region_id'],
             ));
@@ -102,7 +102,7 @@ class MPageCities extends Model {
                                 ORDER BY delta_sum
                                 LIMIT 10";
             //$db->showSQL();
-            $this->_db->prepare();
+            
             $this->_db->execute(array(
                 ':pc_title' => $out['pc_title'],
                 ':pc_latitude' => $out['pc_latitude'],
@@ -129,7 +129,7 @@ class MPageCities extends Model {
                             AND cd.cd_value != ''
                             AND cf.cf_active = 1
                         ORDER BY cf_order";
-            $this->_db->prepare();
+            
             $this->_db->execute(array(
                 ':pc_id' => $out['pc_id'],
             ));
@@ -145,7 +145,7 @@ class MPageCities extends Model {
                             FROM $this->_table_name t
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = t.pc_url_id
                             WHERE $this->_table_pk = :cid";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':cid' => intval($id),
         ));
@@ -202,7 +202,7 @@ class MPageCities extends Model {
                                 AND pc.pc_active = 1
                             GROUP BY pc.pc_title
                             ORDER BY pc.pc_title";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':name1' => '%'.trim($query).'%',
             ':name2' => '%'.trim(Helper::getQwerty($query)).'%',

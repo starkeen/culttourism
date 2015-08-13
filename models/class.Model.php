@@ -87,7 +87,7 @@ class Model {
 
     public function getItemByPk($id) {
         $this->_db->sql = "SELECT * FROM $this->_table_name WHERE $this->_table_pk = :id";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':id' => intval($id),
         ));
@@ -109,7 +109,7 @@ class Model {
             $this->_db->sql = "UPDATE $this->_table_name
                             SET " . implode(",\n", $new_fields_places) . "
                             WHERE $this->_table_pk = :primary_key";
-            $this->_db->prepare();
+            
             $result = $this->_db->execute($new_fields_values);
             if ($result) {
                 if (!empty($files)) {
@@ -140,7 +140,7 @@ class Model {
         if (!empty($new_fields_places)) {
             $this->_db->sql = "INSERT INTO $this->_table_name
                             SET " . implode(",\n", $new_fields_places);
-            $this->_db->prepare();
+            
             $result = $this->_db->execute($new_fields_values);
             if ($result) {
                 $id = $this->_db->getLastInserted();
@@ -162,7 +162,7 @@ class Model {
 
     public function deleteByPk($id) {
         $this->_db->sql = "DELETE FROM $this->_table_name WHERE $this->_table_pk = :id";
-        $this->_db->prepare();
+        
         return $this->_db->execute(array(
                     ':id' => $id,
         ));

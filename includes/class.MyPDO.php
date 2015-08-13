@@ -89,6 +89,7 @@ class MyPDO implements IDB {
         }
         try {
             $timer_start = microtime(true);
+            $this->prepare();
             $this->_stm->execute($this->_stm_params);
             if (is_object($this->_stm)) {
                 $this->_affected_rows = $this->_stm->rowCount();

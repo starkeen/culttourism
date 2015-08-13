@@ -26,7 +26,7 @@ class MSysProperties extends Model {
 
     public function getSettingsByBranchId($rsid) {
         $this->_db->sql = "SELECT sp_name, sp_value FROM $this->_table_name WHERE sp_rs_id = :rsid";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':rsid' => intval($rsid),
         ));
@@ -39,7 +39,7 @@ class MSysProperties extends Model {
 
     public function getPublic() {
         $this->_db->sql = "SELECT sp_name, sp_value FROM $this->_table_name WHERE sp_public = :pub";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':pub' => 1,
         ));
@@ -54,7 +54,7 @@ class MSysProperties extends Model {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET sp_value = :value
                             WHERE sp_name = :name";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':name' => $name,
             ':value' => $value,
@@ -65,7 +65,7 @@ class MSysProperties extends Model {
         $this->_db->sql = "SELECT sp_value
                             FROM $this->_table_name
                             WHERE sp_name = :name";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':name' => $name,
         ));

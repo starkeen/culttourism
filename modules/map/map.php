@@ -75,7 +75,7 @@ class Page extends PageCommon {
                                 AND li.li_ls_id = :list_id
                             ORDER BY pt.tr_order DESC, pp.pt_rank
                             LIMIT 300";
-        $this->db->prepare();
+        
         $this->db->execute(array(
             ':list_id' => $list_id,
             ':url_root1' => _URL_ROOT,
@@ -140,7 +140,7 @@ class Page extends PageCommon {
                     AND pt_latitude != ''
                     AND pt_longitude != ''
                     AND pt_active = 1";
-        $this->db->prepare();
+        
         $this->db->execute(array(
             ':cid' => $cid,
             ':url_root1' => _URL_ROOT,
@@ -162,7 +162,7 @@ class Page extends PageCommon {
                             LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
                     WHERE pc.pc_id = :cid
                         AND pc2.pc_city_id != 0";
-        $this->db->prepare();
+        
         $this->db->execute(array(
             ':cid' => $cid,
         ));
@@ -174,7 +174,7 @@ class Page extends PageCommon {
         $this->db->sql = "SELECT pc.*
                     FROM $dbpc pc
                     WHERE pc.pc_id = :cid";
-        $this->db->prepare();
+        
         $this->db->execute(array(
             ':cid' => $cid,
         ));
@@ -186,7 +186,7 @@ class Page extends PageCommon {
                             LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
                         WHERE pc2.pc_country_id = :pc_country_id
                             AND pc2.pc_city_id != 0";
-            $this->db->prepare();
+            
             $this->db->execute(array(
                 ':pc_country_id' => $this_city['pc_country_id'],
             ));
@@ -277,7 +277,7 @@ class Page extends PageCommon {
                                 OR pp.pt_id = :selected_object_id1
                             ORDER BY pt.tr_order DESC, pp.pt_rank
                             LIMIT 300";
-        $this->db->prepare();
+        
         $this->db->execute(array(
             ':url_root1' => _URL_ROOT,
             ':url_root2' => _URL_ROOT,

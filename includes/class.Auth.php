@@ -34,7 +34,6 @@ class Auth {
         $dba = $this->db->getTableName('authorizations');
         $this->db->sql = "UPDATE $dba SET au_service = :service
                           WHERE au_key = :key LIMIT 1";
-        $this->db->prepare();
         $this->db->execute(array(
             ':key' => $this->key,
             ':service' => $service,
@@ -58,7 +57,6 @@ class Auth {
         $this->db->sql = "SELECT au_session, IF(au_date_expire < NOW(), 1, 0) expired FROM $dba
                             WHERE au_key = :key
                             LIMIT 1";
-        $this->db->prepare();
         $this->db->execute(array(
             ':key' => $this->key,
         ));
@@ -66,7 +64,6 @@ class Auth {
         if ($row['expired'] == 1) {
             $this->db->sql = "DELETE FROM $dba
                               WHERE au_key = :key LIMIT 1";
-            $this->db->prepare();
             $this->db->execute(array(
                 ':key' => $this->key,
             ));
@@ -78,7 +75,6 @@ class Auth {
                                 au_last_act = :uri
                               WHERE au_key = :key
                               LIMIT 1";
-            $this->db->prepare();
             $this->db->execute(array(
                 ':key' => $this->key,
                 ':key_lifetime_hours' => $this->key_lifetime_hours,
@@ -92,7 +88,6 @@ class Auth {
                                 au_last_act = :uri,
                                 au_session = :session
                               WHERE au_key = :key LIMIT 1";
-            $this->db->prepare();
             $this->db->execute(array(
                 ':key' => $this->key,
                 ':key_lifetime_hours' => $this->key_lifetime_hours,
@@ -115,7 +110,6 @@ class Auth {
                                     au_date_last_act = NOW(),
                                     au_date_expire = DATE_ADD(now(),INTERVAL :key_lifetime_hours2 SECOND),
                                     au_last_act = :uri2";
-            $this->db->prepare();
             $this->db->execute(array(
                 ':key' => $this->key,
                 ':key_lifetime_hours' => $this->key_lifetime_hours,
@@ -139,12 +133,10 @@ class Auth {
             if ($row['us_email'] == $email) {
                 if ($row['us_passwrd'] == md5($password)) {
                     $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
-                    $this->db->prepare();
                     $this->db->execute(array(
                         ':usid' => $row['us_id'],
                     ));
                     $this->db->sql = "UPDATE $dba SET au_us_id = :usid WHERE au_key = :key";
-                    $this->db->prepare();
                     $this->db->execute(array(
                         ':usid' => $row['us_id'],
                         ':key' => $this->key,
@@ -171,12 +163,11 @@ class Auth {
             if ($row['us_login'] == $login) {
                 if ($row['us_passwrd'] == md5($password)) {
                     $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
-                    $this->db->prepare();
                     $this->db->execute(array(
                         ':usid' => $row['us_id'],
                     ));
+
                     $this->db->sql = "UPDATE $dba SET au_us_id = :usid WHERE au_key = :key";
-                    $this->db->prepare();
                     $this->db->execute(array(
                         ':usid' => $row['us_id'],
                         ':key' => $this->key,
@@ -203,7 +194,6 @@ class Auth {
                     WHERE au_date_expire > NOW()
                         AND au_key = :key
                         AND au_session = :session";
-        $this->db->prepare();
         $this->db->execute(array(
             ':session' => session_id(),
             ':key' => $key,
@@ -223,7 +213,6 @@ class Auth {
                                 au_last_act = :last_act_script,
                                 au_date_expire = DATE_ADD(now(), INTERVAL 1 HOUR)
                             WHERE au_key = :key";
-        $this->db->prepare();
         $this->db->execute(array(
             ':last_act_script' => $_SERVER['REQUEST_URI'],
             ':key' => $key,
@@ -233,7 +222,6 @@ class Auth {
     public function deleteKey() {
         $dba = $this->db->getTableName('authorizations');
         $this->db->sql = "DELETE FROM $dba WHERE au_key = :key";
-        $this->db->prepare();
         $this->db->execute(array(
             ':key' => $this->key,
         ));

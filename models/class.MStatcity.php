@@ -23,7 +23,7 @@ class MStatcity extends Model {
                             sc_date = NOW(),
                             sc_hash = :hash
                            ON DUPLICATE KEY UPDATE sc_date = NOW()";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
            ':hash' => $hash,
            ':city_id' => $city_id,

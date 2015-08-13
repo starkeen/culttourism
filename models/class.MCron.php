@@ -42,7 +42,7 @@ class MCron extends Model {
     
     public function markWorkStart($id) {
         $this->_db->sql = "UPDATE $this->_table_name SET cr_isrun = 1, cr_datelast_attempt = NOW() WHERE cr_id = :crid";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':crid' => $id,
         ));
@@ -56,7 +56,7 @@ class MCron extends Model {
                     cr_datenext = DATE_ADD(cr_datenext, INTERVAL DATE_FORMAT(cr_period, '%d %H:%i') DAY_MINUTE),
                     cr_datelast = NOW()
                     WHERE cr_id = :crid";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':crid' => $id,
             ':content' => $content,

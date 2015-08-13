@@ -52,7 +52,7 @@ class MMailPool extends Model {
         $this->_db->sql = "UPDATE $this->_table_name SET
                             ml_worked = 1, ml_inwork=0, ml_datesend = NOW()
                             WHERE ml_id = :mid";
-        $this->_db->prepare();
+        
         return $this->_db->execute(array(
                     ':mid' => $id,
         ));
@@ -62,7 +62,7 @@ class MMailPool extends Model {
         $this->_db->sql = "UPDATE $this->_table_name SET
                             ml_inwork=1
                             WHERE ml_id = :mid";
-        $this->_db->prepare();
+        
         return $this->_db->execute(array(
                     ':mid' => $id,
         ));
@@ -73,7 +73,7 @@ class MMailPool extends Model {
                     WHERE ml_worked = 0
                     AND ml_inwork = 0
                     LIMIT :limit";
-        $this->_db->prepare();
+        
         $this->_db->execute(array(
             ':limit' => $count,
         ));
