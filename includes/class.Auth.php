@@ -102,20 +102,26 @@ class Auth {
             setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/');
         } else {
             $this->db->sql = "INSERT INTO $dba
-                                SET au_date_last_act = now(), au_date_login = now(),
-                                au_date_expire = DATE_ADD(now(), INTERVAL :key_lifetime_hours SECOND),
-                                au_us_id = 0,
-                                au_last_act = :uri,
-                                au_service = :service,
-                                au_browser = :browser,
-                                au_ip = :ip,
-                                au_session = :session,
-                                au_key = :key";
+                                SET au_date_last_act = NOW(), au_date_login = NOW(),
+                                    au_date_expire = DATE_ADD(NOW(), INTERVAL :key_lifetime_hours SECOND),
+                                    au_us_id = 0,
+                                    au_last_act = :uri,
+                                    au_service = :service,
+                                    au_browser = :browser,
+                                    au_ip = :ip,
+                                    au_session = :session,
+                                    au_key = :key
+                                ON DUPLICATE KEY UPDATE
+                                    au_date_last_act = NOW(),
+                                    au_date_expire = DATE_ADD(now(),INTERVAL :key_lifetime_hours2 SECOND),
+                                    au_last_act = :uri2";
             $this->db->prepare();
             $this->db->execute(array(
                 ':key' => $this->key,
                 ':key_lifetime_hours' => $this->key_lifetime_hours,
+                ':key_lifetime_hours2' => $this->key_lifetime_hours,
                 ':uri' => $this->meta['uri'],
+                ':uri2' => $this->meta['uri'],
                 ':session' => $this->session,
                 ':service' => $service,
                 ':browser' => $this->meta['browser'],
