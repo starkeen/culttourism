@@ -44,10 +44,13 @@ class MPagePoints extends Model {
         $this->_db->sql = "SELECT *
                             FROM $dbli li
                                 LEFT JOIN $dbls ls ON ls.ls_id = li.li_ls_id
-                            WHERE li.li_pt_id = '$oid'
+                            WHERE li.li_pt_id = :oid
                                 AND ls.ls_active = 1
                                 AND li.li_active = 1";
-        $this->_db->exec();
+        $this->_db->prepare();
+        $this->_db->execute(array(
+            ':oid' => $oid,
+        ));
         return $this->_db->fetchAll();
     }
 
@@ -68,12 +71,15 @@ class MPagePoints extends Model {
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update
                             FROM $this->_table_name pt
                                 LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
-                            WHERE pt.pt_citypage_id = '$city_id'\n";
+                            WHERE pt.pt_citypage_id = :city_id\n";
         if (!$show_all) {
             $this->_db->sql .= "AND pt.pt_active = 1\n";
         }
         $this->_db->sql .= "ORDER BY pt.pt_active DESC, rt.tr_sight desc, pt.pt_rank desc, rt.tr_order, pt.pt_name";
-        $this->_db->exec();
+        $this->_db->prepare();
+        $this->_db->execute(array(
+            ':city_id' => $city_id,
+        ));
         while ($point = $this->_db->fetch()) {
             $out['types'][$point['tr_sight']][$point['pt_type_id']] = array('short' => $point['tp_short'], 'full' => $point['tp_name'], 'icon' => $point['tp_icon']);
 
@@ -138,8 +144,6 @@ class MPagePoints extends Model {
         $dbrt = $this->_db->getTableName('ref_pointtypes');
         $dbru = $this->_db->getTableName('region_url');
 
-        $slugline = $this->_db->getEscapedString($slugline);
-
         $this->_db->sql = "SELECT *,
                                 '' AS gps_dec,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
@@ -148,9 +152,12 @@ class MPagePoints extends Model {
                                 LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
                                     LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
                                 LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
-                            WHERE TRIM(pt.pt_slugline) = TRIM('$slugline')
+                            WHERE pt.pt_slugline = :slugline
                             ORDER BY pt.pt_rank DESC";
-        $this->_db->exec();
+        $this->_db->prepare();
+        $this->_db->execute(array(
+            ':slugline' => trim($slugline),
+        ));
         return $this->_db->fetchAll();
     }
 
@@ -235,8 +242,11 @@ class MPagePoints extends Model {
                                 LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
                                     LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
                                 LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
-                            WHERE $this->_table_pk = '$id'";
-        $this->_db->exec();
+                            WHERE $this->_table_pk = :oid";
+        $this->_db->prepare();
+        $this->_db->execute(array(
+            ':oid' => intval($id),
+        ));
         return $this->_db->fetch();
     }
 
