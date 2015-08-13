@@ -19,11 +19,15 @@ class MStatcity extends Model {
 
     public function add($city_id, $hash) {
         $this->_db->sql = "INSERT INTO $this->_table_name SET
-                            sc_citypage_id = '$city_id',
-                            sc_date = now(),
-                            sc_hash = '$hash'
-                           ON DUPLICATE KEY UPDATE sc_date = now()";
-        $this->_db->exec();
+                            sc_citypage_id = :city_id,
+                            sc_date = NOW(),
+                            sc_hash = :hash
+                           ON DUPLICATE KEY UPDATE sc_date = NOW()";
+        $this->_db->prepare();
+        $this->_db->execute(array(
+           ':hash' => $hash,
+           ':city_id' => $city_id,
+        ));
         return true;
     }
 
