@@ -93,15 +93,12 @@ class Model {
     }
 
     public function updateByPk($id, $values = array(), $files = array()) {
-        $id = intval($id);
-        $new_fields = array();
         $new_fields_places = array();
         $new_fields_values = array(
-            ':primary_key' => $id,
+            ':primary_key' => intval($id),
         );
         foreach ($values as $k => $v) {
             if (array_search($k, $this->_table_fields) !== false) {
-                //$new_fields[] = "$k = '" . $this->_db->getEscapedString(trim(preg_replace('/\s+/', ' ', $v))) . "'";
                 $new_fields_places[] = "$k = :$k";
                 $new_fields_values[':'.$k] = trim(preg_replace('/\s+/', ' ', $v));
             }
@@ -158,12 +155,20 @@ class Model {
     }
 
     public function deleteByPk($id) {
-        $this->_db->sql = "DELETE FROM $this->_table_name WHERE $this->_table_pk = '$id'";
-        return $this->_db->exec();
+        $this->_db->sql = "DELETE FROM $this->_table_name WHERE $this->_table_pk = :id";
+        $this->_db->prepare();
+        return $this->_db->execute(array(
+            ':id' => $id,
+        ));
     }
 
     public function truncate() {
         $this->_db->sql = "TRUNCATE TABLE $this->_table_name";
+        return $this->_db->exec();
+    }
+    
+    public function optimize() {
+        $this->_db->sql = "OPTIMIZE TABLE $this->_table_name";
         return $this->_db->exec();
     }
 
