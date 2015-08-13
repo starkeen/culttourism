@@ -130,7 +130,6 @@ class Mailing {
             'ml_sender_id' => 0,
             'ml_customheader' => $custom_header,
         ));
-        echo 'letter id:', $lt_id;
         return self::sendLetter($db, $lt_id);
     }
 
