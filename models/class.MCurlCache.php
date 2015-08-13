@@ -18,8 +18,11 @@ class MCurlCache extends Model {
     }
 
     public function get($url) {
-        $this->_db->sql = "SELECT * FROM $this->_table_name WHERE cc_url = '" . $this->escape($url) . "'";
-        $this->_db->exec();
+        $this->_db->sql = "SELECT * FROM $this->_table_name WHERE cc_url = :url";
+        $this->_db->prepare();
+        $this->_db->execute(array(
+            ':url' => $url,
+        ));
         $row = $this->_db->fetch();
         return !empty($row) ? $row['cc_text'] : null;
     }
@@ -28,14 +31,21 @@ class MCurlCache extends Model {
         $this->_db->sql = "INSERT INTO $this->_table_name
                             SET
                                 cc_date = NOW(),
-                                cc_url = '" . $this->escape($url) . "',
-                                cc_text = '" . $this->escape($text) . "',
-                                cc_expire = DATE_ADD(NOW(), INTERVAL ".intval($expire)." DAY)
+                                cc_url = :url1,
+                                cc_text = :text1,
+                                cc_expire = DATE_ADD(NOW(), INTERVAL :expire1 DAY)
                             ON DUPLICATE KEY UPDATE
                                 cc_date = NOW(),
-                                cc_text = '" . $this->escape($text) . "',
-                                cc_expire = DATE_ADD(NOW(), INTERVAL ".intval($expire)." DAY)";
-        $this->_db->exec();
+                                cc_text = :text2,
+                                cc_expire = DATE_ADD(NOW(), INTERVAL :expire2 DAY)";
+        $this->_db->prepare();
+        $this->_db->execute(array(
+            ':url' => $url,
+            ':text1' => $text,
+            ':text2' => $text,
+            ':expire1' => $expire,
+            ':expire2' => $expire,
+        ));
     }
 
 }
