@@ -20,15 +20,21 @@ class MDataCheck extends Model {
 
     public function markChecked($type, $ptid, $field, $result) {
         $this->_db->sql = "INSERT INTO $this->_table_name SET
-                            dc_type = '" . $this->_db->getEscapedString($type) . "',
-                            dc_field = '" . $this->_db->getEscapedString($field) . "',
-                            dc_item_id = '" . $this->_db->getEscapedString($ptid) . "',
+                            dc_type = :type,
+                            dc_field = :field,
+                            dc_item_id = :ptid,
                             dc_date = NOW(),
-                            dc_result = '" . $this->_db->getEscapedString($result) . "'
+                            dc_result = :result1
                             ON DUPLICATE KEY UPDATE
                             dc_date = NOW(),
-                            dc_result = '" . $this->_db->getEscapedString($result) . "'";
-        $this->_db->exec();
+                            dc_result = :result2";
+        $this->_db->execute(array(
+            ':type' => $type,
+            ':field' => $field,
+            ':ptid' => $ptid,
+            ':result1' => $result,
+            ':result2' => $result,
+        ));
         $dcid = $this->_db->getLastInserted();
         return $dcid;
     }
