@@ -87,7 +87,20 @@ class MyPDO implements IDB {
         if (!empty($params)) {
             $this->_stm_params = $params;
         }
-        $this->_stm->execute($this->_stm_params);
+        try {
+            $timer_start = microtime(true);
+            $this->_stm->execute($this->_stm_params);
+            if (is_object($this->_stm)) {
+                $this->_affected_rows = $this->_stm->rowCount();
+            }
+            $this->_last_inserted_id = $this->_pdo->lastInsertId();
+            $this->_stat_queries_cnt++;
+            $this->_stat_worktime_last = microtime(true) - $timer_start;
+            $this->_stat_worktime_all += $this->_stat_worktime_last;
+            return $this->_stm;
+        } catch (PDOException $e) {
+            $this->_errors[] = $e->getMessage();
+        }
     }
 
     /**
