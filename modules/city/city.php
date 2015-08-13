@@ -371,9 +371,7 @@ class Page extends PageCommon {
                 exit();
             }
         } elseif (isset($_GET['cityname'])) {
-            $newcity = cut_trash_string($_GET['cityname']);
-            $newcity = trim($newcity);
-            $newcity = $db->getEscapedString($newcity);
+            $newcity = trim($_GET['cityname']);
             $dbc = $db->getTableName('pagecity');
             $dbu = $db->getTableName('region_url');
             $dbrc = $db->getTableName('ref_city');
@@ -384,8 +382,11 @@ class Page extends PageCommon {
             $db->sql = "SELECT url.url, city.pc_title
                         FROM $dbc city
                         LEFT JOIN $dbu url ON url.uid = city.pc_url_id
-                        WHERE city.pc_title LIKE '%$newcity%' OR city.pc_title_synonym LIKE '%$newcity%'";
-            $db->exec();
+                        WHERE city.pc_title LIKE :newcity1 OR city.pc_title_synonym LIKE :newcity2";
+            $db->execute(array(
+                ':newcity1' => '%' . $newcity . '%',
+                ':newcity2' => '%' . $newcity . '%',
+            ));
             $already = array();
             while ($row = $db->fetch()) {
                 $already[$row['url']] = $row['pc_title'];
@@ -400,7 +401,7 @@ class Page extends PageCommon {
                         LEFT JOIN $dbrs rs ON rs.id = rc.country_id
                         LEFT JOIN $dbc city ON city.pc_city_id = rc.id
                         LEFT JOIN $dbu url ON url.uid = city.pc_url_id
-                        WHERE rc.name LIKE '%$newcity%'
+                        WHERE rc.name LIKE :newcity1
                         
                         UNION
                         
@@ -412,7 +413,7 @@ class Page extends PageCommon {
                         LEFT JOIN $dbrs rs ON rs.id = rr.country_id
                         LEFT JOIN $dbc city ON city.pc_region_id = rr.id AND city.pc_city_id = 0
                         LEFT JOIN $dbu url ON url.uid = city.pc_url_id
-                        WHERE rr.name LIKE '%$newcity%'
+                        WHERE rr.name LIKE :newcity2
                         
                         UNION
                         
@@ -423,10 +424,14 @@ class Page extends PageCommon {
                         FROM $dbrs rs
                         LEFT JOIN $dbc city ON city.pc_country_id = rs.id AND city.pc_city_id = 0 AND city.pc_region_id = 0
                         LEFT JOIN $dbu url ON url.uid = city.pc_url_id
-                        WHERE rs.name LIKE '%$newcity%'
+                        WHERE rs.name LIKE :newcity3
                         
                         ORDER BY country, region, name";
-            $db->exec();
+            $db->execute(array(
+                ':newcity1' => '%' . $newcity . '%',
+                ':newcity2' => '%' . $newcity . '%',
+                ':newcity3' => '%' . $newcity . '%',
+            ));
             $inbase = array();
             while ($row = $db->fetch()) {
                 $inbase[] = $row;
