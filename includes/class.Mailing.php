@@ -51,8 +51,8 @@ class Mailing {
         $pool = $mp->getPortion($limit);
         $cnt = 0;
         if (!empty($pool)) {
-            foreach ($pool as $mid) {
-                self::sendLetter($db, $mid);
+            foreach ($pool as $m) {
+                self::sendLetter($db, $m['ml_id']);
                 $cnt++;
             }
         }
