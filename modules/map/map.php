@@ -43,7 +43,6 @@ class Page extends PageCommon {
 
     private function getYMapsMLList($list_id) {
         $dbli = $this->db->getTableName('lists_items');
-        $dbpr = $this->db->getTableName('ref_pointtypes');
         $dbpp = $this->db->getTableName('pagepoints');
         $dbpc = $this->db->getTableName('pagecity');
         $dbru = $this->db->getTableName('region_url');
@@ -124,7 +123,6 @@ class Page extends PageCommon {
             $this->getError('404');
         }
 
-        $dbpr = $this->db->getTableName('ref_pointtypes');
         $dbpp = $this->db->getTableName('pagepoints');
         $dbpc = $this->db->getTableName('pagecity');
         $dbru = $this->db->getTableName('region_url');
@@ -209,7 +207,6 @@ class Page extends PageCommon {
     }
 
     private function getYMapsMLCommon($get) {
-        $dbpr = $this->db->getTableName('ref_pointtypes');
         $dbpp = $this->db->getTableName('pagepoints');
         $dbpc = $this->db->getTableName('pagecity');
         $dbru = $this->db->getTableName('region_url');
@@ -311,6 +308,7 @@ class Page extends PageCommon {
     }
     
     private function getRefPointTypes() {
+        $dbpr = $this->db->getTableName('ref_pointtypes');
         $this->db->sql = "SELECT * FROM $dbpr";
         $this->db->exec();
         $ptypes = $this->db->fetchAll();
