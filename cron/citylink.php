@@ -48,7 +48,9 @@ while ($row = $db->fetch()) {
         $out[$row['pc_id']] .= " > <a href=\"$url_root{$row['city_url']}/\" title=\"перейти к странице {$row['pc_title']}\">{$row['pc_title']}</a>";
     }
 }
+
+$pc = new MPageCities($db);
 foreach ($out as $cid => $link) {
-    $db->exec("UPDATE $dbc SET pc_pagepath = '$link' WHERE pc_id = '$cid' AND pc_pagepath IS NULL");
+    $pc->updatePagepath($cid, $link);
 }
 //echo "<p>обработано " . count($out) . " страниц";
