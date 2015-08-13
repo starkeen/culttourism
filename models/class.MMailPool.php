@@ -74,9 +74,10 @@ class MMailPool extends Model {
                     AND ml_inwork = 0
                     LIMIT :limit";
         $this->_db->prepare();
-        return $this->_db->execute(array(
-                    ':limit' => $count,
+        $this->_db->execute(array(
+            ':limit' => $count,
         ));
+        return $this->_db->fetchAll();
     }
 
 }
