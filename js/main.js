@@ -203,7 +203,7 @@ $(document).ready(function () {
         }
         if ($(this).parent().attr("id") == "br_save_handler") {//------ запись в блоге
             var record_id = $("#br_id").val();
-            $.post("/blog/saveform/?bid=" + $("#pr_id").val(), {
+            $.post("/blog/saveform/?bid=" + record_id, {
                 brid: record_id,
                 ntitle: $("#eblog_title").val(),
                 ntext: $("#eblog_text").val(),
@@ -630,7 +630,7 @@ function showWindByURL(url, get) {
             modal.setPosition();
         }
     });
-    $.get(url, get, function (data) {console.log(data);
+    $.get(url, get, function (data) {
         $("#simplemodal-data").html(data);
         if ($("#object_container h2").position() !== undefined) {
             $("#object_text_container").css("bottom", $("#object_additional").height())

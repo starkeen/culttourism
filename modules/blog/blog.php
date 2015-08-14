@@ -254,7 +254,7 @@ class Page extends PageCommon {
         }
     }
 
-    private function saveFormBlog($br_id = null) {
+    private function saveFormBlog() {
         if (!$this->checkEdit()) {
             return FALSE;
         }
@@ -270,8 +270,8 @@ class Page extends PageCommon {
                         'br_url' => $_POST['nurl'],
                         'br_us_id' => $this->getUserId(),
             ));
-        } elseif ($br_id > 0) {
-            return $bg->updateByPk($br_id, array(
+        } elseif ($_POST['brid'] > 0) {
+            return $bg->updateByPk(intval($_POST['brid']), array(
                         'br_title' => $_POST['ntitle'],
                         'br_text' => $_POST['ntext'],
                         'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
