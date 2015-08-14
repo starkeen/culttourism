@@ -299,11 +299,11 @@ class MPagePoints extends Model {
     }
 
     public function getGeoPointsByCityId($cid) {
-        $dbpp = $this->db->getTableName('pagepoints');
-        $dbpc = $this->db->getTableName('pagecity');
-        $dbru = $this->db->getTableName('region_url');
+        $dbpp = $this->_db->getTableName('pagepoints');
+        $dbpc = $this->_db->getTableName('pagecity');
+        $dbru = $this->_db->getTableName('region_url');
 
-        $this->db->sql = "SELECT pp.*,
+        $this->_db->sql = "SELECT pp.*,
                                 CONCAT(:url_root1, ru.url, '/') AS cityurl,
                                 CONCAT(:url_root2, ru.url, '/', pp.pt_slugline, '.html') AS objurl
                             FROM $dbpp AS pp
@@ -314,7 +314,7 @@ class MPagePoints extends Model {
                                 AND pt_longitude != ''
                                 AND pt_active = 1";
 
-        $this->db->execute(array(
+        $this->_db->execute(array(
             ':cid' => $cid,
             ':url_root1' => _URL_ROOT,
             ':url_root2' => _URL_ROOT,
