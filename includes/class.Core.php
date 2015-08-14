@@ -73,7 +73,7 @@ abstract class Core {
 
         $md = new MModules($this->db);
         $row = $md->getModuleByURI($mod_id);
-        if (!empty($row['md_url'])) {
+        if (!empty($row)) {
             if ($row['md_redirect'] !== null) {
                 $this->getError('301', $row['md_redirect']);
             }

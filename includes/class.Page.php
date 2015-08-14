@@ -6,9 +6,10 @@ class Page extends PageCommon {
         parent::__construct($db, $mod[0]); //встроеные модули
         //if ($mod[1]!=null) $this->getSubContent($this->md_id, $mod[1]);
         //$this->navibar = $this->getNavigation($this->md_id, $mod[1]);
-        if (!$this->content && $this->content = $this->getPageByURL($mod)) {
-            //
-        } else {
+        if (!$this->content) {
+            $this->content = $this->getPageByURL($mod);
+        }
+        if (!$this->content) {
             $this->getError('404');
         }
     }
