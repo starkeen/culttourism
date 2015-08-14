@@ -485,18 +485,17 @@ $(document).ready(function () {
         });
         return false;
     });
-    $(".blog_entry_delete").live("click",
-            function () {
-                var a = this.id.split("_");
-                confirm('Действительно удалить запись "' + $(this).parent('h2').children('a').text() + '"?') && $.post("/blog/delentry/?bid=" + a[2], {
-                    brid: a[2]
-                }, function (g) {
-                    if (g) {
-                        document.location = "/blog/";
-                    }
-                });
-                return false;
-            });
+    $(".blog_entry_delete").live("click", function () {
+        var a = this.id.split("_");
+        confirm('Действительно удалить запись "' + $(this).parent('h2').children('a').text() + '"?') && $.post("/blog/delentry/?bid=" + a[2], {
+            brid: a[2]
+        }, function (g) {
+            if (g) {
+                document.location = "/blog/";
+            }
+        });
+        return false;
+    });
 //--------------------------------- / BLOG AJAX ----------------------------------
 //---------------------------------  CITY AJAX  ----------------------------------
     if ($("#city_keywds").val())
@@ -587,7 +586,7 @@ $(document).ready(function () {
     //---------------------- SCROLL TO TOP ---------------------------------------
     if ($("#mapcity_pc_id").val() > 0) { //пока только на страницах регионов
         var $scrollerTopButton = $('.content-scroll-buttons');
-        var scrollerTopOffsetTrigger = $('#menu_type1').position().top+$('#menu_type1').outerHeight(true); //px to show button
+        var scrollerTopOffsetTrigger = $('#menu_type1').position().top + $('#menu_type1').outerHeight(true); //px to show button
         $(window).scroll(function () {
             if ($(this).scrollTop() > scrollerTopOffsetTrigger) {
                 $scrollerTopButton.stop().animate({
@@ -631,7 +630,7 @@ function showWindByURL(url, get) {
             modal.setPosition();
         }
     });
-    $.get(url, get, function (data) {
+    $.get(url, get, function (data) {console.log(data);
         $("#simplemodal-data").html(data);
         if ($("#object_container h2").position() !== undefined) {
             $("#object_text_container").css("bottom", $("#object_additional").height())

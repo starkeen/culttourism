@@ -99,8 +99,8 @@ if (_ER_REPORT || isset($_GET['debug'])) {
     $smarty->assign('debug_info', '');
 }
 
-if ($module_id == 'ajax') {
-    $smarty->display(_DIR_TEMPLATES . '/_main/empty.sm.html');
+if ($page->isAjax) {
+    echo $page->content;
 } elseif ($module_id == 'api') {
     $smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
 } else {
