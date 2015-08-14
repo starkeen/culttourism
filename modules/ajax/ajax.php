@@ -78,16 +78,6 @@ class Page extends PageCommon {
             } else {
                 $this->getError('404');
             }
-        } elseif ($page_id == 'YMapsML') {
-            if ($id == 'getcitypoints' && isset($_GET['cid']) && intval($_GET['cid'])) {
-                $this->content = $this->getCityPointsYMapsML($smarty, intval($_GET['cid']));
-            } elseif ($id == 'getcitymap' && isset($_GET['cid']) && intval($_GET['cid'])) {
-                $this->content = $this->getCityMapYMapsML($smarty, intval($_GET['cid']));
-            } elseif ($id == 'getcommonmap') {
-                $this->content = $this->getCommonMapYMapsML($smarty, $_GET);
-            } else {
-                $this->getError('404');
-            }
         } elseif ($page_id == 'GPX' && $id == 'getcitypoints' && isset($_GET['cid']) && intval($_GET['cid'])) {
             $this->content = $this->getCityPointsGPX($smarty, intval($_GET['cid']));
         } else {
@@ -152,25 +142,25 @@ class Page extends PageCommon {
         if (!$this->checkEdit()) {
             return FALSE;
         }
-        
+
         $bg = new MBlogEntries($this->db);
 
         if ($_POST['brid'] == 'add') {
             return $bg->insert(array(
-                'br_title' => $_POST['ntitle'],
-                'br_text' => $_POST['ntext'],
-                'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
-                'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
-                'br_url' => $_POST['nurl'],
-                'br_us_id' => $this->getUserId(),
+                        'br_title' => $_POST['ntitle'],
+                        'br_text' => $_POST['ntext'],
+                        'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
+                        'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
+                        'br_url' => $_POST['nurl'],
+                        'br_us_id' => $this->getUserId(),
             ));
         } elseif ($br_id > 0) {
             return $bg->updateByPk($br_id, array(
-                'br_title' => $_POST['ntitle'],
-                'br_text' => $_POST['ntext'],
-                'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
-                'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
-                'br_url' => $_POST['nurl'],
+                        'br_title' => $_POST['ntitle'],
+                        'br_text' => $_POST['ntext'],
+                        'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
+                        'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
+                        'br_url' => $_POST['nurl'],
             ));
         } else {
             return $this->getError('404');
@@ -183,11 +173,11 @@ class Page extends PageCommon {
             return $this->getError('404');
         }
         $pp = new MPagePoints($this->db);
-        
+
         $nid = intval($_POST['cid']);
         if ($cid != $nid) {
             return $this->getError('404');
-        }        
+        }
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
@@ -206,8 +196,7 @@ class Page extends PageCommon {
             return FALSE;
         }
     }
-    
-    
+
     private function setFormPointAddr($pid) {
         if (!$this->checkEdit()) {
             return $this->getError('403');
@@ -229,7 +218,7 @@ class Page extends PageCommon {
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
-        
+
         $p = new MPagePoints($this->db);
         $state = $p->updateByPk($pid, array(
             'pt_latitude' => $_POST['pt_lat'],
@@ -291,8 +280,7 @@ class Page extends PageCommon {
         $smarty->assign('point', $point);
         return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/changelatlon.form.sm.html');
     }
-    
-    
+
     private function getChangeTypeForm($smarty) {
         if (!$this->checkEdit()) {
             return $this->getError('403');
@@ -303,13 +291,13 @@ class Page extends PageCommon {
         }
         $p = new MPagePoints($this->db);
         $pts = new MRefPointtypes($this->db);
-        
+
         $point = $p->getItemByPk(intval($_GET['pid']));
         $types = $pts->getActive();
-        foreach($types as $i => $type) {
+        foreach ($types as $i => $type) {
             $types[$i]['current'] = ($type['tp_id'] == $point['pt_type_id']) ? 1 : 0;
         }
-        
+
         $smarty->assign('point', $point);
         $smarty->assign('alltypes', $types);
         return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/changetype.form.sm.html');
@@ -324,10 +312,10 @@ class Page extends PageCommon {
         if ($pid != $ppid || !$type) {
             return $this->getError('403');
         }
-        
+
         $p = new MPagePoints($this->db);
         $pts = new MRefPointtypes($this->db);
-        
+
         $state = $p->updateByPk($pid, array(
             'pt_type_id' => $type,
         ));
@@ -448,8 +436,7 @@ class Page extends PageCommon {
             return $this->getError('404');
         }
     }
-    
-    
+
     private function getPoint($id) {
         if (!$id) {
             return $this->getError('404');
@@ -503,7 +490,6 @@ class Page extends PageCommon {
         }
     }
 
-
 //-------------------------------------------------------------- CITY ----------
     private function setFormCityGPS($cid, $smarty) {
         if (!$this->checkEdit()) {
@@ -542,8 +528,7 @@ class Page extends PageCommon {
         $smarty->assign('city', $city);
         return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/citylatlon.form.sm.html');
     }
-    
-    
+
     private function saveCityTitle($id, $smarty) {
         if (!$id) {
             return $this->getError('404');
@@ -578,7 +563,7 @@ class Page extends PageCommon {
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
-      
+
         $pc = new MPageCities($this->db);
         $state = $pc->updateByPk($nid, array(
             'pc_text' => $_POST['ntext'],
@@ -591,7 +576,6 @@ class Page extends PageCommon {
         }
     }
 
-
 //-------------------------------------------------------------- SIGN ----------
     private function getFormLogin($smarty) {
         if (isset($_SESSION['user_id'])) {
@@ -603,7 +587,6 @@ class Page extends PageCommon {
             return $smarty->fetch(_DIR_TEMPLATES . '/sign/authform.sm.html');
         }
     }
-
 
 //-------------------------------------------------------------- GPS ----------
     private function getCityPointsGPX($smarty, $cid) {
@@ -619,262 +602,12 @@ class Page extends PageCommon {
                     AND pt_latitude != ''
                     AND pt_longitude != ''";
         $db->exec();
-        $points = array();
-        while ($pt = $db->fetch()) {
-            $points[] = $pt;
-        }
+        $points = $db->fetchAll();
         //print_x($points);
         $smarty->assign('points', $points);
 
         header("Content-type: application/xml");
         echo $smarty->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
-        exit();
-    }
-
-    /**
-     * Функция возвращает XML файл со всеми точками
-     * Входные параметры:
-     * массив get
-     * опционально включает clt и cln - координаты центра
-     * или
-     */
-    private function getCommonMapYMapsML($smarty, $get) {
-        $db = $this->db;
-        $dbpr = $db->getTableName('ref_pointtypes');
-        $dbpp = $db->getTableName('pagepoints');
-        $dbpc = $db->getTableName('pagecity');
-        $dbru = $db->getTableName('region_url');
-
-        $ptypes = array();
-        $bounds = array(
-            'max_lat' => 55.9864578247, 'max_lon' => 37.9002265930,
-            'min_lat' => 55.4144554138, 'min_lon' => 37.1716384888,
-            'center_lat' => null, 'center_lon' => null,
-            'delta_lat' => 0.1, 'delta_lon' => 0.3,
-        );
-        $points = array();
-
-        $db->sql = "SELECT * FROM $dbpr";
-        $db->exec();
-        while ($rpt = $db->fetch()) {
-            $ptypes[] = $rpt;
-        }
-
-        if (!isset($get['center']) && isset($get['clt']) && isset($get['cln']) && !isset($get['llt']) && !isset($get['lln']) && !isset($get['rlt']) && !isset($get['rln'])) {
-            //---------- по координатам центра (раздельно)
-            $bounds['center_lat'] = cut_trash_float($get['clt']);
-            $bounds['center_lon'] = cut_trash_float($get['cln']);
-            $bounds['max_lat'] = $bounds['center_lat'] + $bounds['delta_lat'];
-            $bounds['max_lon'] = $bounds['center_lon'] + $bounds['delta_lon'];
-            $bounds['min_lat'] = $bounds['center_lat'] - $bounds['delta_lat'];
-            $bounds['min_lon'] = $bounds['center_lon'] - $bounds['delta_lon'];
-        } elseif (isset($get['center']) && !isset($get['clt']) && !isset($get['cln']) && !isset($get['llt']) && !isset($get['lln']) && !isset($get['rlt']) && !isset($get['rln'])) {
-            //---------- по координатам центра (в одном)
-            $center = explode(',', $get['center']);
-            $bounds['center_lat'] = cut_trash_float($center[1]);
-            $bounds['center_lon'] = cut_trash_float($center[0]);
-            $bounds['max_lat'] = $bounds['center_lat'] + $bounds['delta_lat'];
-            $bounds['max_lon'] = $bounds['center_lon'] + $bounds['delta_lon'];
-            $bounds['min_lat'] = $bounds['center_lat'] - $bounds['delta_lat'];
-            $bounds['min_lon'] = $bounds['center_lon'] - $bounds['delta_lon'];
-        } elseif (!isset($get['center']) && isset($get['llt']) && isset($get['lln']) && isset($get['rlt']) && isset($get['rln']) && !isset($get['clt']) && !isset($get['cln'])) {
-            //---------- по координатам левого и правого угла
-            $bounds['max_lat'] = cut_trash_float($get['rlt']);
-            $bounds['max_lon'] = cut_trash_float($get['rln']);
-            $bounds['min_lat'] = cut_trash_float($get['llt']);
-            $bounds['min_lon'] = cut_trash_float($get['lln']);
-            $bounds['delta_lat'] = $bounds['max_lat'] - $bounds['min_lat'];
-            $bounds['delta_lon'] = $bounds['max_lon'] - $bounds['min_lon'];
-            $bounds['center_lat'] = $bounds['min_lat'] + $bounds['delta_lat'];
-            $bounds['center_lon'] = $bounds['min_lon'] + $bounds['delta_lon'];
-        } else {
-            //---------- по умолчанию берем Москву
-            $bounds['delta_lat'] = $bounds['max_lat'] - $bounds['min_lat'];
-            $bounds['delta_lon'] = $bounds['max_lon'] - $bounds['min_lon'];
-            $bounds['center_lat'] = $bounds['min_lat'] + $bounds['delta_lat'];
-            $bounds['center_lon'] = $bounds['min_lon'] + $bounds['delta_lon'];
-        }
-
-        $db->sql = "SELECT pp.*,
-                        CONCAT('" . _URL_ROOT . "', ru.url, '/') AS cityurl,
-                        CONCAT('" . _URL_ROOT . "', ru.url, '/object', pp.pt_id, '.html') AS objurl
-                    FROM $dbpp AS pp
-                    LEFT JOIN $dbpr pt ON pt.tp_id = pp.pt_type_id
-                    LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
-                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
-                    WHERE pp.pt_active = 1
-                    AND pp.pt_latitude BETWEEN '{$bounds['min_lat']}' AND '{$bounds['max_lat']}'
-                    AND pp.pt_longitude BETWEEN '{$bounds['min_lon']}' AND '{$bounds['max_lon']}'
-                    ORDER BY pt.tr_order DESC, pp.pt_rank
-                    LIMIT 200";
-        $db->exec();
-        $points = array();
-        while ($pt = $db->fetch()) {
-            $pt['pt_description'] = strip_tags($pt['pt_description']);
-            $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
-            $short_end = @mb_strpos($pt['pt_description'], ' ', 50, 'utf-8');
-            $pt['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
-            $pt['pt_website'] = htmlspecialchars($pt['pt_website'], ENT_QUOTES);
-            $points[] = $pt;
-        }
-
-        $smarty->assign('ptypes', $ptypes);
-        $smarty->assign('bounds', $bounds);
-        $smarty->assign('points', $points);
-
-        header("Content-type: application/xml");
-        echo $smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
-        exit();
-    }
-
-    private function getCityMapYMapsML($smarty, $cid) {
-        if (!$cid)
-            $this->getError('404');
-        $db = $this->db;
-        $dbpr = $db->getTableName('ref_pointtypes');
-        $dbpp = $db->getTableName('pagepoints');
-        $dbpc = $db->getTableName('pagecity');
-        $dbru = $db->getTableName('region_url');
-
-        $db->sql = "SELECT * FROM $dbpr";
-        $db->exec();
-        $ptypes = array();
-        while ($rpt = $db->fetch()) {
-            $ptypes[] = $rpt;
-        }
-
-        $db->sql = "SELECT CONCAT('https://', '" . _URL_ROOT . "', ru.url, '/') AS url
-                    FROM $dbpc pc
-                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
-                    WHERE pc.pc_id = '$cid'
-                    LIMIT 1";
-        $db->exec();
-        $canonical_link = $db->fetch();
-
-        $db->sql = "SELECT MAX(pt_latitude) AS max_lat, MIN(pt_latitude) AS min_lat, MAX(pt_longitude) AS max_lon, MIN(pt_longitude) AS min_lon
-                    FROM $dbpp
-                    WHERE pt_citypage_id='$cid'
-                    AND pt_latitude != ''
-                    AND pt_longitude != ''";
-        $db->exec();
-        $bounds = $db->fetch();
-
-        $db->sql = "SELECT pp.*
-                    FROM $dbpp AS pp
-                    LEFT JOIN $dbpr pt ON pt.tp_id = pp.pt_type_id
-                    WHERE pp.pt_citypage_id = '$cid'
-                    AND pp.pt_latitude != ''
-                    AND pp.pt_longitude != ''
-                    AND pp.pt_active = 1
-                    ORDER BY pt.tr_order DESC, pp.pt_rank";
-        $db->exec();
-        $points = array();
-        while ($pt = $db->fetch()) {
-            $pt['pt_description'] = strip_tags($pt['pt_description']);
-            $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
-            $short_end = @mb_strpos($pt['pt_description'], ' ', 50, 'utf-8');
-            $pt['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
-            $pt['pt_website'] = htmlspecialchars($pt['pt_website'], ENT_QUOTES);
-            $points[] = $pt;
-        }
-
-        $db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude, CONCAT(ru.url, '/') AS url
-                    FROM $dbpc pc
-                    LEFT JOIN $dbpc pc2 ON pc2.pc_region_id = pc.pc_region_id AND pc2.pc_id != pc.pc_id
-                    LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
-                    WHERE pc.pc_id = '$cid'
-                    AND pc2.pc_city_id != 0";
-        $db->exec();
-        $city = array();
-        while ($pc = $db->fetch()) {
-            $city[] = $pc;
-        }
-
-        $smarty->assign('ptypes', $ptypes);
-        $smarty->assign('bounds', $bounds);
-        $smarty->assign('canonical_link', $canonical_link);
-        $smarty->assign('points', $points);
-        $smarty->assign('city', $city);
-
-        header("Content-type: application/xml");
-        echo $smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML2.sm.xml');
-        exit();
-    }
-
-    private function getCityPointsYMapsML($smarty, $cid) {
-        if (!$cid) {
-            $this->getError('404');
-        }
-        $db = $this->db;
-        $dbpr = $db->getTableName('ref_pointtypes');
-        $dbpp = $db->getTableName('pagepoints');
-        $dbpc = $db->getTableName('pagecity');
-        $dbru = $db->getTableName('region_url');
-        $db->sql = "SELECT * FROM $dbpr";
-        $db->exec();
-        $ptypes = array();
-        while ($rpt = $db->fetch()) {
-            $ptypes[] = $rpt;
-        }
-        $smarty->assign('ptypes', $ptypes);
-
-        $db->sql = "SELECT pp.*,
-                        CONCAT('" . _URL_ROOT . "', ru.url, '/') AS cityurl,
-                        CONCAT('" . _URL_ROOT . "', ru.url, '/object', pp.pt_id, '.html') AS objurl
-                    FROM $dbpp AS pp
-                    LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
-                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
-                    WHERE pt_citypage_id='$cid'
-                    AND pt_latitude != ''
-                    AND pt_longitude != ''
-                    AND pt_active = 1";
-        $db->exec();
-        $points = array();
-        while ($pt = $db->fetch()) {
-            $pt['pt_description'] = strip_tags($pt['pt_description']);
-            $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
-            $short_end = @mb_strpos($pt['pt_description'], ' ', 100, 'utf-8');
-            $pt['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
-            $pt['pt_website'] = htmlspecialchars($pt['pt_website'], ENT_QUOTES);
-            $points[] = $pt;
-        }
-
-        $db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude, CONCAT(ru.url, '/') AS url
-                    FROM $dbpc pc
-                        LEFT JOIN $dbpc pc2 ON pc2.pc_region_id = pc.pc_region_id AND pc2.pc_id != pc.pc_id
-                            LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
-                    WHERE pc.pc_id = '$cid'
-                        AND pc2.pc_city_id != 0";
-        $db->exec();
-        $city = array();
-        while ($pc = $db->fetch()) {
-            $city[] = $pc;
-        }
-
-        $db->sql = "SELECT pc.*
-                    FROM $dbpc pc
-                    WHERE pc.pc_id = '$cid'";
-        $db->exec();
-        $this_city = $db->fetch();
-
-        if ($this_city['pc_region_id'] == 0) {
-            $db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude, CONCAT(ru.url, '/') AS url
-                        FROM $dbpc pc2
-                            LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
-                        WHERE pc2.pc_country_id = '{$this_city['pc_country_id']}'
-                            AND pc2.pc_city_id != 0";
-            $db->exec();
-            while ($pc = $db->fetch()) {
-                $city[] = $pc;
-            }
-        }
-
-        $smarty->assign('points', $points);
-        $smarty->assign('city', $city);
-        header("Content-type: application/xml");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Expires: " . date("r"));
-        echo $smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML1.sm.xml');
         exit();
     }
 
