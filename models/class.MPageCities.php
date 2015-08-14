@@ -46,10 +46,6 @@ class MPageCities extends Model {
         $dbcd = $this->_db->getTableName('city_data');
         $dbcf = $this->_db->getTableName('city_fields');
 
-        $xurl = $this->_db->getEscapedString($url);
-
-        $out = array();
-
         $this->_db->sql = "SELECT *,
                                 UNIX_TIMESTAMP(pc.pc_lastup_date) AS last_update,
                                 CONCAT(uc.url, '/') AS url_canonical
@@ -140,8 +136,8 @@ class MPageCities extends Model {
     }
 
     public function getItemByPk($id) {
-        $cid = intval($id);
-        $this->_db->sql = "SELECT t.*, CONCAT(url.url, '/') AS url
+        $this->_db->sql = "SELECT t.*,
+                                CONCAT(url.url, '/') AS url
                             FROM $this->_table_name t
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = t.pc_url_id
                             WHERE $this->_table_pk = :cid";
@@ -193,8 +189,6 @@ class MPageCities extends Model {
      */
 
     public function getSuggestion($query) {
-        $name1 = $this->escape($query);
-        $name2 = $this->escape(Helper::getQwerty($query));
         $this->_db->sql = "SELECT pc_id, pc_title, url
                             FROM $this->_table_name pc
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id

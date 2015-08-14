@@ -159,18 +159,8 @@ class Page extends PageCommon {
     }
 
     private function getFormPointGPS($pid, $smarty) {
-        $dbpp = $this->db->getTableName('pagepoints');
-        $dbpc = $this->db->getTableName('pagecity');
-        $dbrpt = $this->db->getTableName('ref_pointtypes');
-        $this->db->sql = "SELECT pt.pt_name, pt.pt_id, pt_type_id, pt.pt_latitude, pt.pt_longitude, pt.pt_latlon_zoom, pt.pt_adress,
-                    pc.pc_title, pc.pc_latitude, pc.pc_longitude,
-                    rpt.tp_name, rpt.tp_icon
-                    FROM $dbpp AS pt
-                    LEFT JOIN $dbpc AS pc ON pt.pt_citypage_id = pc.pc_id
-                    LEFT JOIN $dbrpt AS rpt ON rpt.tp_id = pt.pt_type_id
-                    WHERE pt_id='$pid'";
-        $this->db->exec();
-        $point = $this->db->fetch();
+        $pt = new MPagePoints($this->db);
+        $point = $pt->getItemByPk($pid);
         //print_x($point);
         if ($point['pt_latitude'] && $point['pt_longitude']) {
             $point['map_center']['lat'] = $point['pt_latitude'];

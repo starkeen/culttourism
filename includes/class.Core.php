@@ -70,7 +70,7 @@ abstract class Core {
         if ($this->globalsettings['site_active'] == 'Off') {
             $this->getError('503');
         }
-        
+
         $db->sql = "SELECT dbm.*,
                         DATE_FORMAT(dbm.md_lastedit,'%a, %d %b %Y %H:%i:%s GMT') AS md_timestamp,
                         DATE_FORMAT(date_add(md_lastedit, INTERVAL :cache_days day),'%a, %d %b %Y %H:%i:%s GMT') md_expiredate
@@ -198,7 +198,7 @@ abstract class Core {
 
     public function errorsExceptionsHandler($e) {
         $msg = "Error: " . $e->getMessage() . "\n"
-                . 'file: ' . $e->getFile() . ':' . $e->getLine(). "\n"
+                . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
                 . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
                 . "\n__________________________\n\n\n"
                 . 'trace: ' . print_r($e->getTrace(), true) . "\n";
@@ -276,8 +276,8 @@ abstract class Core {
         }
         if ($this->module_id == 'api') {
             $this->smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
-        } elseif ($this->module_id == 'ajax') {
-            $this->smarty->display(_DIR_TEMPLATES . '/_main/empty.sm.html');
+        } elseif ($this->isAjax) {
+            echo $this->content;
         } else {
             $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
         }
