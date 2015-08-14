@@ -143,7 +143,7 @@ class Page extends PageCommon {
         global $db;
         $dbm = $this->db->getTableName('modules');
         $db->sql = "SELECT md_title, md_url FROM $dbm WHERE md_active = '1' AND md_id = '$module_id' LIMIT 1";
-        $pres = $db->exec();
+        $db->exec();
         $parent = $db->fetch();
         $db->sql = "SELECT md_title, md_url FROM $dbm WHERE md_active = '1' AND md_pid = '$module_id'";
         $res = $db->exec();
@@ -170,8 +170,6 @@ class Page extends PageCommon {
         $dburl = $db->getTableName('region_url');
         $dbpc = $db->getTableName('pagecity');
         $dbpp = $db->getTableName('pagepoints');
-        $dbsc = $db->getTableName('statcity');
-        $dbpt = $db->getTableName('ref_pointtypes');
 
         $db->sql = "SELECT city.*,
                             UNIX_TIMESTAMP(city.pc_lastup_date) AS last_update1,
@@ -236,7 +234,7 @@ class Page extends PageCommon {
 
             $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
 
-            $sc = new Statcity($this->db);
+            $sc = new MStatcity($this->db);
             $sc->add($row['pc_id'], $this->getUserHash());
 
             $this->addTitle($row['pc_title'] . ': достопримечательности');
