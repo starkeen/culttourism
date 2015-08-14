@@ -27,4 +27,3 @@ $db->exec();
 $db->sql = "UPDATE $dbsc SET sc_sr_id = (SELECT sr_id FROM $dbsr WHERE sr_phrase = sc_query) WHERE sc_sr_id IS NULL";
 //$db->showSQL();
 $db->exec();
-?>
