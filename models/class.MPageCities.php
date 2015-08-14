@@ -42,9 +42,6 @@ class MPageCities extends Model {
     }
 
     public function getCityByUrl($url) {
-        $dbcd = $this->_db->getTableName('city_data');
-        $dbcf = $this->_db->getTableName('city_fields');
-
         $this->_db->sql = "SELECT *,
                                 UNIX_TIMESTAMP(pc.pc_lastup_date) AS last_update,
                                 CONCAT(uc.url, '/') AS url_canonical
@@ -117,18 +114,8 @@ class MPageCities extends Model {
 
         //-----------------------  м е т а  -------------------------
         if (!empty($out['pc_id'])) {
-            $this->_db->sql = "SELECT cf_title, cd_value
-                        FROM $dbcd cd
-                            LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
-                        WHERE cd.cd_pc_id = :pc_id
-                            AND cd.cd_value != ''
-                            AND cf.cf_active = 1
-                        ORDER BY cf_order";
-
-            $this->_db->execute(array(
-                ':pc_id' => $out['pc_id'],
-            ));
-            $out['metas'] = $this->_db->fetchAll();
+            $cd = new MCityData($this->_db);
+            $out['metas'] = $cd->getByCityId($out['pc_id']);
         }
 
         return $out;
