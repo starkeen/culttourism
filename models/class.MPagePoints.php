@@ -35,6 +35,11 @@ class MPagePoints extends Model {
             'pt_active',
         );
         parent::__construct($db);
+        $this->_addRelatedTable('pagecity');
+        $this->_addRelatedTable('region_url');
+        $this->_addRelatedTable('lists');
+        $this->_addRelatedTable('lists_items');
+        $this->_addRelatedTable('ref_pointtypes');
     }
 
     /**
@@ -43,12 +48,9 @@ class MPagePoints extends Model {
      * @return array
      */
     public function getLists($oid) {
-        $dbli = $this->_db->getTableName('lists_items');
-        $dbls = $this->_db->getTableName('lists');
-
         $this->_db->sql = "SELECT *
-                            FROM $dbli li
-                                LEFT JOIN $dbls ls ON ls.ls_id = li.li_ls_id
+                            FROM {$this->_tables_related['lists_items']} li
+                                LEFT JOIN {$this->_tables_related['lists']} ls ON ls.ls_id = li.li_ls_id
                             WHERE li.li_pt_id = :oid
                                 AND ls.ls_active = 1
                                 AND li.li_active = 1";
@@ -76,12 +78,11 @@ class MPagePoints extends Model {
             ),
             'last_update' => 0,
         );
-        $dbrt = $this->_db->getTableName('ref_pointtypes');
         $this->_db->sql = "SELECT *,
                                 CONCAT(pt.pt_slugline, '.html') AS url_canonical,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update
                             FROM $this->_table_name pt
-                                LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
+                                LEFT JOIN {$this->_tables_related['ref_pointtypes']} rt ON rt.tp_id = pt.pt_type_id
                             WHERE pt.pt_citypage_id = :city_id\n";
         if (!$show_all) {
             $this->_db->sql .= "AND pt.pt_active = 1\n";
@@ -141,19 +142,15 @@ class MPagePoints extends Model {
     }
 
     public function getPointsByBounds($bounds, $selected_object_id = 0) {
-        $dbpp = $this->_db->getTableName('pagepoints');
-        $dbpc = $this->_db->getTableName('pagecity');
-        $dbru = $this->_db->getTableName('region_url');
-        $dbpr = $this->_db->getTableName('ref_pointtypes');
         $this->_db->sql = "SELECT pp.*,
                                 IF (pp.pt_id = :selected_object_id2, 1, 0) AS obj_selected,
                                 CONCAT(:url_root1, ru.url, '/') AS cityurl,
                                 CONCAT(:url_root2, ru.url, '/', pp.pt_slugline, '.html') AS objurl,
                                 CONCAT(ru.url, '/', pp.pt_slugline, '.html') AS objuri
-                            FROM $dbpp AS pp
-                                LEFT JOIN $dbpr pt ON pt.tp_id = pp.pt_type_id
-                                LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
-                                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
+                            FROM $this->_table_name AS pp
+                                LEFT JOIN {$this->_tables_related['ref_pointtypes']} pt ON pt.tp_id = pp.pt_type_id
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pp.pt_citypage_id
+                                    LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc.pc_url_id
                             WHERE pp.pt_active = 1
                                 AND pp.pt_latitude BETWEEN :bounds_min_lat AND :bounds_max_lat
                                 AND pp.pt_longitude BETWEEN :bounds_min_lon AND :bounds_max_lon
@@ -175,12 +172,10 @@ class MPagePoints extends Model {
     }
 
     public function getUnslug($limit = 10) {
-        $dbpc = $this->_db->getTableName('pagecity');
-        $dbrt = $this->_db->getTableName('ref_pointtypes');
         $this->_db->sql = "SELECT pt_id, pt_name, pc_title, pc_title_english, tr_sight
                             FROM $this->_table_name pt
-                                LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
-                                LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
+                                LEFT JOIN {$this->_tables_related['ref_pointtypes']} rt ON rt.tp_id = pt.pt_type_id
                             WHERE pt.pt_slugline = ''
                             ORDER BY pt.pt_rank DESC
                             LIMIT $limit";
@@ -189,18 +184,14 @@ class MPagePoints extends Model {
     }
 
     public function searchSlugline($slugline) {
-        $dbpc = $this->_db->getTableName('pagecity');
-        $dbrt = $this->_db->getTableName('ref_pointtypes');
-        $dbru = $this->_db->getTableName('region_url');
-
         $this->_db->sql = "SELECT *,
                                 '' AS gps_dec,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical
                             FROM $this->_table_name pt
-                                LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
-                                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
-                                LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
+                                    LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc.pc_url_id
+                                LEFT JOIN {$this->_tables_related['ref_pointtypes']} rt ON rt.tp_id = pt.pt_type_id
                             WHERE pt.pt_slugline = :slugline
                             ORDER BY pt.pt_rank DESC";
 
@@ -279,17 +270,14 @@ class MPagePoints extends Model {
     }
 
     public function getItemByPk($id) {
-        $dbpc = $this->_db->getTableName('pagecity');
-        $dbrt = $this->_db->getTableName('ref_pointtypes');
-        $dbru = $this->_db->getTableName('region_url');
         $this->_db->sql = "SELECT *,
                                 '' AS gps_dec,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update
                             FROM $this->_table_name pt
-                                LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
-                                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
-                                LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
+                                    LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc.pc_url_id
+                                LEFT JOIN {$this->_tables_related['ref_pointtypes']} rt ON rt.tp_id = pt.pt_type_id
                             WHERE $this->_table_pk = :oid";
 
         $this->_db->execute(array(
@@ -299,16 +287,12 @@ class MPagePoints extends Model {
     }
 
     public function getGeoPointsByCityId($cid) {
-        $dbpp = $this->_db->getTableName('pagepoints');
-        $dbpc = $this->_db->getTableName('pagecity');
-        $dbru = $this->_db->getTableName('region_url');
-
         $this->_db->sql = "SELECT pp.*,
                                 CONCAT(:url_root1, ru.url, '/') AS cityurl,
                                 CONCAT(:url_root2, ru.url, '/', pp.pt_slugline, '.html') AS objurl
-                            FROM $dbpp AS pp
-                                LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
-                                LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
+                            FROM $this->_table_name AS pp
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pp.pt_citypage_id
+                                LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc.pc_url_id
                             WHERE pt_citypage_id = :cid
                                 AND pt_latitude != ''
                                 AND pt_longitude != ''
