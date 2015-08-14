@@ -17,9 +17,10 @@ $db->exec();
 
 foreach ($tables_clean as $i => $table) {
     $db->sql = "DELETE FROM {$table[0]}
-                WHERE {$table[1]} < SUBDATE(NOW(), INTERVAL {$table[2]} DAY)"
-            . (isset($table[3]) ? " AND {$table[3]}" : '');
-    $db->exec();
+                WHERE {$table[1]} < SUBDATE(NOW(), INTERVAL :interval DAY)";
+    $db->execute(array(
+        ':interval' => $table[2],
+    ));
 }
 
 $tables_optimize = array(
