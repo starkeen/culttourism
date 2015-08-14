@@ -465,9 +465,8 @@ class Page extends PageCommon {
         $object['page_link'] = $object['url_canonical'];
         $object['gps_dec'] = '';
 
-        $sp = new Statpoints($this->db);
+        $sp = new MStatpoints($this->db);
         $sp->add($object['pt_id'], $this->getUserHash());
-
 
         $this->smarty->assign('object', $object);
 
@@ -492,9 +491,8 @@ class Page extends PageCommon {
 
         $object['page_link'] = $object['url_canonical'];
 
-        $sp = new Statpoints($this->db);
+        $sp = new MStatpoints($this->db);
         $sp->add($object['pt_id'], $this->getUserHash());
-
 
         $this->smarty->assign('object', $object);
 
@@ -511,31 +509,23 @@ class Page extends PageCommon {
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
-        $db = $this->db;
-        $dbpc = $db->getTableName('pagecity');
-        //print_x($_POST);
-        $n_lat = cut_trash_string($_POST['pc_lat']);
-        $n_lat = str_replace(',', '.', $n_lat);
-        $n_lon = cut_trash_string($_POST['pc_lon']);
-        $n_lon = str_replace(',', '.', $n_lon);
-        $n_zoom = cut_trash_int($_POST['pc_zoom']);
+        $pc = new MPageCities($this->db);
+        $state = $pc->updateByPk($cid, array(
+            'pc_latitude' => $_POST['pc_lat'],
+            'pc_longitude' => $_POST['pc_lon'],
+            'pc_latlon_zoom' => $_POST['pc_zoom'],
+        ));
 
-        $db->sql = "UPDATE $dbpc SET pc_latitude = '$n_lat', pc_longitude = '$n_lon', pc_latlon_zoom = '$n_zoom', pc_lastup_date = now() WHERE pc_id = '$cid'";
-        if ($db->exec()) {
-            return TRUE;
+        if ($state) {
+            return true;
         } else {
             return false;
         }
     }
 
     private function getFormCityGPS($cid, $smarty) {
-        $db = $this->db;
-        $dbpc = $db->getTableName('pagecity');
-        $db->sql = "SELECT pc.pc_id, pc.pc_title, pc.pc_latitude, pc.pc_longitude, pc.pc_latlon_zoom
-                    FROM $dbpc AS pc
-                    WHERE pc.pc_id='$cid'";
-        $db->exec();
-        $city = $db->fetch();
+        $pc = new MPageCities($this->db);
+        $city = $pc->getItemByPk($cid);
 
         if ($city['pc_latitude'] && $city['pc_longitude']) {
             $city['map_center']['lat'] = $city['pc_latitude'];
@@ -558,22 +548,20 @@ class Page extends PageCommon {
         if (!$id) {
             return $this->getError('404');
         }
-        $ntitle = cut_trash_string($_POST['ntitle']);
-        $nid = cut_trash_int($_POST['id']);
+        $nid = intval($_POST['id']);
         if ($id != $nid) {
             return $this->getError('404');
         }
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
-        $db = $this->db;
-        $dbpc = $db->getTableName('pagecity');
-        $db->sql = "UPDATE $dbpc SET pc_title = '$ntitle', pc_lastup_date = now() WHERE pc_id = '$nid'";
-        if ($db->exec()) {
-            $db->sql = "SELECT pc_title FROM $dbpc WHERE pc_id = '$nid'";
-            $db->exec();
-            $row = $db->fetch();
-            return $row['pc_title'];
+        $pc = new MPageCities($this->db);
+        $state = $pc->updateByPk($nid, array(
+            'pc_title' => $_POST['ntitle'],
+        ));
+        if ($state) {
+            $city = $pc->getItemByPk($nid);
+            return $city['pc_title'];
         } else {
             return $this->getError('404');
         }
@@ -583,25 +571,21 @@ class Page extends PageCommon {
         if (!$id) {
             return $this->getError('404');
         }
-        $ntitle = cut_trash_string($_POST['ntext']);
-        $nid = cut_trash_int($_POST['id']);
+        $nid = intval($_POST['id']);
         if ($id != $nid) {
             return $this->getError('404');
         }
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
-        $db = $this->db;
-        $dbpc = $db->getTableName('pagecity');
-        $dbvc = $db->getTableName('vercity');
-        $db->sql = "INSERT INTO $dbvc (vc_cityid, vc_datecreate, vc_text, vc_hash, vc_userid) SELECT $nid, now(), pc_text, md5(pc_text),1 FROM $dbpc WHERE pc_id = '$nid'";
-        $db->exec();
-        $db->sql = "UPDATE $dbpc SET pc_text = '$ntitle', pc_lastup_date = now() WHERE pc_id = '$nid'";
-        if ($db->exec()) {
-            $db->sql = "SELECT pc_text FROM $dbpc WHERE pc_id = '$nid'";
-            $db->exec();
-            $row = $db->fetch();
-            return $row['pc_text'];
+      
+        $pc = new MPageCities($this->db);
+        $state = $pc->updateByPk($nid, array(
+            'pc_text' => $_POST['ntext'],
+        ));
+        if ($state) {
+            $city = $pc->getItemByPk($nid);
+            return $city['pc_text'];
         } else {
             return $this->getError('404');
         }
