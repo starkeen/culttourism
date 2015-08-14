@@ -18,6 +18,10 @@ class MListsItems extends Model {
         $this->_list_id = intval($lid);
         parent::__construct($db);
         $this->_addRelatedTable('lists');
+        $this->_addRelatedTable('pagepoints');
+        $this->_addRelatedTable('pagecity');
+        $this->_addRelatedTable('region_url');
+        $this->_addRelatedTable('ref_pointtypes');
     }
 
     public function setField($field, $pt_id, $val) {
@@ -66,11 +70,9 @@ class MListsItems extends Model {
     }
 
     public function getSuggestion($name) {
-        $dbo = $this->_db->getTableName('pagepoints');
-        $dbc = $this->_db->getTableName('pagecity');
         $this->_db->sql = "SELECT *
-                            FROM $dbo pt
-                                LEFT JOIN $dbc pc ON pc.pc_id = pt.pt_citypage_id
+                            FROM {$this->_tables_related['pagepoints']} pt
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
                             WHERE pt.pt_name LIKE :name
                                 AND pt.pt_active = 1
                                 AND pt.pt_id NOT IN (SELECT li_pt_id FROM $this->_table_name WHERE li_ls_id = '$this->_list_id')
@@ -82,20 +84,16 @@ class MListsItems extends Model {
     }
 
     public function getAll() {
-        $dbo = $this->_db->getTableName('pagepoints');
-        $dbc = $this->_db->getTableName('pagecity');
-        $dbru = $this->_db->getTableName('region_url');
-        $dbrt = $this->_db->getTableName('ref_pointtypes');
         $this->_db->sql = "SELECT li.*, pt.*, pc.*, rt.*,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
                                 CHAR_LENGTH(TRIM(pt.pt_description)) AS len_descr,
                                 CONCAT(ru.url, '/') AS url_region,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical
                             FROM $this->_table_name li
-                                LEFT JOIN $dbo pt ON pt.pt_id = li.li_pt_id
-                                    LEFT JOIN $dbrt rt ON rt.tp_id = pt.pt_type_id
-                                    LEFT JOIN $dbc pc ON pc.pc_id = pt.pt_citypage_id
-                                        LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
+                                LEFT JOIN {$this->_tables_related['pagepoints']} pt ON pt.pt_id = li.li_pt_id
+                                    LEFT JOIN {$this->_tables_related['ref_pointtypes']} rt ON rt.tp_id = pt.pt_type_id
+                                    LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
+                                        LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc.pc_url_id
                             WHERE li_ls_id = '$this->_list_id'
                             GROUP BY pt.pt_id
                             ORDER BY $this->_table_order ASC, pt.pt_rank DESC";
@@ -104,17 +102,14 @@ class MListsItems extends Model {
     }
 
     public function getActive() {
-        $dbo = $this->_db->getTableName('pagepoints');
-        $dbc = $this->_db->getTableName('pagecity');
-        $dbru = $this->_db->getTableName('region_url');
         $this->_db->sql = "SELECT li.*, pt.*, pc.*,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
                                 CONCAT(ru.url, '/') AS url_region,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical
                             FROM $this->_table_name li
-                                LEFT JOIN $dbo pt ON pt.pt_id = li.li_pt_id
-                                    LEFT JOIN $dbc pc ON pc.pc_id = pt.pt_citypage_id
-                                        LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
+                                LEFT JOIN {$this->_tables_related['pagepoints']} pt ON pt.pt_id = li.li_pt_id
+                                    LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
+                                        LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc.pc_url_id
                             WHERE li_ls_id = '$this->_list_id'
                                 AND li.li_active = 1
                                 AND pt.pt_active = 1
@@ -125,22 +120,16 @@ class MListsItems extends Model {
     }
 
     public function getPointsInList($list_id) {
-        $dbli = $this->_db->getTableName('lists_items');
-        $dbpp = $this->_db->getTableName('pagepoints');
-        $dbpc = $this->_db->getTableName('pagecity');
-        $dbru = $this->_db->getTableName('region_url');
-        $dbpr = $this->_db->getTableName('ref_pointtypes');
-
         $this->_db->sql = "SELECT pp.*,
                                 0 AS obj_selected,
                                 CONCAT(:url_root1, ru.url, '/') AS cityurl,
                                 CONCAT(:url_root2, ru.url, '/', pp.pt_slugline, '.html') AS objurl,
                                 CONCAT(ru.url, '/', pp.pt_slugline, '.html') AS objuri
-                            FROM $dbli li
-                                LEFT JOIN $dbpp AS pp ON pp.pt_id = li.li_pt_id
-                                    LEFT JOIN $dbpr pt ON pt.tp_id = pp.pt_type_id
-                                    LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
-                                        LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
+                            FROM $this->_table_name li
+                                LEFT JOIN {$this->_tables_related['pagepoints']} AS pp ON pp.pt_id = li.li_pt_id
+                                    LEFT JOIN {$this->_tables_related['ref_pointtypes']} pt ON pt.tp_id = pp.pt_type_id
+                                    LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pp.pt_citypage_id
+                                        LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc.pc_url_id
                             WHERE pp.pt_active = 1
                                 AND pt_latitude != 0
                                 AND pt_longitude != 0

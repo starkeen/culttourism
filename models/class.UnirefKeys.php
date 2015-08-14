@@ -11,15 +11,16 @@ class UnirefKeys extends Model {
         $this->_table_fields = array(
         );
         parent::__construct($db);
+        $this->_addRelatedTable('uniref_values');
     }
 
     public function getAll() {
-        $uvt = $this->_db->getTableName('uniref_values');
         $this->_db->sql = "SELECT *,
-                            (SELECT count(*) FROM $uvt WHERE uv_uk_id = uk_id) AS children_cnt
+                            (SELECT count(*) FROM {$this->_tables_related['uniref_values']} WHERE uv_uk_id = uk_id) AS children_cnt
                             FROM $this->_table_name\n";
-        if ($this->_table_order)
+        if ($this->_table_order) {
             $this->_db->sql .= "ORDER BY $this->_table_order ASC\n";
+        }
         $this->_db->exec();
         return $this->_db->fetchAll();
     }

@@ -19,14 +19,14 @@ class MLists extends Model {
             'ls_active',
         );
         parent::__construct($db);
+        $this->_addRelatedTable('lists_items');
     }
 
     public function getItemBySlugline($slugline) {
         $out = array();
-        $dbi = $this->_db->getTableName('lists_items');
         $this->_db->sql = "SELECT ls.*,
                                 UNIX_TIMESTAMP(ls.ls_update_date) AS last_update,
-                                (SELECT COUNT(*) FROM $dbi WHERE li_ls_id = ls.ls_id) AS cnt,
+                                (SELECT COUNT(*) FROM {$this->_tables_related['lists_items']} WHERE li_ls_id = ls.ls_id) AS cnt,
                                 CHAR_LENGTH(TRIM(ls_description)) AS len_descr,
                                 CHAR_LENGTH(TRIM(ls_text)) AS len_text
                             FROM $this->_table_name ls
@@ -35,16 +35,14 @@ class MLists extends Model {
         $this->_db->execute(array(
             ':slugline' => $slugline,
         ));
-        //$this->_db->showSQL();
         $out['data'] = $this->_db->fetch();
         return $out;
     }
 
     public function getAll() {
-        $dbi = $this->_db->getTableName('lists_items');
         $this->_db->sql = "SELECT ls.*,
                                 UNIX_TIMESTAMP(ls.ls_update_date) AS last_update,
-                                (SELECT COUNT(*) FROM $dbi WHERE li_ls_id = ls.ls_id) AS cnt,
+                                (SELECT COUNT(*) FROM {$this->_tables_related['lists_items']} WHERE li_ls_id = ls.ls_id) AS cnt,
                                 CHAR_LENGTH(TRIM(ls_description)) AS len_descr,
                                 CHAR_LENGTH(TRIM(ls_text)) AS len_text
                             FROM $this->_table_name ls
@@ -54,10 +52,9 @@ class MLists extends Model {
     }
 
     public function getActive() {
-        $dbi = $this->_db->getTableName('lists_items');
         $this->_db->sql = "SELECT ls.*,
                                 UNIX_TIMESTAMP(ls.ls_update_date) AS last_update,
-                                (SELECT COUNT(*) FROM $dbi WHERE li_ls_id = ls.ls_id) AS cnt,
+                                (SELECT COUNT(*) FROM {$this->_tables_related['lists_items']} WHERE li_ls_id = ls.ls_id) AS cnt,
                                 CHAR_LENGTH(TRIM(ls_description)) AS len_descr,
                                 CHAR_LENGTH(TRIM(ls_text)) AS len_text
                             FROM $this->_table_name ls
