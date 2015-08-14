@@ -285,18 +285,10 @@ class Page extends PageCommon {
         if (!$cid) {
             $this->getError('404');
         }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $db->sql = "SELECT pt_name, pt_id, pt_latitude, pt_longitude,
-                    DATE_FORMAT(pt_lastup_date, '%Y-%m-%dT%H:%i:%sZ') as pt_date
-                    FROM $dbpp
-                    WHERE pt_citypage_id='$cid'
-                    AND pt_latitude != ''
-                    AND pt_longitude != ''";
-        $db->exec();
-        $points = $db->fetchAll();
-        //print_x($points);
-        $smarty->assign('points', $points);
+        $pt = new MPagePoints($this->db);
+        $pts = $pt->getPointsByCity($cid);
+
+        $smarty->assign('points', $pts['points']);
 
         header("Content-type: application/xml");
         echo $smarty->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
