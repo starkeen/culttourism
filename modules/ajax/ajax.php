@@ -238,8 +238,8 @@ class Page extends PageCommon {
         ));
 
         if ($state) {
-            $point_lat_short = mb_substr($n_lat, 0, 8);
-            $point_lon_short = mb_substr($n_lon, 0, 8);
+            $point_lat_short = mb_substr($_POST['pt_lat'], 0, 8);
+            $point_lon_short = mb_substr($_POST['pt_lon'], 0, 8);
             if ($point_lat_short >= 0) {
                 $point_lat_w = "N$point_lat_short";
             } else {
