@@ -337,15 +337,13 @@ class Page extends PageCommon {
 
     private function getPointNew($id, $smarty) {
         if ($this->checkEdit()) {
-            $db = $this->db;
             $city_title = '';
             if (isset($_GET['cid'])) {
-                $cid = cut_trash_int($_GET['cid']);
-                $dbpc = $db->getTableName('pagecity');
-                $db->sql = "SELECT * FROM $dbpc WHERE pc_id = '$cid' LIMIT 1";
-                $db->exec();
-                $row = $db->fetch();
-                $city_title = 'г. ' . $row['pc_title'];
+                $pc = new MPageCities($this->db);
+                $city = $pc->getItemByPk(intval($_GET['cid']));
+                $city_title = 'г. ' . $city['pc_title'];
+            } else {
+                $city_title = '';
             }
             $smarty->assign('city_title', $city_title);
             return $smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.sm.html');
@@ -361,14 +359,13 @@ class Page extends PageCommon {
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
-        $ppid = cut_trash_int($_POST['pid']);
+        $ppid = intval($_POST['pid']);
         if ($pid != $ppid) {
             return $this->getError('403');
         }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $db->sql = "UPDATE $dbpp SET pt_active = 0, pt_lastup_date = now() WHERE pt_id = '$ppid'";
-        if ($db->exec()) {
+        $pp = new MPagePoints($this->db);
+        $state = $pp->deleteByPk($ppid);
+        if ($state) {
             return $ppid;
         } else {
             return FALSE;
@@ -389,7 +386,7 @@ class Page extends PageCommon {
             'pt_name' => trim($_POST['nname']) != '' ? trim($_POST['nname']) : '[не указано]',
             'pt_description' => trim($_POST['ndesc']),
             'pt_citypage_id' => intval($_POST['cid']),
-            'pt_website' => strlen(trim($_POST['nweb'])) > 0 ? 'http://' . str_replace('http://', '', trim($_POST['nweb'])) : null,
+            'pt_website' => trim($_POST['nweb'])),
             'pt_email' => trim($_POST['nmail']),
             'pt_worktime' => trim($_POST['nwork']),
             'pt_adress' => trim($_POST['naddr']),
@@ -398,8 +395,8 @@ class Page extends PageCommon {
             'pt_rank' => 0,
         );
         if ($_POST['nlat'] != '' && $_POST['nlon'] != '') {
-            $add_item['pt_latitude'] = floatval(str_replace(',', '.', trim($_POST['nlat'])));
-            $add_item['pt_longitude'] = floatval(str_replace(',', '.', trim($_POST['nlon'])));
+            $add_item['pt_latitude'] = trim($_POST['nlat']);
+            $add_item['pt_longitude'] = trim($_POST['nlon']);
         }
         return $pts->insert($add_item);
     }
@@ -408,23 +405,21 @@ class Page extends PageCommon {
         if (!$id) {
             return $this->getError('404');
         }
-        $nname = cut_trash_string($_POST['nname']);
-        $nid = cut_trash_int($_POST['id']);
-        $uid = $this->getUserId();
+        $nid = intval($_POST['id']);
         if ($id != $nid) {
             return $this->getError('404');
         }
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $db->sql = "UPDATE $dbpp SET pt_name = '$nname', pt_lastup_user = '$uid', pt_lastup_date = now() WHERE pt_id = '$nid'";
-        if ($db->exec()) {
-            $db->sql = "SELECT pt_name FROM $dbpp WHERE pt_id = '$nid'";
-            $db->exec();
-            $row = $db->fetch();
-            return $row['pt_name'];
+        $pp = new MPagePoints($this->db);
+        $state = $pp->updateByPk($nid, array(
+            'pt_name' => $_POST['nname'],
+            'pt_lastup_user' => $this->getUserId(),
+        ));
+        if ($state) {
+            $point = $pp->getItemByPk($nid);
+            return $point['pt_name'];
         } else {
             return $this->getError('404');
         }
@@ -434,26 +429,21 @@ class Page extends PageCommon {
         if (!$id) {
             return $this->getError('404');
         }
-        $ndesc = cut_trash_string($_POST['ndesc']);
-        $nid = cut_trash_int($_POST['id']);
-        $uid = $this->getUserId();
+        $nid = intval($_POST['id']);
         if ($id != $nid) {
             return $this->getError('404');
         }
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $dbvp = $db->getTableName('verpoints');
-        $db->sql = "INSERT INTO $dbvp (vp_point_id, vp_date, vp_text, vp_hash, vp_userid) SELECT $nid, now(), pt_description, md5(pt_description),'$uid' FROM $dbpp WHERE pt_id = '$nid'";
-        $db->exec();
-        $db->sql = "UPDATE $dbpp SET pt_description = '$ndesc', pt_lastup_user = '$uid', pt_lastup_date = now() WHERE pt_id = '$nid'";
-        if ($db->exec()) {
-            $db->sql = "SELECT pt_description FROM $dbpp WHERE pt_id = '$nid'";
-            $db->exec();
-            $row = $db->fetch();
-            return $row['pt_description'];
+        $pp = new MPagePoints($this->db);
+        $state = $pp->updateByPk($nid, array(
+            'pt_description' => $_POST['ndesc'],
+            'pt_lastup_user' => $this->getUserId(),
+        ));
+        if ($state) {
+            $point = $pp->getItemByPk($nid);
+            return $point['pt_description'];
         } else {
             return $this->getError('404');
         }
