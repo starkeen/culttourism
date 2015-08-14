@@ -101,11 +101,8 @@ class Page extends PageCommon {
 
 //--------------------------------------------------------- TEXT PAGES ---------
     private function getTextPage($smarty, $pg_id) {
-        $db = $this->db;
-        $dbm = $db->getTableName('modules');
-        $db->sql = "SELECT md_pagecontent FROM $dbm WHERE md_id = '$pg_id'";
-        $db->exec();
-        $md = $db->fetch();
+        $mds = new MModules($this->db);
+        $md = $mds->getItemByPk($pg_id);
         return '<h3>Экспорт данных GPS</h3>' . $md['md_pagecontent'];
     }
 
@@ -118,10 +115,8 @@ class Page extends PageCommon {
         if (!$brid || !$bid || $brid != $bid) {
             return FALSE;
         }
-        $db = $this->db;
-        $dbb = $db->getTableName('blogentries');
-        $db->sql = "DELETE FROM $dbb WHERE br_id = '$brid'";
-        return $db->exec();
+        $bg = new MBlogEntries($this->db);
+        return $bg->deleteByPk($brid);
     }
 
     private function getFormBlog($smarty, $br_id = null) {
@@ -157,30 +152,29 @@ class Page extends PageCommon {
         if (!$this->checkEdit()) {
             return FALSE;
         }
-        $brid = cut_trash_int($_POST['brid']);
-        $ntitle = cut_trash_text($_POST['ntitle']);
-        $ntext = cut_trash_html($_POST['ntext']);
-        $ndate = transSQLdate(cut_trash_string($_POST['ndate']));
-        $ntime = cut_trash_string($_POST['ntime']);
-        $nact = cut_trash_string($_POST['nact']);
-        $nact = ($nact == 'true') ? 1 : 0;
-        $nurl = cut_trash_string($_POST['nurl']);
-        $nuser = $this->getUserId();
+        
+        $bg = new MBlogEntries($this->db);
 
-        $db = $this->db;
-        $dbb = $db->getTableName('blogentries');
         if ($_POST['brid'] == 'add') {
-            $db->sql = "INSERT INTO $dbb SET
-                        br_title='$ntitle', br_text='$ntext', br_date = '$ndate $ntime', br_active = '$nact', br_url='$nurl', br_us_id = '$nuser'";
-        } elseif ($brid > 0) {
-            $db->sql = "UPDATE $dbb SET
-                        br_title='$ntitle', br_text='$ntext', br_date = '$ndate $ntime', br_active = '$nact', br_url='$nurl'
-                        WHERE br_id = '$brid'";
+            return $bg->insert(array(
+                'br_title' => $_POST['ntitle'],
+                'br_text' => $_POST['ntext'],
+                'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
+                'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
+                'br_url' => $_POST['nurl'],
+                'br_us_id' => $this->getUserId(),
+            ));
+        } elseif ($br_id > 0) {
+            return $bg->updateByPk($br_id, array(
+                'br_title' => $_POST['ntitle'],
+                'br_text' => $_POST['ntext'],
+                'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
+                'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
+                'br_url' => $_POST['nurl'],
+            ));
         } else {
             return $this->getError('404');
         }
-
-        return $db->exec();
     }
 
 //-------------------------------------------------------------- POINTS ----------
