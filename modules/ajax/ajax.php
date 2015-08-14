@@ -386,7 +386,7 @@ class Page extends PageCommon {
             'pt_name' => trim($_POST['nname']) != '' ? trim($_POST['nname']) : '[не указано]',
             'pt_description' => trim($_POST['ndesc']),
             'pt_citypage_id' => intval($_POST['cid']),
-            'pt_website' => trim($_POST['nweb'])),
+            'pt_website' => trim($_POST['nweb']),
             'pt_email' => trim($_POST['nmail']),
             'pt_worktime' => trim($_POST['nwork']),
             'pt_adress' => trim($_POST['naddr']),
