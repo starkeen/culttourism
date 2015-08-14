@@ -66,8 +66,6 @@ class Page extends PageCommon {
             } else {
                 $this->getError('404');
             }
-        } elseif ($page_id == 'GPX' && $id == 'getcitypoints' && isset($_GET['cid']) && intval($_GET['cid'])) {
-            $this->content = $this->getCityPointsGPX($smarty, intval($_GET['cid']));
         } else {
             $this->getError('404');
         }
@@ -503,29 +501,6 @@ class Page extends PageCommon {
             $smarty->assign('authkey', 'ewtheqryb35yqb356y4ery');
             return $smarty->fetch(_DIR_TEMPLATES . '/sign/authform.sm.html');
         }
-    }
-
-//-------------------------------------------------------------- GPS ----------
-    private function getCityPointsGPX($smarty, $cid) {
-        if (!$cid) {
-            $this->getError('404');
-        }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $db->sql = "SELECT pt_name, pt_id, pt_latitude, pt_longitude,
-                    DATE_FORMAT(pt_lastup_date, '%Y-%m-%dT%H:%i:%sZ') as pt_date
-                    FROM $dbpp
-                    WHERE pt_citypage_id='$cid'
-                    AND pt_latitude != ''
-                    AND pt_longitude != ''";
-        $db->exec();
-        $points = $db->fetchAll();
-        //print_x($points);
-        $smarty->assign('points', $points);
-
-        header("Content-type: application/xml");
-        echo $smarty->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
-        exit();
     }
 
 }

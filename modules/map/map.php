@@ -11,7 +11,7 @@ class Page extends PageCommon {
             $id = substr($id, 0, strpos($id, '?'));
         }
         $this->id = $id;
-        
+
         $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $module_id) : $this->globalsettings['res_js_' . $module_id];
 
         //========================  I N D E X  ================================
@@ -34,6 +34,8 @@ class Page extends PageCommon {
             $this->auth->setService('map');
             $this->isAjax = true;
             $this->getYMapsMLList(intval($_GET['lid']));
+        } elseif ($page_id == 'gpx' && isset($_GET['cid']) && intval($_GET['cid'])) {
+            $this->content = $this->getCityPointsGPX($smarty, intval($_GET['cid']));
         }
         //==========================  E X I T  ================================
         else {
@@ -75,7 +77,7 @@ class Page extends PageCommon {
                                 AND li.li_ls_id = :list_id
                             ORDER BY pt.tr_order DESC, pp.pt_rank
                             LIMIT 300";
-        
+
         $this->db->execute(array(
             ':list_id' => $list_id,
             ':url_root1' => _URL_ROOT,
@@ -140,7 +142,7 @@ class Page extends PageCommon {
                     AND pt_latitude != ''
                     AND pt_longitude != ''
                     AND pt_active = 1";
-        
+
         $this->db->execute(array(
             ':cid' => $cid,
             ':url_root1' => _URL_ROOT,
@@ -162,7 +164,7 @@ class Page extends PageCommon {
                             LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
                     WHERE pc.pc_id = :cid
                         AND pc2.pc_city_id != 0";
-        
+
         $this->db->execute(array(
             ':cid' => $cid,
         ));
@@ -174,7 +176,7 @@ class Page extends PageCommon {
         $this->db->sql = "SELECT pc.*
                     FROM $dbpc pc
                     WHERE pc.pc_id = :cid";
-        
+
         $this->db->execute(array(
             ':cid' => $cid,
         ));
@@ -186,7 +188,7 @@ class Page extends PageCommon {
                             LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
                         WHERE pc2.pc_country_id = :pc_country_id
                             AND pc2.pc_city_id != 0";
-            
+
             $this->db->execute(array(
                 ':pc_country_id' => $this_city['pc_country_id'],
             ));
@@ -277,7 +279,7 @@ class Page extends PageCommon {
                                 OR pp.pt_id = :selected_object_id1
                             ORDER BY pt.tr_order DESC, pp.pt_rank
                             LIMIT 300";
-        
+
         $this->db->execute(array(
             ':url_root1' => _URL_ROOT,
             ':url_root2' => _URL_ROOT,
@@ -308,7 +310,29 @@ class Page extends PageCommon {
         echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
         exit();
     }
-    
+
+    private function getCityPointsGPX($smarty, $cid) {
+        if (!$cid) {
+            $this->getError('404');
+        }
+        $db = $this->db;
+        $dbpp = $db->getTableName('pagepoints');
+        $db->sql = "SELECT pt_name, pt_id, pt_latitude, pt_longitude,
+                    DATE_FORMAT(pt_lastup_date, '%Y-%m-%dT%H:%i:%sZ') as pt_date
+                    FROM $dbpp
+                    WHERE pt_citypage_id='$cid'
+                    AND pt_latitude != ''
+                    AND pt_longitude != ''";
+        $db->exec();
+        $points = $db->fetchAll();
+        //print_x($points);
+        $smarty->assign('points', $points);
+
+        header("Content-type: application/xml");
+        echo $smarty->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
+        exit();
+    }
+
     private function getRefPointTypes() {
         $ref = new MRefPointtypes($this->db);
         return $ref->getActive();
@@ -319,4 +343,3 @@ class Page extends PageCommon {
     }
 
 }
-
