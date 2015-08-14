@@ -54,6 +54,12 @@ class MPagePoints extends Model {
         return $this->_db->fetchAll();
     }
 
+    /**
+     * Все точки региона, сгруппированные по признаку достопримечательности
+     * @param integer $city_id
+     * @param bool $show_all
+     * @return array
+     */
     public function getPointsByCity($city_id, $show_all = false) {
         $out = array(
             'points' => array(),
@@ -127,6 +133,40 @@ class MPagePoints extends Model {
             }
         }
         return $out;
+    }
+
+    public function getPointsByBounds($bounds, $selected_object_id = 0) {
+        $dbpp = $this->_db->getTableName('pagepoints');
+        $dbpc = $this->_db->getTableName('pagecity');
+        $dbru = $this->_db->getTableName('region_url');
+        $dbpr = $this->_db->getTableName('ref_pointtypes');
+        $this->_db->sql = "SELECT pp.*,
+                                IF (pp.pt_id = :selected_object_id2, 1, 0) AS obj_selected,
+                                CONCAT(:url_root1, ru.url, '/') AS cityurl,
+                                CONCAT(:url_root2, ru.url, '/', pp.pt_slugline, '.html') AS objurl,
+                                CONCAT(ru.url, '/', pp.pt_slugline, '.html') AS objuri
+                            FROM $dbpp AS pp
+                                LEFT JOIN $dbpr pt ON pt.tp_id = pp.pt_type_id
+                                LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
+                                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
+                            WHERE pp.pt_active = 1
+                                AND pp.pt_latitude BETWEEN :bounds_min_lat AND :bounds_max_lat
+                                AND pp.pt_longitude BETWEEN :bounds_min_lon AND :bounds_max_lon
+                                OR pp.pt_id = :selected_object_id1
+                            ORDER BY pt.tr_order DESC, pp.pt_rank
+                            LIMIT 300";
+
+        $this->_db->execute(array(
+            ':url_root1' => _URL_ROOT,
+            ':url_root2' => _URL_ROOT,
+            ':selected_object_id1' => $selected_object_id,
+            ':selected_object_id2' => $selected_object_id,
+            ':bounds_min_lat' => $bounds['min_lat'],
+            ':bounds_max_lat' => $bounds['max_lat'],
+            ':bounds_min_lon' => $bounds['min_lon'],
+            ':bounds_max_lon' => $bounds['max_lon'],
+        ));
+        return $this->_db->fetchAll();
     }
 
     public function getUnslug($limit = 10) {

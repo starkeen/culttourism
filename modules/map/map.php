@@ -56,11 +56,11 @@ class Page extends PageCommon {
         $li = new MListsItems($this->db);
         $points = $li->getPointsInList($list_id);
         foreach ($points as $i => $pt) {
-            $points[$i]['pt_description'] = strip_tags($pt['pt_description']);
-            $points[$i]['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
+            $points[$i]['pt_description'] = strip_tags($points[$i]['pt_description']);
+            $points[$i]['pt_description'] = html_entity_decode($points[$i]['pt_description'], ENT_QUOTES, 'UTF-8');
             $short_end = @mb_strpos($pt['pt_description'], ' ', 50, 'utf-8');
-            $points[$i]['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
-            $points[$i]['pt_website'] = htmlspecialchars($pt['pt_website'], ENT_QUOTES);
+            $points[$i]['pt_short'] = trim(mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
+            $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
 
             if ($pt['pt_latitude'] > $bounds['max_lat']) {
                 $bounds['max_lat'] = $pt['pt_latitude'];
@@ -180,11 +180,6 @@ class Page extends PageCommon {
     }
 
     private function getYMapsMLCommon($get) {
-        $dbpp = $this->db->getTableName('pagepoints');
-        $dbpc = $this->db->getTableName('pagecity');
-        $dbru = $this->db->getTableName('region_url');
-        $dbpr = $this->db->getTableName('ref_pointtypes');
-
         $ptypes = $this->getRefPointTypes();
         $bounds = array(
             'max_lat' => 55.9864578247, 'max_lon' => 37.9002265930,
@@ -192,7 +187,6 @@ class Page extends PageCommon {
             'center_lat' => null, 'center_lon' => null,
             'delta_lat' => 0.1, 'delta_lon' => 0.3,
         );
-        $points = array();
 
         if (!isset($get['center']) && isset($get['clt']) && isset($get['cln']) && !isset($get['llt']) && !isset($get['lln']) && !isset($get['rlt']) && !isset($get['rln'])) {
             //---------- по координатам центра (раздельно)
@@ -234,40 +228,15 @@ class Page extends PageCommon {
             $selected_object_id = 0;
         }
 
-        $this->db->sql = "SELECT pp.*,
-                                IF (pp.pt_id = :selected_object_id2, 1, 0) AS obj_selected,
-                                CONCAT(:url_root1, ru.url, '/') AS cityurl,
-                                CONCAT(:url_root2, ru.url, '/', pp.pt_slugline, '.html') AS objurl,
-                                CONCAT(ru.url, '/', pp.pt_slugline, '.html') AS objuri
-                            FROM $dbpp AS pp
-                                LEFT JOIN $dbpr pt ON pt.tp_id = pp.pt_type_id
-                                LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
-                                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
-                            WHERE pp.pt_active = 1
-                                AND pp.pt_latitude BETWEEN :bounds_min_lat AND :bounds_max_lat
-                                AND pp.pt_longitude BETWEEN :bounds_min_lon AND :bounds_max_lon
-                                OR pp.pt_id = :selected_object_id1
-                            ORDER BY pt.tr_order DESC, pp.pt_rank
-                            LIMIT 300";
+        $pt = new MPagePoints($this->db);
+        $points = $pt->getPointsByBounds($bounds, $selected_object_id);
 
-        $this->db->execute(array(
-            ':url_root1' => _URL_ROOT,
-            ':url_root2' => _URL_ROOT,
-            ':selected_object_id1' => $selected_object_id,
-            ':selected_object_id2' => $selected_object_id,
-            ':bounds_min_lat' => $bounds['min_lat'],
-            ':bounds_max_lat' => $bounds['max_lat'],
-            ':bounds_min_lon' => $bounds['min_lon'],
-            ':bounds_max_lon' => $bounds['max_lon'],
-        ));
-        //$this->db->showSQL();
-        while ($pt = $this->db->fetch()) {
-            $pt['pt_description'] = strip_tags($pt['pt_description']);
-            $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
-            $short_end = @mb_strpos($pt['pt_description'], ' ', 50, 'utf-8');
-            $pt['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
-            $pt['pt_website'] = htmlspecialchars($pt['pt_website'], ENT_QUOTES);
-            $points[] = $pt;
+        foreach ($points as $i => $pt) {
+            $points[$i]['pt_description'] = strip_tags($points[$i]['pt_description']);
+            $points[$i]['pt_description'] = html_entity_decode($points[$i]['pt_description'], ENT_QUOTES, 'UTF-8');
+            $short_end = @mb_strpos($points[$i]['pt_description'], ' ', 50, 'utf-8');
+            $points[$i]['pt_short'] = trim(mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
+            $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
         }
 
         $this->smarty->assign('ptypes', $ptypes);
