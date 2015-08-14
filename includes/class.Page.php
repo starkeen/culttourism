@@ -6,17 +6,11 @@ class Page extends PageCommon {
         parent::__construct($db, $mod[0]); //встроеные модули
         //if ($mod[1]!=null) $this->getSubContent($this->md_id, $mod[1]);
         //$this->navibar = $this->getNavigation($this->md_id, $mod[1]);
-        if ($this->content) {
-            //
-        } elseif ($this->content = $this->getPageByURL($mod)) {
+        if (!$this->content && $this->content = $this->getPageByURL($mod)) {
             //
         } else {
             $this->getError('404');
         }
-    }
-
-    public static function getInstance($db, $mod = null) {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
     }
 
     public function getPageByURL($aurl) {
@@ -31,15 +25,15 @@ class Page extends PageCommon {
             $url_parts_array = !empty($url) ? explode('/', $url) : array();
             $url_parts = array_pop($url_parts_array);
             if ($url_parts == 'map.html') {
-                return $this->getPageMap($this->db, $this->smarty, $url);
+                return $this->getPageMap($url);
             } elseif ($url_parts == 'index.html') {
-                return $this->getPageCity($this->db, $this->smarty, $url);
+                return $this->getPageCity($url);
             } elseif (preg_match('/object([0-9]+)\.html/i', $url_parts, $regs)) {
-                return $this->getPageObject($this->db, $this->smarty, intval($regs[1]));
+                return $this->getPageObject(intval($regs[1]));
             } elseif (preg_match('/([a-z0-9_-]+)\.html/i', $url_parts, $regs)) {
                 return $this->getPageObjectBySlug($regs[1]);
             } else {
-                return $this->getPageCity($this->db, $this->smarty, $url);
+                return $this->getPageCity($url);
             }
         } else {
             return FALSE;
@@ -166,41 +160,7 @@ class Page extends PageCommon {
         }
     }
 
-    private function getPageMap($db, $smarty, $url) {
-        $this->ymaps_ver = 2;
-        $dburl = $db->getTableName('region_url');
-        $dbpc = $db->getTableName('pagecity');
-        $dbpp = $db->getTableName('pagepoints');
-
-        $db->sql = "SELECT city.*,
-                            UNIX_TIMESTAMP(city.pc_lastup_date) AS last_update1,
-                            (SELECT UNIX_TIMESTAMP(MAX(pt_lastup_date)) FROM $dbpp WHERE pt_citypage_id = city.pc_id) AS last_update2                           
-                    FROM $dburl url
-                    LEFT JOIN $dbpc city ON city.pc_id = url.citypage
-                    WHERE url.url = :url";
-        $db->execute(array(
-            ':url' => str_replace('/map.html', '', $url),
-        ));
-        //$db->showSQL();
-        if ($row = $db->fetch()) {
-            $this->lastedit_timestamp = max(array($row['last_update1'], $row['last_update2']));
-            $row['pc_zoom'] = ($row['pc_latlon_zoom']) ? $row['pc_latlon_zoom'] : 12;
-            $row['pc_zoom'] ++;
-
-            header("Location: /map/#center={$row['pc_longitude']},{$row['pc_latitude']}&zoom={$row['pc_zoom']}");
-            exit();
-        }
-        $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
-        $smarty->assign('city', $row);
-        $smarty->assign('point_types', $point_types);
-        $smarty->assign('points_sight', $pnts_sight);
-        $smarty->assign('points_servo', $pnts_service);
-        $smarty->assign('page_url', $this->basepath);
-
-        return $smarty->fetch(_DIR_TEMPLATES . '/_pages/pagemap.sm.html');
-    }
-
-    private function getPageCity($db, $smarty, $url) {
+    private function getPageCity($url) {
         $url_parts = explode('/', $url);
         if (array_pop($url_parts) == 'index.html') {
             header("HTTP/1.1 301 Moved Permanently");
@@ -275,70 +235,32 @@ class Page extends PageCommon {
         }
     }
 
-    private function getPageObject($db, $smarty, $id) {
+    private function getPageObject($id) {
         if (!$id) {
-            return false;
+            return $this->getError('404');
         }
 
         $pts = new MPagePoints($this->db);
-        $pcs = new MPageCities($this->db);
         $object = $pts->getItemByPk($id);
+
         if (!$object || $object['pt_active'] == 0) {
-            return false;
-        }
-        $this->canonical = $object['url_canonical'];
-        if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != $this->canonical) {
-            header("HTTP/1.1 301 Moved Permanently");
-            header("Location: $this->canonical");
-            exit();
+            return $this->getError('404');
         }
 
-        $short = strip_tags($object['pt_description']);
-        $short = mb_strlen($short) >= 100 ? mb_substr($short, 0, mb_strpos($short, ' ', 100), 'utf-8') : $short;
-        $object['esc_name'] = htmlentities($object['pt_name'], ENT_QUOTES, 'utf-8');
-        $object['map_zoom'] = ($object['pt_latlon_zoom']) ? $object['pt_latlon_zoom'] : 14;
-        if ($object['pt_latitude'] && $object['pt_longitude']) {
-            $object_lat_short = mb_substr($object['pt_latitude'], 0, 8);
-            $object_lon_short = mb_substr($object['pt_longitude'], 0, 8);
-            $object['gps_dec'] = (($object_lat_short >= 0) ? 'N' : 'S') . abs($object_lat_short) . ' ' . (($object_lon_short >= 0) ? 'E' : 'W') . abs($object_lon_short);
-            $object['sw_ne_delta'] = 0.01;
-            $object['sw_ne'] = array(
-                'sw' => array('lat' => $object['pt_latitude'] - $object['sw_ne_delta'], 'lon' => $object['pt_longitude'] - $object['sw_ne_delta']),
-                'ne' => array('lat' => $object['pt_latitude'] + $object['sw_ne_delta'], 'lon' => $object['pt_longitude'] + $object['sw_ne_delta']),
-            );
-            //$object['gps_deg'] = 0;
-        }
-        $smarty->assign('object', $object);
+        header("HTTP/1.1 301 Moved Permanently");
+        header("Location: {$object['url_canonical']}");
+        exit();
+    }
 
-        $this->lastedit_timestamp = $object['last_update'];
-        $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
+    private function getPageMap($url) {
+        $pc = new MPageCities($this->db);
+        $city = $pc->getCityByUrl(str_replace('/map.html', '', $url));
+        header("Location: /map/#center={$city['pc_longitude']},{$city['pc_latitude']}&zoom={$city['pc_zoom']}");
+        exit();
+    }
 
-        $city = $pcs->getItemByPk($object['pt_citypage_id']);
-        $smarty->assign('city', $city);
-
-        //------------------  s t a t i s t i c s  ------------------------
-        $sp = new MStatpoints($this->db);
-        $sp->add($id, $this->getUserHash());
-
-        $this->addTitle($city['pc_title']);
-        $this->addTitle($object['esc_name']);
-        if ($object['tr_sight']) {
-            $this->addDescription('Достопримечательности ' . $city['pc_inwheretext']);
-        }
-        if (isset($object['gps_dec'])) {
-            $this->addDescription('GPS-координаты');
-        }
-        $this->addDescription("{$object['tp_short']} {$city['pc_inwheretext']}");
-        $this->addDescription($object['esc_name']);
-        $this->addDescription($short);
-        $this->addKeywords($city['pc_title']);
-        $this->addKeywords($object['esc_name']);
-        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=point') : $this->globalsettings['res_js_point'];
-        if (isset($object['gps_dec'])) {
-            $this->addKeywords('координаты GPS');
-        }
-
-        return $smarty->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.sm.html');
+    public static function getInstance($db, $mod = null) {
+        return self::getInstanceOf(__CLASS__, $db, $mod);
     }
 
 }
