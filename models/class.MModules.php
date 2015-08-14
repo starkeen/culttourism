@@ -3,8 +3,8 @@
 class MModules extends Model {
 
     protected $_table_pk = 'md_id';
-    protected $_table_order = 'md_id';
-    protected $_table_active = 'md_id';
+    protected $_table_order = 'md_sort';
+    protected $_table_active = 'md_active';
 
     public function __construct($db) {
         $this->_table_name = $db->getTableName('modules');
