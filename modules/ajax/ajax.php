@@ -212,65 +212,8 @@ class Page extends PageCommon {
             return FALSE;
         }
     }
-
-//-------------------------------------------------------------- CITY ----------
-    private function setFormCityGPS($cid, $smarty) {
-        if (!$this->checkEdit()) {
-            return $this->getError('403');
-        }
-        $db = $this->db;
-        $dbpc = $db->getTableName('pagecity');
-        //print_x($_POST);
-        $n_lat = cut_trash_string($_POST['pc_lat']);
-        $n_lat = str_replace(',', '.', $n_lat);
-        $n_lon = cut_trash_string($_POST['pc_lon']);
-        $n_lon = str_replace(',', '.', $n_lon);
-        $n_zoom = cut_trash_int($_POST['pc_zoom']);
-
-        $db->sql = "UPDATE $dbpc SET pc_latitude = '$n_lat', pc_longitude = '$n_lon', pc_latlon_zoom = '$n_zoom', pc_lastup_date = now() WHERE pc_id = '$cid'";
-        if ($db->exec()) {
-            return TRUE;
-        } else {
-            return false;
-        }
-    }
-
-    private function getFormCityGPS($cid, $smarty) {
-        $db = $this->db;
-        $dbpc = $db->getTableName('pagecity');
-        $db->sql = "SELECT pc.pc_id, pc.pc_title, pc.pc_latitude, pc.pc_longitude, pc.pc_latlon_zoom
-                    FROM $dbpc AS pc
-                    WHERE pc.pc_id='$cid'";
-        $db->exec();
-        $city = $db->fetch();
-
-        if ($city['pc_latitude'] && $city['pc_longitude']) {
-            $city['map_center']['lat'] = $city['pc_latitude'];
-            $city['map_center']['lon'] = $city['pc_longitude'];
-            $city['zoom'] = ($city['pc_latlon_zoom']) ? $city['pc_latlon_zoom'] : 13;
-            $city['map_point'] = 1;
-        } else {
-            $city['map_center']['lat'] = 55.7557;
-            $city['map_center']['lon'] = 37.6176;
-            $city['zoom'] = 3;
-            $city['map_point'] = -1;
-        }
-
-        $smarty->assign('city', $city);
-        return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/citylatlon.form.sm.html');
-    }
-
-    private function getFormLogin($smarty) {
-        if (isset($_SESSION['user_id'])) {
-            $smarty->assign('username', $_SESSION['user_name']);
-            return $smarty->fetch(_DIR_TEMPLATES . '/sign/authuser.sm.html');
-        } else {
-            $smarty->assign('baseurl', _SITE_URL);
-            $smarty->assign('authkey', 'ewtheqryb35yqb356y4ery');
-            return $smarty->fetch(_DIR_TEMPLATES . '/sign/authform.sm.html');
-        }
-    }
-
+    
+    
     private function setFormPointAddr($pid) {
         if (!$this->checkEdit()) {
             return $this->getError('403');
@@ -357,7 +300,350 @@ class Page extends PageCommon {
         $smarty->assign('point', $point);
         return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/changelatlon.form.sm.html');
     }
+    
+    
+    private function getChangeTypeForm($smarty) {
+        if (!$this->checkEdit()) {
+            return $this->getError('403');
+        }
+        $point_id = cut_trash_int($_GET['pid']);
+        if (!$point_id) {
+            return $this->getError('403');
+        }
+        $db = $this->db;
+        $dbpp = $db->getTableName('pagepoints');
+        $dbpt = $db->getTableName('ref_pointtypes');
+        $db->sql = "SELECT pt_id, pt_name, pt_type_id FROM $dbpp WHERE pt_id = '$point_id'";
+        $db->exec();
+        $point = $db->fetch();
+        $smarty->assign('point', $point);
+        $db->sql = "SELECT tp_id, tp_name, tp_icon FROM $dbpt ORDER BY tr_sight desc, tr_order";
+        $db->exec();
+        while ($row = $db->fetch()) {
+            $row['current'] = ($row['tp_id'] == $point['pt_type_id']) ? 1 : 0;
+            $types[] = $row;
+        }
+        $smarty->assign('alltypes', $types);
+        return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/changetype.form.sm.html');
+    }
 
+    private function setPointType($pid) {
+        if (!$this->checkEdit()) {
+            return $this->getError('403');
+        }
+        $ppid = cut_trash_int($_POST['pid']);
+        $type = cut_trash_int($_POST['ntype']);
+        if ($pid != $ppid || !$type) {
+            return $this->getError('403');
+        }
+        $db = $this->db;
+        $dbpp = $db->getTableName('pagepoints');
+        $dbpt = $db->getTableName('ref_pointtypes');
+        $db->sql = "UPDATE $dbpp SET pt_type_id = '$type', pt_lastup_date = now() WHERE pt_id = '$ppid'";
+        $db->exec();
+        $db->sql = "SELECT tp_icon FROM $dbpt WHERE tp_id = '$type'";
+        $db->exec();
+        $row = $db->fetch();
+        return $row['tp_icon'];
+    }
+
+    private function getPointNew($id, $smarty) {
+        if ($this->checkEdit()) {
+            $db = $this->db;
+            $city_title = '';
+            if (isset($_GET['cid'])) {
+                $cid = cut_trash_int($_GET['cid']);
+                $dbpc = $db->getTableName('pagecity');
+                $db->sql = "SELECT * FROM $dbpc WHERE pc_id = '$cid' LIMIT 1";
+                $db->exec();
+                $row = $db->fetch();
+                $city_title = 'г. ' . $row['pc_title'];
+            }
+            $smarty->assign('city_title', $city_title);
+            return $smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.sm.html');
+        } else {
+            return $this->getError('403');
+        }
+    }
+
+    private function deletePoint($pid, $smarty) {
+        if (!$pid) {
+            return $this->getError('404');
+        }
+        if (!$this->checkEdit()) {
+            return $this->getError('403');
+        }
+        $ppid = cut_trash_int($_POST['pid']);
+        if ($pid != $ppid) {
+            return $this->getError('403');
+        }
+        $db = $this->db;
+        $dbpp = $db->getTableName('pagepoints');
+        $db->sql = "UPDATE $dbpp SET pt_active = 0, pt_lastup_date = now() WHERE pt_id = '$ppid'";
+        if ($db->exec()) {
+            return $ppid;
+        } else {
+            return FALSE;
+        }
+    }
+
+    private function savePointNew($cid, $smarty) {
+        if (!$cid) {
+            return $this->getError('404');
+        }
+        if (!$this->checkEdit()) {
+            return $this->getError('403');
+        }
+        //print_x($_POST);
+
+        $pts = new MPagePoints($this->db);
+        $add_item = array(
+            'pt_name' => trim($_POST['nname']) != '' ? trim($_POST['nname']) : '[не указано]',
+            'pt_description' => trim($_POST['ndesc']),
+            'pt_citypage_id' => intval($_POST['cid']),
+            'pt_website' => strlen(trim($_POST['nweb'])) > 0 ? 'http://' . str_replace('http://', '', trim($_POST['nweb'])) : null,
+            'pt_email' => trim($_POST['nmail']),
+            'pt_worktime' => trim($_POST['nwork']),
+            'pt_adress' => trim($_POST['naddr']),
+            'pt_phone' => trim($_POST['nphone']),
+            'pt_is_best' => intval(!empty($_POST['nbest']) && $_POST['nbest'] == "checked"),
+            'pt_rank' => 0,
+        );
+        if ($_POST['nlat'] != '' && $_POST['nlon'] != '') {
+            $add_item['pt_latitude'] = floatval(str_replace(',', '.', trim($_POST['nlat'])));
+            $add_item['pt_longitude'] = floatval(str_replace(',', '.', trim($_POST['nlon'])));
+        }
+        return $pts->insert($add_item);
+    }
+
+    private function savePointTitle($id, $smarty) {
+        if (!$id) {
+            return $this->getError('404');
+        }
+        $nname = cut_trash_string($_POST['nname']);
+        $nid = cut_trash_int($_POST['id']);
+        $uid = $this->getUserId();
+        if ($id != $nid) {
+            return $this->getError('404');
+        }
+        if (!$this->checkEdit()) {
+            return $this->getError('403');
+        }
+        $db = $this->db;
+        $dbpp = $db->getTableName('pagepoints');
+        $db->sql = "UPDATE $dbpp SET pt_name = '$nname', pt_lastup_user = '$uid', pt_lastup_date = now() WHERE pt_id = '$nid'";
+        if ($db->exec()) {
+            $db->sql = "SELECT pt_name FROM $dbpp WHERE pt_id = '$nid'";
+            $db->exec();
+            $row = $db->fetch();
+            return $row['pt_name'];
+        } else {
+            return $this->getError('404');
+        }
+    }
+
+    private function savePointDescr($id, $smarty) {
+        if (!$id) {
+            return $this->getError('404');
+        }
+        $ndesc = cut_trash_string($_POST['ndesc']);
+        $nid = cut_trash_int($_POST['id']);
+        $uid = $this->getUserId();
+        if ($id != $nid) {
+            return $this->getError('404');
+        }
+        if (!$this->checkEdit()) {
+            return $this->getError('403');
+        }
+        $db = $this->db;
+        $dbpp = $db->getTableName('pagepoints');
+        $dbvp = $db->getTableName('verpoints');
+        $db->sql = "INSERT INTO $dbvp (vp_point_id, vp_date, vp_text, vp_hash, vp_userid) SELECT $nid, now(), pt_description, md5(pt_description),'$uid' FROM $dbpp WHERE pt_id = '$nid'";
+        $db->exec();
+        $db->sql = "UPDATE $dbpp SET pt_description = '$ndesc', pt_lastup_user = '$uid', pt_lastup_date = now() WHERE pt_id = '$nid'";
+        if ($db->exec()) {
+            $db->sql = "SELECT pt_description FROM $dbpp WHERE pt_id = '$nid'";
+            $db->exec();
+            $row = $db->fetch();
+            return $row['pt_description'];
+        } else {
+            return $this->getError('404');
+        }
+    }
+    
+    
+    private function getPoint($id) {
+        if (!$id) {
+            return $this->getError('404');
+        }
+
+        $pts = new MPagePoints($this->db);
+        $object = $pts->getItemByPk($id);
+
+        if (!$object) {
+            return false;
+        }
+
+        $object['page_link'] = $object['url_canonical'];
+        $object['gps_dec'] = '';
+
+        $sp = new Statpoints($this->db);
+        $sp->add($object['pt_id'], $this->getUserHash());
+
+
+        $this->smarty->assign('object', $object);
+
+        if ($this->checkEdit()) {
+            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
+        } else {
+            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
+        }
+    }
+
+    private function getPointBySlugline($slugline) {
+        if (!$slugline) {
+            return $this->getError('404');
+        }
+
+        $pts = new MPagePoints($this->db);
+        $objects = $pts->searchSlugline($slugline);
+        $object = isset($objects[0]) ? $objects[0] : false;
+        if (!$object) {
+            return false;
+        }
+
+        $object['page_link'] = $object['url_canonical'];
+
+        $sp = new Statpoints($this->db);
+        $sp->add($object['pt_id'], $this->getUserHash());
+
+
+        $this->smarty->assign('object', $object);
+
+        if ($this->checkEdit()) {
+            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
+        } else {
+            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
+        }
+    }
+
+
+//-------------------------------------------------------------- CITY ----------
+    private function setFormCityGPS($cid, $smarty) {
+        if (!$this->checkEdit()) {
+            return $this->getError('403');
+        }
+        $db = $this->db;
+        $dbpc = $db->getTableName('pagecity');
+        //print_x($_POST);
+        $n_lat = cut_trash_string($_POST['pc_lat']);
+        $n_lat = str_replace(',', '.', $n_lat);
+        $n_lon = cut_trash_string($_POST['pc_lon']);
+        $n_lon = str_replace(',', '.', $n_lon);
+        $n_zoom = cut_trash_int($_POST['pc_zoom']);
+
+        $db->sql = "UPDATE $dbpc SET pc_latitude = '$n_lat', pc_longitude = '$n_lon', pc_latlon_zoom = '$n_zoom', pc_lastup_date = now() WHERE pc_id = '$cid'";
+        if ($db->exec()) {
+            return TRUE;
+        } else {
+            return false;
+        }
+    }
+
+    private function getFormCityGPS($cid, $smarty) {
+        $db = $this->db;
+        $dbpc = $db->getTableName('pagecity');
+        $db->sql = "SELECT pc.pc_id, pc.pc_title, pc.pc_latitude, pc.pc_longitude, pc.pc_latlon_zoom
+                    FROM $dbpc AS pc
+                    WHERE pc.pc_id='$cid'";
+        $db->exec();
+        $city = $db->fetch();
+
+        if ($city['pc_latitude'] && $city['pc_longitude']) {
+            $city['map_center']['lat'] = $city['pc_latitude'];
+            $city['map_center']['lon'] = $city['pc_longitude'];
+            $city['zoom'] = ($city['pc_latlon_zoom']) ? $city['pc_latlon_zoom'] : 13;
+            $city['map_point'] = 1;
+        } else {
+            $city['map_center']['lat'] = 55.7557;
+            $city['map_center']['lon'] = 37.6176;
+            $city['zoom'] = 3;
+            $city['map_point'] = -1;
+        }
+
+        $smarty->assign('city', $city);
+        return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/citylatlon.form.sm.html');
+    }
+    
+    
+    private function saveCityTitle($id, $smarty) {
+        if (!$id) {
+            return $this->getError('404');
+        }
+        $ntitle = cut_trash_string($_POST['ntitle']);
+        $nid = cut_trash_int($_POST['id']);
+        if ($id != $nid) {
+            return $this->getError('404');
+        }
+        if (!$this->checkEdit()) {
+            return $this->getError('403');
+        }
+        $db = $this->db;
+        $dbpc = $db->getTableName('pagecity');
+        $db->sql = "UPDATE $dbpc SET pc_title = '$ntitle', pc_lastup_date = now() WHERE pc_id = '$nid'";
+        if ($db->exec()) {
+            $db->sql = "SELECT pc_title FROM $dbpc WHERE pc_id = '$nid'";
+            $db->exec();
+            $row = $db->fetch();
+            return $row['pc_title'];
+        } else {
+            return $this->getError('404');
+        }
+    }
+
+    private function saveCityDescr($id, $smarty) {
+        if (!$id) {
+            return $this->getError('404');
+        }
+        $ntitle = cut_trash_string($_POST['ntext']);
+        $nid = cut_trash_int($_POST['id']);
+        if ($id != $nid) {
+            return $this->getError('404');
+        }
+        if (!$this->checkEdit()) {
+            return $this->getError('403');
+        }
+        $db = $this->db;
+        $dbpc = $db->getTableName('pagecity');
+        $dbvc = $db->getTableName('vercity');
+        $db->sql = "INSERT INTO $dbvc (vc_cityid, vc_datecreate, vc_text, vc_hash, vc_userid) SELECT $nid, now(), pc_text, md5(pc_text),1 FROM $dbpc WHERE pc_id = '$nid'";
+        $db->exec();
+        $db->sql = "UPDATE $dbpc SET pc_text = '$ntitle', pc_lastup_date = now() WHERE pc_id = '$nid'";
+        if ($db->exec()) {
+            $db->sql = "SELECT pc_text FROM $dbpc WHERE pc_id = '$nid'";
+            $db->exec();
+            $row = $db->fetch();
+            return $row['pc_text'];
+        } else {
+            return $this->getError('404');
+        }
+    }
+
+
+//-------------------------------------------------------------- SIGN ----------
+    private function getFormLogin($smarty) {
+        if (isset($_SESSION['user_id'])) {
+            $smarty->assign('username', $_SESSION['user_name']);
+            return $smarty->fetch(_DIR_TEMPLATES . '/sign/authuser.sm.html');
+        } else {
+            $smarty->assign('baseurl', _SITE_URL);
+            $smarty->assign('authkey', 'ewtheqryb35yqb356y4ery');
+            return $smarty->fetch(_DIR_TEMPLATES . '/sign/authform.sm.html');
+        }
+    }
+
+
+//-------------------------------------------------------------- GPS ----------
     private function getCityPointsGPX($smarty, $cid) {
         if (!$cid) {
             $this->getError('404');
@@ -628,283 +914,6 @@ class Page extends PageCommon {
         header("Expires: " . date("r"));
         echo $smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML1.sm.xml');
         exit();
-    }
-
-    private function getChangeTypeForm($smarty) {
-        if (!$this->checkEdit()) {
-            return $this->getError('403');
-        }
-        $point_id = cut_trash_int($_GET['pid']);
-        if (!$point_id) {
-            return $this->getError('403');
-        }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $dbpt = $db->getTableName('ref_pointtypes');
-        $db->sql = "SELECT pt_id, pt_name, pt_type_id FROM $dbpp WHERE pt_id = '$point_id'";
-        $db->exec();
-        $point = $db->fetch();
-        $smarty->assign('point', $point);
-        $db->sql = "SELECT tp_id, tp_name, tp_icon FROM $dbpt ORDER BY tr_sight desc, tr_order";
-        $db->exec();
-        while ($row = $db->fetch()) {
-            $row['current'] = ($row['tp_id'] == $point['pt_type_id']) ? 1 : 0;
-            $types[] = $row;
-        }
-        $smarty->assign('alltypes', $types);
-        return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/changetype.form.sm.html');
-    }
-
-    private function setPointType($pid) {
-        if (!$this->checkEdit()) {
-            return $this->getError('403');
-        }
-        $ppid = cut_trash_int($_POST['pid']);
-        $type = cut_trash_int($_POST['ntype']);
-        if ($pid != $ppid || !$type) {
-            return $this->getError('403');
-        }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $dbpt = $db->getTableName('ref_pointtypes');
-        $db->sql = "UPDATE $dbpp SET pt_type_id = '$type', pt_lastup_date = now() WHERE pt_id = '$ppid'";
-        $db->exec();
-        $db->sql = "SELECT tp_icon FROM $dbpt WHERE tp_id = '$type'";
-        $db->exec();
-        $row = $db->fetch();
-        return $row['tp_icon'];
-    }
-
-    private function getPointNew($id, $smarty) {
-        if ($this->checkEdit()) {
-            $db = $this->db;
-            $city_title = '';
-            if (isset($_GET['cid'])) {
-                $cid = cut_trash_int($_GET['cid']);
-                $dbpc = $db->getTableName('pagecity');
-                $db->sql = "SELECT * FROM $dbpc WHERE pc_id = '$cid' LIMIT 1";
-                $db->exec();
-                $row = $db->fetch();
-                $city_title = 'г. ' . $row['pc_title'];
-            }
-            $smarty->assign('city_title', $city_title);
-            return $smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.sm.html');
-        } else {
-            return $this->getError('403');
-        }
-    }
-
-    private function deletePoint($pid, $smarty) {
-        if (!$pid) {
-            return $this->getError('404');
-        }
-        if (!$this->checkEdit()) {
-            return $this->getError('403');
-        }
-        $ppid = cut_trash_int($_POST['pid']);
-        if ($pid != $ppid) {
-            return $this->getError('403');
-        }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $db->sql = "UPDATE $dbpp SET pt_active = 0, pt_lastup_date = now() WHERE pt_id = '$ppid'";
-        if ($db->exec()) {
-            return $ppid;
-        } else {
-            return FALSE;
-        }
-    }
-
-    private function savePointNew($cid, $smarty) {
-        if (!$cid) {
-            return $this->getError('404');
-        }
-        if (!$this->checkEdit()) {
-            return $this->getError('403');
-        }
-        //print_x($_POST);
-
-        $pts = new MPagePoints($this->db);
-        $add_item = array(
-            'pt_name' => trim($_POST['nname']) != '' ? trim($_POST['nname']) : '[не указано]',
-            'pt_description' => trim($_POST['ndesc']),
-            'pt_citypage_id' => intval($_POST['cid']),
-            'pt_website' => strlen(trim($_POST['nweb'])) > 0 ? 'http://' . str_replace('http://', '', trim($_POST['nweb'])) : null,
-            'pt_email' => trim($_POST['nmail']),
-            'pt_worktime' => trim($_POST['nwork']),
-            'pt_adress' => trim($_POST['naddr']),
-            'pt_phone' => trim($_POST['nphone']),
-            'pt_is_best' => intval(!empty($_POST['nbest']) && $_POST['nbest'] == "checked"),
-            'pt_rank' => 0,
-        );
-        if ($_POST['nlat'] != '' && $_POST['nlon'] != '') {
-            $add_item['pt_latitude'] = floatval(str_replace(',', '.', trim($_POST['nlat'])));
-            $add_item['pt_longitude'] = floatval(str_replace(',', '.', trim($_POST['nlon'])));
-        }
-        return $pts->insert($add_item);
-    }
-
-    private function savePointTitle($id, $smarty) {
-        if (!$id) {
-            return $this->getError('404');
-        }
-        $nname = cut_trash_string($_POST['nname']);
-        $nid = cut_trash_int($_POST['id']);
-        $uid = $this->getUserId();
-        if ($id != $nid) {
-            return $this->getError('404');
-        }
-        if (!$this->checkEdit()) {
-            return $this->getError('403');
-        }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $db->sql = "UPDATE $dbpp SET pt_name = '$nname', pt_lastup_user = '$uid', pt_lastup_date = now() WHERE pt_id = '$nid'";
-        if ($db->exec()) {
-            $db->sql = "SELECT pt_name FROM $dbpp WHERE pt_id = '$nid'";
-            $db->exec();
-            $row = $db->fetch();
-            return $row['pt_name'];
-        } else {
-            return $this->getError('404');
-        }
-    }
-
-    private function savePointDescr($id, $smarty) {
-        if (!$id) {
-            return $this->getError('404');
-        }
-        $ndesc = cut_trash_string($_POST['ndesc']);
-        $nid = cut_trash_int($_POST['id']);
-        $uid = $this->getUserId();
-        if ($id != $nid) {
-            return $this->getError('404');
-        }
-        if (!$this->checkEdit()) {
-            return $this->getError('403');
-        }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $dbvp = $db->getTableName('verpoints');
-        $db->sql = "INSERT INTO $dbvp (vp_point_id, vp_date, vp_text, vp_hash, vp_userid) SELECT $nid, now(), pt_description, md5(pt_description),'$uid' FROM $dbpp WHERE pt_id = '$nid'";
-        $db->exec();
-        $db->sql = "UPDATE $dbpp SET pt_description = '$ndesc', pt_lastup_user = '$uid', pt_lastup_date = now() WHERE pt_id = '$nid'";
-        if ($db->exec()) {
-            $db->sql = "SELECT pt_description FROM $dbpp WHERE pt_id = '$nid'";
-            $db->exec();
-            $row = $db->fetch();
-            return $row['pt_description'];
-        } else {
-            return $this->getError('404');
-        }
-    }
-
-    private function saveCityTitle($id, $smarty) {
-        if (!$id) {
-            return $this->getError('404');
-        }
-        $ntitle = cut_trash_string($_POST['ntitle']);
-        $nid = cut_trash_int($_POST['id']);
-        if ($id != $nid) {
-            return $this->getError('404');
-        }
-        if (!$this->checkEdit()) {
-            return $this->getError('403');
-        }
-        $db = $this->db;
-        $dbpc = $db->getTableName('pagecity');
-        $db->sql = "UPDATE $dbpc SET pc_title = '$ntitle', pc_lastup_date = now() WHERE pc_id = '$nid'";
-        if ($db->exec()) {
-            $db->sql = "SELECT pc_title FROM $dbpc WHERE pc_id = '$nid'";
-            $db->exec();
-            $row = $db->fetch();
-            return $row['pc_title'];
-        } else {
-            return $this->getError('404');
-        }
-    }
-
-    private function saveCityDescr($id, $smarty) {
-        if (!$id) {
-            return $this->getError('404');
-        }
-        $ntitle = cut_trash_string($_POST['ntext']);
-        $nid = cut_trash_int($_POST['id']);
-        if ($id != $nid) {
-            return $this->getError('404');
-        }
-        if (!$this->checkEdit()) {
-            return $this->getError('403');
-        }
-        $db = $this->db;
-        $dbpc = $db->getTableName('pagecity');
-        $dbvc = $db->getTableName('vercity');
-        $db->sql = "INSERT INTO $dbvc (vc_cityid, vc_datecreate, vc_text, vc_hash, vc_userid) SELECT $nid, now(), pc_text, md5(pc_text),1 FROM $dbpc WHERE pc_id = '$nid'";
-        $db->exec();
-        $db->sql = "UPDATE $dbpc SET pc_text = '$ntitle', pc_lastup_date = now() WHERE pc_id = '$nid'";
-        if ($db->exec()) {
-            $db->sql = "SELECT pc_text FROM $dbpc WHERE pc_id = '$nid'";
-            $db->exec();
-            $row = $db->fetch();
-            return $row['pc_text'];
-        } else {
-            return $this->getError('404');
-        }
-    }
-
-    private function getPoint($id) {
-        if (!$id) {
-            return $this->getError('404');
-        }
-
-        $pts = new MPagePoints($this->db);
-        $object = $pts->getItemByPk($id);
-
-        if (!$object) {
-            return false;
-        }
-
-        $object['page_link'] = $object['url_canonical'];
-        $object['gps_dec'] = '';
-
-        $sp = new Statpoints($this->db);
-        $sp->add($object['pt_id'], $this->getUserHash());
-
-
-        $this->smarty->assign('object', $object);
-
-        if ($this->checkEdit()) {
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
-        } else {
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
-        }
-    }
-
-    private function getPointBySlugline($slugline) {
-        if (!$slugline) {
-            return $this->getError('404');
-        }
-
-        $pts = new MPagePoints($this->db);
-        $objects = $pts->searchSlugline($slugline);
-        $object = isset($objects[0]) ? $objects[0] : false;
-        if (!$object) {
-            return false;
-        }
-
-        $object['page_link'] = $object['url_canonical'];
-
-        $sp = new Statpoints($this->db);
-        $sp->add($object['pt_id'], $this->getUserHash());
-
-
-        $this->smarty->assign('object', $object);
-
-        if ($this->checkEdit()) {
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
-        } else {
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
-        }
     }
 
 }
