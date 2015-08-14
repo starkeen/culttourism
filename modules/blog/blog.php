@@ -9,6 +9,18 @@ class Page extends PageCommon {
         $this->id = $id;
         if ($page_id == '') {
             $this->content = $this->getAllEntries($smarty, $db); //все записи
+        } elseif ($page_id == 'addform') { //форма добавления записи в блог
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->content = $this->getFormBlog($smarty);
+        } elseif ($page_id == 'editform' && intval($_GET['brid'])) {
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->content = $this->getFormBlog($smarty, intval($_GET['brid']));
+        } elseif ($page_id == 'saveform') {
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->content = $this->saveFormBlog();
+        } elseif ($page_id == 'delentry' && intval($_GET['bid'])) {
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->content = $this->deleteBlogEntry(intval($_GET['bid']));
         } elseif ($id2 != '') {
             $this->content = $this->getOneEntry($smarty, $db, $id2, $page_id, $id); //одна запись
         } elseif ($page_id != '') {
@@ -199,6 +211,76 @@ class Page extends PageCommon {
         $this->addKeywords($out['bg_year'] . ' год');
         $this->lastedit_timestamp = $out['last_update'];
         return $out;
+    }
+
+    private function deleteBlogEntry($bid) {
+        if (!$this->checkEdit()) {
+            return FALSE;
+        }
+        $brid = cut_trash_int($_POST['brid']);
+        if (!$brid || !$bid || $brid != $bid) {
+            return FALSE;
+        }
+        $bg = new MBlogEntries($this->db);
+        return $bg->deleteByPk($brid);
+    }
+
+    private function getFormBlog($smarty, $br_id = null) {
+        if (!$this->checkEdit()) {
+            return FALSE;
+        }
+        if ($br_id) {
+            $db = $this->db;
+            $dbb = $db->getTableName('blogentries');
+            $db->sql = "SELECT br_id, br_date, br_title, br_text, br_active, br_url,
+                        DATE_FORMAT(br_date, '%d.%m.%Y') as br_day,
+                        DATE_FORMAT(br_date, '%H:%i') as br_time,
+                        DATE_FORMAT(br_date,'%Y') as bg_year, DATE_FORMAT(br_date,'%m') as bg_month, DATE_FORMAT(br_date,'%d') as bg_day
+                        FROM $dbb
+                        WHERE br_id = '$br_id'
+                        LIMIT 1";
+            $db->exec();
+            $entry = $db->fetch();
+            $smarty->assign('entry', $entry);
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            return $smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.sm.html');
+        } else {
+            $entry = array(
+                'br_day' => date('d.m.Y'), 'br_time' => date('H:i'),
+                'bg_year' => date('Y'), 'bg_month' => date('m'), 'br_url' => date('d'));
+            $smarty->assign('entry', $entry);
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            return $smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.sm.html');
+        }
+    }
+
+    private function saveFormBlog($br_id = null) {
+        if (!$this->checkEdit()) {
+            return FALSE;
+        }
+
+        $bg = new MBlogEntries($this->db);
+
+        if ($_POST['brid'] == 'add') {
+            return $bg->insert(array(
+                        'br_title' => $_POST['ntitle'],
+                        'br_text' => $_POST['ntext'],
+                        'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
+                        'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
+                        'br_url' => $_POST['nurl'],
+                        'br_us_id' => $this->getUserId(),
+            ));
+        } elseif ($br_id > 0) {
+            return $bg->updateByPk($br_id, array(
+                        'br_title' => $_POST['ntitle'],
+                        'br_text' => $_POST['ntext'],
+                        'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
+                        'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
+                        'br_url' => $_POST['nurl'],
+            ));
+        } else {
+            return $this->getError('404');
+        }
     }
 
 }

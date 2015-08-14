@@ -203,7 +203,7 @@ $(document).ready(function () {
         }
         if ($(this).parent().attr("id") == "br_save_handler") {//------ запись в блоге
             var record_id = $("#br_id").val();
-            $.post("/ajax/blog/saveform/?bid=" + $("#pr_id").val(), {
+            $.post("/blog/saveform/?bid=" + $("#pr_id").val(), {
                 brid: record_id,
                 ntitle: $("#eblog_title").val(),
                 ntext: $("#eblog_text").val(),
@@ -444,7 +444,7 @@ $(document).ready(function () {
     //------------------------------------ BLOG AJAX ---------------------------------
     $(".blog_entry_edit").live("click", function () {
         var a = this.id.split("_");
-        showWindByURL("/ajax/blog/editform/", {
+        showWindByURL("/blog/editform/", {
             brid: a[2]
         });
         $("body").live("afterShowWindByURL", function () {
@@ -466,7 +466,7 @@ $(document).ready(function () {
         return false;
     });
     $("#blog_entry_add").live("click", function () {
-        showWindByURL("/ajax/blog/addform/", null);
+        showWindByURL("/blog/addform/", null);
         $("#eblog_text").live("mouseover", function () {
             $("#eblog_text").die("mouseover").ckeditor(function () {
             }, {
@@ -488,7 +488,7 @@ $(document).ready(function () {
     $(".blog_entry_delete").live("click",
             function () {
                 var a = this.id.split("_");
-                confirm('Действительно удалить запись "' + $(this).parent('h2').children('a').text() + '"?') && $.post("/ajax/blog/delentry/?bid=" + a[2], {
+                confirm('Действительно удалить запись "' + $(this).parent('h2').children('a').text() + '"?') && $.post("/blog/delentry/?bid=" + a[2], {
                     brid: a[2]
                 }, function (g) {
                     if (g) {
