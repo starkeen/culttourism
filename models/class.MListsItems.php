@@ -92,8 +92,41 @@ class MListsItems extends Model {
         return $this->_db->fetchAll();
     }
 
+    public function getPointsInList($list_id) {
+        $dbli = $this->_db->getTableName('lists_items');
+        $dbpp = $this->_db->getTableName('pagepoints');
+        $dbpc = $this->_db->getTableName('pagecity');
+        $dbru = $this->_db->getTableName('region_url');
+        $dbpr = $this->_db->getTableName('ref_pointtypes');
+
+        $this->_db->sql = "SELECT pp.*,
+                                0 AS obj_selected,
+                                CONCAT(:url_root1, ru.url, '/') AS cityurl,
+                                CONCAT(:url_root2, ru.url, '/', pp.pt_slugline, '.html') AS objurl,
+                                CONCAT(ru.url, '/', pp.pt_slugline, '.html') AS objuri
+                            FROM $dbli li
+                                LEFT JOIN $dbpp AS pp ON pp.pt_id = li.li_pt_id
+                                    LEFT JOIN $dbpr pt ON pt.tp_id = pp.pt_type_id
+                                    LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
+                                        LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
+                            WHERE pp.pt_active = 1
+                                AND pt_latitude != 0
+                                AND pt_longitude != 0
+                                AND li.li_active
+                                AND li.li_ls_id = :list_id
+                            ORDER BY pt.tr_order DESC, pp.pt_rank
+                            LIMIT 300";
+
+        $this->_db->execute(array(
+            ':list_id' => $list_id,
+            ':url_root1' => _URL_ROOT,
+            ':url_root2' => _URL_ROOT,
+        ));
+        return $this->_db->fetchAll();
+    }
+
     public function deleteByPk($id) {
-        $this->updateByPk($id, array($this->_table_active => 0));
+        return $this->updateByPk($id, array($this->_table_active => 0));
     }
 
 }
