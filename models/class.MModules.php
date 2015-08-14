@@ -28,4 +28,18 @@ class MModules extends Model {
         parent::__construct($db);
     }
 
+    public function getModuleByURI($uri) {
+        $this->_db->sql = "SELECT dbm.*,
+                                DATE_FORMAT(dbm.md_lastedit,'%a, %d %b %Y %H:%i:%s GMT') AS md_timestamp,
+                                DATE_FORMAT(date_add(md_lastedit, INTERVAL :cache_days day),'%a, %d %b %Y %H:%i:%s GMT') md_expiredate
+                            FROM $this->_table_name AS dbm
+                            WHERE dbm.md_url = :mod_id
+                                AND dbm.md_active = 1";
+        $this->_db->execute(array(
+            ':mod_id' => $uri,
+            ':cache_days' => _CACHE_DAYS,
+        ));
+        return $this->_db->fetch();
+    }
+
 }

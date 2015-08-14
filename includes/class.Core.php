@@ -71,69 +71,47 @@ abstract class Core {
             $this->getError('503');
         }
 
-        $db->sql = "SELECT dbm.*,
-                        DATE_FORMAT(dbm.md_lastedit,'%a, %d %b %Y %H:%i:%s GMT') AS md_timestamp,
-                        DATE_FORMAT(date_add(md_lastedit, INTERVAL :cache_days day),'%a, %d %b %Y %H:%i:%s GMT') md_expiredate
-                    FROM $dbm AS dbm
-                    WHERE dbm.md_url = :mod_id
-                        AND dbm.md_active = 1";
-        //$db->showSQL();
-        $db->execute(array(
-            ':mod_id' => $mod_id,
-            ':cache_days' => _CACHE_DAYS,
-        ));
-        while ($row = $db->fetch()) {
-            if ($row['md_url'] == $mod_id) {
-                if ($row['md_redirect'] !== null) {
-                    $this->getError('301', $row['md_redirect']);
-                }
-                $this->url = $row['md_url'];
-                $this->title = $this->globalsettings['default_pagetitle'];
-                if ($row['md_title']) {
-                    $this->addTitle($row['md_title']);
-                }
-                $this->h1 = $row['md_title'];
-                $this->keywords = $this->globalsettings['default_pagekeywords'];
-                $this->addKeywords($row['md_keywords']);
-                $this->description = $this->globalsettings['default_pagedescription'];
-                $this->addDescription($row['md_description']);
-                $this->isCounters = $row['md_counters'];
-                $this->content = $row['md_pagecontent'];
-                $this->md_id = $row['md_id'];
-                $this->module_id = $mod_id;
-                $this->page_id = $page_id;
-                $this->id_id = $id;
-                $this->custom_css = $row['md_css'];
-                $this->robots_indexing = $row['md_robots'];
-                $this->lastedit = $row['md_timestamp'];
-                $this->lastedit_timestamp = strtotime($row['md_timestamp']);
-                $this->expiredate = $row['md_expiredate'];
+        $md = new MModules($this->db);
+        $row = $md->getModuleByURI($mod_id);
+        if (!empty($row['md_url'])) {
+            if ($row['md_redirect'] !== null) {
+                $this->getError('301', $row['md_redirect']);
+            }
+            $this->url = $row['md_url'];
+            $this->title = $this->globalsettings['default_pagetitle'];
+            if ($row['md_title']) {
+                $this->addTitle($row['md_title']);
+            }
+            $this->h1 = $row['md_title'];
+            $this->keywords = $this->globalsettings['default_pagekeywords'];
+            $this->addKeywords($row['md_keywords']);
+            $this->description = $this->globalsettings['default_pagedescription'];
+            $this->addDescription($row['md_description']);
+            $this->isCounters = $row['md_counters'];
+            $this->content = $row['md_pagecontent'];
+            $this->md_id = $row['md_id'];
+            $this->module_id = $mod_id;
+            $this->page_id = $page_id;
+            $this->id_id = $id;
+            $this->custom_css = $row['md_css'];
+            $this->robots_indexing = $row['md_robots'];
+            $this->lastedit = $row['md_timestamp'];
+            $this->lastedit_timestamp = strtotime($row['md_timestamp']);
+            $this->expiredate = $row['md_expiredate'];
 
-                if (isset($_SESSION['user'])) {
-                    $this->user['object'] = $_SESSION['user'];
-                }
-                if (isset($_SESSION['user_name'])) {
-                    $this->user['username'] = $_SESSION['user_name'];
-                    $this->user['userid'] = $_SESSION['user_id'];
-                }
-                break;
+            if (isset($_SESSION['user'])) {
+                $this->user['object'] = $_SESSION['user'];
+            }
+            if (isset($_SESSION['user_name'])) {
+                $this->user['username'] = $_SESSION['user_name'];
+                $this->user['userid'] = $_SESSION['user_id'];
             }
         }
+
         if (!$this->url) {
             return FALSE;
         } else {
             return TRUE;
-        }
-    }
-
-    public function getCounters() {
-        if ($this->isCounters != 0) {
-            $dbc = $this->db->getTableName('counters');
-            $this->db->sql = "SELECT cnt_text FROM $dbc WHERE cnt_active = '1' ORDER BY cnt_sort";
-            $this->db->exec();
-            while ($row = $this->db->fetch()) {
-                $this->counters .= $row['cnt_text'];
-            }
         }
     }
 
