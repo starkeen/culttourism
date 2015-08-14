@@ -310,10 +310,8 @@ class Page extends PageCommon {
     }
     
     private function getRefPointTypes() {
-        $dbpr = $this->db->getTableName('ref_pointtypes');
-        $this->db->sql = "SELECT * FROM $dbpr";
-        $this->db->exec();
-        $ptypes = $this->db->fetchAll();
+        $ref = new MRefPointtypes($this->db);
+        return $ref->getActive();
     }
 
     public static function getInstance($db, $mod) {
