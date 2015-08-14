@@ -183,42 +183,37 @@ class Page extends PageCommon {
         return $db->exec();
     }
 
+//-------------------------------------------------------------- POINTS ----------
     private function savePointContacts($cid, $smarty) {
-        if (!$cid)
+        if (!$cid) {
             return $this->getError('404');
-        $nid = cut_trash_int($_POST['cid']);
-        $uid = $this->getUserId();
-        $nwebsite = cut_trash_string($_POST['nwebsite']);
-        $nemail = cut_trash_string($_POST['nemail']);
-        $nphone = cut_trash_string($_POST['nphone']);
-        $nworktime = cut_trash_string($_POST['nworktime']);
-        $nadress = cut_trash_string($_POST['nadress']);
-        if (strlen($nwebsite) != 0) {
-            $nwebsite = str_replace('http://', '', $nwebsite);
-            $nwebsite = 'http://' . $nwebsite;
         }
-
+        $pp = new MPagePoints($this->db);
+        
+        $nid = intval($_POST['cid']);
         if ($cid != $nid) {
             return $this->getError('404');
-        }
+        }        
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-
-        $db->sql = "UPDATE $dbpp SET pt_lastup_user = '$uid', pt_lastup_date = now(),
-                    pt_website = '$nwebsite', pt_email = '$nemail',
-                    pt_phone = '$nphone', pt_worktime = '$nworktime',
-                    pt_adress = '$nadress'
-                    WHERE pt_id = '$nid'";
-        if ($db->exec()) {
+        $out = $pp->updateByPk($cid, array(
+            'pt_lastup_user' => $this->getUserId(),
+            'pt_lastup_date' => $pp->now(),
+            'pt_website' => $_POST['nwebsite'],
+            'pt_email' => $_POST['nemail'],
+            'pt_phone' => $_POST['nphone'],
+            'pt_worktime' => $_POST['nworktime'],
+            'pt_adress' => $_POST['nadress'],
+        ));
+        if ($out) {
             return TRUE;
         } else {
             return FALSE;
         }
     }
 
+//-------------------------------------------------------------- CITY ----------
     private function setFormCityGPS($cid, $smarty) {
         if (!$this->checkEdit()) {
             return $this->getError('403');
