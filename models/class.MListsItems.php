@@ -20,12 +20,11 @@ class MListsItems extends Model {
     }
 
     public function setField($field, $pt_id, $val) {
-        $val = $this->_db->getEscapedString($val);
         if (in_array($field, $this->_table_fields)) {
-            $this->_db->sql = "SELECT * FROM $this->_table_name WHERE li_ls_id = '$this->_list_id' AND li_pt_id = '$pt_id'";
-            $this->_db->exec();
-            $row = $this->_db->fetch();
-            $this->updateByPk($row['li_id'], array($field => $val,));
+            $row = $this->getRowForPointId($pt_id);
+            $this->updateByPk($row['li_id'], array(
+                $field => $val,
+            ));
             $nrow = $this->getItemByPk($row['li_id']);
             $newval = $nrow[$field];
         } else {
@@ -34,18 +33,32 @@ class MListsItems extends Model {
         return $newval;
     }
 
+    /**
+     * Находим в этом списке объект и получаем айди его записи в таблице
+     * @param int $point_id
+     * @return int
+     */
+    public function getRowForPointId($point_id) {
+        $this->_db->sql = "SELECT li_id FROM $this->_table_name WHERE li_ls_id = '$this->_list_id' AND li_pt_id = :ptid";
+        $this->_db->execute(array(
+            ':ptid' => $point_id,
+        ));
+        return $this->_db->fetch();
+    }
+
     public function getSuggestion($name) {
         $dbo = $this->_db->getTableName('pagepoints');
         $dbc = $this->_db->getTableName('pagecity');
-        $name = $this->_db->getEscapedString($name);
         $this->_db->sql = "SELECT *
                             FROM $dbo pt
                                 LEFT JOIN $dbc pc ON pc.pc_id = pt.pt_citypage_id
-                            WHERE pt.pt_name LIKE '%$name%'
+                            WHERE pt.pt_name LIKE :name
                                 AND pt.pt_active = 1
                                 AND pt.pt_id NOT IN (SELECT li_pt_id FROM $this->_table_name WHERE li_ls_id = '$this->_list_id')
                             ORDER BY pt.pt_name";
-        $this->_db->exec();
+        $this->_db->execute(array(
+            ':name' => '%' . $name . '%',
+        ));
         return $this->_db->fetchAll();
     }
 
