@@ -255,7 +255,7 @@ class Page extends PageCommon {
     private function getPageMap($url) {
         $pc = new MPageCities($this->db);
         $city = $pc->getCityByUrl(str_replace('/map.html', '', $url));
-        header("Location: /map/#center={$city['pc_longitude']},{$city['pc_latitude']}&zoom={$city['pc_zoom']}");
+        header("Location: /map/#center={$city['pc_longitude']},{$city['pc_latitude']}&zoom={$city['pc_latlon_zoom']}");
         exit();
     }
 
