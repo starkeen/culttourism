@@ -229,17 +229,15 @@ class Page extends PageCommon {
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        //print_x($_POST);
-        $n_lat = cut_trash_string($_POST['pt_lat']);
-        $n_lat = str_replace(',', '.', $n_lat);
-        $n_lon = cut_trash_string($_POST['pt_lon']);
-        $n_lon = str_replace(',', '.', $n_lon);
-        $n_zoom = cut_trash_int($_POST['pt_zoom']);
+        
+        $p = new MPagePoints($this->db);
+        $state = $p->updateByPk($pid, array(
+            'pt_latitude' => $_POST['pt_lat'],
+            'pt_longitude' => $_POST['pt_lon'],
+            'pt_latlon_zoom' => intval($_POST['pt_zoom']),
+        ));
 
-        $db->sql = "UPDATE $dbpp SET pt_latitude = '$n_lat', pt_longitude = '$n_lon', pt_latlon_zoom = '$n_zoom', pt_lastup_date = now() WHERE pt_id = '$pid'";
-        if ($db->exec()) {
+        if ($state) {
             $point_lat_short = mb_substr($n_lat, 0, 8);
             $point_lon_short = mb_substr($n_lon, 0, 8);
             if ($point_lat_short >= 0) {
@@ -259,19 +257,18 @@ class Page extends PageCommon {
     }
 
     private function getFormPointGPS($pid, $smarty) {
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $dbpc = $db->getTableName('pagecity');
-        $dbrpt = $db->getTableName('ref_pointtypes');
-        $db->sql = "SELECT pt.pt_name, pt.pt_id, pt_type_id, pt.pt_latitude, pt.pt_longitude, pt.pt_latlon_zoom, pt.pt_adress,
+        $dbpp = $this->db->getTableName('pagepoints');
+        $dbpc = $this->db->getTableName('pagecity');
+        $dbrpt = $this->db->getTableName('ref_pointtypes');
+        $this->db->sql = "SELECT pt.pt_name, pt.pt_id, pt_type_id, pt.pt_latitude, pt.pt_longitude, pt.pt_latlon_zoom, pt.pt_adress,
                     pc.pc_title, pc.pc_latitude, pc.pc_longitude,
                     rpt.tp_name, rpt.tp_icon
                     FROM $dbpp AS pt
                     LEFT JOIN $dbpc AS pc ON pt.pt_citypage_id = pc.pc_id
                     LEFT JOIN $dbrpt AS rpt ON rpt.tp_id = pt.pt_type_id
                     WHERE pt_id='$pid'";
-        $db->exec();
-        $point = $db->fetch();
+        $this->db->exec();
+        $point = $this->db->fetch();
         //print_x($point);
         if ($point['pt_latitude'] && $point['pt_longitude']) {
             $point['map_center']['lat'] = $point['pt_latitude'];
@@ -304,19 +301,16 @@ class Page extends PageCommon {
         if (!$point_id) {
             return $this->getError('403');
         }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $dbpt = $db->getTableName('ref_pointtypes');
-        $db->sql = "SELECT pt_id, pt_name, pt_type_id FROM $dbpp WHERE pt_id = '$point_id'";
-        $db->exec();
-        $point = $db->fetch();
-        $smarty->assign('point', $point);
-        $db->sql = "SELECT tp_id, tp_name, tp_icon FROM $dbpt ORDER BY tr_sight desc, tr_order";
-        $db->exec();
-        while ($row = $db->fetch()) {
-            $row['current'] = ($row['tp_id'] == $point['pt_type_id']) ? 1 : 0;
-            $types[] = $row;
+        $p = new MPagePoints($this->db);
+        $pts = new MRefPointtypes($this->db);
+        
+        $point = $p->getItemByPk(intval($_GET['pid']));
+        $types = $pts->getActive();
+        foreach($types as $i => $type) {
+            $types[$i]['current'] = ($type['tp_id'] == $point['pt_type_id']) ? 1 : 0;
         }
+        
+        $smarty->assign('point', $point);
         $smarty->assign('alltypes', $types);
         return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/changetype.form.sm.html');
     }
@@ -325,20 +319,20 @@ class Page extends PageCommon {
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
-        $ppid = cut_trash_int($_POST['pid']);
-        $type = cut_trash_int($_POST['ntype']);
+        $ppid = intval($_POST['pid']);
+        $type = intval($_POST['ntype']);
         if ($pid != $ppid || !$type) {
             return $this->getError('403');
         }
-        $db = $this->db;
-        $dbpp = $db->getTableName('pagepoints');
-        $dbpt = $db->getTableName('ref_pointtypes');
-        $db->sql = "UPDATE $dbpp SET pt_type_id = '$type', pt_lastup_date = now() WHERE pt_id = '$ppid'";
-        $db->exec();
-        $db->sql = "SELECT tp_icon FROM $dbpt WHERE tp_id = '$type'";
-        $db->exec();
-        $row = $db->fetch();
-        return $row['tp_icon'];
+        
+        $p = new MPagePoints($this->db);
+        $pts = new MRefPointtypes($this->db);
+        
+        $state = $p->updateByPk($pid, array(
+            'pt_type_id' => $type,
+        ));
+        $newtype = $pts->getItemByPk($type);
+        return $newtype['tp_icon'];
     }
 
     private function getPointNew($id, $smarty) {
