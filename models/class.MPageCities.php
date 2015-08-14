@@ -148,6 +148,46 @@ class MPageCities extends Model {
         return $this->_db->fetch();
     }
 
+    /**
+     * Выбрать городав том же регионе
+     * @param integer $cid
+     * @return array
+     */
+    public function getCitiesSomeRegion($cid) {
+        $dbru = $this->_db->getTableName('region_url');
+        $this->_db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude,
+                                CONCAT(ru.url, '/') AS url
+                            FROM $this->_table_name pc
+                                LEFT JOIN $this->_table_name pc2 ON pc2.pc_region_id = pc.pc_region_id AND pc2.pc_id != pc.pc_id
+                                    LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
+                            WHERE pc.pc_id = :cid
+                                AND pc2.pc_city_id != 0";
+
+        $this->_db->execute(array(
+            ':cid' => $cid,
+        ));
+        return $this->_db->fetchAll();
+    }
+
+    /**
+     * Выбрать города в той же стране
+     * @param integet $country_id
+     * @return array
+     */
+    public function getCitiesSomeCountry($country_id) {
+        $dbru = $this->_db->getTableName('region_url');
+        $this->_db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude, CONCAT(ru.url, '/') AS url
+                        FROM $this->_table_name pc2
+                            LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
+                        WHERE pc2.pc_country_id = :pc_country_id
+                            AND pc2.pc_city_id != 0";
+
+        $this->_db->execute(array(
+            ':pc_country_id' => $country_id,
+        ));
+        return $this->_db->fetchAll();
+    }
+
     public function updateByPk($id, $values = array(), $files = array()) {
         if (isset($values['pc_latitude'])) {
             $values['pc_latitude'] = floatval(str_replace(',', '.', trim($values['pc_latitude'])));
@@ -178,10 +218,6 @@ class MPageCities extends Model {
             }
         }
         parent::insert($values, $files);
-    }
-
-    public function deleteByPk($id) {
-        $this->updateByPk($id, array('pc_active' => 0,));
     }
 
     /*
@@ -225,6 +261,10 @@ class MPageCities extends Model {
             ':id' => $id,
             ':path' => $path,
         ));
+    }
+
+    public function deleteByPk($id) {
+        return $this->updateByPk($id, array('pc_active' => 0,));
     }
 
 }

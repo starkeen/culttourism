@@ -96,75 +96,25 @@ class Page extends PageCommon {
             $this->getError('404');
         }
 
-        $dbpp = $this->db->getTableName('pagepoints');
-        $dbpc = $this->db->getTableName('pagecity');
-        $dbru = $this->db->getTableName('region_url');
+        $pt = new MPagePoints($this->db);
+        $pc = new MPageCities($this->db);
 
         $ptypes = $this->getRefPointTypes();
 
-        $this->db->sql = "SELECT pp.*,
-                        CONCAT(:url_root1, ru.url, '/') AS cityurl,
-                        CONCAT(:url_root2, ru.url, '/', pp.pt_slugline, '.html') AS objurl
-                    FROM $dbpp AS pp
-                    LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
-                    LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
-                    WHERE pt_citypage_id = :cid
-                    AND pt_latitude != ''
-                    AND pt_longitude != ''
-                    AND pt_active = 1";
+        $this_city = $pc->getItemByPk($cid);
+        $points = $pt->getGeoPointsByCityId($cid);
+        $city = $pc->getCitiesSomeRegion($cid);
 
-        $this->db->execute(array(
-            ':cid' => $cid,
-            ':url_root1' => _URL_ROOT,
-            ':url_root2' => _URL_ROOT,
-        ));
-        $points = array();
-        while ($pt = $this->db->fetch()) {
-            $pt['pt_description'] = strip_tags($pt['pt_description']);
-            $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
+        foreach ($points as $i => $pt) {
+            $points[$i]['pt_description'] = strip_tags($points[$i]['pt_description']);
+            $points[$i]['pt_description'] = html_entity_decode($points[$i]['pt_description'], ENT_QUOTES, 'UTF-8');
             $short_end = @mb_strpos($pt['pt_description'], ' ', 100, 'utf-8');
-            $pt['pt_short'] = trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
-            $pt['pt_website'] = htmlspecialchars($pt['pt_website'], ENT_QUOTES);
-            $points[] = $pt;
+            $points[$i]['pt_short'] = trim(mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
+            $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
         }
-
-        $this->db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude, CONCAT(ru.url, '/') AS url
-                    FROM $dbpc pc
-                        LEFT JOIN $dbpc pc2 ON pc2.pc_region_id = pc.pc_region_id AND pc2.pc_id != pc.pc_id
-                            LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
-                    WHERE pc.pc_id = :cid
-                        AND pc2.pc_city_id != 0";
-
-        $this->db->execute(array(
-            ':cid' => $cid,
-        ));
-        $city = array();
-        while ($pc = $this->db->fetch()) {
-            $city[] = $pc;
-        }
-
-        $this->db->sql = "SELECT pc.*
-                    FROM $dbpc pc
-                    WHERE pc.pc_id = :cid";
-
-        $this->db->execute(array(
-            ':cid' => $cid,
-        ));
-        $this_city = $this->db->fetch();
 
         if ($this_city['pc_region_id'] == 0) {
-            $this->db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude, CONCAT(ru.url, '/') AS url
-                        FROM $dbpc pc2
-                            LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
-                        WHERE pc2.pc_country_id = :pc_country_id
-                            AND pc2.pc_city_id != 0";
-
-            $this->db->execute(array(
-                ':pc_country_id' => $this_city['pc_country_id'],
-            ));
-            while ($pc = $this->db->fetch()) {
-                $city[] = $pc;
-            }
+            $city = array_merge($city, $pc->getCitiesSomeCountry($this_city['pc_country_id']));
         }
 
         $this->smarty->assign('ptypes', $ptypes);

@@ -37,6 +37,11 @@ class MPagePoints extends Model {
         parent::__construct($db);
     }
 
+    /**
+     * Списки, где участвует эта точка
+     * @param integer $oid
+     * @return array
+     */
     public function getLists($oid) {
         $dbli = $this->_db->getTableName('lists_items');
         $dbls = $this->_db->getTableName('lists');
@@ -274,7 +279,6 @@ class MPagePoints extends Model {
     }
 
     public function getItemByPk($id) {
-        $id = intval($id);
         $dbpc = $this->_db->getTableName('pagecity');
         $dbrt = $this->_db->getTableName('ref_pointtypes');
         $dbru = $this->_db->getTableName('region_url');
@@ -292,6 +296,30 @@ class MPagePoints extends Model {
             ':oid' => intval($id),
         ));
         return $this->_db->fetch();
+    }
+
+    public function getGeoPointsByCityId($cid) {
+        $dbpp = $this->db->getTableName('pagepoints');
+        $dbpc = $this->db->getTableName('pagecity');
+        $dbru = $this->db->getTableName('region_url');
+
+        $this->db->sql = "SELECT pp.*,
+                                CONCAT(:url_root1, ru.url, '/') AS cityurl,
+                                CONCAT(:url_root2, ru.url, '/', pp.pt_slugline, '.html') AS objurl
+                            FROM $dbpp AS pp
+                                LEFT JOIN $dbpc pc ON pc.pc_id = pp.pt_citypage_id
+                                LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
+                            WHERE pt_citypage_id = :cid
+                                AND pt_latitude != ''
+                                AND pt_longitude != ''
+                                AND pt_active = 1";
+
+        $this->db->execute(array(
+            ':cid' => $cid,
+            ':url_root1' => _URL_ROOT,
+            ':url_root2' => _URL_ROOT,
+        ));
+        return $this->_db->fetchAll();
     }
 
     public function updateByPk($id, $values = array(), $files = array()) {
