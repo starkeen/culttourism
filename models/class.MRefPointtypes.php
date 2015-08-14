@@ -3,7 +3,7 @@
 class MRefPointtypes extends Model {
 
     protected $_table_pk = 'tp_id';
-    protected $_table_order = 'tr_order';
+    protected $_table_order = 'tr_sight desc, tr_order';
     protected $_table_active = 'tp_active';
 
     public function __construct($db) {
