@@ -570,7 +570,7 @@ $(document).ready(function () {
 //---------------------------- / SEARCH AUTOCOMPLETE  ----------------------------
 //---------------------------------   AUTH  --------------------------------------
     $("#show_auth_form").click(function () {
-        showWindByURL("/ajax/forms/commonlogin/", {});
+        showWindByURL("/sign/form/", {});
         return false;
     });
 

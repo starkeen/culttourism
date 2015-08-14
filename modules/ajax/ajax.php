@@ -14,9 +14,7 @@ class Page extends PageCommon {
         $this->id = $id;
         $this->auth->setService('ajax');
 
-        if ($page_id == 'forms' && $id == 'commonlogin') {
-            $this->content = $this->getFormLogin($smarty);
-        } elseif ($page_id == 'point') {
+        if ($page_id == 'point') {
             if ($id == '' && isset($_GET['id']) && intval($_GET['id'])) {
                 $this->content = $this->getPoint(intval($_GET['id']));
             } elseif ($id == 's' && isset($_GET['id'])) {
@@ -488,18 +486,6 @@ class Page extends PageCommon {
             return $city['pc_text'];
         } else {
             return $this->getError('404');
-        }
-    }
-
-//-------------------------------------------------------------- SIGN ----------
-    private function getFormLogin($smarty) {
-        if (isset($_SESSION['user_id'])) {
-            $smarty->assign('username', $_SESSION['user_name']);
-            return $smarty->fetch(_DIR_TEMPLATES . '/sign/authuser.sm.html');
-        } else {
-            $smarty->assign('baseurl', _SITE_URL);
-            $smarty->assign('authkey', 'ewtheqryb35yqb356y4ery');
-            return $smarty->fetch(_DIR_TEMPLATES . '/sign/authform.sm.html');
         }
     }
 
