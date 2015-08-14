@@ -39,6 +39,7 @@ class MPagePoints extends Model {
         $this->_addRelatedTable('region_url');
         $this->_addRelatedTable('lists');
         $this->_addRelatedTable('lists_items');
+        $this->_addRelatedTable('data_check');
         $this->_addRelatedTable('ref_pointtypes');
     }
 
@@ -283,6 +284,26 @@ class MPagePoints extends Model {
             ':cid' => $cid,
             ':url_root1' => _URL_ROOT,
             ':url_root2' => _URL_ROOT,
+        ));
+        return $this->_db->fetchAll();
+    }
+
+    public function getPointsWithoutAddrs($limit = 100) {
+        $this->_db->sql = "SELECT pt.pt_id, pt.pt_name, pt.pt_adress,
+                                pt.pt_latitude, pt.pt_longitude,
+                                pc.pc_title, pc.pc_latitude, pc.pc_longitude
+                            FROM $this->_table_name pt
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
+                                LEFT JOIN {$this->_tables_related['data_check']} dc ON dc.dc_item_id = pt.pt_id
+                                    AND dc.dc_type = 'point'
+                                    AND dc.dc_field = 'pt_adress'
+                            WHERE pt.pt_active = 1
+                                AND ABS(CHAR_LENGTH(pt.pt_adress)-CHAR_LENGTH(pc.pc_title)) < 6
+                                AND pt.pt_latitude IS NOT NULL
+                            ORDER BY dc.dc_date
+                            LIMIT :limit";
+        $this->_db->execute(array(
+            ':limit' => $limit,
         ));
         return $this->_db->fetchAll();
     }
