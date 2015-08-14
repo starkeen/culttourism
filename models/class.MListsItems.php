@@ -17,6 +17,7 @@ class MListsItems extends Model {
         );
         $this->_list_id = intval($lid);
         parent::__construct($db);
+        $this->_addRelatedTable('lists');
     }
 
     public function setField($field, $pt_id, $val) {
@@ -44,6 +45,24 @@ class MListsItems extends Model {
             ':ptid' => $point_id,
         ));
         return $this->_db->fetch();
+    }
+
+    /**
+     * Списки, где участвует эта точка
+     * @param integer $point_id
+     * @return array
+     */
+    public function getListsForPointId($point_id) {
+        $this->_db->sql = "SELECT *
+                            FROM $this->_table_name li
+                                LEFT JOIN {$this->_tables_related['lists']} ls ON ls.ls_id = li.li_ls_id
+                            WHERE li_pt_id = :ptid
+                                AND ls.ls_active = 1
+                                AND li.li_active = 1";
+        $this->_db->execute(array(
+            ':ptid' => $point_id,
+        ));
+        return $this->_db->fetchAll();
     }
 
     public function getSuggestion($name) {

@@ -43,25 +43,6 @@ class MPagePoints extends Model {
     }
 
     /**
-     * Списки, где участвует эта точка
-     * @param integer $oid
-     * @return array
-     */
-    public function getLists($oid) {
-        $this->_db->sql = "SELECT *
-                            FROM {$this->_tables_related['lists_items']} li
-                                LEFT JOIN {$this->_tables_related['lists']} ls ON ls.ls_id = li.li_ls_id
-                            WHERE li.li_pt_id = :oid
-                                AND ls.ls_active = 1
-                                AND li.li_active = 1";
-
-        $this->_db->execute(array(
-            ':oid' => $oid,
-        ));
-        return $this->_db->fetchAll();
-    }
-
-    /**
      * Все точки региона, сгруппированные по признаку достопримечательности
      * @param integer $city_id
      * @param bool $show_all

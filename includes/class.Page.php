@@ -53,6 +53,7 @@ class Page extends PageCommon {
 
         $pts = new MPagePoints($this->db);
         $pcs = new MPageCities($this->db);
+        $li = new MListsItems($this->db);
 
         $objects = $pts->searchSlugline($slugline);
         $object = isset($objects[0]) ? $objects[0] : false;
@@ -112,7 +113,7 @@ class Page extends PageCommon {
 
         $this->smarty->assign('object', $object);
         $this->smarty->assign('city', $city);
-        $this->smarty->assign('lists', $pts->getLists($object['pt_id']));
+        $this->smarty->assign('lists', $li->getListsForPointId($object['pt_id']));
 
         return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.sm.html');
     }
