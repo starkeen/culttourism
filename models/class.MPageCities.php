@@ -42,16 +42,15 @@ class MPageCities extends Model {
     }
 
     public function getCityByUrl($url) {
-        $dbu = $this->_db->getTableName('region_url');
         $dbcd = $this->_db->getTableName('city_data');
         $dbcf = $this->_db->getTableName('city_fields');
 
         $this->_db->sql = "SELECT *,
                                 UNIX_TIMESTAMP(pc.pc_lastup_date) AS last_update,
                                 CONCAT(uc.url, '/') AS url_canonical
-                            FROM $dbu url
+                            FROM {$this->_tables_related['region_url']} url
                                 LEFT JOIN $this->_table_name pc ON pc.pc_id = url.citypage
-                                    LEFT JOIN $dbu uc ON uc.uid = pc.pc_url_id
+                                    LEFT JOIN {$this->_tables_related['region_url']} uc ON uc.uid = pc.pc_url_id
                             WHERE url.url = :xurl";
 
         $this->_db->execute(array(
@@ -68,7 +67,7 @@ class MPageCities extends Model {
             $this->_db->sql = "SELECT pc.pc_title, url.url, pc.pc_inwheretext,
                                     UNIX_TIMESTAMP(pc.pc_add_date) AS last_update
                                 FROM $this->_table_name pc
-                                    LEFT JOIN $dbu url ON url.uid = pc.pc_url_id
+                                    LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
                                 WHERE pc.pc_region_id = :pc_region_id
                                     AND pc.pc_city_id != 0
                                 ORDER BY pc.pc_rank DESC, pc.pc_title";
@@ -90,7 +89,7 @@ class MPageCities extends Model {
                                     ROUND(1000 * (ABS(pc.pc_latitude - :pc_latitude) + ABS(pc.pc_longitude - :pc_longitude))) AS delta_sum,
                                     UNIX_TIMESTAMP(pc.pc_add_date) AS last_update
                                 FROM $this->_table_name pc
-                                    LEFT JOIN $dbu url ON url.uid = pc.pc_url_id
+                                    LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
                                 WHERE pc.pc_city_id != 0
                                     AND pc.pc_title != :pc_title
                                     AND pc.pc_latitude > 0 AND pc.pc_longitude > 0
@@ -154,12 +153,11 @@ class MPageCities extends Model {
      * @return array
      */
     public function getCitiesSomeRegion($cid) {
-        $dbru = $this->_db->getTableName('region_url');
         $this->_db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude,
                                 CONCAT(ru.url, '/') AS url
                             FROM $this->_table_name pc
                                 LEFT JOIN $this->_table_name pc2 ON pc2.pc_region_id = pc.pc_region_id AND pc2.pc_id != pc.pc_id
-                                    LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
+                                    LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc2.pc_url_id
                             WHERE pc.pc_id = :cid
                                 AND pc2.pc_city_id != 0";
 
@@ -175,10 +173,9 @@ class MPageCities extends Model {
      * @return array
      */
     public function getCitiesSomeCountry($country_id) {
-        $dbru = $this->_db->getTableName('region_url');
         $this->_db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude, CONCAT(ru.url, '/') AS url
                         FROM $this->_table_name pc2
-                            LEFT JOIN $dbru ru ON ru.uid = pc2.pc_url_id
+                            LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc2.pc_url_id
                         WHERE pc2.pc_country_id = :pc_country_id
                             AND pc2.pc_city_id != 0";
 
