@@ -301,7 +301,7 @@ class MPagePoints extends Model {
     }
 
     public function deleteByPk($id) {
-        $this->updateByPk($id, array($this->_table_active => 0));
+        return $this->updateByPk($id, array($this->_table_active => 0));
     }
 
     /*
