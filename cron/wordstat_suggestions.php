@@ -1,5 +1,7 @@
 <?php
 
+$ws = new MWordstat($db);
+
 $dbrc = $db->getTableName('ref_city');
 $dbpc = $db->getTableName('pagecity');
 $dbws = $db->getTableName('wordstat');
@@ -72,14 +74,7 @@ foreach ($reps as $rep) {
     $reps_to_del[$repid] = $repid;
 }
 
-$db->sql = "UPDATE $dbws
-                    SET ws_weight_max = ws_weight, ws_weight_max_date = now()
-                WHERE ws_weight > ws_weight_max";
-$db->exec();
-$db->sql = "UPDATE $dbws
-                    SET ws_weight_min = ws_weight, ws_weight_min_date = now()
-                WHERE ws_weight < ws_weight_min";
-$db->exec();
+$ws->updateMaxMin();
 
 //****************   4 - Удаление отработанных отчетов *************************
 foreach ($reps_to_del as $repdel) {
@@ -103,14 +98,6 @@ if (isset($res['data']) && !empty($res['data'])) {
 
 if ($new_reps_cnt > 0) {
     for ($i = 1; $i <= $new_reps_cnt; $i++) {
-        $db->sql = "SELECT ws.*
-                    FROM $dbws ws
-                        LEFT JOIN $dbpc pc ON pc.pc_city_id = ws.ws_city_id
-                    WHERE ws_rep_id = 0
-                    ORDER BY ws_weight_date, pc_rank DESC
-                    LIMIT 5";
-        $db->exec();
-        $_ids = array();
         $request = array(
             'method' => 'CreateNewWordstatReport',
             'param' => array(
@@ -118,7 +105,9 @@ if ($new_reps_cnt > 0) {
                 'GeoID' => array(0),
             ),
         );
-        while ($row = $db->fetch()) {
+        $portion = $ws->getPortionWeight(5);
+        $_ids = array();
+        foreach ($portion as $row) {
             $request['param']['Phrases'][] = iconv('ISO-8859-1', 'utf-8', $row['ws_city_title'] . ' достопримечательности');
             $_ids[] = $row['ws_id'];
         }
@@ -135,11 +124,9 @@ if ($new_reps_cnt > 0) {
 }
 
 //****************   6 - Оптимизация таблицы данных ****************************
-$db->sql = "OPTIMIZE TABLE $dbws";
-$db->exec();
+$ws->optimize();
 
-
-
+////////////////////////////////////////////////////////////////////////////////
 
 function yandex_req($request) {
     //$url = "https://api-sandbox.direct.yandex.ru/json-api/v4/";
