@@ -121,12 +121,8 @@ class Page extends PageCommon {
     }
 
     private function getWeaterConditionsByCode($code) {
-        $dbwc = $this->db->getTableName('weather_codes');
-        $this->db->sql = "SELECT * FROM $dbwc WHERE wc_id = :code";
-        $this->db->execute(array(
-            ':code' => intval($code),
-        ));
-        $row = $this->db->fetch();
+        $wc = new MWeatherCodes($this->db);
+        $row = $wc->getItemByPk($code);
         if ($row['wc_id'] != 0) {
             return array('main' => $row['wc_main'], 'description' => $row['wc_description']);
         } else {
