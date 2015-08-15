@@ -12,7 +12,7 @@ class Cache {
      * @var array 
      */
     private $config = array(
-        'ref' => array(
+        'refs' => array(
             'dir' => 'refs',
             'lifetime' => 3600,
         ),
