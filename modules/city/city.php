@@ -25,9 +25,6 @@ class Page extends PageCommon {
     }
 
     private function getBlockWeather($lat, $lon) {
-        $lat = cut_trash_float($lat);
-        $lon = cut_trash_float($lon);
-
         $out = array('state' => false, 'content' => '', 'color' => '');
         $weather_data = array(
             'temperature' => '',
@@ -47,15 +44,16 @@ class Page extends PageCommon {
             'weather_full' => '',
         );
 
-        $url = "http://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-        $result = curl_exec($ch);
-        curl_close($ch);
+        $curl = new Curl($this->db);
+        $curl->setTTL(3600); //кэшируем запросы на час
+        $curl->config(CURLOPT_TIMEOUT, 2);
+        $curl->config(CURLOPT_HEADER, 0);
+        $curl->config(CURLOPT_SSL_VERIFYPEER, false);
+        $curl->config(CURLOPT_FAILONERROR, true);
+
+        $result = $curl->get("http://api.openweathermap.org/data/2.5/weather?lat=" . float($lat) . "&lon=" . float($lon) . "");
         $response = json_decode($result);
+
         if (is_object($response) && $response->cod == 200) {
             $weather_data['temperature'] = round($response->main->temp - 273.15);
             if ($weather_data['temperature'] > 0) {

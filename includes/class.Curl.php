@@ -10,6 +10,7 @@ class Curl {
         $this->_cc = new MCurlCache($db);
         $this->_curl = curl_init();
         curl_setopt($this->_curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->_curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($this->_curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36');
     }
 
