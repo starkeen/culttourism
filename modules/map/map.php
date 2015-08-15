@@ -215,8 +215,14 @@ class Page extends PageCommon {
     }
 
     private function getRefPointTypes() {
-        $ref = new MRefPointtypes($this->db);
-        return $ref->getActive();
+        $cache = Cache::i('refs');
+        $ptypes = $cache->get('point_types');
+        if (empty($ptypes)) {
+            $ref = new MRefPointtypes($this->db);
+            $ptypes = $ref->getActive();
+            $cache->put('point_types', $ptypes);
+        }
+        return $ptypes;
     }
 
     public static function getInstance($db, $mod) {
