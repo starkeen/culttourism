@@ -1,6 +1,6 @@
 <?php
 
-class MPages extends Model {
+class MNewsSources extends Model {
 
     protected $_table_pk = 'ns_id';
     protected $_table_order = 'ns_id';
@@ -17,6 +17,12 @@ class MPages extends Model {
             'ns_active',
         );
         parent::__construct($db);
+    }
+
+    public function getPortion() {
+        $this->_db->sql = "SELECT * FROM $this->_table_name WHERE ns_active = 1 ORDER BY ns_last_read LIMIT 1";
+        $this->_db->exec();
+        return $this->_db->fetchAll();
     }
 
 }
