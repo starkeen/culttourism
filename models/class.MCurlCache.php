@@ -48,4 +48,9 @@ class MCurlCache extends Model {
         ));
     }
 
+    public function cleanExpired() {
+        $this->_db->sql = "DELETE FROM $this->_table_name WHERE cc_expire < NOW()";
+        $this->_db->exec();
+    }
+
 }

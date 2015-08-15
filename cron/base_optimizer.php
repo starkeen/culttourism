@@ -1,19 +1,21 @@
 <?php
 
-$dbau = $db->getTableName('authorizations');
-$dbсс = $db->getTableName('curl_cache');
+$cc = new MCurlCache($db);
+$cc->cleanExpired();
+
+$au = new MAuthorizations($db);
+$au->cleanExpired();
+$au->cleanUnused();
+
+$la = new MLogActions($db);
+$la->cleanExpired();
+
+$le = new MLogErrors($db);
+$le->cleanExpired();
 
 $tables_clean = array(
-    array($db->getTableName('authorizations'), 'au_date_expire', 1),
     array($db->getTableName('news_items'), 'ni_pubdate', 3,),
-    array($db->getTableName('log_actions'), 'la_date', 60,),
-    array($db->getTableName('log_errors'), 'le_date', 30,),
 );
-
-$db->sql = "DELETE FROM $dbau WHERE au_service IN ('ajax', 'map')";
-$db->exec();
-$db->sql = "DELETE FROM $dbсс WHERE cc_expire < NOW()";
-$db->exec();
 
 foreach ($tables_clean as $i => $table) {
     $db->sql = "DELETE FROM {$table[0]}

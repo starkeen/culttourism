@@ -18,4 +18,9 @@ class MLogActions extends Model {
         parent::__construct($db);
     }
 
+    public function cleanExpired() {
+        $this->_db->sql = "DELETE FROM $this->_table_name WHERE la_date < SUBDATE(NOW(), INTERVAL 60 DAY)";
+        $this->_db->exec();
+    }
+
 }

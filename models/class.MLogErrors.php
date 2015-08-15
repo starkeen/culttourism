@@ -21,4 +21,9 @@ class MLogErrors extends Model {
         parent::__construct($db);
     }
 
+    public function cleanExpired() {
+        $this->_db->sql = "DELETE FROM $this->_table_name WHERE le_date < SUBDATE(NOW(), INTERVAL 30 DAY)";
+        $this->_db->exec();
+    }
+
 }
