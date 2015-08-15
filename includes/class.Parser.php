@@ -21,6 +21,7 @@ class Parser {
         $this->_url['domain'] = str_replace('www.', '', $this->_url['host']);
         $this->_config = $this->_sites[$this->_url['domain']];
         $this->_curl = new Curl($db);
+        $this->_curl->setTTLDays(30);
 
         $pconfig = HTMLPurifier_Config::createDefault();
         $pconfig->set('Core.Encoding', $this->_config['encoding']);

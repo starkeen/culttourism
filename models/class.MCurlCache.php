@@ -19,7 +19,7 @@ class MCurlCache extends Model {
 
     public function get($url) {
         $this->_db->sql = "SELECT * FROM $this->_table_name WHERE cc_url = :url";
-        
+
         $this->_db->execute(array(
             ':url' => $url,
         ));
@@ -27,18 +27,18 @@ class MCurlCache extends Model {
         return !empty($row) ? $row['cc_text'] : null;
     }
 
-    public function put($url, $text, $expire = 30) {
+    public function put($url, $text, $expire = 3600) {
         $this->_db->sql = "INSERT INTO $this->_table_name
                             SET
                                 cc_date = NOW(),
                                 cc_url = :url,
                                 cc_text = :text1,
-                                cc_expire = DATE_ADD(NOW(), INTERVAL :expire1 DAY)
+                                cc_expire = DATE_ADD(NOW(), INTERVAL :expire1 SECOND)
                             ON DUPLICATE KEY UPDATE
                                 cc_date = NOW(),
                                 cc_text = :text2,
-                                cc_expire = DATE_ADD(NOW(), INTERVAL :expire2 DAY)";
-        
+                                cc_expire = DATE_ADD(NOW(), INTERVAL :expire2 SECOND)";
+
         $this->_db->execute(array(
             ':url' => $url,
             ':text1' => $text,

@@ -19,7 +19,7 @@ class DataChecker {
         $dc = new MDataCheck($this->db);
 
         $curl = new Curl($this->db);
-        $curl->setTTL(7);
+        $curl->setTTLDays(7);
         $curl->config(CURLOPT_TIMEOUT, 5);
         $curl->config(CURLOPT_HEADER, 0);
         $curl->config(CURLOPT_SSL_VERIFYPEER, false);
