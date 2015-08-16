@@ -5,8 +5,8 @@ ini_set('display_errors', false);
 $_timer_start_main = microtime(true);
 header('Content-Type: text/html; charset=utf-8');
 include(realpath(dirname(__FILE__) . '/../config/configuration.php'));
-include(_DIR_ROOT . '/includes/debug.php');
-
+include(_DIR_INCLUDES . '/debug.php');
+include(_DIR_INCLUDES . '/functions.php');
 include(_DIR_INCLUDES . '/class.Helper.php');
 spl_autoload_register('Helper::autoloader');
 
@@ -31,7 +31,6 @@ $nologging_ids = array(2,);
 foreach ($scripts as $job) {
     $script = $job['cr_script'];
     $script_id = $job['cr_id'];
-    $period = $job['period'];
 
     if (!in_array($script_id, $nologging_ids)) {
         Logging::addHistory('cron', "Начала работу задача №$script_id ({$job['cr_title']})");
@@ -47,7 +46,6 @@ foreach ($scripts as $job) {
     $exectime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах
     if (strlen($content) != 0) {
         $content .= "<hr>время: $exectime c.";
-
         Mailing::sendDirect($global_cron_email, 'Cron on ' . _URL_ROOT, $content, 'X-Mailru-Msgtype:cronreport');
     }
     $cr->markWorkFinish($script_id, $content, $exectime);
