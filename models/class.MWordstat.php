@@ -65,6 +65,65 @@ class MWordstat extends Model {
     }
 
     /**
+     * Простановка веса по полученным данным
+     * @param integer $rep_id
+     * @param string $city
+     * @param integer $weight
+     */
+    public function setWeight($rep_id, $city, $weight) {
+        $this->_db->sql = "UPDATE $this->_table_name
+                                SET ws_weight = :weight, ws_weight_date = NOW(), ws_rep_id = 0
+                            WHERE ws_rep_id = :rep_id
+                                AND ws_city_title = :city";
+        $this->_db->execute(array(
+            ':rep_id' => $rep_id,
+            ':city' => $city,
+            ':weight' => $weight,
+        ));
+    }
+
+    /**
+     * Простановка словам ID отчетов в работе
+     * @param array $ids
+     * @param integer $report_id
+     */
+    public function setProcessingReport($ids, $report_id) {
+        $this->_db->sql = "UPDATE $this->_table_name
+                            SET ws_rep_id = :report_id
+                            WHERE FIND_IN_SET(CAST(ws_id AS char), :ids)";
+        $this->_db->execute(array(
+            ':report_id' => $report_id,
+            ':ids' => $ids,
+        ));
+    }
+
+    /**
+     * Получить отчёты в работе
+     * @return array
+     */
+    public function getProcessingReports() {
+        $this->_db->sql = "SELECT ws_rep_id
+                            FROM $this->_table_name
+                            WHERE ws_rep_id != 0
+                            GROUP BY ws_rep_id";
+        $this->_db->exec();
+        return $this->_db->fetchAll();
+    }
+
+    /**
+     * Сброс очереди отчетов, например если они зависли
+     * @param array $rep_ids
+     */
+    public function resetQueue($rep_ids) {
+        $this->_db->sql = "UPDATE $this->_table_name
+                            SET ws_rep_id = 0
+                            WHERE FIND_IN_SET(CAST(ws_rep_id AS char), :ids)";
+        $this->_db->execute(array(
+            ':ids' => $rep_ids,
+        ));
+    }
+
+    /**
      * Простановка свежих максимумов и минимумов
      */
     public function updateMaxMin() {
