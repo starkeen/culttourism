@@ -58,7 +58,6 @@ abstract class Core {
         $this->auth = new Auth($this->db);
         $this->auth->checkSession('web');
 
-        $dbm = $this->db->getTableName('modules');
         $sp = new MSysProperties($db);
         $this->globalsettings = $sp->getPublic();
 
