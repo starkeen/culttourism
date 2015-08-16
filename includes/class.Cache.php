@@ -14,7 +14,7 @@ class Cache {
     private $config = array(
         'refs' => array(
             'dir' => 'refs',
-            'lifetime' => 24 * 3600,
+            'lifetime' => 3600,
         ),
         'sysprops' => array(
             'dir' => 'sysprops',
