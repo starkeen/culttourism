@@ -93,7 +93,7 @@ class MWordstat extends Model {
                             WHERE FIND_IN_SET(CAST(ws_id AS char), :ids)";
         $this->_db->execute(array(
             ':report_id' => $report_id,
-            ':ids' => $ids,
+            ':ids' => implode(',', $ids),
         ));
     }
 
@@ -119,7 +119,7 @@ class MWordstat extends Model {
                             SET ws_rep_id = 0
                             WHERE FIND_IN_SET(CAST(ws_rep_id AS char), :ids)";
         $this->_db->execute(array(
-            ':ids' => $rep_ids,
+            ':ids' => implode(',', $rep_ids),
         ));
     }
 
