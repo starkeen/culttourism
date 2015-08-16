@@ -5,7 +5,7 @@
  */
 class Cache {
 
-    protected static $_instance;
+    protected static $_instance = array();
 
     /**
      * Список доступных кэшей
@@ -14,7 +14,7 @@ class Cache {
     private $config = array(
         'refs' => array(
             'dir' => 'refs',
-            'lifetime' => 3600,
+            'lifetime' => 24 * 3600,
         ),
         'sysprops' => array(
             'dir' => 'sysprops',
@@ -37,11 +37,11 @@ class Cache {
      * @return object
      */
     public static function i($cache) {
-        if (null === self::$_instance) {
+        if (!isset(self::$_instance[$cache])) {
             // создаем новый экземпляр
-            self::$_instance = new self($cache);
+            self::$_instance[$cache] = new self($cache);
         }
-        return self::$_instance;
+        return self::$_instance[$cache];
     }
 
     /**
