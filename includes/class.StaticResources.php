@@ -6,6 +6,7 @@ class StaticResources {
         'css' => array(),
         'js' => array(),
     );
+    private $prefix = 'ct';
 
     public function __construct() {
         $this->config = include(_DIR_ROOT . '/config/static_files.php');
@@ -22,14 +23,14 @@ class StaticResources {
     private function rebuildCSS() {
         $out = array();
         foreach ($this->config['css'] as $pack => $files) {
-            $file_out = _DIR_ROOT . '/css/ct-' . $pack . '.css';
+            $file_out = _DIR_ROOT . '/css/' . $this->prefix . '-' . $pack . '.css';
             file_put_contents($file_out, '');
             foreach ($files as $file) {
                 file_put_contents($file_out, "/*\n$file\n*/\n\n\n", FILE_APPEND);
                 file_put_contents($file_out, file_get_contents($file) . "\n", FILE_APPEND);
             }
             $file_hash_new = crc32(file_get_contents($file_out));
-            $file_production = _DIR_ROOT . '/css/ct-' . $pack . '-' . $file_hash_new . '.min.css';
+            $file_production = _DIR_ROOT . '/css/' . $this->prefix . '-' . $pack . '-' . $file_hash_new . '.min.css';
             if (!file_exists($file_production)) {
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, 'http://cssminifier.com/raw');
@@ -42,10 +43,10 @@ class StaticResources {
                 $minified = curl_exec($ch);
                 curl_close($ch);
                 if ($minified != '') {
-                    $old_files = glob(_DIR_ROOT . '/css/ct-' . $pack . '-*.min.css');
+                    $old_files = glob(_DIR_ROOT . '/css/' . $this->prefix . '-' . $pack . '-*.min.css');
                     file_put_contents($file_production, $minified);
                     foreach ($old_files as $old) {
-                       // unlink($old);
+                        // unlink($old);
                     }
                 }
             }
@@ -58,14 +59,14 @@ class StaticResources {
     private function rebuildJS() {
         $out = array();
         foreach ($this->config['js'] as $pack => $files) {
-            $file_out = _DIR_ROOT . '/js/ct-' . $pack . '.js';
+            $file_out = _DIR_ROOT . '/js/' . $this->prefix . '-' . $pack . '.js';
             file_put_contents($file_out, '');
             foreach ($files as $file) {
                 file_put_contents($file_out, "/*\n$file\n*/\n\n\n", FILE_APPEND);
                 file_put_contents($file_out, file_get_contents($file) . "\n", FILE_APPEND);
             }
             $file_hash_new = crc32(file_get_contents($file_out));
-            $file_production = _DIR_ROOT . '/js/ct-' . $pack . '-' . $file_hash_new . '.min.js';
+            $file_production = _DIR_ROOT . '/js/' . $this->prefix . '-' . $pack . '-' . $file_hash_new . '.min.js';
             if (!file_exists($file_production)) {
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, 'http://javascript-minifier.com/raw');
@@ -78,7 +79,7 @@ class StaticResources {
                 $minified = curl_exec($ch);
                 curl_close($ch);
                 if ($minified != '') {
-                    $old_files = glob(_DIR_ROOT . '/js/ct-' . $pack . '-*.min.js');
+                    $old_files = glob(_DIR_ROOT . '/js/' . $this->prefix . '-' . $pack . '-*.min.js');
                     file_put_contents($file_production, $minified);
                     foreach ($old_files as $old) {
                         //unlink($old);
