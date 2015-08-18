@@ -7,9 +7,11 @@ class StaticResources {
         'js' => array(),
     );
     private $prefix = 'ct';
+    private $timestamp_old;
 
     public function __construct() {
         $this->config = include(_DIR_ROOT . '/config/static_files.php');
+        $this->timestamp_old = strtotime("-6 months");
     }
 
     public function getFull($type, $pack) {
@@ -97,6 +99,37 @@ class StaticResources {
             'css' => $this->rebuildCSS(),
             'js' => $this->rebuildJS(),
         );
+    }
+
+    public function clean() {
+        $mask = array();
+        foreach ($this->config as $filetype => $files) {
+            foreach ($files as $msk => $file) {
+                $mask[] = _DIR_ROOT . '/' . $filetype . '/' . $this->prefix . '-' . $msk . '-*.min.' . $filetype;
+            }
+        }
+        $files = array();
+        foreach ($mask as $id => $variant) {
+            foreach (glob($variant) as $filename) {
+                $timestamp = filemtime($filename);
+                $files[$id][$timestamp] = array(
+                    'filename' => $filename,
+                    'timestamp' => $timestamp,
+                    'delete' => $timestamp < $this->timestamp_old,
+                );
+            }
+            ksort($files[$id]);
+        }
+
+        foreach ($files as $id => $variant) {
+            array_pop($variant);
+            foreach ($variant as $file) {
+                if ($file['delete']) {
+                    //unlink($file['filename']);
+                    echo "delete old file: {$file['filename']} => " . date('d.m.Y', $file['timestamp']) . PHP_EOL;
+                }
+            }
+        }
     }
 
 }
