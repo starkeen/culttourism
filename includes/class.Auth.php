@@ -127,29 +127,33 @@ class Auth {
     public function checkMailPassword($email, $password) {
         $dbu = $this->db->getTableName('users');
         $dba = $this->db->getTableName('authorizations');
-        $this->db->sql = "SELECT us_id, us_email, us_passwrd, us_name FROM $dbu WHERE us_active = '1'";
-        $this->db->exec();
-        while ($row = $this->db->fetch()) {
-            if ($row['us_email'] == $email) {
-                if ($row['us_passwrd'] == md5($password)) {
-                    $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
-                    $this->db->execute(array(
-                        ':usid' => $row['us_id'],
-                    ));
-                    $this->db->sql = "UPDATE $dba SET au_us_id = :usid WHERE au_key = :key";
-                    $this->db->execute(array(
-                        ':usid' => $row['us_id'],
-                        ':key' => $this->key,
-                    ));
+        $this->db->sql = "SELECT us_id, us_email, us_passwrd, us_name
+                            FROM $dbu
+                            WHERE us_email = :us_email
+                                AND us_passwrd = :us_passwrd
+                                AND us_active = 1";
+        $this->db->execute(array(
+            ':us_email' => $email,
+            ':us_passwrd' => md5($password),
+        ));
+        $row = $this->db->fetch();
+        if (!empty($row['us_id'])) {
+            $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
+            $this->db->execute(array(
+                ':usid' => $row['us_id'],
+            ));
+            $this->db->sql = "UPDATE $dba SET au_us_id = :usid WHERE au_key = :key";
+            $this->db->execute(array(
+                ':usid' => $row['us_id'],
+                ':key' => $this->key,
+            ));
 
-                    $this->user_id = $row['us_id'];
-                    $this->username = $row['us_name'];
-                    $_SESSION['user_id'] = $row['us_id'];
-                    $_SESSION['user_name'] = $row['us_name'];
-                    $_SESSION['user_auth'] = $this->key;
-                    return $this->key;
-                }
-            }
+            $this->user_id = $row['us_id'];
+            $this->username = $row['us_name'];
+            $_SESSION['user_id'] = $row['us_id'];
+            $_SESSION['user_name'] = $row['us_name'];
+            $_SESSION['user_auth'] = $this->key;
+            return $this->key;
         }
         return false;
     }
@@ -157,32 +161,37 @@ class Auth {
     public function checkPassword($login, $password) {
         $dbu = $this->db->getTableName('users');
         $dba = $this->db->getTableName('authorizations');
-        $this->db->sql = "SELECT us_id, us_login, us_email, us_passwrd, us_name, us_admin FROM $dbu WHERE us_active = '1'";
-        $this->db->exec();
-        while ($row = $this->db->fetch()) {
-            if ($row['us_login'] == $login) {
-                if ($row['us_passwrd'] == md5($password)) {
-                    $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
-                    $this->db->execute(array(
-                        ':usid' => $row['us_id'],
-                    ));
+        $this->db->sql = "SELECT us_id, us_login, us_email, us_passwrd, us_name, us_admin
+                            FROM $dbu
+                            WHERE us_login = :us_login
+                                AND us_passwrd = :us_passwrd
+                                AND us_active = 1";
+        $this->db->execute(array(
+            ':us_login' => $login,
+            ':us_passwrd' => md5($password),
+        ));
+        $row = $this->db->fetch();
+        if (!empty($row['us_id'])) {
+            $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
+            $this->db->execute(array(
+                ':usid' => $row['us_id'],
+            ));
 
-                    $this->db->sql = "UPDATE $dba SET au_us_id = :usid WHERE au_key = :key";
-                    $this->db->execute(array(
-                        ':usid' => $row['us_id'],
-                        ':key' => $this->key,
-                    ));
+            $this->db->sql = "UPDATE $dba SET au_us_id = :usid WHERE au_key = :key";
+            $this->db->execute(array(
+                ':usid' => $row['us_id'],
+                ':key' => $this->key,
+            ));
 
-                    $this->user_id = $row['us_id'];
-                    $this->username = $row['us_name'];
-                    $_SESSION['user_id'] = $row['us_id'];
-                    $_SESSION['user_name'] = $row['us_name'];
-                    $_SESSION['user_admin'] = $row['us_admin'];
-                    $_SESSION['user_auth'] = $this->key;
-                    return $this->key;
-                }
-            }
+            $this->user_id = $row['us_id'];
+            $this->username = $row['us_name'];
+            $_SESSION['user_id'] = $row['us_id'];
+            $_SESSION['user_name'] = $row['us_name'];
+            $_SESSION['user_admin'] = $row['us_admin'];
+            $_SESSION['user_auth'] = $this->key;
+            return $this->key;
         }
+
         return false;
     }
 
