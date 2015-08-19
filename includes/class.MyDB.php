@@ -19,7 +19,7 @@ class MyDB extends MyPDO {
 
     public function exec($sql = null) {
         //$this->log();
-        parent::exec($sql);
+        return parent::exec($sql);
     }
 
     public function log() {
