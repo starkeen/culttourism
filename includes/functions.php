@@ -122,6 +122,7 @@ $old_error_handler = set_error_handler(function($errno, $errstr, $errfile, $errl
 set_exception_handler(function($e) {
     $msg = "Error: " . $e->getMessage() . "\n"
             . 'file: ' . $e->getFile() . ':' . $e->getLine()
+            . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
             . "\n__________________________\n\n\n"
             . 'trace: ' . print_r($e->getTrace(), true) . "\n"
             . 'date: ' . date('d.m.Y H:i:s') . "\n";
@@ -133,6 +134,7 @@ register_shutdown_function(function() {
     $error = error_get_last();
     if (null !== $error && !in_array($error['type'], array(E_DEPRECATED))) {
         $msg = "Error: " . print_r($error, 1) . "\n"
+                . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
                 . 'date: ' . date('d.m.Y H:i:s') . "\n";
         mail('starkeen@gmail.com', "Fatal error #{$error['type']} on culttourism.ru", $msg);
     }
