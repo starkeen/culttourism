@@ -226,7 +226,7 @@ abstract class Core {
 
                     $suggestions = array();
                     //$suggestions = $this->getSuggestions404Local($_SERVER['REQUEST_URI']);
-                    if (empty($suggestions)) {
+                    if (false && empty($suggestions) && !strstr($_SERVER['REQUEST_URI'], 'php')) {
                         $search_text = trim(str_replace(array('_', '/', '.html',), ' ', $_SERVER['REQUEST_URI']));
                         $suggestions = $this->getSuggestions404Yandex($search_text);
                     }
