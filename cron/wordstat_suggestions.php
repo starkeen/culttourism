@@ -16,14 +16,9 @@ if (isset($res_opened['data']) && !empty($res_opened['data'])) {
     }
 }
 
-echo 'opened';
-print_r($open_reports);
-
 $reps = array();
 $reps_to_reset = array();
 $reports = $ws->getProcessingReports();
-echo 'processing';
-print_r($reports);
 foreach ($reports as $row) {
     if (in_array($row['ws_rep_id'], $open_reports)) {
         $request_report = array(
