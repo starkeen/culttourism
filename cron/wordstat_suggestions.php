@@ -50,7 +50,7 @@ if (!empty($reps_to_reset)) {
     $ws->resetQueue($reps_to_reset);
 }
 
-//****************   3 - Простановка данных по словам **************************
+//****************   3 - Простановка полученных данных по словам **************************
 $reps_to_del = array();
 foreach ($reps as $rep) {
     $city = trim(str_replace('достопримечательности', '', $rep['word']));
@@ -80,7 +80,7 @@ if (isset($res_count['data']) && !empty($res_count['data'])) {
         $new_reps_cnt += -1;
     }
 }
-
+echo 'new reps: ', $new_reps_cnt, PHP_EOL;
 if ($new_reps_cnt > 0) {
     for ($i = 1; $i <= $new_reps_cnt; $i++) {
         $request_create = array(
@@ -95,6 +95,7 @@ if ($new_reps_cnt > 0) {
         foreach ($portion as $row) {
             $request_create['param']['Phrases'][] = iconv('ISO-8859-1', 'utf-8', $row['ws_city_title'] . ' достопримечательности');
             $_ids[] = $row['ws_id'];
+            echo 'added: ', $row['ws_city_title'], PHP_EOL;
         }
         $res_create = yandex_req($request_create);
         if (isset($res_create['data'])) {
