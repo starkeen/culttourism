@@ -15,7 +15,7 @@ class Page extends PageCommon {
             return $this->detailCity($db, $smarty);
         } elseif ($page_id[1] == 'meta') {
             return $this->metaCity($db, $smarty);
-        } elseif ($page_id[1] == 'weather') {
+        } elseif ($page_id[1] == 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
             $this->isAjax = true;
             return $this->getBlockWeather($_GET['lat'], $_GET['lon']);
