@@ -30,6 +30,7 @@ class MyPDO implements IDB {
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
                     //PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'",
             );
             $this->prefix = $db_prefix;
@@ -102,12 +103,12 @@ class MyPDO implements IDB {
         } catch (PDOException $e) {
             $this->_errors[] = $e->getMessage();
             $msg = "SQL-execute error: " . $e->getMessage() . "\n"
-            . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
-            . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
-            . "\n__________________________\n\n\n"
-            . 'SQL: ' . $this->_sql . "\n"
-            . "\n__________________________\n\n\n"
-            . 'trace: ' . $e->getTraceAsString() . "\n";
+                    . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
+                    . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
+                    . "\n__________________________\n\n\n"
+                    . 'SQL: ' . $this->_sql . "\n"
+                    . "\n__________________________\n\n\n"
+                    . 'trace: ' . $e->getTraceAsString() . "\n";
 
             mail('starkeen@gmail.com', 'SQL error on culttourism.ru', $msg);
         }
@@ -144,12 +145,12 @@ class MyPDO implements IDB {
         } catch (PDOException $e) {
             $this->_errors[] = $e->getMessage();
             $msg = "SQL-exec error: " . $e->getMessage() . "\n"
-            . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
-            . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
-            . "\n__________________________\n\n\n"
-            . 'SQL: ' . $this->_sql . "\n"
-            . "\n__________________________\n\n\n"
-            . 'trace: ' . $e->getTraceAsString() . "\n";
+                    . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
+                    . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
+                    . "\n__________________________\n\n\n"
+                    . 'SQL: ' . $this->_sql . "\n"
+                    . "\n__________________________\n\n\n"
+                    . 'trace: ' . $e->getTraceAsString() . "\n";
 
             mail('starkeen@gmail.com', 'SQL error on culttourism.ru', $msg);
         }
@@ -193,18 +194,15 @@ class MyPDO implements IDB {
     }
 
     public function beginTransaction() {
-        $this->sql = 'START TRANSACTION';
-        $this->exec();
+        $this->_pdo->beginTransaction();
     }
 
     public function commitTransaction() {
-        $this->sql = 'COMMIT';
-        $this->exec();
+        $this->_pdo->commit();
     }
 
     public function rollbackTransaction() {
-        $this->sql = 'ROLLBACK';
-        $this->exec();
+        $this->_pdo->rollBack();
     }
 
     public function showSQL($sql = null) {
