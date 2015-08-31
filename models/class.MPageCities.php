@@ -185,7 +185,7 @@ class MPageCities extends Model {
                 unset($values['pc_longitude']);
             }
         }
-        parent::updateByPk($id, $values, $files);
+        return parent::updateByPk($id, $values, $files);
     }
 
     public function insert($values = array(), $files = array()) {
@@ -201,7 +201,7 @@ class MPageCities extends Model {
                 unset($values['pc_longitude']);
             }
         }
-        parent::insert($values, $files);
+        return parent::insert($values, $files);
     }
 
     /*
