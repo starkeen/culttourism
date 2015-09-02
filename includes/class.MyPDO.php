@@ -110,7 +110,7 @@ class MyPDO implements IDB {
                     . "\n__________________________\n\n\n"
                     . 'trace: ' . $e->getTraceAsString() . "\n";
 
-            mail('starkeen@gmail.com', 'SQL error on culttourism.ru', $msg);
+            mail('starkeen@gmail.com', 'SQL error on ' . _URL_ROOT, $msg);
         }
     }
 
@@ -152,7 +152,7 @@ class MyPDO implements IDB {
                     . "\n__________________________\n\n\n"
                     . 'trace: ' . $e->getTraceAsString() . "\n";
 
-            mail('starkeen@gmail.com', 'SQL error on culttourism.ru', $msg);
+            mail('starkeen@gmail.com', 'SQL error on ' . _URL_ROOT, $msg);
         }
     }
 
