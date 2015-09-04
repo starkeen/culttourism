@@ -46,7 +46,11 @@ DOC;
                     'method' => "POST",
                     'header' => "Content-type: application/xml\r\nContent-length: " . strlen($doc),
                     'content' => $doc,
-            )));
+                ),
+                'socket' => array(
+                    'bindto' => '188.225.12.25:0',
+                ),
+            ));
             $response = @file_get_contents($this->_request_url, true, $context);
             if ($response) {
                 if ($this->_enable_logging) {
