@@ -327,6 +327,7 @@ class Page extends PageCommon {
         //**************************************** ДОБАВЛЕНИЕ ******************
         $newcity = '';
         $inbase = array();
+        $already = array();
         if (isset($_POST) && !empty($_POST)) {
             $city_name = cut_trash_string($_POST['city_name']);
             $city_id = cut_trash_int($_POST['city_id']);
@@ -382,7 +383,6 @@ class Page extends PageCommon {
                 ':newcity1' => '%' . $newcity . '%',
                 ':newcity2' => '%' . $newcity . '%',
             ));
-            $already = array();
             while ($row = $db->fetch()) {
                 $already[$row['url']] = $row['pc_title'];
             }
