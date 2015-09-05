@@ -326,6 +326,7 @@ class Page extends PageCommon {
     private function addCity($db, $smarty) {
         //**************************************** ДОБАВЛЕНИЕ ******************
         $newcity = '';
+        $inbase = array();
         if (isset($_POST) && !empty($_POST)) {
             $city_name = cut_trash_string($_POST['city_name']);
             $city_id = cut_trash_int($_POST['city_id']);
@@ -426,7 +427,6 @@ class Page extends PageCommon {
                 ':newcity2' => '%' . $newcity . '%',
                 ':newcity3' => '%' . $newcity . '%',
             ));
-            $inbase = array();
             while ($row = $db->fetch()) {
                 $inbase[] = $row;
             }
