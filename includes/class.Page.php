@@ -88,7 +88,7 @@ class Page extends PageCommon {
         $sp = new MStatpoints($this->db);
         $sp->add($object['pt_id'], $this->getUserHash());
 
-        $this->addTitle($city['pc_title']);
+        $this->addTitle($city['pc_title_unique']);
         $this->addTitle($object['esc_name']);
         if ($object['tr_sight']) {
             $this->addDescription('Достопримечательности ' . $city['pc_inwheretext']);
@@ -199,7 +199,7 @@ class Page extends PageCommon {
             $sc = new MStatcity($this->db);
             $sc->add($row['pc_id'], $this->getUserHash());
 
-            $this->addTitle($row['pc_title'] . ': достопримечательности');
+            $this->addTitle($row['pc_title_unique'] . ': достопримечательности');
             if ($row['pc_description']) {
                 $this->addDescription($row['pc_description']);
             }
