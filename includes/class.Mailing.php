@@ -20,6 +20,7 @@ class Mailing {
         $mailer->Mailer = "smtp";
         $mailer->SMTPAuth = true;
         $mailer->CharSet = "utf-8";
+        $mailer->setLanguage('ru');
         $mailer->From = _MAIL_FROMADDR;
         $mailer->FromName = _MAIL_FROMNAME;
         $mailer->Host = _MAIL_HOST;
