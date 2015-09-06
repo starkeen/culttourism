@@ -10,6 +10,7 @@ class MPageCities extends Model {
         $this->_table_name = $db->getTableName('pagecity');
         $this->_table_fields = array(
             'pc_title',
+            'pc_title_unique',
             'pc_text',
             'pc_keywords',
             'pc_description',
@@ -201,6 +202,9 @@ class MPageCities extends Model {
                 unset($values['pc_longitude']);
             }
         }
+        if (empty($values['pc_title_unique'])) {
+            $values['pc_title_unique'] = $values['pc_title'];
+        }
         return parent::insert($values, $files);
     }
 
@@ -209,13 +213,12 @@ class MPageCities extends Model {
      */
 
     public function getSuggestion($query) {
-        $this->_db->sql = "SELECT pc_id, pc_title, url
+        $this->_db->sql = "SELECT pc_id, pc_title_unique AS pc_title, url
                             FROM $this->_table_name pc
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
                             WHERE pc.pc_title LIKE :name1 OR pc_title LIKE :name2
                                 AND pc.pc_active = 1
-                            GROUP BY pc.pc_title
-                            ORDER BY pc.pc_title";
+                            ORDER BY pc.pc_title_unique";
 
         $this->_db->execute(array(
             ':name1' => '%' . trim($query) . '%',
