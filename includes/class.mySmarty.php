@@ -1,6 +1,6 @@
 <?php
 
-include_once(_DIR_SMARTY . '/Smarty.class.php');
+include_once(_DIR_ADDONS . '/smarty/libs/Smarty.class.php');
 
 class mySmarty extends Smarty {
 
@@ -31,5 +31,3 @@ class mySmarty extends Smarty {
     }
 
 }
-
-?>
