@@ -328,17 +328,8 @@ class Page extends PageCommon {
         $newcity = '';
         $inbase = array();
         $already = array();
+        $pc = new MPageCities($db);
         if (isset($_POST) && !empty($_POST)) {
-            $city_name = cut_trash_string($_POST['city_name']);
-            $city_id = cut_trash_int($_POST['city_id']);
-            $region_id = cut_trash_int($_POST['region_id']);
-            $country_id = cut_trash_int($_POST['country_id']);
-            $country_code = cut_trash_string($_POST['country_code']);
-            $lat = cut_trash_string($_POST['latitude']);
-            $lat = str_replace(',', '.', $lat);
-            $lon = cut_trash_string($_POST['longitude']);
-            $lon = str_replace(',', '.', $lon);
-            $uid = $this->getUserId();
             $dbc = $db->getTableName('pagecity');
             $dbu = $db->getTableName('region_url');
             $translit = translit($city_name);
@@ -348,8 +339,22 @@ class Page extends PageCommon {
                         pc_url_id = 0, pc_latitude = '$lat', pc_longitude = '$lon', pc_rank = 0,
                         pc_title_translit = '$translit', pc_title_english = '$translit', pc_inwheretext = '$city_name',
                         pc_add_date = now(), pc_add_user = '$uid', pc_lastup_date = now()";
-            if ($db->exec()) {
-                $cid = $db->getLastInserted();
+            $cid = $pc->insert(array(
+                'pc_title' => $_POST['city_name'],
+                'pc_city_id' => $_POST['city_id'],
+                'pc_region_id' => $_POST['region_id'],
+                'pc_country_id' => $_POST['country_id'],
+                'pc_country_code' => $_POST['country_code'],
+                'pc_url_id' => 0,
+                'pc_latitude' => $_POST['latitude'],
+                'pc_longitude' => $_POST['longitude'],
+                'pc_rank' => 0,
+                'pc_title_translit' => $translit,
+                'pc_title_english' => $translit,
+                'pc_inwheretext' => $_POST['city_name'],
+                'pc_add_user' => $this->getUserId(),
+            ));
+            if ($cid > 0) {
                 $nurl = strtolower(str_replace(' ', '_', $translit));
                 $db->sql = "SELECT u.url FROM $dbu u
                             LEFT JOIN $dbc c ON c.pc_url_id = u.uid
