@@ -209,8 +209,37 @@ class MPageCities extends Model {
         $values['pc_add_date'] = $this->now();
         $values['pc_lastup_date'] = $this->now();
         $id = parent::insert($values, $files);
-        $urls = new MRegionUrl($this->_db);
+        
+        $parent_variants = $this->searchPagesByFilter(array(
+            'pc_region_id' => $values['pc_region_id'],
+            'pc_country_id' => $values['pc_country_id'],
+            'pc_city_id' => 0,
+        ));
+        $parent = $parent_variants[0];
+        $ru = new MRegionUrl($this->_db);
+        $url_id = $ru->insert(array(
+            'url' => $parent['url'] . '/' . strtolower(str_replace(' ', '_', $values['pc_title_english'])),
+            'citypage' => $id,
+        ));
+        $this->updateByPk($id, array(
+            'pc_url_id' => $url_id,
+        ));
+        
         return $id;
+    }
+    
+    public function searchPagesByFilter($filter = array()) {
+        $this->_db->sql = "SELECT *
+                            FROM $this->_table_name pc
+                                LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
+                            WHERE pc.pc_active = 1\n";
+        $binds = array();
+        foreach($filter as $k => $v) {
+            $this->_db->sql .= "AND $k = :$k\n";
+            $binds[':'.$k] = $v;
+        }
+        $this->_db->execute($binds);
+        return $this->_db->fetchAll();
     }
 
     /*
