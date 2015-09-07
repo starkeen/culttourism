@@ -332,13 +332,6 @@ class Page extends PageCommon {
         if (isset($_POST) && !empty($_POST)) {
             $dbc = $db->getTableName('pagecity');
             $dbu = $db->getTableName('region_url');
-            $translit = translit($city_name);
-            $db->sql = "INSERT INTO $dbc SET
-                        pc_title = '$city_name', pc_city_id = '$city_id', pc_region_id = '$region_id',
-                        pc_country_id = '$country_id', pc_country_code = '$country_code',
-                        pc_url_id = 0, pc_latitude = '$lat', pc_longitude = '$lon', pc_rank = 0,
-                        pc_title_translit = '$translit', pc_title_english = '$translit', pc_inwheretext = '$city_name',
-                        pc_add_date = now(), pc_add_user = '$uid', pc_lastup_date = now()";
             $cid = $pc->insert(array(
                 'pc_title' => $_POST['city_name'],
                 'pc_city_id' => $_POST['city_id'],
@@ -349,8 +342,8 @@ class Page extends PageCommon {
                 'pc_latitude' => $_POST['latitude'],
                 'pc_longitude' => $_POST['longitude'],
                 'pc_rank' => 0,
-                'pc_title_translit' => $translit,
-                'pc_title_english' => $translit,
+                'pc_title_translit' => translit($city_name),
+                'pc_title_english' => translit($city_name),
                 'pc_inwheretext' => $_POST['city_name'],
                 'pc_add_user' => $this->getUserId(),
             ));
