@@ -225,49 +225,24 @@ class Page extends PageCommon {
 
         if (isset($_POST) && !empty($_POST)) {
             //print_x($_POST);
-            $pc_keywords = cut_trash_string($_POST['keywds']);
-            $pc_description = cut_trash_text($_POST['descr']);
-            $pc_latitude = cut_trash_string($_POST['latitude']);
-            $pc_latitude = str_replace(',', '.', $pc_latitude);
-            $pc_longitude = cut_trash_string($_POST['longitude']);
-            $pc_longitude = str_replace(',', '.', $pc_longitude);
-            $pc_osm_id = intval($_POST['osm_id']);
-            $pc_inwheretext = cut_trash_string($_POST['inwhere']);
-            $pc_title_english = cut_trash_string($_POST['title_eng']);
-            $pc_title_translit = cut_trash_string($_POST['translit']);
-            $pc_title_synonym = cut_trash_string($_POST['synonym']);
-            $pc_website = cut_trash_string($_POST['web']);
-            $pc_announcement = cut_trash_text($_POST['anons']);
-            $url = cut_trash_string($_POST['url']);
-            $db->sql = "UPDATE $dbc SET
-                        pc_keywords = '$pc_keywords', pc_description = '$pc_description',
-                        pc_announcement = '$pc_announcement',
-                        pc_latitude = '$pc_latitude', pc_longitude = '$pc_longitude',
-                        pc_osm_id = '$pc_osm_id',
-                        pc_inwheretext = '$pc_inwheretext', pc_title_synonym = '$pc_title_synonym',
-                        pc_title_english = '$pc_title_english', pc_title_translit = '$pc_title_translit',
-                        pc_website = '$pc_website',
-                        pc_lastup_date = now(), pc_lastup_user = '$uid'
-                        WHERE pc_id = '$city_id'";
-            $db->exec();
-            $aurl = explode('/', $url);
-            $nurl = '';
-            foreach ($aurl as $u) {
-                if ($u != '') {
-                    $nurl .= '/' . strtolower(str_replace(' ', '_', translit($u)));
-                }
-            }
-            if ($nurl != '/') {
-                $db->sql = "SELECT pc_url_id FROM $dbc WHERE pc_id = '$city_id'";
-                $db->exec();
-                $url = $db->fetch();
-                $db->sql = "UPDATE $dbu SET url = '$nurl' WHERE uid = '{$url['pc_url_id']}'";
-                $db->exec();
-            }
-            $db->sql = "SELECT url FROM $dbu u LEFT JOIN $dbc c ON c.pc_url_id = u.uid WHERE pc_id = '$city_id' LIMIT 1";
-            $db->exec();
-            $url = $db->fetch();
-            header("Location: {$url['url']}");
+            $pc->updateByPk($city_id, array(
+                'pc_keywords' => $_POST['keywds'],
+                'pc_description' => $_POST['descr'],
+                'pc_announcement' => $_POST['anons'],
+                'pc_latitude' => $_POST['latitude'],
+                'pc_longitude' => $_POST['longitude'],
+                'pc_osm_id' => intval($_POST['osm_id']),
+                'pc_inwheretext' => $_POST['inwhere'],
+                'pc_title_synonym' => $_POST['synonym'],
+                'pc_title_english' => $_POST['title_eng'],
+                'pc_title_translit' => ($_POST['translit'],
+                'pc_website' => $_POST['web'],
+                'pc_lastup_user' => $this->getUserId(),
+            ));
+            $city = $pc->getItemByPk($city_id);
+            //$aurl = explode('/', $_POST['url']);
+
+            header("Location: {$city['url']}");
             exit();
         }
 
