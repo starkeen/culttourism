@@ -278,9 +278,9 @@ class Page extends PageCommon {
                         LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
                     WHERE cd.cd_pc_id = :pc_id
                     ORDER BY cf_order";
-        $db->execute((array(
+        $db->execute(array(
             ':pc_id' => $city_id
-        ));
+        );
         $meta = $db->fetchAll();
         
         $db->sql = "SELECT *
