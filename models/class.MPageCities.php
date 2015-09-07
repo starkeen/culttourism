@@ -124,6 +124,7 @@ class MPageCities extends Model {
 
     public function getItemByPk($id) {
         $this->_db->sql = "SELECT t.*,
+                                UNIX_TIMESTAMP(t.pc_lastup_date) AS last_update,
                                 CONCAT(url.url, '/') AS url
                             FROM $this->_table_name t
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = t.pc_url_id
