@@ -208,7 +208,9 @@ class MPageCities extends Model {
         }
         $values['pc_add_date'] = $this->now();
         $values['pc_lastup_date'] = $this->now();
-        return parent::insert($values, $files);
+        $id = parent::insert($values, $files);
+        $urls = new MRegionUrl($this->_db);
+        return $id;
     }
 
     /*
