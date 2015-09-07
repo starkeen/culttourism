@@ -209,10 +209,12 @@ class Page extends PageCommon {
         if (!isset($_GET['city_id'])) {
             return $this->getError('404');
         }
-        $city_id = cut_trash_int($_GET['city_id']);
+        $city_id = intval($_GET['city_id']);
         if (!$city_id) {
             return $this->getError('404');
         }
+        
+        $pc = new MPageCities($db);
 
         $uid = $this->getUserId();
         $dbc = $db->getTableName('pagecity');
@@ -269,44 +271,34 @@ class Page extends PageCommon {
             exit();
         }
 
-        $db->sql = "SELECT c.pc_id, c.pc_title, c.pc_keywords, c.pc_description, c.pc_announcement,
-                            c.pc_latitude, c.pc_longitude, c.pc_osm_id,
-                            c.pc_inwheretext, c.pc_title_translit, c.pc_title_english,
-                            c.pc_title_synonym, c.pc_website,
-                            UNIX_TIMESTAMP(c.pc_lastup_date) AS last_update,
-                            u.url
-                    FROM $dbc c
-                        LEFT JOIN $dbu u ON u.uid = c.pc_url_id
-                    WHERE pc_id = '$city_id'";
-        $db->exec();
-        $citypage = $db->fetch();
+        $citypage = $pc->getItemByPk($city_id);
 
         $db->sql = "SELECT *
                     FROM $dbcd cd
                         LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
-                    WHERE cd.cd_pc_id = '$city_id'
+                    WHERE cd.cd_pc_id = :pc_id
                     ORDER BY cf_order";
-        $db->exec();
-        $meta = array();
-        while ($row = $db->fetch()) {
-            $meta[] = $row;
-        }
-
+        $db->execute((array(
+            ':pc_id' => $city_id
+        ));
+        $meta = $db->fetchAll();
+        
         $db->sql = "SELECT *
                     FROM $dbcf
-                    WHERE cf_id NOT IN (SELECT cd_cf_id FROM $dbcd WHERE cd_pc_id = '$city_id')
+                    WHERE cf_id NOT IN (SELECT cd_cf_id FROM $dbcd WHERE cd_pc_id = :pc_id)
                     ORDER BY cf_order";
-        $db->exec();
-        $ref_meta = array();
-        while ($row = $db->fetch()) {
-            $ref_meta[] = $row;
-        }
+        $db->execute(array(
+            ':pc_id' => $city_id
+        ));
+        $ref_meta = $db->fetchAll();
 
         $db->sql = "SELECT *
                     FROM $dbws
-                    WHERE ws_city_title = '{$citypage['pc_title']}'
+                    WHERE ws_city_title = :pc_title
                     LIMIT 1";
-        $db->exec();
+        $db->execute(array(
+            ':pc_title' => $citypage['pc_title'],
+        ));
         $yandex = $db->fetch();
 
         $smarty->assign('city', $citypage);
@@ -323,8 +315,8 @@ class Page extends PageCommon {
         $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/details.sm.html');
     }
 
+    //**************************************** ДОБАВЛЕНИЕ ******************
     private function addCity($db, $smarty) {
-        //**************************************** ДОБАВЛЕНИЕ ******************
         $newcity = '';
         $inbase = array();
         $already = array();
