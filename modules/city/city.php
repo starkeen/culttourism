@@ -134,6 +134,8 @@ class Page extends PageCommon {
         $dbcd = $db->getTableName('city_data');
         $dbcf = $db->getTableName('city_fields');
         $dbpc = $db->getTableName('pagecity');
+        
+        $pc = new MPageCities($db);
 
         if (isset($_POST['act'])) {
             if (!$this->checkEdit()) {
@@ -142,41 +144,61 @@ class Page extends PageCommon {
             $uid = $this->getUserId();
             switch ($_POST['act']) {
                 case 'add':
-                    $cf_id = cut_trash_int($_POST['cf']);
-                    $value = cut_trash_text($_POST['val']);
-                    $city_id = cut_trash_int($_POST['cpid']);
-                    $db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = '$city_id' AND cd_cf_id = '$cf_id'";
-                    $db->exec();
-                    $db->sql = "INSERT INTO $dbcd SET cd_pc_id = '$city_id', cd_cf_id = '$cf_id', cd_value = '$value'";
+                    $cf_id = intval($_POST['cf']);
+                    $value = trim($_POST['val']);
+                    $city_id = intval($_POST['cpid']);
+                    $db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                    $db->execute(array(
+                        ':city_id' => $city_id,
+                        ':cf_id' => $cf_id,
+                    ));
+                   
                     if ($value != '') {
-                        $db->exec();
+                        $db->sql = "INSERT INTO $dbcd SET cd_pc_id = :city_id, cd_cf_id = :cf_id, cd_value = :cd_value";
+                        $db->execute(array(
+                            ':city_id' => $city_id,
+                            ':cf_id' => $cf_id,
+                            ':cd_value' => $value,
+                        ));
                     }
-                    $db->sql = "SELECT * FROM  $dbcf WHERE cf_id = '$cf_id'";
-                    $db->exec();
+                    $db->sql = "SELECT * FROM  $dbcf WHERE cf_id = :cf_id";
+                    $db->execute(array(
+                            ':cf_id' => $cf_id,
+                    ));
                     $row = $db->fetch();
-                    $db->sql = "UPDATE $dbpc SET pc_lastup_date = now(), pc_lastup_user = '$uid' WHERE pc_id = '$city_id'";
-                    $db->exec();
+                    $pc->updateByPk($city_id, array(
+                        'pc_lastup_user' => $uid
+                    ));
                     echo $row['cf_title'];
                     break;
                 case 'del':
-                    $cf_id = cut_trash_int($_POST['cf']);
-                    $city_id = cut_trash_int($_POST['cpid']);
-                    $db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = '$city_id' AND cd_cf_id = '$cf_id'";
-                    $db->exec();
-                    $db->sql = "UPDATE $dbpc SET pc_lastup_date = now(), pc_lastup_user = '$uid' WHERE pc_id = '$city_id'";
-                    $db->exec();
+                    $cf_id = intval($_POST['cf']);
+                    $city_id = intval($_POST['cpid']);
+                    $db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                    $db->execute(array(
+                        ':city_id' => $city_id,
+                        ':cf_id' => $cf_id,
+                    ));
+                    $pc->updateByPk($city_id, array(
+                        'pc_lastup_user' => $uid
+                    ));
                     echo 'ok';
                     break;
                 case 'edit':
-                    $cf_id = cut_trash_int($_POST['cf']);
-                    $city_id = cut_trash_int($_POST['cpid']);
-                    $value = cut_trash_text($_POST['val']);
-                    $db->sql = "UPDATE $dbcd SET cd_value = '$value' WHERE cd_pc_id = '$city_id' AND cd_cf_id = '$cf_id'";
+                    $cf_id = intval($_POST['cf']);
+                    $city_id = intval($_POST['cpid']);
+                    $value = trim($_POST['val']);
                     if ($value != '') {
-                        $db->exec();
+                        $db->sql = "UPDATE $dbcd SET cd_value = :cd_value WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                        $db->execute(array(
+                            ':city_id' => $city_id,
+                            ':cf_id' => $cf_id,
+                            ':cd_value' => $value,
+                        ));
                     }
-                    $db->sql = "UPDATE $dbpc SET pc_lastup_date = now(), pc_lastup_user = '$uid' WHERE pc_id = '$city_id'";
-                    $db->exec();
+                    $pc->updateByPk($city_id, array(
+                        'pc_lastup_user' => $uid
+                    ));
                     echo 'ok';
                     break;
             }
@@ -185,15 +207,15 @@ class Page extends PageCommon {
             $db->sql = "SELECT cf_title, cd_value
                         FROM $dbcd cd
                             LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
-                        WHERE cd.cd_pc_id = '$id'
+                        WHERE cd.cd_pc_id = :pc_id
                             AND cd.cd_value != ''
                             AND cf.cf_active = 1
                         ORDER BY cf_order";
-            $db->exec();
-            $metas = array();
-            while ($row = $db->fetch()) {
-                $metas[] = $row;
-            }
+            $db->execute(array(
+                ':pc_id' => $id
+            ));
+            $metas = $db->fetchAll();
+
             $smarty->assign('metas', $metas);
             header('Content-Type: text/html; charset=utf-8');
             $smarty->display(_DIR_TEMPLATES . '/city/meta.sm.html');
