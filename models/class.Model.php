@@ -1,6 +1,6 @@
 <?php
 
-class Model {
+abstract class Model {
 
     protected $_db = null;
     protected $_table_name = ''; //таблица с данными
