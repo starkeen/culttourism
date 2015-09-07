@@ -235,7 +235,7 @@ class Page extends PageCommon {
                 'pc_inwheretext' => $_POST['inwhere'],
                 'pc_title_synonym' => $_POST['synonym'],
                 'pc_title_english' => $_POST['title_eng'],
-                'pc_title_translit' => ($_POST['translit'],
+                'pc_title_translit' => $_POST['translit'],
                 'pc_website' => $_POST['web'],
                 'pc_lastup_user' => $this->getUserId(),
             ));
