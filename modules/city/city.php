@@ -348,19 +348,6 @@ class Page extends PageCommon {
                 'pc_add_user' => $this->getUserId(),
             ));
             if ($cid > 0) {
-                $nurl = strtolower(str_replace(' ', '_', $translit));
-                $db->sql = "SELECT u.url FROM $dbu u
-                            LEFT JOIN $dbc c ON c.pc_url_id = u.uid
-                            WHERE c.pc_region_id = '$region_id' AND c.pc_country_id = '$country_id' AND c.pc_city_id = 0
-                            LIMIT 1";
-                $db->exec();
-                $row = $db->fetch();
-                $nurl = "{$row['url']}/$nurl";
-                $db->sql = "INSERT INTO $dbu SET url = '$nurl', citypage = '$cid'";
-                $db->exec();
-                $nuid = $db->getLastInserted();
-                $db->sql = "UPDATE $dbc SET pc_url_id = '$nuid' WHERE pc_id = '$cid'";
-                $db->exec();
                 header("location: /city/detail/?city_id=$cid");
                 exit();
             }
