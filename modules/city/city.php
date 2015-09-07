@@ -343,7 +343,7 @@ class Page extends PageCommon {
                 header("location: /city/detail/?city_id=$cid");
                 exit();
             }
-        } elseif (isset($_GET['cityname'])) {
+        } elseif (!empty($_GET['cityname'])) {
             $newcity = trim($_GET['cityname']);
             $dbc = $db->getTableName('pagecity');
             $dbu = $db->getTableName('region_url');
@@ -410,8 +410,11 @@ class Page extends PageCommon {
             foreach ($inbase as $id => $city) {
                 $translit = translit($city['name']);
                 $inbase[$id]['translit'] = $translit;
-                $db->sql = "SELECT * FROM $dbll WHERE LOWER(ll_name) = LOWER('$translit') LIMIT 1";
-                if ($db->exec()) {
+                $db->sql = "SELECT * FROM $dbll WHERE LOWER(ll_name) = LOWER(:name) LIMIT 1";
+                $state = $db->execute(array(
+                    ':name' => $translit,
+                ));
+                if ($state) {
                     $row = $db->fetch();
                     $inbase[$id]['lat'] = $row['ll_lat'];
                     $inbase[$id]['lon'] = $row['ll_lon'];
