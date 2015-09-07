@@ -279,8 +279,8 @@ class Page extends PageCommon {
                     WHERE cd.cd_pc_id = :pc_id
                     ORDER BY cf_order";
         $db->execute(array(
-            ':pc_id' => $city_id
-        );
+            ':pc_id' => $city_id,
+        ));
         $meta = $db->fetchAll();
         
         $db->sql = "SELECT *
