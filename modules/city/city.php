@@ -24,6 +24,7 @@ class Page extends PageCommon {
         }
     }
 
+    //****************************************  БЛОК  ПОГОДЫ  ******************
     private function getBlockWeather($lat, $lon) {
         $out = array('state' => false, 'content' => '', 'color' => '');
         $weather_data = array(
@@ -120,6 +121,7 @@ class Page extends PageCommon {
         exit();
     }
 
+    //**************************************  ПОГОДА ПО КОДУ  ******************
     private function getWeaterConditionsByCode($code) {
         $wc = new MWeatherCodes($this->db);
         $row = $wc->getItemByPk($code);
@@ -130,11 +132,11 @@ class Page extends PageCommon {
         }
     }
 
+    //****************************************  ТАБЛИЦА МЕТА  ******************
     private function metaCity($db, $smarty) {
         $dbcd = $db->getTableName('city_data');
         $dbcf = $db->getTableName('city_fields');
-        $dbpc = $db->getTableName('pagecity');
-        
+
         $pc = new MPageCities($db);
 
         if (isset($_POST['act'])) {
@@ -152,7 +154,7 @@ class Page extends PageCommon {
                         ':city_id' => $city_id,
                         ':cf_id' => $cf_id,
                     ));
-                   
+
                     if ($value != '') {
                         $db->sql = "INSERT INTO $dbcd SET cd_pc_id = :city_id, cd_cf_id = :cf_id, cd_value = :cd_value";
                         $db->execute(array(
@@ -163,7 +165,7 @@ class Page extends PageCommon {
                     }
                     $db->sql = "SELECT * FROM  $dbcf WHERE cf_id = :cf_id";
                     $db->execute(array(
-                            ':cf_id' => $cf_id,
+                        ':cf_id' => $cf_id,
                     ));
                     $row = $db->fetch();
                     $pc->updateByPk($city_id, array(
@@ -203,7 +205,6 @@ class Page extends PageCommon {
                     break;
             }
         } else {
-            $id = cut_trash_int($_GET['id']);
             $db->sql = "SELECT cf_title, cd_value
                         FROM $dbcd cd
                             LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
@@ -212,7 +213,7 @@ class Page extends PageCommon {
                             AND cf.cf_active = 1
                         ORDER BY cf_order";
             $db->execute(array(
-                ':pc_id' => $id
+                ':pc_id' => intval($_GET['id'])
             ));
             $metas = $db->fetchAll();
 
@@ -223,8 +224,8 @@ class Page extends PageCommon {
         exit();
     }
 
+    //**************************************** РЕДАКТИРОВАНИЕ ******************
     private function detailCity($db, $smarty) {
-        //**************************************** РЕДАКТИРОВАНИЕ ******************
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
@@ -235,12 +236,9 @@ class Page extends PageCommon {
         if (!$city_id) {
             return $this->getError('404');
         }
-        
+
         $pc = new MPageCities($db);
 
-        $uid = $this->getUserId();
-        $dbc = $db->getTableName('pagecity');
-        $dbu = $db->getTableName('region_url');
         $dbcd = $db->getTableName('city_data');
         $dbcf = $db->getTableName('city_fields');
         $dbws = $db->getTableName('wordstat');
@@ -279,7 +277,7 @@ class Page extends PageCommon {
             ':pc_id' => $city_id,
         ));
         $meta = $db->fetchAll();
-        
+
         $db->sql = "SELECT *
                     FROM $dbcf
                     WHERE cf_id NOT IN (SELECT cd_cf_id FROM $dbcd WHERE cd_pc_id = :pc_id)
@@ -304,11 +302,9 @@ class Page extends PageCommon {
         $smarty->assign('ref_meta', $ref_meta);
         $smarty->assign('yandex', $yandex);
 
-        $this->lastedit_timestamp = $row['last_update'];
+        $this->lastedit_timestamp = $citypage['last_update'];
 
-        if (isset($this->user['userid'])) {
-            $smarty->assign('adminlogined', $this->getUserId());
-        }
+        $smarty->assign('adminlogined', isset($this->user['userid']) ? $this->getUserId() : 0);
         $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/details.sm.html');
     }
 
@@ -327,7 +323,6 @@ class Page extends PageCommon {
                 'pc_region_id' => $_POST['region_id'],
                 'pc_country_id' => $_POST['country_id'],
                 'pc_country_code' => $_POST['country_code'],
-                'pc_url_id' => 0,
                 'pc_latitude' => $_POST['latitude'],
                 'pc_longitude' => $_POST['longitude'],
                 'pc_rank' => 0,
@@ -438,8 +433,8 @@ class Page extends PageCommon {
         $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/add.sm.html');
     }
 
+    //**************************************** СПИСОК **********************
     private function pageCity($db, $smarty) {
-        //**************************************** СПИСОК **********************
         $dbc = $db->getTableName('pagecity');
         $dbr = $db->getTableName('region_url');
         $dbp = $db->getTableName('pagepoints');
@@ -475,10 +470,9 @@ class Page extends PageCommon {
             }
             $cities[] = $row;
         }
+
         $smarty->assign('tcity', $cities);
-        if (isset($this->user['userid'])) {
-            $smarty->assign('adminlogined', $this->user['userid']);
-        }
+        $smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : 0);
 
         if ($this->checkEdit()) {
             $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html');

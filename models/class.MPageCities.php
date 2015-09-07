@@ -42,6 +42,11 @@ class MPageCities extends Model {
         $this->_addRelatedTable('region_url');
     }
 
+    /**
+     * Получение страницы по ее урлу
+     * @param string $url
+     * @return array
+     */
     public function getCityByUrl($url) {
         $this->_db->sql = "SELECT *,
                                 UNIX_TIMESTAMP(pc.pc_lastup_date) AS last_update,
@@ -122,6 +127,11 @@ class MPageCities extends Model {
         return $out;
     }
 
+    /**
+     * Получение страницы региона по $id
+     * @param integer $id
+     * @return array
+     */
     public function getItemByPk($id) {
         $this->_db->sql = "SELECT t.*,
                                 UNIX_TIMESTAMP(t.pc_lastup_date) AS last_update,
@@ -174,6 +184,13 @@ class MPageCities extends Model {
         return $this->_db->fetchAll();
     }
 
+    /**
+     * Обновить данные по странице региона
+     * @param integer $id
+     * @param array $values
+     * @param array $files
+     * @return integer
+     */
     public function updateByPk($id, $values = array(), $files = array()) {
         if (isset($values['pc_latitude'])) {
             $values['pc_latitude'] = floatval(str_replace(',', '.', trim($values['pc_latitude'])));
@@ -191,6 +208,12 @@ class MPageCities extends Model {
         return parent::updateByPk($id, $values, $files);
     }
 
+    /**
+     * Добавить новый регион
+     * @param array $values
+     * @param array $files
+     * @return integer
+     */
     public function insert($values = array(), $files = array()) {
         if (isset($values['pc_latitude'])) {
             $values['pc_latitude'] = floatval(str_replace(',', '.', trim($values['pc_latitude'])));
@@ -207,10 +230,11 @@ class MPageCities extends Model {
         if (empty($values['pc_title_unique'])) {
             $values['pc_title_unique'] = $values['pc_title'];
         }
+        $values['pc_url_id'] = 0;
         $values['pc_add_date'] = $this->now();
         $values['pc_lastup_date'] = $this->now();
         $id = parent::insert($values, $files);
-        
+
         $parent_variants = $this->searchPagesByFilter(array(
             'pc_region_id' => $values['pc_region_id'],
             'pc_country_id' => $values['pc_country_id'],
@@ -225,28 +249,34 @@ class MPageCities extends Model {
         $this->updateByPk($id, array(
             'pc_url_id' => $url_id,
         ));
-        
+
         return $id;
     }
-    
+
+    /**
+     * Подбираем страницы по жестким параметрам
+     * @param array $filter
+     * @return array
+     */
     public function searchPagesByFilter($filter = array()) {
         $this->_db->sql = "SELECT *
                             FROM $this->_table_name pc
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
                             WHERE pc.pc_active = 1\n";
         $binds = array();
-        foreach($filter as $k => $v) {
+        foreach ($filter as $k => $v) {
             $this->_db->sql .= "AND $k = :$k\n";
-            $binds[':'.$k] = $v;
+            $binds[':' . $k] = $v;
         }
         $this->_db->execute($binds);
         return $this->_db->fetchAll();
     }
 
-    /*
+    /**
      * Ищет подходящие страницы городов
+     * @param string $query
+     * @return array
      */
-
     public function getSuggestion($query) {
         $this->_db->sql = "SELECT pc_id, pc_title_unique AS pc_title, url
                             FROM $this->_table_name pc
@@ -265,7 +295,6 @@ class MPageCities extends Model {
     /*
      * Заменяет все абсолютные ссылки относительными
      */
-
     public function repairLinksAbsRel() {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET pc_text = REPLACE(pc_text, '=\"http://" . _URL_ROOT . "/', '=\"/')";
@@ -276,6 +305,11 @@ class MPageCities extends Model {
         $this->_db->exec();
     }
 
+    /**
+     * Крошки обновляем по странице региона
+     * @param integer $id
+     * @param string $path
+     */
     public function updatePagepath($id, $path) {
         $this->_db->sql = "UPDATE $this->_table_name SET pc_pagepath = :path
                             WHERE pc_id = :id AND pc_pagepath IS NULL";
@@ -285,6 +319,11 @@ class MPageCities extends Model {
         ));
     }
 
+    /**
+     * 
+     * @param integer $id
+     * @return integer
+     */
     public function deleteByPk($id) {
         return $this->updateByPk($id, array('pc_active' => 0,));
     }
