@@ -186,6 +186,7 @@ class MPageCities extends Model {
                 unset($values['pc_longitude']);
             }
         }
+        $values['pc_lastup_date'] = $this->now();
         return parent::updateByPk($id, $values, $files);
     }
 
@@ -205,6 +206,8 @@ class MPageCities extends Model {
         if (empty($values['pc_title_unique'])) {
             $values['pc_title_unique'] = $values['pc_title'];
         }
+        $values['pc_add_date'] = $this->now();
+        $values['pc_lastup_date'] = $this->now();
         return parent::insert($values, $files);
     }
 
