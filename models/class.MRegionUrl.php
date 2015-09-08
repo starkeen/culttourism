@@ -1,6 +1,6 @@
 <?php
 
-class MLogActions extends Model {
+class MRegionUrl extends Model {
 
     protected $_table_pk = 'uid';
     protected $_table_order = 'uid';
