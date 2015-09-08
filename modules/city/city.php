@@ -326,8 +326,8 @@ class Page extends PageCommon {
                 'pc_latitude' => $_POST['latitude'],
                 'pc_longitude' => $_POST['longitude'],
                 'pc_rank' => 0,
-                'pc_title_translit' => translit($city_name),
-                'pc_title_english' => translit($city_name),
+                'pc_title_translit' => translit($_POST['city_name']),
+                'pc_title_english' => translit($_POST['city_name']),
                 'pc_inwheretext' => $_POST['city_name'],
                 'pc_add_user' => $this->getUserId(),
             ));
