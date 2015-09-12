@@ -52,7 +52,7 @@ $adm_menu_items[] = array('link' => 'parser.php', 'title' => 'Парсер', 'ic
 $adm_menu_items[] = array('link' => 'addpoints.php', 'title' => 'Заявки', 'ico' => 'ico.a_refs.gif');
 $adm_menu_items[] = array('link' => 'lists.php', 'title' => 'Списки', 'ico' => 'ico.a_refs.gif');
 //$adm_menu_items[] = array('link' => 'nogps.php', 'title' => 'Точки без координат', 'ico' => 'ico.a_modules.gif');
-$adm_menu_items[] = array('link' => 'blog.php', 'title' => 'Записи в блоге', 'ico' => 'ico.a_modules.gif');
+//$adm_menu_items[] = array('link' => 'blog.php', 'title' => 'Записи в блоге', 'ico' => 'ico.a_modules.gif');
 //$adm_menu_items[] = array('link' => 'stat_search.php', 'title' => 'Статистика поиска', 'ico' => 'ico.a_modules.gif');
 $adm_menu_items[] = array('link' => 'stat_yandex.php', 'title' => 'Статистика Яндекса', 'ico' => 'ico.a_modules.gif');
 if ($isAdmin) {
