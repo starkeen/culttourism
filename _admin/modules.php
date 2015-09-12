@@ -125,7 +125,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
     $smarty->assign('mod_id', null);
 }
 //* * ************************************************************************************************ */
-$db->sql = "SELECT md_id, md_pid, md_name, md_active, md_redirect, md_css, md_robots
+$db->sql = "SELECT *
             FROM $dbm
             ORDER BY md_pid, md_sort";
 $db->exec();
@@ -143,3 +143,6 @@ $smarty->assign('mod_list', $modules);
 $smarty->assign('is_admin', $isAdmin);
 
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/modules.sm.html'));
+
+$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
+exit();
