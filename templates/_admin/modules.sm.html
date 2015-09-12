@@ -1,8 +1,8 @@
 {literal}
 <script type="text/javascript">
-    $(document).ready(function(){
-        $('#addmdbtn').click(function(){
-            window.location='modules.php?id=add';
+    $(document).ready(function () {
+        $('#addmdbtn').click(function () {
+            window.location = 'modules.php?id=add';
         });
     });
 </script>
@@ -106,7 +106,13 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="4">{$FCK_pagetext}</td>
+                        <td colspan="4">
+                            {if $text_edit}
+                            <textarea id="imd_pagecontent" name="md_pagecontent" style="width:100%;height:400px" cols="80" rows="10">{$mod_item.md_pagecontent}</textarea>
+                            {else}
+                            <input type="hidden" name="md_pagecontent" value="" />
+                            {/if}
+                        </td>
                     </tr>
                     <tr>
                         <td><input type="submit" name="sender" value="Сохранить" /></td>

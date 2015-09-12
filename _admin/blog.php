@@ -1,4 +1,5 @@
 <?php
+
 require_once('common.php');
 
 $smarty->assign('title', 'Управление записями в блоге');
@@ -16,14 +17,12 @@ if (!isset($_GET['id']) && !isset($_GET['act'])) {
                 ORDER BY bg.br_date DESC";
     //$db->showSQL();
     $db->exec();
-    while($row = $db->fetch()) {
+    while ($row = $db->fetch()) {
         $bloglist[$row['br_id']] = $row;
     }
     $smarty->assign('bloglist', $bloglist);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES.'/blog/admin.all.sm.html'));
-}
-elseif(isset($_GET['id']) && !isset($_GET['act'])) {
-    include(_DIR_INCLUDES.'/class.FCKeditor.php');
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/blog/admin.all.sm.html'));
+} elseif (isset($_GET['id']) && !isset($_GET['act'])) {
     $id = intval($_GET['id']);
     if (isset($_POST) && !empty($_POST)) {
         if (isset($_POST['to_save'])) {
@@ -34,12 +33,15 @@ elseif(isset($_GET['id']) && !isset($_GET['act'])) {
             $db->sql = "UPDATE $dbb SET
                         br_title = '$br_title', br_text = '$br_text', br_url = '$br_url', br_active = '$br_active'
                         WHERE br_id = '$id'";
-            if ($db->exec()) header('location:blog.php');
+            if ($db->exec())
+                header('location:blog.php');
         }
-        elseif(isset($_POST['to_ret'])) header('location:blog.php');
-        if(isset($_POST['to_del'])) {
+        elseif (isset($_POST['to_ret']))
+            header('location:blog.php');
+        if (isset($_POST['to_del'])) {
             $db->sql = "DELETE FROM $dbb WHERE br_id = '$id'";
-            if ($db->exec()) header('location:blog.php');
+            if ($db->exec())
+                header('location:blog.php');
         }
     }
     $db->sql = "SELECT bg.br_id, bg.br_title, us.us_name, br_active, br_text, br_url,
@@ -51,17 +53,11 @@ elseif(isset($_GET['id']) && !isset($_GET['act'])) {
                 WHERE bg.br_id = '$id'";
     $db->exec();
     $record = $db->fetch();
-    $oFCKeditor = new MyFCK('br_text');
-    $oFCKeditor->Height = 400;
-    $oFCKeditor->Value = $record['br_text'];
-    $record['br_texteditor'] = $oFCKeditor->CreateHtml();
     $smarty->assign('blogitem', $record);
     $smarty->assign('is_edit', TRUE);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES.'/blog/admin.one.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/blog/admin.one.sm.html'));
 }
-elseif(!isset($_GET['id']) && isset($_GET['act'])) {
-    include(_DIR_INCLUDES.'/class.FCKeditor.php');
-
+elseif (!isset($_GET['id']) && isset($_GET['act'])) {
     if (isset($_POST) && !empty($_POST)) {
         if (isset($_POST['to_save'])) {
             $br_title = cut_trash_string($_POST['br_title']);
@@ -71,22 +67,19 @@ elseif(!isset($_GET['id']) && isset($_GET['act'])) {
             $br_us_id = cut_trash_int($_SESSION['user_id']);
             $db->sql = "INSERT INTO $dbb SET
                         br_title = '$br_title', br_text = '$br_text', br_url = '$br_url', br_active = '$br_active', br_us_id = '$br_us_id', br_date = now()";
-            if ($db->exec()) header('location:blog.php');
+            if ($db->exec())
+                header('location:blog.php');
         }
-        elseif(isset($_POST['to_ret'])) header('location:blog.php');
+        elseif (isset($_POST['to_ret']))
+            header('location:blog.php');
     }
     $record = array();
     $record['br_title'] = '';
     $record['br_url'] = '';
     $record['br_active'] = 0;
-    $record['bg_datelink'] = date('Y').'/'.date('m');
-    $oFCKeditor = new MyFCK('br_text');
-    $oFCKeditor->Height = 400;
-    $oFCKeditor->Value = '';
-    $record['br_texteditor'] = $oFCKeditor->CreateHtml();
+    $record['bg_datelink'] = date('Y') . '/' . date('m');
     $smarty->assign('blogitem', $record);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES.'/blog/admin.one.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/blog/admin.one.sm.html'));
 }
-$smarty->display(_DIR_TEMPLATES.'/_admin/admpage.sm.html');
+$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
 exit();
-?>
