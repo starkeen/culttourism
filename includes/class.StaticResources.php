@@ -125,7 +125,7 @@ class StaticResources {
             array_pop($variant);
             foreach ($variant as $file) {
                 if ($file['delete']) {
-                    //unlink($file['filename']);
+                    unlink($file['filename']);
                     echo "delete old file: {$file['filename']} => " . date('d.m.Y', $file['timestamp']) . PHP_EOL;
                 }
             }
