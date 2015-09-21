@@ -19,4 +19,14 @@ class MRefPointtypes extends Model {
         parent::__construct($db);
     }
 
+    public function getMarkers() {
+        $out = array();
+        foreach ($this->getAll() as $pt) {
+            $out[$pt['tp_id']] = array_map(function($item) {
+                return trim($item);
+            }, explode(',', $pt['tp_markers']));
+        }
+        return $out;
+    }
+
 }

@@ -5,17 +5,6 @@ class MCandidatePoints extends Model {
     protected $_table_pk = 'cp_id';
     protected $_table_order = 'cp_date';
     protected $_table_active = 'cp_active';
-    private $_types_markers = array(
-        1 => array('памятник', 'монумент', 'мемориал', 'скульптура',), //памятники
-        2 => array('цирк', 'зоопарк', 'театр', 'здание', 'площадь', 'мост', 'фонтан', 'планетарий', 'набережная',), //места
-        3 => array('церковь', 'храм', 'монастырь', 'мечеть', 'синагога', 'собор', 'часовня', 'костел', 'костёл', 'кирха',), //церкви
-        4 => array('музей', 'галерея',), //музеи
-        5 => array('парк', 'сад', 'сквер', 'роща', 'гора', 'озеро', 'заповедник', 'пещера',), //парки
-        6 => array('усадьба', 'дворец',), //усадьбы
-        7 => array('вокзал',), //вокзалы
-        8 => array('кафе', 'ресторан', 'столовая', 'пиццерия', 'кофейня', 'кафетерий',), //кафе
-        9 => array('гостиница', 'отель', 'хостел', 'санаторий', 'пансионат', 'база отдыха', 'дом отдыха', 'гостевой',), //гостиницы
-    );
 
     public function __construct($db) {
         $this->_table_name = $db->getTableName('candidate_points');
@@ -46,6 +35,9 @@ class MCandidatePoints extends Model {
         $this->_addRelatedTable('uniref_values');
         $this->_addRelatedTable('ref_pointtypes');
         $this->_addRelatedTable('region_url');
+
+        $rpt = new MRefPointtypes($this->_db);
+        $this->types_markers = $rpt->getMarkers();
     }
 
     public function add($data) {
@@ -53,7 +45,7 @@ class MCandidatePoints extends Model {
         $data['cp_state'] = 3;
         $data['cp_active'] = 1;
         if (isset($data['cp_type_id']) && $data['cp_type_id'] == 0) {
-            foreach ($this->_types_markers as $type => $markers) {
+            foreach ($this->types_markers as $type => $markers) {
                 foreach ($markers as $marker) {
                     if (mb_stripos($data['cp_title'], $marker, 0, 'utf-8') !== false) {
                         $data['cp_type_id'] = $type;
