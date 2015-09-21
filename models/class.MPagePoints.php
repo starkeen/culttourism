@@ -288,6 +288,11 @@ class MPagePoints extends Model {
         return $this->_db->fetchAll();
     }
 
+    /**
+     * Ищем точки с координатами, но без адреса
+     * @param int $limit
+     * @return array
+     */
     public function getPointsWithoutAddrs($limit = 100) {
         $this->_db->sql = "SELECT pt.pt_id, pt.pt_name, pt.pt_adress,
                                 pt.pt_latitude, pt.pt_longitude,
@@ -308,6 +313,13 @@ class MPagePoints extends Model {
         return $this->_db->fetchAll();
     }
 
+    /**
+     * Обновляем данные по точке в БД
+     * @param int $id
+     * @param array $values
+     * @param array $files
+     * @return boolean
+     */
     public function updateByPk($id, $values = array(), $files = array()) {
         if (isset($values['pt_latitude'])) {
             $values['pt_latitude'] = floatval(str_replace(',', '.', trim($values['pt_latitude'])));
@@ -329,6 +341,12 @@ class MPagePoints extends Model {
         return parent::updateByPk($id, $values, $files);
     }
 
+    /**
+     * Добавление точки в базу
+     * @param array $values
+     * @param array $files
+     * @return int ID точки
+     */
     public function insert($values = array(), $files = array()) {
         if (isset($values['pt_latitude'])) {
             $values['pt_latitude'] = floatval(str_replace(',', '.', trim($values['pt_latitude'])));
@@ -348,6 +366,9 @@ class MPagePoints extends Model {
         if (!isset($values['pt_create_user'])) {
             $values['pt_create_user'] = $this->getUserId();
         }
+        if (empty($values['pt_type_id'])) {
+            $values['pt_type_id'] = $this->getPointType($values['pt_name']);
+        }
         $values['pt_lastup_date'] = $values['pt_create_date'];
         $values['pt_lastup_user'] = $values['pt_create_user'];
         if (isset($values['pt_website']) && strlen($values['pt_website']) != 0 && strpos($values['pt_website'], 'http') === false) {
@@ -358,14 +379,18 @@ class MPagePoints extends Model {
         return $new_id;
     }
 
+    /**
+     * Помечаем точку удаленной
+     * @param int $id
+     * @return boolean
+     */
     public function deleteByPk($id) {
         return $this->updateByPk($id, array($this->_table_active => 0));
     }
 
-    /*
+    /**
      * Заменяет все абсолютные ссылки относительными
      */
-
     public function repairLinksAbsRel() {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET pt_description = REPLACE(pt_description, '=\"http://" . _URL_ROOT . "/', '=\"/')";
@@ -374,6 +399,24 @@ class MPagePoints extends Model {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET pt_description = REPLACE(pt_description, '=\"https://" . _URL_ROOT . "/', '=\"/')";
         $this->_db->exec();
+    }
+
+    /**
+     * Определяем тип точки по имени
+     * @param string $name
+     * @return int
+     */
+    public function getPointType($name) {
+        $rpt = new MRefPointtypes($this->_db);
+        $types_markers = $rpt->getMarkers();
+        foreach ($types_markers as $type => $markers) {
+            foreach ($markers as $marker) {
+                if (mb_stripos($name, $marker, 0, 'utf-8') !== false) {
+                    return $type;
+                }
+            }
+        }
+        return 0;
     }
 
 }

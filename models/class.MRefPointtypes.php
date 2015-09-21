@@ -19,6 +19,10 @@ class MRefPointtypes extends Model {
         parent::__construct($db);
     }
 
+    /**
+     * Маркеры точек
+     * @return array
+     */
     public function getMarkers() {
         $out = array();
         foreach ($this->getAll() as $pt) {
