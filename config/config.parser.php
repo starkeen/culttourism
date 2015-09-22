@@ -38,7 +38,7 @@ return array(
         ),
     ),
     'sobory.ru' => array(
-        'encoding' => 'windows-1251',
+        'encoding' => 'utf-8',
         'doctype' => 'HTML 4.01 Transitional',
         'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],address',
         'list_items' => array(
