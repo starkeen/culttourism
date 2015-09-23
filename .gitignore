@@ -7,10 +7,13 @@
 *.xls
 *.csv
 *.log
-css/ct-
-js/ct-
+css/ct-*.css
+js/ct-*.js
 templates_c/
 config/configuration.php
 data/private/
 data/feed/
+data/images/
+data/_thumbs/
 sitemap.xml
+robots.txt
