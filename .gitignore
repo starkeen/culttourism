@@ -14,6 +14,7 @@ config/configuration.php
 data/private/
 data/feed/
 data/images/
+data/images/*.jpg
 data/_thumbs/
 sitemap.xml
 robots.txt
