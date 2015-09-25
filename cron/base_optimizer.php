@@ -28,5 +28,3 @@ $sp = new MSysProperties($db);
 $sp->optimize();
 $ws = new MWordstat($db);
 $ws->optimize();
-$cp = new MCandidatePoints($db);
-$cp->optimize();
