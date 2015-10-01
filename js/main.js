@@ -585,7 +585,7 @@ $(document).ready(function () {
 
     //---------------------- SCROLL TO TOP ---------------------------------------
     if ($("#mapcity_pc_id").val() > 0) { //пока только на страницах регионов
-        var $scrollerTopButton = $('.content-scroll-buttons');
+        var $scrollerTopButton = $('.content-scroll-buttons').removeClass('m_hide');
         var scrollerTopOffsetTrigger = $('#menu_type1').position().top + $('#menu_type1').outerHeight(true); //px to show button
         $(window).scroll(function () {
             if ($(this).scrollTop() > scrollerTopOffsetTrigger) {

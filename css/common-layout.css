@@ -257,6 +257,9 @@ ol {
     top:-100px;
     cursor: pointer;
 }
+.content-scroll-buttons.m_hide {
+    display: none;
+}
 
 /* Footer
 -----------------------------------------------------------------------------*/
