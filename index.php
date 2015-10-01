@@ -32,7 +32,7 @@ if ($_SERVER['HTTP_HOST'] != _URL_ROOT) {
         array_shift($request_uri_arr);
     }
 }
-@list($host_id, $module_id, $page_id, $id, $id2) = array_filter($request_uri_arr);
+@list($host_id, $module_id, $page_id, $id, $id2) = array_values(array_filter($request_uri_arr));
 
 $module_id = (isset($module_id) && strlen($module_id) != 0) ? urldecode($module_id) : _INDEXPAGE_URI;
 if ($module_id == 'index') {
