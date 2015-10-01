@@ -180,7 +180,7 @@ abstract class Core {
                 . "\n__________________________\n\n\n"
                 . 'trace: ' . print_r($e->getTrace(), true) . "\n";
 
-        mail('starkeen@gmail.com', 'Error on culttourism.ru', $msg);
+        mail('starkeen@gmail.com', 'Error on ' . _URL_ROOT, $msg);
         if (ob_get_length()) {
             ob_end_clean();
         }
