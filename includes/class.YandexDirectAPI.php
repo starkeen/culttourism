@@ -109,6 +109,9 @@ class YandexDirectAPI {
      */
     public function getReportsCountRemain() {
         $new_reps_cnt = $this->getReportsCountMax();
+        $request_count = array(
+            'method' => 'GetWordstatReportList',
+        );
         $res_count = $this->getRequestOld($request_count);
         $count = 0;
         if (!empty($res_count['data'])) {
