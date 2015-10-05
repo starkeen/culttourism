@@ -1,7 +1,9 @@
 <?php
 
+$sp = new MSysProperties($db);
 $ws = new MWordstat($db);
-$api = new YandexAPI();
+$token_direct = $sp->getByName('token_direct');
+$api = new YandexDirectAPI($token_direct);
 
 //****************   1 - Обработка результатов запущеных ранее отчетов *********
 $open_reports = $api->getReportsDone();

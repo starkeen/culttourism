@@ -1,16 +1,22 @@
 <?php
 
-class YandexAPI {
+class YandexDirectAPI {
 
     const MAX_COUNT = 5;
 
-    protected $apikey = '';
+    protected $token = '';
     protected $url = 'https://api.direct.yandex.ru/v4/json/';
 
-    public function __construct() {
-        $this->apikey = '';
+    public function __construct($token) {
+        $this->token = $token;
     }
 
+    /**
+     * Создание нового отчета с несколькими фразами
+     * @param string[] $phrases
+     * @return int - ID отчета
+     * @throws Exception
+     */
     public function createReport($phrases = array()) {
         $request_create = array(
             'method' => 'CreateNewWordstatReport',
@@ -45,7 +51,7 @@ class YandexAPI {
         $reps = array();
         if (isset($res_report['data'])) {
             foreach ($res_report['data'] as $data) {
-                $rep = array('word' => $data['Phrase'], 'weight' => 0, 'rep_id' => $row['ws_rep_id']);
+                $rep = array('word' => $data['Phrase'], 'weight' => 0, 'rep_id' => $report_id);
                 foreach ($data['SearchedWith'] as $item) {
                     if ($item['Shows'] >= $rep['weight']) {
                         $rep['weight'] = $item['Shows'];
@@ -160,6 +166,8 @@ class YandexAPI {
      * @return array
      */
     protected function getRequest($request) {
+        $request['locale'] = 'ru';
+        $request['token'] = $this->token;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
