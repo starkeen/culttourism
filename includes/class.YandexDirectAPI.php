@@ -66,6 +66,24 @@ class YandexDirectAPI {
     }
 
     /**
+     * Получить список всех отчетов
+     * @return array
+     */
+    public function getReportsAll() {
+        $request_active = array(
+            'method' => 'GetWordstatReportList',
+        );
+        $res_opened = $this->getRequestOld($request_active);
+        $open_reports = array();
+        if (isset($res_opened['data']) && !empty($res_opened['data'])) {
+            foreach ($res_opened['data'] as $rep) {
+                $open_reports[] = $rep['ReportID'];
+            }
+        }
+        return $open_reports;
+    }
+
+    /**
      * Получить список готовых отчетов
      * @return array
      */

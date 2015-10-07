@@ -14,15 +14,8 @@ if (isset($_POST) && !empty($_POST)) {
         $ws->resetWeightsAll();
     }
     if (isset($_POST['do_stack_empty'])) {
-        $request = array(
-            'method' => 'GetWordstatReportList',
-        );
-        $res = yandex_req($request);
-        foreach ($res['data'] as $rep) {
-            yandex_req(array(
-                'method' => 'DeleteWordstatReport',
-                'param' => $rep['ReportID'],
-            ));
+        foreach ($api->getReportsAll() as $rep) {
+            $api->deleteReport($rep['ReportID']);
             $ws->resetWeightReport($rep['ReportID']);
         }
     }
@@ -32,41 +25,24 @@ if (isset($_POST) && !empty($_POST)) {
 }
 
 $new_reps_cnt = 5;
-$request = array(
-    'method' => 'GetWordstatReportList',
-);
-$res = yandex_req($request);
-$reports = array();
-if (isset($res['data']) && !empty($res['data'])) {
-    foreach ($res['data'] as $rep) {
-        $reports[] = $rep;
-    }
-}
-
-$towns = array(
-    'all' => 0, 'base' => 0, 'worked' => 0, 'remain' => 0,
-    'seo_all' => 0, 'seo_worked' => 0,
-    'seo_top_10' => 0, 'seo_top_20' => 0, 'seo_top_50' => 0, 'seo_top_none' => 0,
-    'date_positions' => '-', 'date_weights' => '-',
-);
-
-$towns['all'] = $ws->getStatTowns();
-$towns['base'] = $ws->getStatBase();
-$towns['remain'] = $ws->getStatRemain();
-$towns['worked'] = $towns['all'] - $towns['remain'];
-
-$towns['seo_all'] = $ws->getStatBase();
-$towns['seo_worked'] = $ws->getStatIndexed();
-
-$towns_seo_stat = $ws->getStatPositionsRanges();
-$towns['seo_top_none'] = $towns_seo_stat['none'];
-$towns['seo_top_10'] = $towns_seo_stat['10'];
-$towns['seo_top_20'] = $towns_seo_stat['20'];
-$towns['seo_top_50'] = $towns_seo_stat['50'];
+$reports = $api->getReportsAll();
 
 $stat_dates = $ws->getStatDates();
-$towns['date_weights'] = $stat_dates['min_weight'];
-$towns['date_positions'] = $stat_dates['min_position'];
+$towns_seo_stat = $ws->getStatPositionsRanges();
+$towns = array(
+    'all' => $ws->getStatTowns(),
+    'base' => $ws->getStatBase(),
+    'remain' => $ws->getStatRemain(),
+    'seo_worked' => $ws->getStatIndexed(),
+    'seo_top_10' => $towns_seo_stat['10'],
+    'seo_top_20' => $towns_seo_stat['20'],
+    'seo_top_50' => $towns_seo_stat['50'],
+    'seo_top_none' => $towns_seo_stat['none'],
+    'date_positions' => $stat_dates['min_position'],
+    'date_weights' => $stat_dates['min_weight'],
+);
+$towns['worked'] = $towns['all'] - $towns['remain'];
+$towns['seo_all'] = $towns['base'];
 
 $smarty->assign('stat', $ws->getStatPopularity());
 $smarty->assign('seo', $ws->getStatPositions());
@@ -78,18 +54,3 @@ $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
 exit
 ();
 
-function yandex_req($request) {
-    $url = "https://api.direct.yandex.ru/v4/json/";
-    $request['locale'] = 'ru';
-    $opts = array(
-        'http' => array(
-            'method' => "POST",
-            'content' => json_encode($request),
-        )
-    );
-    $context = stream_context_create($opts);
-    stream_context_set_option($context, 'ssl', 'local_cert', _DIR_ROOT . '/data/private/api-yandex/solid-cert.crt');
-    $result = @file_get_contents($url, 0, $context);
-
-    return json_decode($result, true);
-}
