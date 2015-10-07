@@ -189,31 +189,17 @@ DOC;
      * @return mixed ответ сервера Яндекса
      */
     protected function getRequest($data) {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36');
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_URL, $this->requestURL);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/xml',
-            'Content-length: ' . strlen($data),
+        $context = stream_context_create(array(
+            'http' => array(
+                'method' => "POST",
+                'header' => "Content-type: application/xml\r\nContent-length: " . strlen($data),
+                'content' => $data,
+            ),
+            'socket' => array(
+                'bindto' => '188.225.12.25:0',
+            ),
         ));
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_INTERFACE, '176.57.209.90');
-        try {
-            $response = curl_exec($ch);
-        } catch (Exception $e) {
-            //$response = $e->getMessage();
-            if ($errno = curl_errno($ch)) {
-                $error_message = curl_strerror($errno);
-                $response = "cURL error ({$errno}):\n {$error_message}";
-            }
-        }
-        curl_close($ch);
+        $response = @file_get_contents($this->requestURL, true, $context);
         return $response;
     }
 
