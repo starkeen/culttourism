@@ -44,7 +44,7 @@ class YandexSearcher {
                     'sl_error_code' => 0,
                 ));
             }
-            $response = $this->getRequestOld($doc);
+            $response = $this->getRequest($doc);
             if ($response) {
                 if ($this->loggingEnabled) {
                     $this->logger->setAnswer(array(
@@ -184,6 +184,37 @@ DOC;
     }
 
     /**
+     * Метод для запросов к Яндексу через cURL
+     * @param string $data - XML запрос
+     * @return string ответ сервера Яндекса
+     */
+    protected function getRequest($data) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_URL, $this->requestURL);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/xml',
+            'Content-length: ' . strlen($data),
+        ));
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        //curl_setopt($ch, CURLOPT_INTERFACE, '176.57.209.90'); // 188.225.12.25
+        $response = curl_exec($ch);
+        $errno = curl_errno($ch);
+        if ($errno) {
+            $error_message = curl_strerror($errno);
+            throw new Exception("cURL error ({$errno}):\n {$error_message}");
+        }
+        curl_close($ch);
+        return $response;
+    }
+
+    /**
      * Метод для запросов к Яндексу
      * @param string $data - XML запрос
      * @return mixed ответ сервера Яндекса
@@ -197,43 +228,10 @@ DOC;
             ),
             'ssl' => array(
                 'verify_peer' => false,
-                //'verify_peer_name' => false,
+            //'verify_peer_name' => false,
             ),
         ));
         $response = file_get_contents($this->requestURL, true, $context);
-        return $response;
-    }
-
-    /**
-     * Метод для запросов к Яндексу через cURL
-     * @param string $data - XML запрос
-     * @return string ответ сервера Яндекса
-     */
-    protected function getRequest($data) {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36');
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_URL, $this->requestURL);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/xml',
-            'Content-length: ' . strlen($data),
-        ));
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        curl_setopt($ch, CURLOPT_INTERFACE, '176.57.209.90'); // 188.225.12.25
-
-        $response = curl_exec($ch);
-        $errno = curl_errno($ch);
-        if ($errno) {
-            $error_message = curl_strerror($errno);
-            throw new Exception("cURL error ({$errno}):\n {$error_message}");
-        }
-        curl_close($ch);
         return $response;
     }
 
