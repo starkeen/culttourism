@@ -60,7 +60,9 @@ class Page extends PageCommon {
             } else {
                 foreach ($res['results'] as $result_item) {
                     $title_items = explode($this->globalsettings['title_delimiter'], $result_item['title_hw']);
-                    array_pop($title_items);
+                    if (count($title_items) > 1) {
+                        array_pop($title_items);
+                    }
                     $result_item['title'] = trim(implode(', ', $title_items));
                     $result_item['title'] = str_replace(' , ', ', ', $result_item['title']);
                     $result_item['descr'] = $result_item['descr_hw'];
