@@ -25,6 +25,92 @@ class MWordstat extends Model {
         );
         parent::__construct($db);
         $this->_addRelatedTable('pagecity');
+        $this->_addRelatedTable('ref_city');
+        $this->_addRelatedTable('ref_region');
+        $this->_addRelatedTable('ref_country');
+    }
+
+    /**
+     * Статистика по популярности городов в поиске
+     * @return array
+     */
+    public function getStatPopularity() {
+        $this->_db->sql = "SELECT ws_city_title AS city_name,
+                                rr.name AS region_name, co.name AS country_name,
+                                ws_city_id, ws_weight, ws.ws_weight_date,
+                                ws_weight_min, ws.ws_weight_min_date,
+                                ws_weight_max, ws.ws_weight_max_date,
+                                ROUND(100*(ws_weight_max - ws_weight) / ws_weight) AS weight_delta_max,
+                                ROUND(100*(ws_weight - ws_weight_min) / ws_weight) AS weight_delta_min,
+                                0 AS weight_delta_sign
+                            FROM $this->_table_name ws
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_city_id = ws.ws_city_id
+                                LEFT JOIN {$this->_tables_related['ref_city']} rc ON rc.id = ws.ws_city_id
+                                    LEFT JOIN {$this->_tables_related['ref_region']} rr ON rr.id = rc.region_id
+                                    LEFT JOIN {$this->_tables_related['ref_country']} co ON co.id = rc.country_id
+                            WHERE ws_weight > 0
+                                AND pc_id IS NULL
+                            ORDER BY (ws_weight_max+ws_weight_min)/2 DESC, ws_weight_min DESC, ws_weight_max DESC, ws_weight DESC
+                            LIMIT 50";
+        $this->_db->exec();
+        $stat = array();
+        while ($row = $this->_db->fetch()) {
+            if ($row['weight_delta_max'] > $row['weight_delta_min'] && $row['weight_delta_min'] > 10) {
+                $row['weight_delta_sign'] = -1;
+            } elseif ($row['weight_delta_max'] < $row['weight_delta_min'] && $row['weight_delta_max'] > 10) {
+                $row['weight_delta_sign'] = 1;
+            } else {
+                $row['weight_delta_sign'] = 0;
+            }
+            $stat[] = $row;
+        }
+        return $stat;
+    }
+
+    /**
+     * Статистика по позициям имеющихся страниц
+     * @return array
+     */
+    public function getStatPositions() {
+        $this->_db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name AS country_name,
+                                pc.pc_add_date, ws_city_id,
+                                ws_weight, ws.ws_weight_date,
+                                ws_position, ws.ws_position_date,
+                                ws_weight_max, ws.ws_weight_max_date,
+                                ws_weight_min, ws.ws_weight_min_date,
+                                ROUND(ws_weight_max/1000) AS weight_x1000,
+                                ROUND(ws_weight_max/100) AS weight_x100,
+                                ROUND(100*(ws_weight_max - ws_weight) / ws_weight) AS weight_delta_max,
+                                ROUND(100*(ws_weight - ws_weight_min) / ws_weight) AS weight_delta_min,
+                                0 AS weight_delta_sign,
+                                IF(ws_position = 0, 101, ws_position) AS ws_position_real,
+                                IF(ws_position = 0, '&mdash;', ws_position) AS ws_position,
+                                IF(ws_position = 0, 100, IF(ws_position > 50, 100, IF(ws_position > 20, 50, IF(ws_position > 10, 20, 10)))) AS position_x
+                            FROM $this->_table_name ws
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_city_id = ws.ws_city_id
+                                LEFT JOIN {$this->_tables_related['ref_city']} rc ON rc.id = ws.ws_city_id
+                                    LEFT JOIN {$this->_tables_related['ref_region']} rr ON rr.id = rc.region_id
+                                    LEFT JOIN {$this->_tables_related['ref_country']} co ON co.id = rc.country_id
+                            WHERE ws_weight > 0
+                                AND pc_id IS NOT NULL
+                                AND ws_position IS NOT NULL
+                                AND (ws_position > 10 OR ws_position = 0)
+                            GROUP BY city_name
+                            ORDER BY ws_weight_min DESC, ws_position_real DESC
+                            LIMIT 70";
+        $this->_db->exec();
+        $seo = array();
+        while ($row = $this->_db->fetch()) {
+            if ($row['weight_delta_max'] > $row['weight_delta_min'] && $row['weight_delta_min'] > 10) {
+                $row['weight_delta_sign'] = -1;
+            } elseif ($row['weight_delta_max'] < $row['weight_delta_min'] && $row['weight_delta_max'] > 10) {
+                $row['weight_delta_sign'] = 1;
+            } else {
+                $row['weight_delta_sign'] = 0;
+            }
+            $seo[] = $row;
+        }
+        return $seo;
     }
 
     /**
@@ -136,6 +222,146 @@ class MWordstat extends Model {
                                 SET ws_weight_min = ws_weight, ws_weight_min_date = NOW()
                             WHERE ws_weight < ws_weight_min";
         $this->_db->exec();
+    }
+
+    /**
+     * Сбросить все отчеты по запросам
+     */
+    public function resetWeightsAll() {
+        $this->_db->sql = "UPDATE $this->_table_name SET ws_weight = -1, ws_rep_id = 0";
+        $this->_db->exec();
+    }
+
+    /**
+     * Сбросить все веса запросов по отчету
+     * @param int $report_id
+     */
+    public function resetWeightReport($report_id) {
+        $this->_db->sql = "UPDATE $this->_table_name
+                            SET ws_weight = -1
+                            WHERE ws_rep_id = :report";
+        $this->_db->execute(array(
+            ':report' => intval($report_id),
+        ));
+    }
+
+    /**
+     * Удалить город из таблицы
+     * @param int $town_id
+     */
+    public function deleteTown($town_id) {
+        $this->_db->sql = "DELETE FROM $this->_table_name ws_city_id = :town";
+        $this->_db->execute(array(
+            ':town' => intval($town_id),
+        ));
+    }
+
+    /**
+     * Общее число записей
+     * @return int
+     */
+    public function getStatTowns() {
+        $this->_db->sql = "SELECT count(*) AS cnt FROM $this->_table_name";
+        $this->_db->exec();
+        $row = $this->_db->fetch();
+        return $row['cnt'];
+    }
+
+    /**
+     * Число добавленных страниц
+     * @return int
+     */
+    public function getStatBase() {
+        $this->_db->sql = "SELECT count(*) AS cnt
+                            FROM $this->_table_name ws
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc
+                                    ON pc.pc_city_id = ws.ws_city_id
+                            WHERE pc_id IS NOT NULL";
+        $this->_db->exec();
+        $row = $this->_db->fetch();
+        return $row['cnt'];
+    }
+
+    /**
+     * Число необработанных записей по запросам
+     * @return int
+     */
+    public function getStatRemain() {
+        $this->_db->sql = "SELECT count(*) AS cnt
+                            FROM $this->_table_name ws
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc
+                                    ON pc.pc_city_id = ws.ws_city_id
+                            WHERE pc_id IS NOT NULL
+                                AND ws_weight = -1";
+        $this->_db->exec();
+        $row = $this->_db->fetch();
+        return $row['cnt'];
+    }
+
+    /**
+     * Число проиндексированных поисковиками записей
+     * @return int
+     */
+    public function getStatIndexed() {
+        $this->_db->sql = "SELECT count(*) AS cnt
+                            FROM $this->_table_name ws
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc
+                                    ON pc.pc_city_id = ws.ws_city_id
+                            WHERE pc_id IS NOT NULL
+                                AND ws_position IS NOT NULL";
+        $this->_db->exec();
+        $row = $this->_db->fetch();
+        return $row['cnt'];
+    }
+
+    /**
+     * Распределение позиций по диапазонам
+     * @return array
+     */
+    public function getStatPositionsRanges() {
+        $out = array(
+            'none' => 0,
+            '10' => 0,
+            '20' => 0,
+            '50' => 0,
+        );
+        $this->_db->sql = "SELECT count(*) AS cnt, 
+                                IF(ws_position = 0, 0, IF(ws_position > 50, 0, IF(ws_position > 20, 50, IF(ws_position > 10, 20, 10)))) AS xtop
+                            FROM $this->_table_name ws
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc
+                                    ON pc.pc_city_id = ws.ws_city_id
+                            WHERE pc_id IS NOT NULL
+                                AND ws_position IS NOT NULL
+                            GROUP BY xtop";
+        $this->_db->exec();
+        while ($row = $this->_db->fetch()) {
+            if ($row['xtop'] == 0) {
+                $out['none'] += $row['cnt'];
+            }
+            if ($row['xtop'] == 10) {
+                $out['10'] += $row['cnt'];
+            }
+            if ($row['xtop'] == 20) {
+                $out['20'] += $row['cnt'];
+            }
+            if ($row['xtop'] == 50) {
+                $out['50'] += $row['cnt'];
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * Статистика по минимальным датам
+     * @return array
+     */
+    public function getStatDates() {
+        $this->_db->sql = "SELECT DATE_FORMAT(MIN(ws_weight_date), '%d.%m.%Y') AS min_weight,
+                                DATE_FORMAT(MIN(ws_position_date), '%d.%m.%Y') AS min_position
+                            FROM $this->_table_name ws";
+        $this->_db->exec();
+        $row = $this->_db->fetch();
+        return $row;
     }
 
 }
