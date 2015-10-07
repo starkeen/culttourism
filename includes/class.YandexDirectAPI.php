@@ -77,27 +77,21 @@ class YandexDirectAPI {
         $open_reports = array();
         if (isset($res_opened['data']) && !empty($res_opened['data'])) {
             foreach ($res_opened['data'] as $rep) {
-                $open_reports[] = $rep['ReportID'];
+                $open_reports[] = $rep;
             }
         }
         return $open_reports;
     }
 
     /**
-     * Получить список готовых отчетов
+     * Получить список ID готовых отчетов
      * @return array
      */
     public function getReportsDone() {
-        $request_active = array(
-            'method' => 'GetWordstatReportList',
-        );
-        $res_opened = $this->getRequestOld($request_active);
         $open_reports = array();
-        if (isset($res_opened['data']) && !empty($res_opened['data'])) {
-            foreach ($res_opened['data'] as $rep) {
-                if ($rep['StatusReport'] == 'Done') {
-                    $open_reports[] = $rep['ReportID'];
-                }
+        foreach ($this->getReportsAll() as $rep) {
+            if ($rep['StatusReport'] == 'Done') {
+                $open_reports[] = $rep['ReportID'];
             }
         }
         return $open_reports;
@@ -108,16 +102,8 @@ class YandexDirectAPI {
      * @return int
      */
     public function getReportsCount() {
-        $request_count = array(
-            'method' => 'GetWordstatReportList',
-        );
-        $res_count = $this->getRequestOld($request_count);
-        $count = 0;
-        if (!empty($res_count['data'])) {
-            foreach ($res_count['data'] as $rep) {
-                $count++;
-            }
-        }
+        $all = $this->getReportsAll();
+        $count = count($all);
         return $count;
     }
 
@@ -126,18 +112,7 @@ class YandexDirectAPI {
      * @return int
      */
     public function getReportsCountRemain() {
-        $new_reps_cnt = $this->getReportsCountMax();
-        $request_count = array(
-            'method' => 'GetWordstatReportList',
-        );
-        $res_count = $this->getRequestOld($request_count);
-        $count = 0;
-        if (!empty($res_count['data'])) {
-            foreach ($res_count['data'] as $rep) {
-                $new_reps_cnt--;
-            }
-        }
-        return $count;
+        return $this->getReportsCountMax() - $this->getReportsCount();
     }
 
     /**
