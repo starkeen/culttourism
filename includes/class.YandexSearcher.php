@@ -197,7 +197,7 @@ DOC;
             ),
             'ssl' => array(
                 'verify_peer' => false,
-                'verify_peer_name' => false,
+                //'verify_peer_name' => false,
             ),
         ));
         $response = file_get_contents($this->requestURL, true, $context);
@@ -224,6 +224,7 @@ DOC;
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         curl_setopt($ch, CURLOPT_INTERFACE, '176.57.209.90'); // 188.225.12.25
 
         $response = curl_exec($ch);
