@@ -134,6 +134,18 @@ class YandexDirectAPI {
     }
 
     /**
+     * Количество оставшихся баллов по клиенту
+     * @return int
+     */
+    public function getClientUnits() {
+        $res = $this->getRequest(array(
+            'method' => 'GetClientsUnits',
+            //'param' => array('starkeen'),
+        ));
+        return $res['data'][0]['UnitsRest'];
+    }
+
+    /**
      * Новый запрос в API Яндекса
      * @param array $request
      * @return array

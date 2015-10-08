@@ -40,6 +40,7 @@ $towns = array(
     'seo_top_none' => $towns_seo_stat['none'],
     'date_positions' => $stat_dates['min_position'],
     'date_weights' => $stat_dates['min_weight'],
+    'units' => $api->getClientUnits(),
 );
 $towns['worked'] = $towns['all'] - $towns['remain'];
 $towns['seo_all'] = $towns['base'];

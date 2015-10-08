@@ -43,8 +43,9 @@ foreach ($reps_to_del as $repdel) {
 
 //****************   5 - Постановка новых отчетов в очередь ********************
 $new_reps_cnt = $api->getReportsCountRemain();
+$units = $api->getClientUnits();
 
-if ($new_reps_cnt > 0) {
+if ($units > 0 && $new_reps_cnt > 0) {
     for ($i = 1; $i <= $new_reps_cnt; $i++) {
         $portion = $ws->getPortionWeight(5);
         $_ids = array();
