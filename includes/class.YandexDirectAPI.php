@@ -140,13 +140,14 @@ class YandexDirectAPI {
      */
     protected function getRequest($request) {
         $request['locale'] = 'ru';
-        $request['token'] = $this->token;
+        //$request['token'] = $this->token;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36');
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        //curl_setopt($ch, CURLOPT_CAPATH, _DIR_ROOT . '/data/private/api-yandex');
         //curl_setopt($ch, CURLOPT_CAINFO, _DIR_ROOT . '/data/private/api-yandex/cacert.pem');
         curl_setopt($ch, CURLOPT_SSLCERT, _DIR_ROOT . '/data/private/api-yandex/cert.crt');
         curl_setopt($ch, CURLOPT_SSLKEY, _DIR_ROOT . '/data/private/api-yandex/private.key');
