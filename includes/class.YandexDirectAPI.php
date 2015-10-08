@@ -18,7 +18,7 @@ class YandexDirectAPI {
      * @throws Exception
      */
     public function createReport($phrases = array()) {
-        $request_create = array(
+        $rq = array(
             'method' => 'CreateNewWordstatReport',
             'param' => array(
                 'Phrases' => array(),
@@ -26,11 +26,11 @@ class YandexDirectAPI {
             ),
         );
         foreach ($phrases as $phrase) {
-            $request_create['param']['Phrases'][] = iconv('ISO-8859-1', 'utf-8', $phrase);
+            $rq['param']['Phrases'][] = iconv('ISO-8859-1', 'utf-8', $phrase);
         }
-        $res_create = $this->getRequest($request_create);
-        if (isset($res_create['data'])) {
-            return $res_create['data'];
+        $res = $this->getRequest($rq);
+        if (isset($res['data'])) {
+            return $res['data'];
         } else {
             throw new Exception("Error1 (invalid sert?)");
         }
@@ -43,14 +43,13 @@ class YandexDirectAPI {
      * @throws Exception
      */
     public function getReport($report_id) {
-        $request_report = array(
+        $res = $this->getRequest(array(
             'method' => 'GetWordstatReport',
             'param' => $report_id,
-        );
-        $res_report = $this->getRequest($request_report);
+        ));
         $reps = array();
-        if (isset($res_report['data'])) {
-            foreach ($res_report['data'] as $data) {
+        if (isset($res['data'])) {
+            foreach ($res['data'] as $data) {
                 $rep = array('word' => $data['Phrase'], 'weight' => 0, 'rep_id' => $report_id);
                 foreach ($data['SearchedWith'] as $item) {
                     if ($item['Shows'] >= $rep['weight']) {
@@ -70,13 +69,12 @@ class YandexDirectAPI {
      * @return array
      */
     public function getReportsAll() {
-        $request_active = array(
+        $res = $this->getRequest(array(
             'method' => 'GetWordstatReportList',
-        );
-        $res_opened = $this->getRequest($request_active);
+        ));
         $open_reports = array();
-        if (isset($res_opened['data']) && !empty($res_opened['data'])) {
-            foreach ($res_opened['data'] as $rep) {
+        if (isset($res['data']) && !empty($res['data'])) {
+            foreach ($res['data'] as $rep) {
                 $open_reports[] = $rep;
             }
         }
@@ -88,13 +86,13 @@ class YandexDirectAPI {
      * @return array
      */
     public function getReportsDone() {
-        $open_reports = array();
+        $reports = array();
         foreach ($this->getReportsAll() as $rep) {
             if ($rep['StatusReport'] == 'Done') {
-                $open_reports[] = $rep['ReportID'];
+                $reports[] = $rep['ReportID'];
             }
         }
-        return $open_reports;
+        return $reports;
     }
 
     /**

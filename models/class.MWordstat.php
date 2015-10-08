@@ -35,7 +35,7 @@ class MWordstat extends Model {
      * @return array
      */
     public function getStatPopularity() {
-        $this->_db->sql = "SELECT ws_city_title AS city_name,
+        $this->_db->sql = "SELECT ws_id, ws_city_title AS city_name,
                                 rr.name AS region_name, co.name AS country_name,
                                 ws_city_id, ws_weight, ws.ws_weight_date,
                                 ws_weight_min, ws.ws_weight_min_date,
