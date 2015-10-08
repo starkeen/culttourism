@@ -20,7 +20,7 @@ if (isset($_POST) && !empty($_POST)) {
         }
     }
     if (isset($_POST['do_delete_town'])) {
-        $ws->deleteTown($_POST['town_id']);
+        $ws->deleteByPk($_POST['ws_id']);
     }
 }
 
