@@ -28,7 +28,7 @@ class YandexDirectAPI {
         foreach ($phrases as $phrase) {
             $request_create['param']['Phrases'][] = iconv('ISO-8859-1', 'utf-8', $phrase);
         }
-        $res_create = $this->getRequestOld($request_create);
+        $res_create = $this->getRequest($request_create);
         if (isset($res_create['data'])) {
             return $res_create['data'];
         } else {
@@ -47,7 +47,7 @@ class YandexDirectAPI {
             'method' => 'GetWordstatReport',
             'param' => $report_id,
         );
-        $res_report = $this->getRequestOld($request_report);
+        $res_report = $this->getRequest($request_report);
         $reps = array();
         if (isset($res_report['data'])) {
             foreach ($res_report['data'] as $data) {
@@ -73,7 +73,7 @@ class YandexDirectAPI {
         $request_active = array(
             'method' => 'GetWordstatReportList',
         );
-        $res_opened = $this->getRequestOld($request_active);
+        $res_opened = $this->getRequest($request_active);
         $open_reports = array();
         if (isset($res_opened['data']) && !empty($res_opened['data'])) {
             foreach ($res_opened['data'] as $rep) {
@@ -129,10 +129,43 @@ class YandexDirectAPI {
      * @return array
      */
     public function deleteReport($report_id) {
-        return $this->getRequestOld(array(
+        return $this->getRequest(array(
                     'method' => 'DeleteWordstatReport',
                     'param' => $report_id,
         ));
+    }
+
+    /**
+     * Новый запрос в API Яндекса
+     * @param array $request
+     * @return array
+     */
+    protected function getRequest($request) {
+        $request['locale'] = 'ru';
+        $request['token'] = $this->token;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36');
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        //curl_setopt($ch, CURLOPT_CAINFO, _DIR_ROOT . '/data/private/api-yandex/cacert.pem');
+        curl_setopt($ch, CURLOPT_SSLCERT, _DIR_ROOT . '/data/private/api-yandex/cert.crt');
+        curl_setopt($ch, CURLOPT_SSLKEY, _DIR_ROOT . '/data/private/api-yandex/private.key');
+
+        curl_setopt($ch, CURLOPT_URL, $this->url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($request));
+
+        $text = curl_exec($ch);
+        $errno = curl_errno($ch);
+        if ($errno) {
+            $error_message = curl_strerror($errno);
+            throw new Exception("cURL error ({$errno}):\n {$error_message}");
+        }
+        curl_close($ch);
+
+        return json_decode($text, true);
     }
 
     /**
@@ -154,30 +187,6 @@ class YandexDirectAPI {
         $result = @file_get_contents($url, 0, $context);
 
         return json_decode($result, true);
-    }
-
-    /**
-     * Новый запрос в API Яндекса
-     * @param array $request
-     * @return array
-     */
-    protected function getRequest($request) {
-        $request['locale'] = 'ru';
-        $request['token'] = $this->token;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36');
-
-        curl_setopt($ch, CURLOPT_URL, $this->url);
-        try {
-            $text = curl_exec($ch);
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
-        curl_close($ch);
-
-        return json_decode($text, true);
     }
 
 }
