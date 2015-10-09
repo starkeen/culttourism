@@ -51,7 +51,7 @@ $id = isset($id) ? urlencode($id) : null;
 $id2 = isset($id) ? urlencode($id2) : null;
 
 $smarty = new mySmarty($module_id);
-$db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
+$db = FactoryDB::db();
 if (file_exists(_DIR_MODULES . "/$module_id/$module_id.php")) {
     include(_DIR_MODULES . "/$module_id/$module_id.php");
 } else {

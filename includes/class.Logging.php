@@ -3,7 +3,7 @@
 class Logging {
 
     public static function write($type, $text = null) {
-        global $db;
+        $db = FactoryDB::db();
         $le = new MLogErrors($db);
         if ($type != '301' && !strpos($_SERVER['REQUEST_URI'], 'precomposed')) {
             $le->insert(array(
@@ -20,7 +20,7 @@ class Logging {
     }
 
     public static function addHistory($module, $action, $data = array()) {
-        global $db;
+        $db = FactoryDB::db();
         $la = new MLogActions($db);
         $la->insert(array(
             'la_date' => $la->now(),
@@ -32,7 +32,7 @@ class Logging {
     }
 
     public static function addDebug($module_id, $time, $url = '') {
-        global $db;
+        $db = FactoryDB::db();
         $dbld = $db->getTableName('log_debug');
         $url = $db->getEscapedString($url);
         $module = $db->getEscapedString($module_id);
