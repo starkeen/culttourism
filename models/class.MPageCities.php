@@ -40,6 +40,8 @@ class MPageCities extends Model {
         );
         parent::__construct($db);
         $this->_addRelatedTable('region_url');
+        $this->_addRelatedTable('pagepoints');
+        $this->_addRelatedTable('city_data');
     }
 
     /**
@@ -292,7 +294,7 @@ class MPageCities extends Model {
         return $this->_db->fetchAll();
     }
 
-    /*
+    /**
      * Заменяет все абсолютные ссылки относительными
      */
     public function repairLinksAbsRel() {
@@ -317,6 +319,28 @@ class MPageCities extends Model {
             ':id' => $id,
             ':path' => $path,
         ));
+    }
+
+    /**
+     * Обновление статистики по городам и регионам
+     */
+    public function updateStat() {
+        $this->_db->sql = "UPDATE $this->_table_name pc
+                            LEFT JOIN (SELECT pt.pt_citypage_id AS pc, COUNT(1) cnt
+                                        FROM {$this->_tables_related['pagepoints']} pt
+                                        WHERE pt.pt_active = 1
+                                        GROUP BY pt.pt_citypage_id) AS stat
+                                ON stat.pc = pc.pc_id
+                            SET pc.pc_count_points = stat.cnt";
+        $this->_db->exec();
+
+        $this->_db->sql = "UPDATE $this->_table_name pc
+                            LEFT JOIN (SELECT cd.cd_pc_id AS pc, COUNT(1) cnt
+                                        FROM {$this->_tables_related['city_data']} cd
+                                        GROUP BY cd.cd_pc_id) AS stat
+                                ON stat.pc = pc.pc_id
+                            SET pc.pc_count_points = stat.cnt";
+        $this->_db->exec();
     }
 
     /**
