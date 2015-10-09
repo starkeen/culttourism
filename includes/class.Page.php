@@ -114,15 +114,14 @@ class Page extends PageCommon {
     }
 
     public function getSubContent($pid, $p_url) {
-        $db = FactoryDB::db();
         $dbm = $this->db->getTableName('modules');
-        $db->sql = "SELECT md_url, md_title, md_keywords, md_description, md_pagecontent
-                    FROM $dbm WHERE md_active = '1' AND md_pid = '$pid'";
-        $res = $db->exec();
+        $this->db->sql = "SELECT md_url, md_title, md_keywords, md_description, md_pagecontent
+                            FROM $dbm WHERE md_active = '1' AND md_pid = '$pid'";
+        $res = $this->db->exec();
         if (!$res) {
             $this->getError('404');
         }
-        while ($row = $db->fetch($res)) {
+        while ($row = $this->db->fetch($res)) {
             if ($row['md_url'] == $p_url) {
                 $this->h1 .= ' ' . $this->globalsettings['title_delimiter'] . ' ' . $row['md_title'];
                 $this->content = $row['md_pagecontent'];
@@ -136,15 +135,14 @@ class Page extends PageCommon {
     }
 
     public function getNavigation($module_id, $sub_url) {
-        $db = FactoryDB::db();
         $dbm = $this->db->getTableName('modules');
-        $db->sql = "SELECT md_title, md_url FROM $dbm WHERE md_active = '1' AND md_id = '$module_id' LIMIT 1";
-        $db->exec();
-        $parent = $db->fetch();
-        $db->sql = "SELECT md_title, md_url FROM $dbm WHERE md_active = '1' AND md_pid = '$module_id'";
-        $res = $db->exec();
+        $this->db->sql = "SELECT md_title, md_url FROM $dbm WHERE md_active = '1' AND md_id = '$module_id' LIMIT 1";
+        $this->db->exec();
+        $parent = $this->db->fetch();
+        $this->db->sql = "SELECT md_title, md_url FROM $dbm WHERE md_active = '1' AND md_pid = '$module_id'";
+        $res = $this->db->exec();
         if ($res) {
-            while ($row = $db->fetch($res)) {
+            while ($row = $this->db->fetch($res)) {
                 $navi = array('url' => $row['md_url'], 'title' => $row['md_title'], 'active' => false);
                 if ($row['md_url'] == $sub_url)
                     $navi['active'] = true;
