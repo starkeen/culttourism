@@ -5,9 +5,17 @@ require_once('common.php');
 $smarty->assign('title', 'Статистика Яндекса');
 
 $sp = new MSysProperties($db);
-$token_direct = $sp->getByName('token_direct');
-$api = new YandexDirectAPI($token_direct);
+$direct_apikey = $sp->getByName('key_direct_app');
+$direct_password = $sp->getByName('pass_direct_app');
+$api = new YandexDirectAPI($sp->getByName('token_direct'));
 $ws = new MWordstat($db);
+
+if (isset($_GET['code'])) {
+    $newtoken = $api->getTokenConfirm($direct_apikey, $direct_password, $_GET['code']);
+    $sp->updateByName('token_direct', $newtoken);
+    header('Location: stat_yandex.php');
+    exit();
+}
 
 if (isset($_POST) && !empty($_POST)) {
     if (isset($_POST['do_reload_stat'])) {
@@ -49,6 +57,7 @@ $smarty->assign('stat', $ws->getStatPopularity());
 $smarty->assign('seo', $ws->getStatPositions());
 $smarty->assign('reports', $reports);
 $smarty->assign('towns', $towns);
+$smarty->assign('direct_apikey', $direct_apikey);
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/stat_yandex.sm.html'));
 
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');

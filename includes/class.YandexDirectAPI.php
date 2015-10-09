@@ -5,7 +5,8 @@ class YandexDirectAPI {
     const MAX_COUNT = 5;
 
     protected $token = '';
-    protected $url = 'https://api.direct.yandex.ru/v4/json/';
+    protected $urlService = 'https://api.direct.yandex.ru/v4/json/';
+    protected $urlOauth = 'https://oauth.yandex.ru/token';
 
     public function __construct($token) {
         $this->token = $token;
@@ -140,9 +141,33 @@ class YandexDirectAPI {
     public function getClientUnits() {
         $res = $this->getRequest(array(
             'method' => 'GetClientsUnits',
-            //'param' => array('starkeen'),
+                //'param' => array('starkeen'),
         ));
         return isset($res['data'][0]['UnitsRest']) ? $res['data'][0]['UnitsRest'] : 0;
+    }
+
+    /**
+     * Получение токена по коду подтверждения
+     * @param string $apikey - ID приложения
+     * @param string $apipass - пароль приложения
+     * @param string $code - полученный код
+     * @return string - токен
+     */
+    public function getTokenConfirm($apikey, $apipass, $code) {
+        $query = array(
+            'grant_type' => 'authorization_code',
+            'code' => $code,
+            'client_id' => $apikey,
+            'client_secret' => $apipass,
+        );
+        try {
+            $answer = $this->curlPostExec($this->urlOauth, http_build_query($query));
+            $response = json_decode($answer);
+            return $response->access_token;
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            exit();
+        }
     }
 
     /**
@@ -153,21 +178,32 @@ class YandexDirectAPI {
     protected function getRequest($request) {
         $request['locale'] = 'ru';
         $request['token'] = $this->token;
+        try {
+            $answer = $this->curlPostExec($this->urlService, json_encode($request));
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            exit();
+        }
+        return json_decode($answer, true);
+    }
+
+    /**
+     * Отправка POST-запроса по указанному URL
+     * @param string $url - URL запроса
+     * @param string $data - данные запроса (json или http_build_query)
+     * @return string чистый ответ сервера
+     * @throws Exception
+     */
+    protected function curlPostExec($url, $data) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36');
-
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        // при использовании сертификатов
-        //curl_setopt($ch, CURLOPT_CAPATH, _DIR_ROOT . '/data/private/api-yandex');
-        //curl_setopt($ch, CURLOPT_CAINFO, _DIR_ROOT . '/data/private/api-yandex/cacert.pem');
-        //curl_setopt($ch, CURLOPT_SSLCERT, _DIR_ROOT . '/data/private/api-yandex/cert.crt');
-        //curl_setopt($ch, CURLOPT_SSLKEY, _DIR_ROOT . '/data/private/api-yandex/private.key');
 
-        curl_setopt($ch, CURLOPT_URL, $this->url);
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($request));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
         $text = curl_exec($ch);
         $errno = curl_errno($ch);
@@ -177,28 +213,7 @@ class YandexDirectAPI {
         }
         curl_close($ch);
 
-        return json_decode($text, true);
-    }
-
-    /**
-     * Старый запрос в API Яндекса 
-     * @param array $request
-     * @return array
-     */
-    protected function getRequestOld($request) {
-        $url = "https://api.direct.yandex.ru/v4/json/";
-        $request['locale'] = 'ru';
-        $opts = array(
-            'http' => array(
-                'method' => "POST",
-                'content' => json_encode($request),
-            )
-        );
-        $context = stream_context_create($opts);
-        stream_context_set_option($context, 'ssl', 'local_cert', _DIR_ROOT . '/data/private/api-yandex/solid-cert.crt');
-        $result = @file_get_contents($url, 0, $context);
-
-        return json_decode($result, true);
+        return $text;
     }
 
 }

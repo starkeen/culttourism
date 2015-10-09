@@ -32,9 +32,7 @@
             </ul>
         </td>
         <td style="vertical-align: top;">
-            <form method="post">
-                <input type="submit" name="do_reload_full" value="Перезапуск полный" />
-                <br />
+            <form method="post" action="">
                 <input type="submit" name="do_reload_stat" value="Сброс статистики" />
                 <br />
                 <input type="submit" name="do_stack_empty" value="Сброс очереди отчётов" />
@@ -43,6 +41,9 @@
                 <li>позиции от: {$towns.date_positions}</li>
                 <li>запросы от: {$towns.date_weights}</li>
             </ul>
+            <input type="button" id="ws-token-refresh"
+                   data-appid="{$direct_apikey}"
+                   value="Обновить токен API ЯД" />
             <ul style="text-align:left;">
                 <li>баллы: {$towns.units}</li>
             </ul>
@@ -130,22 +131,4 @@
     </tr>
 </table>
 
-<style>
-    .ws-counts .ws-counts-minmax {
-        display: inline-block;
-        font-style: italic;
-        color:#777;
-    }
-    .ws-counts .ws-counts-minmax sup, .ws-counts .ws-counts-minmax sub {
-        display: block;
-        line-height: 0;
-        position: relative;
-        vertical-align: baseline;
-    }
-    .ws-counts .ws-counts-minmax sup {
-        top: -0.6em;
-    }
-    .ws-counts .ws-counts-minmax sub {
-        top: 0.4em;
-    }
-</style>
+<script src="/js/admin/stat_yandex.js"></script>
