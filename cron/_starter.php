@@ -10,7 +10,7 @@ include(_DIR_INCLUDES . '/functions.php');
 include(_DIR_INCLUDES . '/class.Helper.php');
 spl_autoload_register('Helper::autoloader');
 
-$db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
+$db = FactoryDB::db();
 $smarty = new mySmarty();
 $sp = new MSysProperties($db);
 $cr = new MCron($db);

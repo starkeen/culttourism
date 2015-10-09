@@ -114,7 +114,7 @@ class Page extends PageCommon {
     }
 
     public function getSubContent($pid, $p_url) {
-        global $db;
+        $db = FactoryDB::db();
         $dbm = $this->db->getTableName('modules');
         $db->sql = "SELECT md_url, md_title, md_keywords, md_description, md_pagecontent
                     FROM $dbm WHERE md_active = '1' AND md_pid = '$pid'";
@@ -136,7 +136,7 @@ class Page extends PageCommon {
     }
 
     public function getNavigation($module_id, $sub_url) {
-        global $db;
+        $db = FactoryDB::db();
         $dbm = $this->db->getTableName('modules');
         $db->sql = "SELECT md_title, md_url FROM $dbm WHERE md_active = '1' AND md_id = '$module_id' LIMIT 1";
         $db->exec();

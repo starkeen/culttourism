@@ -3,18 +3,18 @@
 class Page extends PageCommon {
 
     public function __construct($module_id, $page_id) {
-        global $db;
+        $db = FactoryDB::db();
         global $smarty;
         parent::__construct($db, 'city', $page_id);
 
         if ($page_id[1] == '') {
-            return $this->pageCity($db, $smarty);
+            return $this->pageCity($smarty);
         } elseif ($page_id[1] == 'add') {
-            return $this->addCity($db, $smarty);
+            return $this->addCity($smarty);
         } elseif ($page_id[1] == 'detail') {
-            return $this->detailCity($db, $smarty);
+            return $this->detailCity($smarty);
         } elseif ($page_id[1] == 'meta') {
-            return $this->metaCity($db, $smarty);
+            return $this->metaCity($smarty);
         } elseif ($page_id[1] == 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
             $this->isAjax = true;
@@ -133,11 +133,11 @@ class Page extends PageCommon {
     }
 
     //****************************************  ТАБЛИЦА МЕТА  ******************
-    private function metaCity($db, $smarty) {
-        $dbcd = $db->getTableName('city_data');
-        $dbcf = $db->getTableName('city_fields');
+    private function metaCity($smarty) {
+        $dbcd = $this->db->getTableName('city_data');
+        $dbcf = $this->db->getTableName('city_fields');
 
-        $pc = new MPageCities($db);
+        $pc = new MPageCities($this->db);
 
         if (isset($_POST['act'])) {
             if (!$this->checkEdit()) {
@@ -149,25 +149,25 @@ class Page extends PageCommon {
                     $cf_id = intval($_POST['cf']);
                     $value = trim($_POST['val']);
                     $city_id = intval($_POST['cpid']);
-                    $db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
-                    $db->execute(array(
+                    $this->db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                    $this->db->execute(array(
                         ':city_id' => $city_id,
                         ':cf_id' => $cf_id,
                     ));
 
                     if ($value != '') {
-                        $db->sql = "INSERT INTO $dbcd SET cd_pc_id = :city_id, cd_cf_id = :cf_id, cd_value = :cd_value";
-                        $db->execute(array(
+                        $this->db->sql = "INSERT INTO $dbcd SET cd_pc_id = :city_id, cd_cf_id = :cf_id, cd_value = :cd_value";
+                        $this->db->execute(array(
                             ':city_id' => $city_id,
                             ':cf_id' => $cf_id,
                             ':cd_value' => $value,
                         ));
                     }
-                    $db->sql = "SELECT * FROM  $dbcf WHERE cf_id = :cf_id";
-                    $db->execute(array(
+                    $this->db->sql = "SELECT * FROM  $dbcf WHERE cf_id = :cf_id";
+                    $this->db->execute(array(
                         ':cf_id' => $cf_id,
                     ));
-                    $row = $db->fetch();
+                    $row = $this->db->fetch();
                     $pc->updateByPk($city_id, array(
                         'pc_lastup_user' => $uid
                     ));
@@ -176,8 +176,8 @@ class Page extends PageCommon {
                 case 'del':
                     $cf_id = intval($_POST['cf']);
                     $city_id = intval($_POST['cpid']);
-                    $db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
-                    $db->execute(array(
+                    $this->db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                    $this->db->execute(array(
                         ':city_id' => $city_id,
                         ':cf_id' => $cf_id,
                     ));
@@ -191,8 +191,8 @@ class Page extends PageCommon {
                     $city_id = intval($_POST['cpid']);
                     $value = trim($_POST['val']);
                     if ($value != '') {
-                        $db->sql = "UPDATE $dbcd SET cd_value = :cd_value WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
-                        $db->execute(array(
+                        $this->db->sql = "UPDATE $dbcd SET cd_value = :cd_value WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                        $this->db->execute(array(
                             ':city_id' => $city_id,
                             ':cf_id' => $cf_id,
                             ':cd_value' => $value,
@@ -205,17 +205,17 @@ class Page extends PageCommon {
                     break;
             }
         } else {
-            $db->sql = "SELECT cf_title, cd_value
+            $this->db->sql = "SELECT cf_title, cd_value
                         FROM $dbcd cd
                             LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
                         WHERE cd.cd_pc_id = :pc_id
                             AND cd.cd_value != ''
                             AND cf.cf_active = 1
                         ORDER BY cf_order";
-            $db->execute(array(
+            $this->db->execute(array(
                 ':pc_id' => intval($_GET['id'])
             ));
-            $metas = $db->fetchAll();
+            $metas = $this->db->fetchAll();
 
             $smarty->assign('metas', $metas);
             header('Content-Type: text/html; charset=utf-8');
@@ -225,7 +225,7 @@ class Page extends PageCommon {
     }
 
     //**************************************** РЕДАКТИРОВАНИЕ ******************
-    private function detailCity($db, $smarty) {
+    private function detailCity($smarty) {
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
@@ -237,11 +237,11 @@ class Page extends PageCommon {
             return $this->getError('404');
         }
 
-        $pc = new MPageCities($db);
+        $pc = new MPageCities($this->db);
 
-        $dbcd = $db->getTableName('city_data');
-        $dbcf = $db->getTableName('city_fields');
-        $dbws = $db->getTableName('wordstat');
+        $dbcd = $this->db->getTableName('city_data');
+        $dbcf = $this->db->getTableName('city_fields');
+        $dbws = $this->db->getTableName('wordstat');
 
         if (isset($_POST) && !empty($_POST)) {
             //print_x($_POST);
@@ -268,33 +268,33 @@ class Page extends PageCommon {
 
         $citypage = $pc->getItemByPk($city_id);
 
-        $db->sql = "SELECT *
+        $this->db->sql = "SELECT *
                     FROM $dbcd cd
                         LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
                     WHERE cd.cd_pc_id = :pc_id
                     ORDER BY cf_order";
-        $db->execute(array(
+        $this->db->execute(array(
             ':pc_id' => $city_id,
         ));
-        $meta = $db->fetchAll();
+        $meta = $this->db->fetchAll();
 
-        $db->sql = "SELECT *
+        $this->db->sql = "SELECT *
                     FROM $dbcf
                     WHERE cf_id NOT IN (SELECT cd_cf_id FROM $dbcd WHERE cd_pc_id = :pc_id)
                     ORDER BY cf_order";
-        $db->execute(array(
-            ':pc_id' => $city_id
+        $this->db->execute(array(
+            ':pc_id' => $city_id,
         ));
-        $ref_meta = $db->fetchAll();
+        $ref_meta = $this->db->fetchAll();
 
-        $db->sql = "SELECT *
+        $this->db->sql = "SELECT *
                     FROM $dbws
                     WHERE ws_city_title = :pc_title
                     LIMIT 1";
-        $db->execute(array(
+        $this->db->execute(array(
             ':pc_title' => $citypage['pc_title'],
         ));
-        $yandex = $db->fetch();
+        $yandex = $this->db->fetch();
 
         $smarty->assign('city', $citypage);
         $smarty->assign('baseurl', $this->basepath);
@@ -309,14 +309,14 @@ class Page extends PageCommon {
     }
 
     //**************************************** ДОБАВЛЕНИЕ ******************
-    private function addCity($db, $smarty) {
+    private function addCity($smarty) {
         $newcity = '';
         $inbase = array();
         $already = array();
-        $pc = new MPageCities($db);
+        $pc = new MPageCities($this->db);
         if (isset($_POST) && !empty($_POST)) {
-            $dbc = $db->getTableName('pagecity');
-            $dbu = $db->getTableName('region_url');
+            $dbc = $this->db->getTableName('pagecity');
+            $dbu = $this->db->getTableName('region_url');
             $cid = $pc->insert(array(
                 'pc_title' => $_POST['city_name'],
                 'pc_city_id' => $_POST['city_id'],
@@ -337,26 +337,26 @@ class Page extends PageCommon {
             }
         } elseif (!empty($_GET['cityname'])) {
             $newcity = trim($_GET['cityname']);
-            $dbc = $db->getTableName('pagecity');
-            $dbu = $db->getTableName('region_url');
-            $dbrc = $db->getTableName('ref_city');
-            $dbrr = $db->getTableName('ref_region');
-            $dbrs = $db->getTableName('ref_country');
-            $dbll = $db->getTableName('ref_citylatlon');
+            $dbc = $this->db->getTableName('pagecity');
+            $dbu = $this->db->getTableName('region_url');
+            $dbrc = $this->db->getTableName('ref_city');
+            $dbrr = $this->db->getTableName('ref_region');
+            $dbrs = $this->db->getTableName('ref_country');
+            $dbll = $this->db->getTableName('ref_citylatlon');
             //------------------- поиск уже имеющихся --------------
-            $db->sql = "SELECT url.url, city.pc_title
+            $this->db->sql = "SELECT url.url, city.pc_title
                         FROM $dbc city
                         LEFT JOIN $dbu url ON url.uid = city.pc_url_id
                         WHERE city.pc_title LIKE :newcity1 OR city.pc_title_synonym LIKE :newcity2";
-            $db->execute(array(
+            $this->db->execute(array(
                 ':newcity1' => '%' . $newcity . '%',
                 ':newcity2' => '%' . $newcity . '%',
             ));
-            while ($row = $db->fetch()) {
+            while ($row = $this->db->fetch()) {
                 $already[$row['url']] = $row['pc_title'];
             }
             //------------------- поиск в справочнике регионов --------------
-            $db->sql = "SELECT rc.name as name, rc.id as city_id,
+            $this->db->sql = "SELECT rc.name as name, rc.id as city_id,
                             rr.name as region, rr.id as region_id,
                             rs.name as country, rs.id as country_id, rs.alpha2 AS country_code,
                             city.pc_title as pc_title, url.url
@@ -391,23 +391,23 @@ class Page extends PageCommon {
                         WHERE rs.name LIKE :newcity3
                         
                         ORDER BY country, region, name";
-            $db->execute(array(
+            $this->db->execute(array(
                 ':newcity1' => '%' . $newcity . '%',
                 ':newcity2' => '%' . $newcity . '%',
                 ':newcity3' => '%' . $newcity . '%',
             ));
-            while ($row = $db->fetch()) {
+            while ($row = $this->db->fetch()) {
                 $inbase[] = $row;
             }
             foreach ($inbase as $id => $city) {
                 $translit = translit($city['name']);
                 $inbase[$id]['translit'] = $translit;
-                $db->sql = "SELECT * FROM $dbll WHERE LOWER(ll_name) = LOWER(:name) LIMIT 1";
-                $state = $db->execute(array(
+                $this->db->sql = "SELECT * FROM $dbll WHERE LOWER(ll_name) = LOWER(:name) LIMIT 1";
+                $state = $this->db->execute(array(
                     ':name' => $translit,
                 ));
                 if ($state) {
-                    $row = $db->fetch();
+                    $row = $this->db->fetch();
                     $inbase[$id]['lat'] = $row['ll_lat'];
                     $inbase[$id]['lon'] = $row['ll_lon'];
                     $latitude = $row['ll_lat'] >= 0 ? 'N' : 'S';
@@ -434,24 +434,24 @@ class Page extends PageCommon {
     }
 
     //**************************************** СПИСОК **********************
-    private function pageCity($db, $smarty) {
-        $dbc = $db->getTableName('pagecity');
-        $dbr = $db->getTableName('region_url');
-        $dbp = $db->getTableName('pagepoints');
-        $dbcd = $db->getTableName('city_data');
-        $dbrc = $db->getTableName('ref_country');
-        $dbrr = $db->getTableName('ref_region');
-        $dbws = $db->getTableName('wordstat');
+    private function pageCity($smarty) {
+        $dbc = $this->db->getTableName('pagecity');
+        $dbr = $this->db->getTableName('region_url');
+        $dbp = $this->db->getTableName('pagepoints');
+        $dbcd = $this->db->getTableName('city_data');
+        $dbrc = $this->db->getTableName('ref_country');
+        $dbrr = $this->db->getTableName('ref_region');
+        $dbws = $this->db->getTableName('wordstat');
         $where = (!$this->checkEdit()) ? "WHERE city.pc_text is not null" : '';
-        $db->sql = "SELECT city.pc_id, city.pc_title, city.pc_latitude, city.pc_longitude,
+        $this->db->sql = "SELECT city.pc_id, city.pc_title, city.pc_latitude, city.pc_longitude,
                             city.pc_city_id, city.pc_region_id, city.pc_country_id,
                             url.url,
                             CHAR_LENGTH(city.pc_text) as len,
                             CHAR_LENGTH(city.pc_announcement) as anons_len,
                             city.pc_inwheretext,
                             city.pc_pagepath,
-                            (SELECT count(pt_id) FROM $dbp WHERE pt_citypage_id = city.pc_id) as pts,
-                            (SELECT count(cd_id) FROM $dbcd WHERE cd_pc_id = city.pc_id) as meta,
+                            city.pc_count_points,
+                            city.pc_count_metas,
                             ws.ws_weight_max, ws.ws_position,
                             UNIX_TIMESTAMP(city.pc_lastup_date) AS last_update
                     FROM $dbc city
@@ -462,8 +462,8 @@ class Page extends PageCommon {
                 $where
                     GROUP BY city.pc_id
                     ORDER BY rc.ordering, rc.name, rr.ordering, rr.name, url.url, city.pc_title";
-        $db->exec();
-        while ($row = $db->fetch()) {
+        $this->db->exec();
+        while ($row = $this->db->fetch()) {
             $row['pc_pagepath'] = strip_tags($row['pc_pagepath']);
             if ($row['last_update'] > $this->lastedit_timestamp) {
                 $this->lastedit_timestamp = $row['last_update'];

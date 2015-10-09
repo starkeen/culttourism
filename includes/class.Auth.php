@@ -16,12 +16,8 @@ class Auth {
     public $username = null;
     private $secretstring = 'И вновь продолжается бой. И гёл. Если очень захотеть, можно в космос полететь, и на Марсе будут яблони цвести';
 
-    public function __construct($db = null) {
-        if ($db === null) {
-            $this->db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
-        } else {
-            $this->db = $db;
-        }
+    public function __construct($db) {
+        $this->db = $db;
         $this->session = session_id();
         $this->getKey();
         $this->meta['uri'] = trim($_SERVER['REQUEST_URI']);

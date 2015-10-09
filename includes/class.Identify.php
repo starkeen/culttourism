@@ -8,7 +8,7 @@ class Identify {
     private $method = 'web';
 
     public function __construct($method = 'web') {
-        global $db;
+        $db = FactoryDB::db();
         $this->db = $db;
         $this->method = $method;
         $this->session_id = session_id();
@@ -38,5 +38,3 @@ class Identify {
     }
 
 }
-
-?>

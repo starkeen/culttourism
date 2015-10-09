@@ -8,7 +8,7 @@ class UserRequest {
         $this->key = getGUID();
         $owner_id = $_SESSION['user_id'];
         $this->req_type = intval($type_id);
-        global $db;
+        $db = FactoryDB::db();
         $dbr = $db->getTableName('requests');
         $db->sql = "INSERT INTO $dbr
                     (rq_us_id, rq_keystring, rq_confirmed, rq_request_type, rq_date_create)
@@ -18,7 +18,7 @@ class UserRequest {
     }
 
     public function setParam($param, $value) {
-        global $db;
+        $db = FactoryDB::db();
         $dbr = $db->getTableName('requests');
         $db->sql = "SELECT rq_attrs FROM $dbr
                     WHERE  rq_keystring = '$this->key'";

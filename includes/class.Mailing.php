@@ -48,7 +48,7 @@ class Mailing {
     }
 
     public static function sendFromPool($limit = 20) {
-        global $db;
+        $db = FactoryDB::db();
         $mp = new MMailPool($db);
         $pool = $mp->getPortion($limit);
         $cnt = 0;
@@ -71,7 +71,7 @@ class Mailing {
     }
 
     public static function sendLetterNewPassword($to, $details) {
-        global $db;
+        $db = FactoryDB::db();
         $attrs['REQUEST_LINK'] = _SITE_URL . 'request/' . $details['req_key'] . '/';
         $attrs['SITE_LINK'] = _SITE_URL;
         $letter = self::prepareLetter(5, $attrs);
@@ -79,7 +79,7 @@ class Mailing {
     }
 
     public static function sendLetterNewUser($to, $details) {
-        global $db;
+        $db = FactoryDB::db();
         $attrs['USER_NAME'] = $details['user_name'];
         $attrs['REQUEST_KEY'] = $details['request_key'];
         $attrs['USER_EMAIL'] = $to;
@@ -89,7 +89,7 @@ class Mailing {
     }
 
     public static function sendLetterCommon($to, $type, $details) {
-        global $db;
+        $db = FactoryDB::db();
         $attrs = array();
         $attrs['SITE_LINK'] = _SITE_URL;
         $attrs['USER_IP'] = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'cron';
@@ -105,7 +105,7 @@ class Mailing {
     }
 
     public static function sendInCache($to, $text, $theme, $sender = null, $xheader = null) {
-        global $db;
+        $db = FactoryDB::db();
         $mp = new MMailPool($db);
         $lt_id = $mp->insert(array(
             'ml_datecreate' => $mp->now(),
@@ -148,7 +148,7 @@ class Mailing {
     }
 
     private static function prepareLetter($tmpl_id, $elements = array()) {
-        global $db;
+        $db = FactoryDB::db();
         $mt = new MMailTemplates($db);
         $template = $mt->getItemByPk($tmpl_id);
         foreach ($elements as $elkey => $element) {

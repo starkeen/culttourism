@@ -3,17 +3,17 @@
 class Page extends PageCommon {
 
     public function __construct($module_id, $page_id) {
-        global $db;
+        $db = FactoryDB::db();
         global $smarty;
 
         parent::__construct($db, 'index.html', $page_id);
 
-        $dbb = $db->getTableName('blogentries');
-        $dbu = $db->getTableName('users');
-        $dbns = $db->getTableName('news_sourses');
-        $dbni = $db->getTableName('news_items');
+        $dbb = $this->db->getTableName('blogentries');
+        $dbu = $this->db->getTableName('users');
+        $dbns = $this->db->getTableName('news_sourses');
+        $dbni = $this->db->getTableName('news_items');
 
-        $db->sql = "SELECT bg.*, us.us_name,
+        $this->db->sql = "SELECT bg.*, us.us_name,
                            UNIX_TIMESTAMP(bg.br_date) AS last_update,
                            DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month,
                            DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
@@ -24,12 +24,12 @@ class Page extends PageCommon {
                     WHERE bg.br_date < NOW()
                     ORDER BY bg.br_date DESC
                     LIMIT :limit_blogs";
-        $db->execute(array(
+        $this->db->execute(array(
             ':limit_blogs' => intval($this->globalsettings['index_cnt_blogs']),
         ));
         $blogentries = array();
         $patern = "/(.*?)<\/p>/i";
-        while ($row = $db->fetch()) {
+        while ($row = $this->db->fetch()) {
             $matches = array();
             preg_match_all($patern, $row['br_text'], $matches);
             if (isset($matches[0][0])) {
@@ -41,7 +41,7 @@ class Page extends PageCommon {
             }
         }
 
-        $db->sql = "SELECT *,
+        $this->db->sql = "SELECT *,
                         UNIX_TIMESTAMP(ni.ni_pubdate) AS last_update,
                         DATE_FORMAT(ni.ni_pubdate,'%d.%m.%Y') as datex
                     FROM $dbni ni
@@ -50,11 +50,11 @@ class Page extends PageCommon {
                     GROUP BY ni_title
                     ORDER BY ni_pubdate DESC
                     LIMIT :limit_news";
-        $db->execute(array(
+        $this->db->execute(array(
             ':limit_news' => intval($this->globalsettings['index_cnt_news']),
         ));
         $agrnewsentries = array();
-        while ($row = $db->fetch()) {
+        while ($row = $this->db->fetch()) {
             $row['ni_text'] = strip_tags(html_entity_decode($row['ni_text'], ENT_QUOTES));
             $row['ni_text'] = trim(mb_substr($row['ni_text'], 0, mb_strrpos(mb_substr($row['ni_text'], 0, 350, 'utf-8'), '.', 'utf-8'), 'utf-8'), '\,');
             $sourse_url = parse_url($row['ns_web']);
