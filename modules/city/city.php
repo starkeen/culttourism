@@ -450,8 +450,8 @@ class Page extends PageCommon {
                             CHAR_LENGTH(city.pc_announcement) as anons_len,
                             city.pc_inwheretext,
                             city.pc_pagepath,
-                            (SELECT count(pt_id) FROM $dbp WHERE pt_citypage_id = city.pc_id) as pts,
-                            (SELECT count(cd_id) FROM $dbcd WHERE cd_pc_id = city.pc_id) as meta,
+                            city.pc_count_points,
+                            city.pc_count_metas,
                             ws.ws_weight_max, ws.ws_position,
                             UNIX_TIMESTAMP(city.pc_lastup_date) AS last_update
                     FROM $dbc city
