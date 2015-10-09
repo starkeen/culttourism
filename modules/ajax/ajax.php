@@ -4,8 +4,8 @@ class Page extends PageCommon {
 
     public function __construct($db, $mod) {
         list($module_id, $page_id, $id) = $mod;
-        $this->smarty->caching = false;
         parent::__construct($db, 'ajax');
+        $this->smarty->caching = false;
         $id = urldecode($id);
         if (strpos($id, '?') !== FALSE) {
             $id = substr($id, 0, strpos($id, '?'));
