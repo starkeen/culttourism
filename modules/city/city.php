@@ -3,7 +3,7 @@
 class Page extends PageCommon {
 
     public function __construct($module_id, $page_id) {
-        global $db;
+        $db = FactoryDB::db();
         global $smarty;
         parent::__construct($db, 'city', $page_id);
 

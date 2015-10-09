@@ -1,7 +1,7 @@
 <?php
 class Users {
     public static function getAllUsers() {
-        global $db;
+        $db = FactoryDB::db();
         $dbu = $db->getTableName('users');
         $db->sql = "SELECT us_id, us_name
                     FROM  $dbu us
@@ -15,7 +15,7 @@ class Users {
         else return false;
     }
     public static function getUserProfile($id) {
-        global $db;
+        $db = FactoryDB::db();
         $dbu = $db->getTableName('users');
         $dbuc = $db->getTableName('userscontacts');
         $dbul = $db->getTableName('userlevels');
@@ -47,7 +47,7 @@ class Users {
         else return false;
     }
     public static function getRefContacts() {
-        global $db;
+        $db = FactoryDB::db();
         $dbrc = $db->getTableName('ref_contacts');
         $db->sql = "SELECT rc_icon, rc_name, rc_id
                     FROM $dbrc rc
@@ -62,7 +62,7 @@ class Users {
     }
 
     public static function saveUserProfile($uid,$uname,$ucontacts=array()) {
-        global $db;
+        $db = FactoryDB::db();
         $dbu = $db->getTableName('users');
         $dbuc = $db->getTableName('userscontacts');
         $db->sql = "UPDATE $dbu SET us_name='$uname' WHERE us_id='$uid'";
@@ -78,4 +78,4 @@ class Users {
         } else return FALSE;
     }
 }
-?>
+
