@@ -4,7 +4,6 @@ class Page extends PageCommon {
 
     public function __construct($db, $mod) {
         list($module_id, $page_id, $id) = $mod;
-        global $smarty;
         parent::__construct($db, 'gps', $page_id);
         $id = urldecode($id);
         if (strpos($id, '?') !== FALSE)
@@ -13,14 +12,12 @@ class Page extends PageCommon {
 
         //========================  I N D E X  ================================
         if ($page_id == '') {
-            $smarty->assign('gps_text', $this->content);
-            $this->content = $smarty->fetch(_DIR_TEMPLATES . '/gps/gps.sm.html');
+            $this->smarty->assign('gps_text', $this->content);
+            $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/gps/gps.sm.html');
         }
         //=======================  E X P O R T  ===============================
         elseif ($page_id == 'export') {
-            if (isset($_POST['pts'])
-                    && !empty($_POST['pts'])
-                    && (
+            if (isset($_POST['pts']) && !empty($_POST['pts']) && (
                     isset($_POST['submit_gpx']) ||
                     isset($_POST['submit_kml']))) {
 
@@ -56,12 +53,13 @@ class Page extends PageCommon {
                 $db->exec();
                 $region = $db->fetch();
 
-                if (isset($_POST['submit_gpx']))
+                if (isset($_POST['submit_gpx'])) {
                     $export_type = 'gpx';
-                elseif (isset($_POST['submit_kml']))
+                } elseif (isset($_POST['submit_kml'])) {
                     $export_type = 'kml';
-                else
+                } else {
                     $export_type = '';
+                }
 
                 $hash = $this->getUserHash();
                 $db->sql = "INSERT INTO $dbse (se_citypage_id, se_points, se_type, se_userhash, se_date) VALUES ";
@@ -72,28 +70,29 @@ class Page extends PageCommon {
                 $db->sql .= implode(', ', $sql_pnts);
                 $db->exec();
 
-                $smarty->assign('points', $export_points);
-                $smarty->assign('region', $region);
+                $this->smarty->assign('points', $export_points);
+                $this->smarty->assign('region', $region);
 
                 $file_content = '';
                 if ($export_type == 'gpx') {
-                    $file_content = $smarty->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
+                    $file_content = $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
                     header("Content-type: application/gpx+xml");
                     header("Content-Disposition: attachment; filename=culttourism_GPX_{$region['pc_title_translit']}.gpx");
                 } elseif ($export_type == 'kml') {
-                    $file_content = $smarty->fetch(_DIR_TEMPLATES . '/_XML/KML.export.sm.xml');
+                    $file_content = $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/KML.export.sm.xml');
                     header("Content-type: application/vnd.google-earth.kml+xml");
                     header("Content-Disposition: attachment; filename=culttourism_KML_{$region['pc_title_translit']}.kml");
                 }
                 echo $file_content;
                 exit();
-            }
-            else
+            } else {
                 $this->getError('301', '../');
+            }
         }
         //==========================  E X I T  ================================
-        else
+        else {
             $this->getError('404');
+        }
     }
 
     public static function getInstance($db, $mod) {
@@ -101,5 +100,3 @@ class Page extends PageCommon {
     }
 
 }
-
-?>

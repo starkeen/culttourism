@@ -4,7 +4,6 @@ class Page extends PageCommon {
 
     public function __construct($db, $mod) {
         list($module_id, $page_id, $id) = $mod;
-        global $smarty;
         parent::__construct($db, 'search');
         if ($id) {
             $this->getError('404');
@@ -12,7 +11,7 @@ class Page extends PageCommon {
         if ($page_id == 'suggest' && isset($_GET['query'])) {
             $this->getSuggests($db);
         }
-        $this->content = $this->getSearchYandex($db, $smarty);
+        $this->content = $this->getSearchYandex($db);
     }
 
     private function getSuggests($db) {
@@ -34,7 +33,7 @@ class Page extends PageCommon {
         exit();
     }
 
-    private function getSearchYandex($db, $smarty) {
+    private function getSearchYandex($db) {
         $dbsc = $db->getTableName('search_cache');
         if (isset($_GET['q'])) {
             $query = htmlentities(cut_trash_string(strip_tags($_GET['q'])), ENT_QUOTES, "UTF-8");
@@ -77,17 +76,17 @@ class Page extends PageCommon {
             $result_meta['query'] = ($query);
             $result_meta['page'] = array_key_exists('page', $_GET) ? intval($_GET['page']) : 0;
 
-            $smarty->assign('search', $query);
-            $smarty->assign('error', $error_text);
-            $smarty->assign('result', $result);
-            $smarty->assign('meta', $result_meta);
+            $this->smarty->assign('search', $query);
+            $this->smarty->assign('error', $error_text);
+            $this->smarty->assign('result', $result);
+            $this->smarty->assign('meta', $result_meta);
         } else {
-            $smarty->assign('search', '');
-            $smarty->assign('error', '');
-            $smarty->assign('result', '');
-            $smarty->assign('meta', array());
+            $this->smarty->assign('search', '');
+            $this->smarty->assign('error', '');
+            $this->smarty->assign('result', '');
+            $this->smarty->assign('meta', array());
         }
-        return $smarty->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
     }
 
     private function highlight_words($node) {
@@ -95,13 +94,13 @@ class Page extends PageCommon {
         return str_replace('</hlword>', '</strong>', preg_replace('/<hlword[^>]*>/', '<strong>', $stripped));
     }
 
-    private function getSearchInternal($db, $smarty) {
+    private function getSearchInternal($db) {
         if (isset($_GET['q'])) {
             $q = trim($q);
             $q = cut_trash_string($_GET['q']);
 
             $q = $db->getEscapedString($q);
-            $smarty->assign('search', $q);
+            $this->smarty->assign('search', $q);
             $this->addTitle($q);
 
             if (mb_strlen($q) >= 2) {
@@ -187,16 +186,16 @@ class Page extends PageCommon {
                     $result[$row['pc_id']]['title'] = preg_replace($patterns, $replacements, $result[$row['pc_id']]['title']);
                     $result[$row['pc_id']]['descr'] = preg_replace($patterns, $replacements, $result[$row['pc_id']]['descr']);
                 }
-                $smarty->assign('result', $result);
+                $this->smarty->assign('result', $result);
             } else {
-                $smarty->assign('error', 'Слишком короткий запрос');
+                $this->smarty->assign('error', 'Слишком короткий запрос');
             }
         } else {
-            $smarty->assign('search', '');
-            $smarty->assign('error', '');
-            $smarty->assign('result', '');
+            $this->smarty->assign('search', '');
+            $this->smarty->assign('error', '');
+            $this->smarty->assign('result', '');
         }
-        return $smarty->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
     }
 
     public static function getInstance($db, $mod = null) {

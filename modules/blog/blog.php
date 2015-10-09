@@ -4,17 +4,16 @@ class Page extends PageCommon {
 
     public function __construct($db, $mod) {
         @list($module_id, $page_id, $id, $id2) = $mod;
-        global $smarty;
         parent::__construct($db, 'blog');
         $this->id = $id;
         if ($page_id == '') {
-            $this->content = $this->getAllEntries($smarty, $db); //все записи
+            $this->content = $this->getAllEntries($db); //все записи
         } elseif ($page_id == 'addform') { //форма добавления записи в блог
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
-            $this->content = $this->getFormBlog($smarty);
+            $this->content = $this->getFormBlog();
         } elseif ($page_id == 'editform' && intval($_GET['brid'])) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
-            $this->content = $this->getFormBlog($smarty, intval($_GET['brid']));
+            $this->content = $this->getFormBlog(intval($_GET['brid']));
         } elseif ($page_id == 'saveform') {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             $this->content = $this->saveFormBlog();
@@ -22,9 +21,9 @@ class Page extends PageCommon {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             $this->content = $this->deleteBlogEntry(intval($_GET['bid']));
         } elseif ($id2 != '') {
-            $this->content = $this->getOneEntry($smarty, $db, $id2, $page_id, $id); //одна запись
+            $this->content = $this->getOneEntry($db, $id2, $page_id, $id); //одна запись
         } elseif ($page_id != '') {
-            $this->content = $this->getCalendar($smarty, $db, $page_id, $id); //календарь
+            $this->content = $this->getCalendar($db, $page_id, $id); //календарь
         } else {
             $this->getError('404');
         }
@@ -225,7 +224,7 @@ class Page extends PageCommon {
         return $bg->deleteByPk($brid);
     }
 
-    private function getFormBlog($smarty, $br_id = null) {
+    private function getFormBlog($br_id = null) {
         if (!$this->checkEdit()) {
             return FALSE;
         }
@@ -241,16 +240,16 @@ class Page extends PageCommon {
                         LIMIT 1";
             $db->exec();
             $entry = $db->fetch();
-            $smarty->assign('entry', $entry);
+            $this->smarty->assign('entry', $entry);
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
-            return $smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.sm.html');
+            return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.sm.html');
         } else {
             $entry = array(
                 'br_day' => date('d.m.Y'), 'br_time' => date('H:i'),
                 'bg_year' => date('Y'), 'bg_month' => date('m'), 'br_url' => date('d'));
-            $smarty->assign('entry', $entry);
+            $this->smarty->assign('entry', $entry);
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
-            return $smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.sm.html');
+            return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.sm.html');
         }
     }
 

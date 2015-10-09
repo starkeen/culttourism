@@ -11,7 +11,6 @@ class PageCommon extends Core {
 
     public function __construct($db, $mod_id) {
         parent::__construct($db, $mod_id);
-        global $smarty;
 
         $this->key_yandexmaps = $this->globalsettings['key_yandexmaps'];
         $this->mainfile_css = $this->globalsettings['mainfile_css'];

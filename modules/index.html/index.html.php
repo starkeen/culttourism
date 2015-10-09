@@ -4,8 +4,6 @@ class Page extends PageCommon {
 
     public function __construct($module_id, $page_id) {
         $db = FactoryDB::db();
-        global $smarty;
-
         parent::__construct($db, 'index.html', $page_id);
 
         $dbb = $this->db->getTableName('blogentries');
@@ -65,12 +63,12 @@ class Page extends PageCommon {
             }
         }
 
-        $smarty->assign('hello_text', $this->content);
-        $smarty->assign('stat', $this->globalsettings['stat_text']);
-        $smarty->assign('blogentries', $blogentries);
-        $smarty->assign('agrnewsentries', $agrnewsentries);
+        $this->smarty->assign('hello_text', $this->content);
+        $this->smarty->assign('stat', $this->globalsettings['stat_text']);
+        $this->smarty->assign('blogentries', $blogentries);
+        $this->smarty->assign('agrnewsentries', $agrnewsentries);
 
-        $this->content = $smarty->fetch(_DIR_TEMPLATES . '/index.html/index.sm.html');
+        $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/index.html/index.sm.html');
     }
 
     public static function getInstance($db, $mod) {

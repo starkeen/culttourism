@@ -6,7 +6,6 @@ class Page extends PageCommon {
 
     public function __construct($db, $mod) {
         list($module_id, $page_id, $id) = $mod;
-        global $smarty;
         parent::__construct($db, 'api', $page_id);
         $id = urldecode($id);
         if (strpos($id, '?') !== FALSE)
@@ -16,25 +15,26 @@ class Page extends PageCommon {
 
         //========================  I N D E X  ================================
         if ($page_id == '0') {//карта
-            $this->content = $this->getApi0($smarty);
+            $this->content = $this->getApi0();
             return true;
         } elseif ($page_id == '1' && isset($_GET['center'])) {//список
-            $this->content = $this->getApi1($smarty);
+            $this->content = $this->getApi1();
             return true;
         } elseif ($page_id == '2' && isset($_GET['id'])) {//место
-            $this->content = $this->getApi2($smarty, intval($_GET['id']));
+            $this->content = $this->getApi2(intval($_GET['id']));
             return true;
         } elseif ($page_id == '3' && isset($_GET['center'])) {//адрес
             $this->content = $this->getApi3($_GET['center']);
             return true;
         } elseif ($page_id == '4' && isset($_GET['center'])) {//список xml
-            $this->content = $this->getApi4($smarty);
+            $this->content = $this->getApi4();
             return true;
         } elseif ($page_id == '5' && isset($_GET['id'])) {//место xml
-            $this->content = $this->getApi5($smarty, intval($_GET['id']));
+            $this->content = $this->getApi5(intval($_GET['id']));
             return true;
         } elseif ($page_id == '') {
             header("Location: /api/0/");
+            exit();
         }
         //==========================  E X I T  ================================
         else {
@@ -42,11 +42,11 @@ class Page extends PageCommon {
         }
     }
 
-    private function getApi0($smarty) {
-        return $smarty->fetch(_DIR_TEMPLATES . '/api/map0.sm.html');
+    private function getApi0() {
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/api/map0.sm.html');
     }
 
-    private function getApi1($smarty) {
+    private function getApi1() {
         $db = $this->db;
         $dbpt = $db->getTableName('pagepoints');
         $dbpc = $db->getTableName('pagecity');
@@ -90,11 +90,11 @@ class Page extends PageCommon {
             $points[] = $pt;
         }
 
-        $smarty->assign('points', $points);
-        return $smarty->fetch(_DIR_TEMPLATES . '/api/api1.sm.html');
+        $this->smarty->assign('points', $points);
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/api/api1.sm.html');
     }
 
-    private function getApi2($smarty, $id) {
+    private function getApi2($id) {
         $db = $this->db;
         $dbpt = $db->getTableName('pagepoints');
         $dbpc = $db->getTableName('pagecity');
@@ -111,8 +111,8 @@ class Page extends PageCommon {
                     LIMIT 1";
         $db->exec();
         $pt = $db->fetch();
-        $smarty->assign('object', $pt);
-        return $smarty->fetch(_DIR_TEMPLATES . '/api/api2.sm.html');
+        $this->smarty->assign('object', $pt);
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/api/api2.sm.html');
     }
 
     private function getApi3($center) {
@@ -131,7 +131,7 @@ class Page extends PageCommon {
         return $json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['text'];
     }
 
-    private function getApi4($smarty) {
+    private function getApi4() {
         $db = $this->db;
         $dbpt = $db->getTableName('pagepoints');
         $dbpc = $db->getTableName('pagecity');
@@ -183,14 +183,14 @@ class Page extends PageCommon {
                 $points[] = $pt;
             }
         }
-        $smarty->assign('current', $this->getApi3("$c_lat,$c_lon"));
-        $smarty->assign('points', $points);
+        $this->smarty->assign('current', $this->getApi3("$c_lat,$c_lon"));
+        $this->smarty->assign('points', $points);
         header("Content-type: application/xml");
-        echo $smarty->fetch(_DIR_TEMPLATES . '/api/api4.sm.xml');
+        echo $this->smarty->fetch(_DIR_TEMPLATES . '/api/api4.sm.xml');
         exit();
     }
 
-    private function getApi5($smarty, $id) {
+    private function getApi5($id) {
         $db = $this->db;
         $dbpt = $db->getTableName('pagepoints');
         $dbpc = $db->getTableName('pagecity');
@@ -209,9 +209,9 @@ class Page extends PageCommon {
         $pt = $db->fetch();
         $line_breaks = array("<br/>", "<br>");
         $pt['pt_description'] = trim(strip_tags(html_entity_decode(str_replace($line_breaks, "\n", $pt['pt_description']), ENT_QUOTES, "UTF-8")));
-        $smarty->assign('point', $pt);
+        $this->smarty->assign('point', $pt);
         header("Content-type: application/xml");
-        echo $smarty->fetch(_DIR_TEMPLATES . '/api/api5.sm.xml');
+        echo $this->smarty->fetch(_DIR_TEMPLATES . '/api/api5.sm.xml');
         exit();
     }
 

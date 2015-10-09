@@ -151,10 +151,9 @@ class Page extends PageCommon {
                 $navi_items[] = $navi;
             }
             if (isset($navi_items) && !empty($navi_items)) {
-                global $smarty;
-                $smarty->assign('parent', $parent);
-                $smarty->assign('navi_items', $navi_items);
-                return $smarty->fetch(_DIR_TEMPLATES . '/_main/navigation.sm.html');
+                $this->smarty->assign('parent', $parent);
+                $this->smarty->assign('navi_items', $navi_items);
+                return $this->smarty->fetch(_DIR_TEMPLATES . '/_main/navigation.sm.html');
             }
         } else {
             return '';

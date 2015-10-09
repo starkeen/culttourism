@@ -4,8 +4,7 @@ class Page extends PageCommon {
 
     public function __construct($db, $mod) {
         list($module_id, $page_id, $id) = $mod;
-        global $smarty;
-        $smarty->caching = false;
+        $this->smarty->caching = false;
         parent::__construct($db, 'ajax');
         $id = urldecode($id);
         if (strpos($id, '?') !== FALSE) {
@@ -20,19 +19,19 @@ class Page extends PageCommon {
             } elseif ($id == 's' && isset($_GET['id'])) {
                 $this->content = $this->getPointBySlugline(str_replace('.html', '', $_GET['id']));
             } elseif ($id == 'savetitle' && isset($_GET['id']) && intval($_GET['id'])) {
-                $this->content = $this->savePointTitle(intval($_GET['id']), $smarty);
+                $this->content = $this->savePointTitle(intval($_GET['id']));
             } elseif ($id == 'savedescr' && isset($_GET['id']) && intval($_GET['id'])) {
-                $this->content = $this->savePointDescr(intval($_GET['id']), $smarty);
+                $this->content = $this->savePointDescr(intval($_GET['id']));
             } elseif ($id == 'savecontacts' && isset($_GET['cid']) && intval($_GET['cid'])) {
-                $this->content = $this->savePointContacts(intval($_GET['cid']), $smarty);
+                $this->content = $this->savePointContacts(intval($_GET['cid']));
             } elseif ($id == 'getnewform') {
-                $this->content = $this->getPointNew(intval($_GET['cid']), $smarty);
+                $this->content = $this->getPointNew(intval($_GET['cid']));
             } elseif ($id == 'savenew') {
-                $this->content = $this->savePointNew(intval($_GET['cid']), $smarty);
+                $this->content = $this->savePointNew(intval($_GET['cid']));
             } elseif ($id == 'delpoint') {
-                $this->content = $this->deletePoint(intval($_GET['pid']), $smarty);
+                $this->content = $this->deletePoint(intval($_GET['pid']));
             } elseif ($id == 'getformGPS') {
-                $this->content = $this->getFormPointGPS(intval($_GET['pid']), $smarty);
+                $this->content = $this->getFormPointGPS(intval($_GET['pid']));
             } elseif ($id == 'saveformGPS') {
                 $this->content = $this->setFormPointGPS(intval($_GET['pid']));
             } elseif ($id == 'saveAddrGPS') {
@@ -43,24 +42,24 @@ class Page extends PageCommon {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
         } elseif ($page_id == 'city') {
             if ($id == 'savetitle' && isset($_GET['id']) && intval($_GET['id'])) {
-                $this->content = $this->saveCityTitle(intval($_GET['id']), $smarty);
+                $this->content = $this->saveCityTitle(intval($_GET['id']));
             } elseif ($id == 'savedescr' && isset($_GET['id']) && intval($_GET['id'])) {
-                $this->content = $this->saveCityDescr(intval($_GET['id']), $smarty);
+                $this->content = $this->saveCityDescr(intval($_GET['id']));
             } elseif ($id == 'getformGPS' && isset($_GET['cid']) && intval($_GET['cid'])) {
-                $this->content = $this->getFormCityGPS(intval($_GET['cid']), $smarty);
+                $this->content = $this->getFormCityGPS(intval($_GET['cid']));
             } elseif ($id == 'saveformGPS') {
-                $this->content = $this->setFormCityGPS(intval($_GET['cid']), $smarty);
+                $this->content = $this->setFormCityGPS(intval($_GET['cid']));
             }
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
         } elseif ($page_id == 'pointtype') {
             if ($id == 'getform') {
-                $this->content = $this->getChangeTypeForm($smarty);
+                $this->content = $this->getChangeTypeForm();
             } elseif ($id == 'savetype' && isset($_POST['pid']) && intval($_POST['pid'])) {
                 $this->content = $this->setPointType(intval($_POST['pid']));
             }
         } elseif ($page_id == 'page') {
             if ($id == 'gps') {
-                $this->content = $this->getTextPage($smarty, 31);
+                $this->content = $this->getTextPage(31);
             } else {
                 $this->getError('404');
             }
@@ -74,14 +73,14 @@ class Page extends PageCommon {
     }
 
 //--------------------------------------------------------- TEXT PAGES ---------
-    private function getTextPage($smarty, $pg_id) {
+    private function getTextPage($pg_id) {
         $mds = new MModules($this->db);
         $md = $mds->getItemByPk($pg_id);
         return '<h3>Экспорт данных GPS</h3>' . $md['md_pagecontent'];
     }
 
 //-------------------------------------------------------------- POINTS ----------
-    private function savePointContacts($cid, $smarty) {
+    private function savePointContacts($cid) {
         if (!$cid) {
             return $this->getError('404');
         }
@@ -158,7 +157,7 @@ class Page extends PageCommon {
         }
     }
 
-    private function getFormPointGPS($pid, $smarty) {
+    private function getFormPointGPS($pid) {
         $pt = new MPagePoints($this->db);
         $point = $pt->getItemByPk($pid);
         //print_x($point);
@@ -180,11 +179,11 @@ class Page extends PageCommon {
             $point['tp_icon'] = 'star.png';
         }
         $point['zoom'] = ($point['pt_latlon_zoom'] != 0) ? $point['pt_latlon_zoom'] : 13;
-        $smarty->assign('point', $point);
-        return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/changelatlon.form.sm.html');
+        $this->smarty->assign('point', $point);
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/changelatlon.form.sm.html');
     }
 
-    private function getChangeTypeForm($smarty) {
+    private function getChangeTypeForm() {
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
@@ -201,9 +200,9 @@ class Page extends PageCommon {
             $types[$i]['current'] = ($type['tp_id'] == $point['pt_type_id']) ? 1 : 0;
         }
 
-        $smarty->assign('point', $point);
-        $smarty->assign('alltypes', $types);
-        return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/changetype.form.sm.html');
+        $this->smarty->assign('point', $point);
+        $this->smarty->assign('alltypes', $types);
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/changetype.form.sm.html');
     }
 
     private function setPointType($pid) {
@@ -226,24 +225,24 @@ class Page extends PageCommon {
         return $newtype['tp_icon'];
     }
 
-    private function getPointNew($id, $smarty) {
+    private function getPointNew($id) {
         if ($this->checkEdit()) {
             $city_title = '';
-            if (isset($_GET['cid'])) {
+            if ($id) {
                 $pc = new MPageCities($this->db);
-                $city = $pc->getItemByPk(intval($_GET['cid']));
+                $city = $pc->getItemByPk($id);
                 $city_title = 'г. ' . $city['pc_title'];
             } else {
                 $city_title = '';
             }
-            $smarty->assign('city_title', $city_title);
-            return $smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.sm.html');
+            $this->smarty->assign('city_title', $city_title);
+            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.sm.html');
         } else {
             return $this->getError('403');
         }
     }
 
-    private function deletePoint($pid, $smarty) {
+    private function deletePoint($pid) {
         if (!$pid) {
             return $this->getError('404');
         }
@@ -263,15 +262,13 @@ class Page extends PageCommon {
         }
     }
 
-    private function savePointNew($cid, $smarty) {
+    private function savePointNew($cid) {
         if (!$cid) {
             return $this->getError('404');
         }
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
-        //print_x($_POST);
-
         $pts = new MPagePoints($this->db);
         $add_item = array(
             'pt_name' => trim($_POST['nname']) != '' ? trim($_POST['nname']) : '[не указано]',
@@ -292,7 +289,7 @@ class Page extends PageCommon {
         return $pts->insert($add_item);
     }
 
-    private function savePointTitle($id, $smarty) {
+    private function savePointTitle($id) {
         if (!$id) {
             return $this->getError('404');
         }
@@ -316,7 +313,7 @@ class Page extends PageCommon {
         }
     }
 
-    private function savePointDescr($id, $smarty) {
+    private function savePointDescr($id) {
         if (!$id) {
             return $this->getError('404');
         }
@@ -394,7 +391,7 @@ class Page extends PageCommon {
     }
 
 //-------------------------------------------------------------- CITY ----------
-    private function setFormCityGPS($cid, $smarty) {
+    private function setFormCityGPS($cid) {
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
@@ -412,7 +409,7 @@ class Page extends PageCommon {
         }
     }
 
-    private function getFormCityGPS($cid, $smarty) {
+    private function getFormCityGPS($cid) {
         $pc = new MPageCities($this->db);
         $city = $pc->getItemByPk($cid);
 
@@ -428,11 +425,11 @@ class Page extends PageCommon {
             $city['map_point'] = -1;
         }
 
-        $smarty->assign('city', $city);
-        return $smarty->fetch(_DIR_TEMPLATES . '/_ajax/citylatlon.form.sm.html');
+        $this->smarty->assign('city', $city);
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/citylatlon.form.sm.html');
     }
 
-    private function saveCityTitle($id, $smarty) {
+    private function saveCityTitle($id) {
         if (!$id) {
             return $this->getError('404');
         }
@@ -455,7 +452,7 @@ class Page extends PageCommon {
         }
     }
 
-    private function saveCityDescr($id, $smarty) {
+    private function saveCityDescr($id) {
         if (!$id) {
             return $this->getError('404');
         }
