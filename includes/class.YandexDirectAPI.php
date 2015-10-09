@@ -171,7 +171,7 @@ class YandexDirectAPI {
         $text = curl_exec($ch);
         $errno = curl_errno($ch);
         if ($errno) {
-            $error_message = curl_strerror($errno);
+            $error_message = curl_error();
             throw new Exception("cURL error ({$errno}):\n {$error_message}");
         }
         curl_close($ch);
