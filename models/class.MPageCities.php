@@ -339,7 +339,7 @@ class MPageCities extends Model {
                                         FROM {$this->_tables_related['city_data']} cd
                                         GROUP BY cd.cd_pc_id) AS stat
                                 ON stat.pc = pc.pc_id
-                            SET pc.pc_count_points = stat.cnt";
+                            SET pc.pc_count_metas = stat.cnt";
         $this->_db->exec();
     }
 
