@@ -18,6 +18,7 @@ class MNewsItems extends Model {
             'ni_active',
         );
         parent::__construct($db);
+        $this->_addRelatedTable('news_sourses');
     }
 
     public function cleanExpired() {
@@ -44,6 +45,36 @@ class MNewsItems extends Model {
             ':text1' => $data['description'],
             ':text2' => $data['description'],
         ));
+    }
+
+    public function getLastWithTS($limit) {
+        $out = array(
+            'entries' => array(),
+            'max_ts' => 0,
+        );
+        $this->_db->sql = "SELECT *,
+                                UNIX_TIMESTAMP(ni.ni_pubdate) AS last_update,
+                                DATE_FORMAT(ni.ni_pubdate,'%d.%m.%Y') as datex
+                            FROM $this->_table_name ni
+                                LEFT JOIN {$this->_tables_related['news_sourses']} ns ON ns.ns_id = ni.ni_ns_id
+                            WHERE ni.ni_active = 1
+                            GROUP BY ni_title
+                            ORDER BY ni_pubdate DESC
+                            LIMIT :limit";
+        $this->_db->execute(array(
+            ':limit' => intval($limit),
+        ));
+        while ($row = $this->_db->fetch()) {
+            $row['ni_text'] = strip_tags(html_entity_decode($row['ni_text'], ENT_QUOTES));
+            $row['ni_text'] = trim(mb_substr($row['ni_text'], 0, mb_strrpos(mb_substr($row['ni_text'], 0, 350, 'utf-8'), '.', 'utf-8'), 'utf-8'), '\,');
+            $sourse_url = parse_url($row['ns_web']);
+            $row['ns_host'] = $sourse_url['host'];
+            $out['entries'][] = $row;
+            if ($row['last_update'] > $out['max_ts']) {
+                $out['max_ts'] = $row['last_update'];
+            }
+        }
+        return $out;
     }
 
 }

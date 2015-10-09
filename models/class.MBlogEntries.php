@@ -20,6 +20,11 @@ class MBlogEntries extends Model {
         $this->_addRelatedTable('users');
     }
 
+    /**
+     * Последние несколько записей из блога
+     * @param int $qnt
+     * @return array
+     */
     public function getLastActive($qnt = 10) {
         $this->_db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text,
                                 REPLACE(bg.br_text, '=\"/', CONCAT('=\"', :site_url1)) AS br_text_absolute,
@@ -43,10 +48,43 @@ class MBlogEntries extends Model {
         return $this->_db->fetchAll();
     }
 
-    /*
+    public function getLastWithTS($limit) {
+        $out = array(
+            'blogentries' => array(),
+            'max_ts' => 0,
+        );
+        $this->_db->sql = "SELECT bg.*, us.us_name,
+                                UNIX_TIMESTAMP(bg.br_date) AS last_update,
+                                DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month,
+                                DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
+                                IF (bg.br_url != '', bg.br_url, DATE_FORMAT(bg.br_date,'%d')) as bg_day,
+                                IF (bg.br_url != '', CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'), CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/%d'),'.html')) as br_link
+                             FROM $this->_table_name bg
+                                 LEFT JOIN {$this->_tables_related['users']} us ON bg.br_us_id = us.us_id
+                             WHERE bg.br_date < NOW()
+                             ORDER BY bg.br_date DESC
+                             LIMIT :limit";
+        $this->_db->execute(array(
+            ':limit' => intval($limit),
+        ));
+        $patern = "/(.*?)<\/p>/i";
+        while ($row = $this->_db->fetch()) {
+            $matches = array();
+            preg_match_all($patern, $row['br_text'], $matches);
+            if (isset($matches[0][0])) {
+                $row['br_text'] = strip_tags($matches[0][0], '<p><a>');
+            }
+            $out['blogentries'][$row['br_id']] = $row;
+            if ($row['last_update'] > $out['max_ts']) {
+                $out['max_ts'] = $row['last_update'];
+            }
+        }
+        return $out;
+    }
+
+    /**
      * Заменяет все абсолютные ссылки относительными
      */
-
     public function repairLinksAbsRel() {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET br_text = REPLACE(br_text, '=\"http://" . _URL_ROOT . "/', '=\"/')";
