@@ -5,14 +5,14 @@ require_once('common.php');
 $smarty->assign('title', 'Статистика Яндекса');
 
 $sp = new MSysProperties($db);
-$direct_apikey = $sp->getByName('key_direct_app');
-$direct_password = $sp->getByName('pass_direct_app');
-$api = new YandexDirectAPI($sp->getByName('token_direct'));
+$direct_apikey = $sp->getByName('app_direct_key');
+$direct_password = $sp->getByName('app_direct_pass');
+$api = new YandexDirectAPI($sp->getByName('app_direct_token'));
 $ws = new MWordstat($db);
 
 if (isset($_GET['code'])) {
     $newtoken = $api->getTokenConfirm($direct_apikey, $direct_password, $_GET['code']);
-    $sp->updateByName('token_direct', $newtoken);
+    $sp->updateByName('app_direct_token', $newtoken);
     header('Location: stat_yandex.php');
     exit();
 }

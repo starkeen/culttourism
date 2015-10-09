@@ -1,7 +1,7 @@
 <?php
 
 $sp = new MSysProperties($db);
-$token_direct = $sp->getByName('token_direct');
+$token_direct = $sp->getByName('app_direct_token');
 $api = new YandexDirectAPI($token_direct);
 $ws = new MWordstat($db);
 
