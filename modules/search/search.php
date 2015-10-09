@@ -9,15 +9,15 @@ class Page extends PageCommon {
             $this->getError('404');
         }
         if ($page_id == 'suggest' && isset($_GET['query'])) {
-            $this->getSuggests($db);
+            $this->getSuggests();
         }
-        $this->content = $this->getSearchYandex($db);
+        $this->content = $this->getSearchYandex($this->db);
     }
 
-    private function getSuggests($db) {
+    private function getSuggests() {
         $out = array('query' => '', 'suggestions' => array());
         $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
-        $pc = new MPageCities($db);
+        $pc = new MPageCities($this->db);
         $variants = $pc->getSuggestion($out['query']);
 
         foreach ($variants as $row) {
@@ -33,14 +33,14 @@ class Page extends PageCommon {
         exit();
     }
 
-    private function getSearchYandex($db) {
-        $dbsc = $db->getTableName('search_cache');
+    private function getSearchYandex() {
+        $dbsc = $this->db->getTableName('search_cache');
         if (isset($_GET['q'])) {
             $query = htmlentities(cut_trash_string(strip_tags($_GET['q'])), ENT_QUOTES, "UTF-8");
 
-            $db->sql = "INSERT INTO $dbsc SET
+            $this->db->sql = "INSERT INTO $dbsc SET
                             sc_date = now(), sc_session = '" . $this->getUserHash() . "', sc_query = '$query', sc_sr_id = null";
-            $db->exec();
+            $this->db->exec();
 
             $error_text = '';
             $result = array();
@@ -52,7 +52,7 @@ class Page extends PageCommon {
 
             $ys = new YandexSearcher();
             $ys->setPage($result_meta['page']);
-            $ys->enableLogging($db);
+            $ys->enableLogging($this->db);
             $res = $ys->search("$query host:culttourism.ru");
             if ($res['error_text']) {
                 $error_text = trim(str_replace('starkeen', '', $res['error_text']));
@@ -94,12 +94,12 @@ class Page extends PageCommon {
         return str_replace('</hlword>', '</strong>', preg_replace('/<hlword[^>]*>/', '<strong>', $stripped));
     }
 
-    private function getSearchInternal($db) {
+    private function getSearchInternal() {
         if (isset($_GET['q'])) {
             $q = trim($q);
             $q = cut_trash_string($_GET['q']);
 
-            $q = $db->getEscapedString($q);
+            $q = $this->db->getEscapedString($q);
             $this->smarty->assign('search', $q);
             $this->addTitle($q);
 
@@ -113,9 +113,9 @@ class Page extends PageCommon {
                 $_query = array_merge($_query, explode(' ', translit($q, ' ')));
                 $_query = array_values($_query);
 
-                $dbc = $db->getTableName('pagecity');
-                $dbu = $db->getTableName('region_url');
-                $dbsc = $db->getTableName('search_cache');
+                $dbc = $this->db->getTableName('pagecity');
+                $dbu = $this->db->getTableName('region_url');
+                $dbsc = $this->db->getTableName('search_cache');
 
                 $fields = array(
                     array('field' => 'c.pc_title', 'weight' => 80,),
@@ -134,24 +134,24 @@ class Page extends PageCommon {
                     }
                 }
 
-                $db->sql = "INSERT INTO $dbsc SET
+                $this->db->sql = "INSERT INTO $dbsc SET
                             sc_date = now(), sc_session = '" . $this->getUserHash() . "', sc_query = '$q', sc_sr_id = null";
-                $db->exec();
+                $this->db->exec();
 
-                $db->sql = "SELECT c.pc_id, c.pc_title, u.url, c.pc_text, c.pc_rank, 100 AS weight
-                            FROM $dbc c
-                            LEFT JOIN $dbu u ON c.pc_url_id = u.uid
-                            WHERE c.pc_title LIKE '%$q%'
-                            UNION
-                            SELECT c.pc_id, c.pc_title, u.url, c.pc_text, c.pc_rank, 90 AS weight
-                            FROM $dbc c
-                            LEFT JOIN $dbu u ON c.pc_url_id = u.uid
-                            WHERE ";
+                $this->db->sql = "SELECT c.pc_id, c.pc_title, u.url, c.pc_text, c.pc_rank, 100 AS weight
+                                    FROM $dbc c
+                                    LEFT JOIN $dbu u ON c.pc_url_id = u.uid
+                                    WHERE c.pc_title LIKE '%$q%'
+                                    UNION
+                                    SELECT c.pc_id, c.pc_title, u.url, c.pc_text, c.pc_rank, 90 AS weight
+                                    FROM $dbc c
+                                    LEFT JOIN $dbu u ON c.pc_url_id = u.uid
+                                    WHERE ";
                 foreach ($fields as $field) {
                     $_where_x[] = "({$field['field']} LIKE '%$q%')";
                 }
-                $db->sql .= implode(' OR ', $_where_x);
-                $db->sql .= "\n
+                $this->db->sql .= implode(' OR ', $_where_x);
+                $this->db->sql .= "\n
                             UNION \n\n";
 
                 $_sql = array();
@@ -164,13 +164,12 @@ class Page extends PageCommon {
                 }
                 $sql_subs = implode("\n UNION \n\n", $_sql);
 
-                $db->sql .= $sql_subs;
-                $db->sql .= "GROUP BY pc_id, url
+                $this->db->sql .= $sql_subs;
+                $this->db->sql .= "GROUP BY pc_id, url
                              ORDER BY weight DESC, pc_rank DESC, pc_title";
-                //$db->showSQL();
-                $db->exec();
+                $this->db->exec();
                 $result = array();
-                while ($row = $db->fetch()) {
+                while ($row = $this->db->fetch()) {
                     $result[$row['pc_id']] = array(
                         'title' => $row['pc_title'],
                         'url' => $row['url'],
