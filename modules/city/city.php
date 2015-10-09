@@ -4,17 +4,16 @@ class Page extends PageCommon {
 
     public function __construct($module_id, $page_id) {
         $db = FactoryDB::db();
-        global $smarty;
         parent::__construct($db, 'city', $page_id);
 
         if ($page_id[1] == '') {
-            return $this->pageCity($smarty);
+            return $this->pageCity();
         } elseif ($page_id[1] == 'add') {
-            return $this->addCity($smarty);
+            return $this->addCity();
         } elseif ($page_id[1] == 'detail') {
-            return $this->detailCity($smarty);
+            return $this->detailCity();
         } elseif ($page_id[1] == 'meta') {
-            return $this->metaCity($smarty);
+            return $this->metaCity();
         } elseif ($page_id[1] == 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
             $this->isAjax = true;
@@ -133,7 +132,7 @@ class Page extends PageCommon {
     }
 
     //****************************************  ТАБЛИЦА МЕТА  ******************
-    private function metaCity($smarty) {
+    private function metaCity() {
         $dbcd = $this->db->getTableName('city_data');
         $dbcf = $this->db->getTableName('city_fields');
 
@@ -206,26 +205,26 @@ class Page extends PageCommon {
             }
         } else {
             $this->db->sql = "SELECT cf_title, cd_value
-                        FROM $dbcd cd
-                            LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
-                        WHERE cd.cd_pc_id = :pc_id
-                            AND cd.cd_value != ''
-                            AND cf.cf_active = 1
-                        ORDER BY cf_order";
+                                FROM $dbcd cd
+                                    LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
+                                WHERE cd.cd_pc_id = :pc_id
+                                    AND cd.cd_value != ''
+                                    AND cf.cf_active = 1
+                                ORDER BY cf_order";
             $this->db->execute(array(
                 ':pc_id' => intval($_GET['id'])
             ));
             $metas = $this->db->fetchAll();
 
-            $smarty->assign('metas', $metas);
+            $this->smarty->assign('metas', $metas);
             header('Content-Type: text/html; charset=utf-8');
-            $smarty->display(_DIR_TEMPLATES . '/city/meta.sm.html');
+            $this->smarty->display(_DIR_TEMPLATES . '/city/meta.sm.html');
         }
         exit();
     }
 
     //**************************************** РЕДАКТИРОВАНИЕ ******************
-    private function detailCity($smarty) {
+    private function detailCity() {
         if (!$this->checkEdit()) {
             return $this->getError('403');
         }
@@ -296,20 +295,20 @@ class Page extends PageCommon {
         ));
         $yandex = $this->db->fetch();
 
-        $smarty->assign('city', $citypage);
-        $smarty->assign('baseurl', $this->basepath);
-        $smarty->assign('meta', $meta);
-        $smarty->assign('ref_meta', $ref_meta);
-        $smarty->assign('yandex', $yandex);
+        $this->smarty->assign('city', $citypage);
+        $this->smarty->assign('baseurl', $this->basepath);
+        $this->smarty->assign('meta', $meta);
+        $this->smarty->assign('ref_meta', $ref_meta);
+        $this->smarty->assign('yandex', $yandex);
 
         $this->lastedit_timestamp = $citypage['last_update'];
 
-        $smarty->assign('adminlogined', isset($this->user['userid']) ? $this->getUserId() : 0);
-        $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/details.sm.html');
+        $this->smarty->assign('adminlogined', isset($this->user['userid']) ? $this->getUserId() : 0);
+        $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/city/details.sm.html');
     }
 
     //**************************************** ДОБАВЛЕНИЕ ******************
-    private function addCity($smarty) {
+    private function addCity() {
         $newcity = '';
         $inbase = array();
         $already = array();
@@ -425,20 +424,18 @@ class Page extends PageCommon {
             //-------------------------------------------------------------------
         }
 
-        $smarty->assign('inbase', $inbase);
-        $smarty->assign('addregion', $newcity);
-        $smarty->assign('already', $already);
-        $smarty->assign('freeplace', mb_strlen($newcity) >= 5 ? $newcity : null);
-        $smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : null);
-        $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/add.sm.html');
+        $this->smarty->assign('inbase', $inbase);
+        $this->smarty->assign('addregion', $newcity);
+        $this->smarty->assign('already', $already);
+        $this->smarty->assign('freeplace', mb_strlen($newcity) >= 5 ? $newcity : null);
+        $this->smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : null);
+        $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/city/add.sm.html');
     }
 
     //**************************************** СПИСОК **********************
-    private function pageCity($smarty) {
+    private function pageCity() {
         $dbc = $this->db->getTableName('pagecity');
         $dbr = $this->db->getTableName('region_url');
-        $dbp = $this->db->getTableName('pagepoints');
-        $dbcd = $this->db->getTableName('city_data');
         $dbrc = $this->db->getTableName('ref_country');
         $dbrr = $this->db->getTableName('ref_region');
         $dbws = $this->db->getTableName('wordstat');
@@ -471,13 +468,13 @@ class Page extends PageCommon {
             $cities[] = $row;
         }
 
-        $smarty->assign('tcity', $cities);
-        $smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : 0);
+        $this->smarty->assign('tcity', $cities);
+        $this->smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : 0);
 
         if ($this->checkEdit()) {
-            $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html');
+            $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html');
         } else {
-            $this->content = $smarty->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html');
+            $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html');
         }
     }
 
