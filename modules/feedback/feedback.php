@@ -5,8 +5,7 @@ class Page extends PageCommon {
     public function __construct($db, $mod) {
         list($module_id, $page_id, $id) = $mod;
         parent::__construct($db, 'feedback', $page_id);
-        $db = FactoryDB::db();
-        $db = $this->db;
+        
         if ($page_id == '') {
             $this->getCommon();
         } elseif ($page_id == 'getcapt') {

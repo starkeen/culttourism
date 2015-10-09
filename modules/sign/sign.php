@@ -4,7 +4,6 @@ class Page extends PageCommon {
 
     public function __construct($db, $mod) {
         list($module_id, $page_id, $id) = $mod;
-        $db = FactoryDB::db();
         global $smarty;
         parent::__construct($db, 'sign');
         $this->id = $id;
