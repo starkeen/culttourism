@@ -19,7 +19,7 @@ if (true && !_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X
     exit();
 }
 
-$db = new MyDB(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_BASENAME, DB_PREFIX);
+$db = FactoryDB::db();
 $ticket = new Auth($db);
 $ticket->checkSession('admin');
 
