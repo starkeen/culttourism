@@ -214,25 +214,4 @@ DOC;
         return $response;
     }
 
-    /**
-     * Метод для запросов к Яндексу
-     * @param string $data - XML запрос
-     * @return mixed ответ сервера Яндекса
-     */
-    protected function getRequestOld($data) {
-        $context = stream_context_create(array(
-            'http' => array(
-                'method' => "POST",
-                'header' => "Content-type: application/xml\r\nContent-length: " . strlen($data),
-                'content' => $data,
-            ),
-            'ssl' => array(
-                'verify_peer' => false,
-            //'verify_peer_name' => false,
-            ),
-        ));
-        $response = file_get_contents($this->requestURL, true, $context);
-        return $response;
-    }
-
 }
