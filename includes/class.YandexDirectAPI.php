@@ -33,7 +33,7 @@ class YandexDirectAPI {
         if (isset($res['data'])) {
             return $res['data'];
         } else {
-            throw new Exception("Error1 (invalid sert?)");
+            throw new Exception("Empty DATA response");
         }
     }
 
@@ -60,7 +60,7 @@ class YandexDirectAPI {
                 $reps[] = $rep;
             }
         } else {
-            throw new Exception("Error2 in $report_id");
+            throw new Exception("Empty data in report $report_id");
         }
         return $reps;
     }
@@ -78,6 +78,8 @@ class YandexDirectAPI {
             foreach ($res['data'] as $rep) {
                 $open_reports[] = $rep;
             }
+        } else {
+            throw new Exception("Empty data in reports");
         }
         return $open_reports;
     }
