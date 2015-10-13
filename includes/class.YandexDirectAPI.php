@@ -79,7 +79,7 @@ class YandexDirectAPI {
                 $open_reports[] = $rep;
             }
         } else {
-            throw new Exception("Empty data in reports");
+            //throw new Exception("Empty data in reports");
         }
         return $open_reports;
     }
