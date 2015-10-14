@@ -51,7 +51,10 @@ class Page extends PageCommon {
         $curl->config(CURLOPT_SSL_VERIFYPEER, false);
         $curl->config(CURLOPT_FAILONERROR, true);
 
-        $result = $curl->get("http://api.openweathermap.org/data/2.5/weather?lat=" . floatval($lat) . "&lon=" . floatval($lon) . "");
+        $url = 'http://api.openweathermap.org/data/2.5/weather?lat='
+                . floatval($lat) . '&lon=' . floatval($lon)
+                . '&APPID=' . $this->globalsettings['app_openweather_key'];
+        $result = $curl->get($url);
         $response = json_decode($result);
 
         if (is_object($response) && $response->cod == 200) {
