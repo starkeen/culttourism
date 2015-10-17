@@ -285,7 +285,7 @@ class MPageCities extends Model {
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
                             WHERE pc.pc_title LIKE :name1 OR pc_title LIKE :name2
                                 AND pc.pc_active = 1
-                            ORDER BY pc.pc_title_unique";
+                            GROUP BY pc.pc_title_unique";
 
         $this->_db->execute(array(
             ':name1' => '%' . trim($query) . '%',
