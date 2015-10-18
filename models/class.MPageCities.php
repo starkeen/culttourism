@@ -3,7 +3,7 @@
 class MPageCities extends Model {
 
     protected $_table_pk = 'pc_id';
-    protected $_table_order = 'pc_id';
+    protected $_table_order = 'pc_order';
     protected $_table_active = 'pc_active';
 
     public function __construct($db) {
@@ -36,6 +36,7 @@ class MPageCities extends Model {
             'pc_lastup_user',
             'pc_add_date',
             'pc_add_user',
+            'pc_order',
             'pc_active',
         );
         parent::__construct($db);
