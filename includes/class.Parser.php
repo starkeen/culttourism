@@ -41,7 +41,7 @@ class Parser {
         $this->_dom = new DOMDocument('1.0', 'utf-8');
         $this->_dom->encoding = 'UTF-8';
         $encoded = mb_convert_encoding($this->_text, 'HTML-ENTITIES', 'UTF-8');
-        $this->_dom->loadHTML($encoded);
+        $this->_dom->loadHTML($this->_text);
         $this->_dom->formatOutput = true;
         $this->_dom->preserveWhiteSpace = FALSE;
         $this->_dom->normalizeDocument();
