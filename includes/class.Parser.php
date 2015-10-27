@@ -40,8 +40,8 @@ class Parser {
 
         $this->_dom = new DOMDocument('1.0', 'utf-8');
         $this->_dom->encoding = 'UTF-8';
-        $encoded = mb_convert_encoding($this->_text, 'HTML-ENTITIES', 'UTF-8');
-        $this->_dom->loadHTML($this->_text);
+        $encoded = $this->cleanXML($this->_text);
+        @$this->_dom->loadHTML($encoded);
         $this->_dom->formatOutput = true;
         $this->_dom->preserveWhiteSpace = FALSE;
         $this->_dom->normalizeDocument();
@@ -173,6 +173,11 @@ class Parser {
         }
         //print_x($out);
         return $out;
+    }
+
+    protected function cleanXML($string) {
+        $encoded = mb_convert_encoding($string, 'HTML-ENTITIES', 'UTF-8');
+        return preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', ' ', $encoded);
     }
 
 }

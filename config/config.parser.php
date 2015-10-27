@@ -210,4 +210,49 @@ return array(
             ),
         ),
     ),
+    'rutraveller.ru' => array(
+        'encoding' => 'windows-1251',
+        'doctype' => 'XHTML 1.0 Transitional',
+        'tagsallow' => 'h1,div[id],div[class],span[class],*[class],p,a[href]',
+        'list_items' => array(
+            '//a[@class="plc15-item-ttl"]',
+        ),
+        'item' => array(
+            'title' => array(
+                'path' => array("//h1"),
+                'type' => 1, //1-nodeValue; 2-getAttribute('href')
+            ),
+            'text' => array(
+                'path' => array(
+                    "//div[@class='pl-one-about']",
+                ),
+                'delimiter' => "\n",
+                'type' => 1,
+            ),
+            'addr' => array(
+                'path' => array(
+                    "//div[@class='pl-one-contact']/p[1]/span[@class='black'][1]",
+                ),
+                'type' => 1,
+            ),
+            'phone' => array(
+                'path' => array(
+                    "//div[@class='pl-one-contact']/p[1]/span[@class='black'][3]",
+                ),
+                'type' => 1,
+            ),
+            'worktime' => array(
+                'path' => array(
+                    "//div[@class='pl-one-contact']/p[1]/span[@class='black'][2]",
+                ),
+                'type' => 1,
+            ),
+            'geo_latlon_degmin1' => array(
+                'path' => array(
+                    "//div[1]/div[5]/div[3]/p[1]",
+                ),
+                'type' => 1,
+            ),
+        ),
+    ),
 );
