@@ -1,10 +1,13 @@
 <?php
 
 class Curl {
+    
+    const INTERNAL_ENCODING = 'utf-8';
 
     private $_cc = null;
     private $_curl = null;
     private $_ttl = 3600; //время жизни кэша в секундах
+    private $encoding = 'utf-8';
 
     public function __construct($db) {
         $this->_cc = new MCurlCache($db);
@@ -21,6 +24,9 @@ class Curl {
                 curl_setopt($this->_curl, CURLOPT_URL, $url);
                 curl_setopt($this->_curl, CURLOPT_REFERER, $url);
                 $text = curl_exec($this->_curl);
+                if ($this->encoding != self::INTERNAL_ENCODING) {
+                    $text = mb_convert_encoding($text, self::INTERNAL_ENCODING, $this->encoding);
+                }
             } catch (Exception $e) {
                 echo $e->getMessage();
             }
@@ -39,6 +45,10 @@ class Curl {
 
     public function setTTLDays($ttl_days) {
         $this->_ttl = 24 * 3600 * intval($ttl_days);
+    }
+    
+    public function setEncoding($encoding) {
+        $this->encoding = $encoding;
     }
 
     public function __destruct() {

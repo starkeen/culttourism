@@ -22,6 +22,7 @@ class Parser {
         $this->_config = $this->_sites[$this->_url['domain']];
         $this->_curl = new Curl($db);
         $this->_curl->setTTLDays(30);
+        $this->_curl->setEncoding($this->_config['encoding']);
 
         $pconfig = HTMLPurifier_Config::createDefault();
         $pconfig->set('Core.Encoding', $this->_config['encoding']);
@@ -38,8 +39,9 @@ class Parser {
         $this->_text = $this->_purifier->purify($text);
 
         $this->_dom = new DOMDocument('1.0', 'utf-8');
-        $this->_dom->encoding = 'utf-8';
-        $this->_dom->loadHTML(mb_convert_encoding($this->_text, 'HTML-ENTITIES', 'UTF-8'));
+        $this->_dom->encoding = 'UTF-8';
+        $encoded = mb_convert_encoding($this->_text, 'HTML-ENTITIES', 'UTF-8');
+        $this->_dom->loadHTML($encoded);
         $this->_dom->formatOutput = true;
         $this->_dom->preserveWhiteSpace = FALSE;
         $this->_dom->normalizeDocument();
