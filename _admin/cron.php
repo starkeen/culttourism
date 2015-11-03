@@ -21,11 +21,11 @@ if (!isset($_GET['crid']) && !isset($_GET['act'])) {
 }
 //-------------------------------------------------------------------------
 elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'edit') {
-    $crid = cut_trash_int($_GET['crid']);
+    $crid = intval($_GET['crid']);
 
     if (isset($_POST) && !empty($_POST)) {
-        $ch_act = cut_trash_int($_POST['ch_act']);
-        $ch_run = cut_trash_int($_POST['ch_run']);
+        $ch_act = intval($_POST['ch_act']);
+        $ch_run = intval($_POST['ch_run']);
         $period = cut_trash_string($_POST['period']);
         $next_time = cut_trash_string($_POST['next_time']);
         $next_day = cut_trash_string($_POST['next_day']);
@@ -33,8 +33,10 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'edit') {
                     cr_active='$ch_act', cr_period='$period', cr_isrun='$ch_run',
                     cr_datenext='$next_day $next_time'
                     WHERE cr_id = '$crid'";
-        if ($db->exec())
+        if ($db->exec()) {
             header("Location: cron.php");
+            exit();
+        }
     }
 
     $db->sql = "SELECT cr_id, cr_title, cr_script, cr_active, cr_period, cr_isrun, cr_lastexectime, cr_lastresult,
@@ -67,8 +69,9 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'run') {
         $content = ob_get_contents();
         ob_end_clean();
         $exectime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах
-        if (strlen($content) != 0)
+        if (strlen($content) != 0) {
             $content .= "<hr>время: $exectime c.";
+        }
         echo $content;
         $db->exec("UPDATE $dbcron SET
                     cr_isrun = '0',
@@ -79,20 +82,23 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'run') {
                     WHERE cr_id = '$script_id'");
     }
     header("Location: cron.php");
+    exit();
 }
 //-------------------------------------------------------------------------
 elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'stop') {
-    $crid = cut_trash_int($_GET['crid']);
+    $crid = intval($_GET['crid']);
     $db->sql = "UPDATE $dbcron SET
                 cr_active='0', cr_isrun='0'
                 WHERE cr_id = '$crid'";
-    if ($db->exec())
+    if ($db->exec()) {
         header("Location: cron.php");
-    else
+        exit();
+    } else {
         header("Location: cron.php?crid=$crid&act=edit");
-}
-else
+        exit();
+    }
+} else {
     die('error');
+}
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
 exit();
-?>
