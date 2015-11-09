@@ -33,7 +33,7 @@ class YandexDirectAPI {
         if (isset($res['data'])) {
             return $res['data'];
         } else {
-            throw new Exception("Empty DATA response");
+            throw new Exception("Empty DATA response" . print_r($res, true));
         }
     }
 
