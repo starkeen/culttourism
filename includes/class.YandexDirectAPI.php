@@ -32,6 +32,8 @@ class YandexDirectAPI {
         $res = $this->getRequest($rq);
         if (isset($res['data'])) {
             return $res['data'];
+        } elseif (isset($res['error_code'])) {
+            throw new Exception("API error:" . $res['error_detail'], $res['error_code']);
         } else {
             throw new Exception("Empty DATA response" . print_r($res, true));
         }
