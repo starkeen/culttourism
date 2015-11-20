@@ -63,7 +63,11 @@ $(document).ready(function () {
         }, function (data) {
             if (data.state) {
                 $.each(data.founded, function (i, item) {
-                    $(".pointadding-item-analogs-list").append("<li>" + item.title.replace(" | Культурный туризм", "") + "</li>");
+                    $(".pointadding-item-analogs-list").append("<li>"
+                            + "<a href='" + item.url + "' target='_blank'>"
+                            + item.title.replace(" | Культурный туризм", "")
+                            + "</a>"
+                            + "</li>");
                 });
                 $(".pointadding-item-analogs-ignore").removeClass("m_hide");
             } else {
