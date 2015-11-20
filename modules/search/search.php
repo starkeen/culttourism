@@ -34,13 +34,14 @@ class Page extends PageCommon {
     }
 
     private function getSearchYandex() {
-        $dbsc = $this->db->getTableName('search_cache');
         if (isset($_GET['q'])) {
             $query = htmlentities(cut_trash_string(strip_tags($_GET['q'])), ENT_QUOTES, "UTF-8");
-
-            $this->db->sql = "INSERT INTO $dbsc SET
-                            sc_date = now(), sc_session = '" . $this->getUserHash() . "', sc_query = '$query', sc_sr_id = null";
-            $this->db->exec();
+            $sc = new MSearchCache($this->db);
+            $sc->add(array(
+                'sc_session' => $this->getUserHash(),
+                'sc_query' => $query,
+                'sc_sr_id' => null,
+            ));
 
             $error_text = '';
             $result = array();
