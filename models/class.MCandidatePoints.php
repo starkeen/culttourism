@@ -98,7 +98,7 @@ class MCandidatePoints extends Model {
     public function getMatrix() {
         $this->_db->sql = "SELECT count(1) AS cnt,
                                 pc.pc_id, pc.pc_title,
-                                IFNULL(pt.tp_id, 0) AS tp_id, pt.tp_name, pt.tp_icon
+                                IFNULL(pt.tp_id, -1) AS tp_id, pt.tp_name, pt.tp_icon
                             FROM $this->_table_name AS t
                                 LEFT JOIN {$this->_tables_related['pagecity']} AS pc
                                     ON pc.pc_id = t.cp_citypage_id
