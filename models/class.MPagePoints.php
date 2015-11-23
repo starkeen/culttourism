@@ -385,19 +385,11 @@ class MPagePoints extends Model {
     public function repairData() {
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 pt_phone = REPLACE(pt_phone, ';', ',')
-                            WHERE pt_phone like '%;%'";
+                            WHERE pt_phone LIKE '%;%'";
         $this->_db->exec();
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 pt_phone = REPLACE(pt_phone, ' ,', ',')
-                            WHERE pt_phone like '% ,%'";
-        $this->_db->exec();
-        $this->_db->sql = "UPDATE $this->_table_name SET
-                                cp_title = TRIM(TRAILING '.' FROM cp_title)
-                            WHERE cp_title like '%.'";
-        $this->_db->exec();
-        $this->_db->sql = "UPDATE $this->_table_name SET
-                                cp_addr = TRIM(TRAILING '.' FROM cp_addr)
-                            WHERE cp_addr like '%.'";
+                            WHERE pt_phone LIKE '% ,%'";
         $this->_db->exec();
     }
 

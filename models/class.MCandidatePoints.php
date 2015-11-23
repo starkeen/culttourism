@@ -138,7 +138,19 @@ class MCandidatePoints extends Model {
     public function repairData() {
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 cp_phone = REPLACE(cp_phone, ';', ',')
-                            WHERE cp_phone like '%;%'";
+                            WHERE cp_phone LIKE '%;%'";
+        $this->_db->exec();
+        $this->_db->sql = "UPDATE $this->_table_name SET
+                                cp_phone = REPLACE(cp_phone, ' ,', ',')
+                            WHERE cp_phone LIKE '% ,%'";
+        $this->_db->exec();
+        $this->_db->sql = "UPDATE $this->_table_name SET
+                                cp_title = TRIM(TRAILING '.' FROM cp_title)
+                            WHERE cp_title LIKE '%.'";
+        $this->_db->exec();
+        $this->_db->sql = "UPDATE $this->_table_name SET
+                                cp_addr = TRIM(TRAILING '.' FROM cp_addr)
+                            WHERE cp_addr LIKE '%.'";
         $this->_db->exec();
     }
 
