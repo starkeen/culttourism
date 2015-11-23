@@ -132,4 +132,14 @@ class MCandidatePoints extends Model {
         return $out;
     }
 
+    /**
+     * Исправляет форматы данных
+     */
+    public function repairData() {
+        $this->_db->sql = "UPDATE $this->_table_name SET
+                                cp_phone = REPLACE(cp_phone, ';', ',')
+                            WHERE cp_phone like '%;%'";
+        $this->_db->exec();
+    }
+
 }
