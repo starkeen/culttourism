@@ -378,6 +378,14 @@ class MPagePoints extends Model {
         $this->createSluglineById($new_id);
         return $new_id;
     }
+    
+    /**
+     * Заменяет все абсолютные ссылки относительными
+     */
+    public function repairPhones() {
+        $this->_db->sql = "UPDATE $this->_table_name SET pt_phone = REPLACE(pt_phone, ';', ',') WHERE pt_phone like '%;%'";
+        $this->_db->exec();
+    }
 
     /**
      * Помечаем точку удаленной
