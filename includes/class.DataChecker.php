@@ -6,7 +6,7 @@
 class DataChecker {
 
     protected $db;
-    protected $entity_type = 'point';
+    protected $entity_type = 'type';
     protected $entity_id = 'id';
     protected $entity_field;
 
@@ -15,6 +15,7 @@ class DataChecker {
     }
 
     public function repairPointsAddrs($count = 100) {
+        $this->entity_type = 'pagepoints';
         $this->entity_field = 'pt_adress';
         $p = new MPagePoints($this->db);
         $dc = new MDataCheck($this->db);
@@ -76,6 +77,7 @@ class DataChecker {
     }
 
     public function repairCandidates($count = 10) {
+        $this->entity_type = 'candidate_points';
         $this->entity_field = 'cp_text';
         $this->entity_id = 'cp_id';
         $dc = new MDataCheck($this->db);
@@ -83,7 +85,7 @@ class DataChecker {
 
         $typograf = $this->buildTypograph();
 
-        $items1 = $this->getCheckingPortion($count, 'candidate_points', 'cp_active');
+        $items1 = $this->getCheckingPortion($count, 'cp_active');
         foreach ($items1 as $item) {
             $typograf->set_text($item[$this->entity_field]);
             $result = $typograf->apply();
@@ -92,7 +94,7 @@ class DataChecker {
         }
 
         $this->entity_field = 'cp_title';
-        $items2 = $this->getCheckingPortion($count, 'candidate_points', 'cp_active');
+        $items2 = $this->getCheckingPortion($count, 'cp_active');
         foreach ($items2 as $item) {
             $typograf->set_text($item[$this->entity_field]);
             $result = $typograf->apply();
@@ -101,9 +103,9 @@ class DataChecker {
         }
     }
 
-    public function getCheckingPortion($limit, $table, $active) {
+    public function getCheckingPortion($limit, $active) {
         $checkertable = $this->db->getTableName('data_check');
-        $tname = $this->db->getTableName($table);
+        $tname = $this->db->getTableName($this->entity_type);
         $this->db->sql = "SELECT t.*
                             FROM $tname t
                                 LEFT JOIN $checkertable dc ON dc.dc_item_id = t.$this->entity_id
