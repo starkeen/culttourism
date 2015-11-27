@@ -83,8 +83,17 @@ class DataChecker {
 
         $typograf = $this->buildTypograph();
 
-        $items = $this->getCheckingPortion($count, 'candidate_points', 'cp_id', 'cp_active');
-        foreach ($items as $item) {
+        $items1 = $this->getCheckingPortion($count, 'candidate_points', 'cp_id', 'cp_active');
+        foreach ($items1 as $item) {
+            $typograf->set_text($item[$this->entity_field]);
+            $result = $typograf->apply();
+            $cp->updateByPk($item[$this->entity_id], [$this->entity_field => $result]);
+            $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
+        }
+
+        $this->entity_field = 'cp_title';
+        $items2 = $this->getCheckingPortion($count, 'candidate_points', 'cp_id', 'cp_active');
+        foreach ($items2 as $item) {
             $typograf->set_text($item[$this->entity_field]);
             $result = $typograf->apply();
             $cp->updateByPk($item[$this->entity_id], [$this->entity_field => $result]);
