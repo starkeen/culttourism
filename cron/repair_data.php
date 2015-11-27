@@ -10,7 +10,7 @@ $ca = new MCandidatePoints($db);
 
 $log = array();
 $log[] = $checker->repairPointsAddrs(30);
-$log[] = $checker->repairCandidates(30);
+$log[] = $checker->repairCandidates(50);
 $logs = array_filter($log);
 if (!empty($logs)) {
     print_r($logs);
