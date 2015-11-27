@@ -7,7 +7,7 @@
         }
     ],
     "require": {
-        "kix/mdash": "*"
+        "iamsalnikov/mdash": "^3.5"
     },
     "require-dev": {}
 }
