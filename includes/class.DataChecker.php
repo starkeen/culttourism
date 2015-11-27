@@ -88,7 +88,8 @@ class DataChecker {
         $items1 = $this->getCheckingPortion($count, 'cp_active');
         foreach ($items1 as $item) {
             $typograf->set_text($item[$this->entity_field]);
-            $result = $typograf->apply();
+            $cleaned = $typograf->apply();
+            $result = str_replace('&nbsp;', ' ', $cleaned);
             $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
             $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
         }
@@ -97,7 +98,8 @@ class DataChecker {
         $items2 = $this->getCheckingPortion($count, 'cp_active');
         foreach ($items2 as $item) {
             $typograf->set_text($item[$this->entity_field]);
-            $result = $typograf->apply();
+            $cleaned = $typograf->apply();
+            $result = str_replace('&nbsp;', ' ', $cleaned);
             $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
             $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
         }
