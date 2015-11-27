@@ -99,7 +99,7 @@ class DataChecker {
         foreach ($items2 as $item) {
             $typograf->set_text($item[$this->entity_field]);
             $cleaned = $typograf->apply();
-            $result = str_replace('&nbsp;', ' ', $cleaned);
+            $result = str_replace(array('&nbsp;', '&laquo;', '&raquo;'), array(' ', '«', '»'), $cleaned);
             $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
             $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
         }
