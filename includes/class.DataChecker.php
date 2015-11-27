@@ -7,6 +7,7 @@ class DataChecker {
 
     protected $db;
     protected $entity_type = 'point';
+    protected $entity_id = 'id';
     protected $entity_field;
 
     public function __construct($db) {
@@ -72,6 +73,47 @@ class DataChecker {
             }
         }
         return $log;
+    }
+
+    public function repairCandidates($count = 10) {
+        $this->entity_field = 'cp_text';
+        $this->entity_id = 'cp_id';
+        $dc = new MDataCheck($this->db);
+        $cp = new MCandidatePoints($this->db);
+
+        $typograf = new EMTypograph();
+        $typograf->setup(array(
+            'Text.paragraphs' => 'off',
+            'OptAlign.oa_oquote' => 'off',
+            'OptAlign.oa_obracket_coma' => 'off',
+        ));
+
+        $items = $this->getCheckingPortion($count, 'data_check', 'cp_id', 'cp_active');
+        foreach ($items as $item) {
+            $typograf->set_text($item[$this->entity_field]);
+            $result = $typograf->apply();
+            print_r($result);
+            //$cp
+            $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
+        }
+    }
+
+    public function getCheckingPortion($limit, $table, $active) {
+        $tname = $this->db->getTableName($table);
+        $this->db->sql = "SELECT t.*
+                            FROM $tname t
+                                LEFT JOIN $this->_table_name dc ON dc.dc_item_id = t.$this->entity_id
+                                    AND dc.dc_type = :item_type
+                                    AND dc.dc_field = :field
+                            WHERE t.$active = 1
+                            ORDER BY dc.dc_date
+                            LIMIT :limit";
+        $this->db->execute(array(
+            ':limit' => $limit,
+            ':field' => $this->entity_field,
+            ':item_type' => 'candidate',
+        ));
+        return $this->db->fetchAll();
     }
 
 }

@@ -4,49 +4,38 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e8717ee1564c0c37822399ee64d0a9f3",
-    "content-hash": "773069f4ef9a01f8c58811d3a4f4872b",
+    "hash": "3862e14093f5b98202ff3c8987073c6d",
+    "content-hash": "dafc1857d12a677df7d3cc6f15a48844",
     "packages": [
         {
-            "name": "kix/mdash",
-            "version": "0.5.4",
+            "name": "iamsalnikov/mdash",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/kix/mdash.git",
-                "reference": "77a4d93f0d2a2c85d6a8babde685adc29ba769e3"
+                "url": "https://github.com/iamsalnikov/mdash.git",
+                "reference": "12d2df7501549c01979a8e18acf6c64b6ac20891"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kix/mdash/zipball/77a4d93f0d2a2c85d6a8babde685adc29ba769e3",
-                "reference": "77a4d93f0d2a2c85d6a8babde685adc29ba769e3",
+                "url": "https://api.github.com/repos/iamsalnikov/mdash/zipball/12d2df7501549c01979a8e18acf6c64b6ac20891",
+                "reference": "12d2df7501549c01979a8e18acf6c64b6ac20891",
                 "shasum": ""
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.0.x"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "EMT": "src",
-                    "EMT\\Tests": "tests"
-                }
+                "classmap": [
+                    "src-php/"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
             "authors": [
                 {
-                    "name": "Stepan Anchugov",
-                    "email": "kixxx1@gmail.com"
+                    "name": "Alexey Salnikov",
+                    "email": "cartrege@gmail.com"
                 }
             ],
-            "description": "E. Muravjov's typographer, Composer version",
-            "keywords": [
-                "mdash",
-                "typographer"
-            ],
-            "time": "2014-11-07 08:02:03"
+            "description": "Mdash composer support",
+            "time": "2015-10-05 12:41:42"
         }
     ],
     "packages-dev": [],
