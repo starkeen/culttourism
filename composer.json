@@ -1,3 +1,13 @@
 {
-    "name": "Andrey"
+    "name": "starkeen/culttourism",
+    "authors": [
+        {
+            "name": "production",
+            "email": "andrey@culttourism.ru"
+        }
+    ],
+    "require": {
+        "kix/mdash": "*"
+    },
+    "require-dev": {}
 }

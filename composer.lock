@@ -1,0 +1,60 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "e8717ee1564c0c37822399ee64d0a9f3",
+    "content-hash": "773069f4ef9a01f8c58811d3a4f4872b",
+    "packages": [
+        {
+            "name": "kix/mdash",
+            "version": "0.5.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kix/mdash.git",
+                "reference": "77a4d93f0d2a2c85d6a8babde685adc29ba769e3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kix/mdash/zipball/77a4d93f0d2a2c85d6a8babde685adc29ba769e3",
+                "reference": "77a4d93f0d2a2c85d6a8babde685adc29ba769e3",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.0.x"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "EMT": "src",
+                    "EMT\\Tests": "tests"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stepan Anchugov",
+                    "email": "kixxx1@gmail.com"
+                }
+            ],
+            "description": "E. Muravjov's typographer, Composer version",
+            "keywords": [
+                "mdash",
+                "typographer"
+            ],
+            "time": "2014-11-07 08:02:03"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
