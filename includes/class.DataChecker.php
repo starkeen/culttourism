@@ -83,7 +83,7 @@ class DataChecker {
 
         $typograf = $this->buildTypograph();
 
-        $items1 = $this->getCheckingPortion($count, 'candidate_points', 'cp_id', 'cp_active');
+        $items1 = $this->getCheckingPortion($count, 'candidate_points', 'cp_active');
         foreach ($items1 as $item) {
             $typograf->set_text($item[$this->entity_field]);
             $result = $typograf->apply();
@@ -92,7 +92,7 @@ class DataChecker {
         }
 
         $this->entity_field = 'cp_title';
-        $items2 = $this->getCheckingPortion($count, 'candidate_points', 'cp_id', 'cp_active');
+        $items2 = $this->getCheckingPortion($count, 'candidate_points', 'cp_active');
         foreach ($items2 as $item) {
             $typograf->set_text($item[$this->entity_field]);
             $result = $typograf->apply();
@@ -110,6 +110,7 @@ class DataChecker {
                                     AND dc.dc_type = :item_type
                                     AND dc.dc_field = :field
                             WHERE t.$active = 1
+                            GROUP BY t.$this->entity_id
                             ORDER BY dc.dc_date
                             LIMIT :limit";
         $this->db->execute(array(
