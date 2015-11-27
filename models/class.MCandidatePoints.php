@@ -152,6 +152,10 @@ class MCandidatePoints extends Model {
                                 cp_addr = TRIM(TRAILING '.' FROM cp_addr)
                             WHERE cp_addr LIKE '%.'";
         $this->_db->exec();
+        $this->_db->sql = "UPDATE $this->_table_name SET
+                                cp_text = REPLACE(cp_text, '&nbsp;', ' ')
+                            WHERE cp_text LIKE '%&nbsp;%'";
+        $this->_db->exec();
     }
 
 }

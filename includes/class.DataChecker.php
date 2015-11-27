@@ -81,19 +81,13 @@ class DataChecker {
         $dc = new MDataCheck($this->db);
         $cp = new MCandidatePoints($this->db);
 
-        $typograf = new EMTypograph();
-        $typograf->setup(array(
-            'Text.paragraphs' => 'off',
-            'OptAlign.oa_oquote' => 'off',
-            'OptAlign.oa_obracket_coma' => 'off',
-        ));
+        $typograf = $this->buildTypograph();
 
         $items = $this->getCheckingPortion($count, 'candidate_points', 'cp_id', 'cp_active');
         foreach ($items as $item) {
             $typograf->set_text($item[$this->entity_field]);
             $result = $typograf->apply();
-            print_r($result);
-            //$cp
+            $cp->updateByPk($item[$this->entity_id], [$this->entity_field => $result]);
             $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
         }
     }
@@ -115,6 +109,17 @@ class DataChecker {
             ':item_type' => 'candidate',
         ));
         return $this->db->fetchAll();
+    }
+
+    protected function buildTypograph() {
+        $typograf = new EMTypograph();
+        $typograf->setup(array(
+            'Text.paragraphs' => 'off',
+            'OptAlign.oa_oquote' => 'off',
+            'OptAlign.oa_obracket_coma' => 'off',
+        ));
+
+        return $typograf;
     }
 
 }
