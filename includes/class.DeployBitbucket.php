@@ -37,6 +37,8 @@ class DeployBitbucket {
                 }
             }
         }
+        
+        $log[] = system('chdir '._DIR_ROOT.' & bin/composer install');
 
         return $log;
     }
