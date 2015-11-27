@@ -125,8 +125,16 @@ class DataChecker {
         $typograf = new EMTypograph();
         $typograf->setup(array(
             'Text.paragraphs' => 'off',
+            'Text.breakline' => 'off',
             'OptAlign.oa_oquote' => 'off',
+            'OptAlign.oa_oquote_extra' => 'off',
             'OptAlign.oa_obracket_coma' => 'off',
+            'Space.nbsp_before_open_quote' => 'off',
+            'Space.nbsp_before_month' => 'off',
+            'Nobr.super_nbsp' => 'off',
+            'Nobr.nbsp_in_the_end' => 'off',
+            'Nobr.phone_builder' => 'off',
+            'Nobr.phone_builder_v2' => 'off',
         ));
 
         return $typograf;

@@ -156,6 +156,10 @@ class MCandidatePoints extends Model {
                                 cp_text = REPLACE(cp_text, '&nbsp;', ' ')
                             WHERE cp_text LIKE '%&nbsp;%'";
         $this->_db->exec();
+        $this->_db->sql = "UPDATE $this->_table_name SET
+                                cp_title = REPLACE(cp_title, '&nbsp;', ' ')
+                            WHERE cp_title LIKE '%&nbsp;%'";
+        $this->_db->exec();
     }
 
 }
