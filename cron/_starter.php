@@ -8,6 +8,7 @@ include(realpath(dirname(__FILE__) . '/../config/configuration.php'));
 include(_DIR_INCLUDES . '/debug.php');
 include(_DIR_INCLUDES . '/functions.php');
 include(_DIR_INCLUDES . '/class.Helper.php');
+include _DIR_ROOT . '/vendor/autoload.php';
 spl_autoload_register('Helper::autoloader');
 
 $db = FactoryDB::db();
