@@ -87,7 +87,7 @@ class DataChecker {
         foreach ($items1 as $item) {
             $typograf->set_text($item[$this->entity_field]);
             $result = $typograf->apply();
-            $cp->updateByPk($item[$this->entity_id], [$this->entity_field => $result]);
+            $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
             $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
         }
 
@@ -96,7 +96,7 @@ class DataChecker {
         foreach ($items2 as $item) {
             $typograf->set_text($item[$this->entity_field]);
             $result = $typograf->apply();
-            $cp->updateByPk($item[$this->entity_id], [$this->entity_field => $result]);
+            $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
             $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
         }
     }
