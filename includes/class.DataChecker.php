@@ -88,7 +88,7 @@ class DataChecker {
             'OptAlign.oa_obracket_coma' => 'off',
         ));
 
-        $items = $this->getCheckingPortion($count, 'data_check', 'cp_id', 'cp_active');
+        $items = $this->getCheckingPortion($count, 'candidate_points', 'cp_id', 'cp_active');
         foreach ($items as $item) {
             $typograf->set_text($item[$this->entity_field]);
             $result = $typograf->apply();
