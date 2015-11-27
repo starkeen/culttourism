@@ -38,9 +38,7 @@ class DeployBitbucket {
             }
         }
         
-        $log[] = _DIR_ROOT.'/bin/deploy.sh';
         $log[] = shell_exec(_DIR_ROOT.'/bin/deploy.sh');
-        $log[] = 'executed';
 
         return $log;
     }
