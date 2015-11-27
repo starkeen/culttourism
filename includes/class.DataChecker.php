@@ -99,10 +99,11 @@ class DataChecker {
     }
 
     public function getCheckingPortion($limit, $table, $active) {
+        $checkertable = $this->db->getTableName('data_check');
         $tname = $this->db->getTableName($table);
         $this->db->sql = "SELECT t.*
                             FROM $tname t
-                                LEFT JOIN $this->_table_name dc ON dc.dc_item_id = t.$this->entity_id
+                                LEFT JOIN $checkertable dc ON dc.dc_item_id = t.$this->entity_id
                                     AND dc.dc_type = :item_type
                                     AND dc.dc_field = :field
                             WHERE t.$active = 1
