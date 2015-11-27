@@ -8,9 +8,9 @@ $ls = new MLists($db);
 $bg = new MBlogEntries($db);
 $ca = new MCandidatePoints($db);
 
-$log = [];
+$log = array();
 $log[] = $checker->repairPointsAddrs(30);
-$log[] = $checker->repairCandidates(2);
+$log[] = $checker->repairCandidates(20);
 $logs = array_filter($log);
 if (!empty($logs)) {
     print_r($logs);
