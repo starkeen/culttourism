@@ -9,7 +9,7 @@ $bg = new MBlogEntries($db);
 $ca = new MCandidatePoints($db);
 
 $log = array();
-//$log[] = $checker->repairPointsAddrs(10);
+$log[] = $checker->repairPointsAddrs(30);
 $log[] = $checker->repairCandidates(50);
 $logs = array_filter($log);
 if (!empty($logs)) {
