@@ -78,30 +78,22 @@ class DataChecker {
 
     public function repairCandidates($count = 10) {
         $this->entity_type = 'candidate_points';
-        $this->entity_field = 'cp_text';
         $this->entity_id = 'cp_id';
         $dc = new MDataCheck($this->db);
         $cp = new MCandidatePoints($this->db);
 
         $typograf = $this->buildTypograph();
-
-        $items1 = $this->getCheckingPortion($count, 'cp_active');
-        foreach ($items1 as $item) {
-            $typograf->set_text($item[$this->entity_field]);
-            $cleaned = $typograf->apply();
-            $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
-            $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
-            $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
-        }
-
-        $this->entity_field = 'cp_title';
-        $items2 = $this->getCheckingPortion($count, 'cp_active');
-        foreach ($items2 as $item) {
-            $typograf->set_text($item[$this->entity_field]);
-            $cleaned = $typograf->apply();
-            $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
-            $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
-            $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
+        $fields = array('cp_text', 'cp_title',);
+        foreach ($fields as $fld) {
+            $this->entity_field = $fld;
+            $items = $this->getCheckingPortion($count, 'cp_active');
+            foreach ($items as $item) {
+                $typograf->set_text($item[$this->entity_field]);
+                $cleaned = $typograf->apply();
+                $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+                $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
+                $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
+            }
         }
     }
 
