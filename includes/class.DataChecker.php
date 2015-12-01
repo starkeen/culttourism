@@ -81,6 +81,7 @@ class DataChecker {
         $this->entity_id = 'cp_id';
         $dc = new MDataCheck($this->db);
         $cp = new MCandidatePoints($this->db);
+        $log = array();
 
         $typograf = $this->buildTypograph();
         $fields = array('cp_text', 'cp_title',);
@@ -95,6 +96,8 @@ class DataChecker {
                 $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
             }
         }
+
+        return $log;
     }
 
     public function getCheckingPortion($limit, $active) {
@@ -112,7 +115,7 @@ class DataChecker {
         $this->db->execute(array(
             ':limit' => $limit,
             ':field' => $this->entity_field,
-            ':item_type' => 'candidate',
+            ':item_type' => $this->entity_type,
         ));
         return $this->db->fetchAll();
     }
