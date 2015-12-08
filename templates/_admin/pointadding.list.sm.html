@@ -80,7 +80,7 @@
         </tr>
         {foreach from=$list item=req}
         <tr>
-            <td {if $req.dc_id}style="background-color:#bcf5bc;"{/if}>{counter}</td>
+            <td class="{if $req.dc_id}m_checked{/if}">{counter}</td>
             <td>{$req.cp_date|date_format:"%d.%m.%Y"}</td>
             <td title="{$req.type_title}" class="m_center"><img src="/img/points/x16/{$req.type_icon|default:'star.png'}"/></td>
             <td>{$req.cp_city}</td>
@@ -100,5 +100,8 @@
 <style type="text/css">
     .commontable tr td:first-child {
         text-align: center;
+    }
+    .commontable tr td.m_checked {
+        background-color:#bcf5bc;
     }
 </style>
