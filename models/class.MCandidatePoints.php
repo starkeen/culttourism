@@ -35,6 +35,7 @@ class MCandidatePoints extends Model {
         $this->_addRelatedTable('uniref_values');
         $this->_addRelatedTable('ref_pointtypes');
         $this->_addRelatedTable('region_url');
+        $this->_addRelatedTable('data_check');
 
         $rpt = new MRefPointtypes($this->_db);
         $this->types_markers = $rpt->getMarkers();
@@ -64,7 +65,8 @@ class MCandidatePoints extends Model {
                                 pc.pc_title AS page_title, CONCAT(u.url, '/') AS page_url,
                                 uv_stat.uv_title AS state_title,
                                 pt.tp_icon AS type_icon, pt.tp_short AS type_title,
-                                 CHAR_LENGTH(cp_text) AS text_len
+                                CHAR_LENGTH(cp_text) AS text_len,
+                                dc.dc_id
                             FROM $this->_table_name AS t
                                 LEFT JOIN {$this->_tables_related['pagecity']} AS pc
                                     ON pc.pc_id = t.cp_citypage_id
@@ -74,6 +76,8 @@ class MCandidatePoints extends Model {
                                     ON uv_stat.uv_id = t.cp_state
                                 LEFT JOIN {$this->_tables_related['ref_pointtypes']} AS pt
                                     ON pt.tp_id = t.cp_type_id
+                                LEFT JOIN {$this->_tables_related['data_check']} AS dc
+                                    ON dc.dc_item_id = t.cp_id AND dc_type = 'candidate_points' AND dc_field = 'cp_text'
                             WHERE $this->_table_active = 1\n";
         if ($filter['type'] > 0) {
             $this->_db->sql .= "AND t.cp_type_id = '" . intval($filter['type']) . "'\n";
