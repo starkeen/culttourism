@@ -45,6 +45,10 @@ class MCandidatePoints extends Model {
         $data['cp_date'] = $this->now();
         $data['cp_state'] = 3;
         $data['cp_active'] = 1;
+        if (empty($data['cp_title'])) {
+            $data['cp_title'] = '[без названия]';
+        }
+        $data['cp_title'] = strip_tags($data['cp_title']);
         if (isset($data['cp_type_id']) && $data['cp_type_id'] == 0) {
             foreach ($this->types_markers as $type => $markers) {
                 foreach ($markers as $marker) {
