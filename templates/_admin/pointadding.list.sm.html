@@ -85,7 +85,11 @@
             <td title="{$req.type_title}" class="m_center"><img src="/img/points/x16/{$req.type_icon|default:'star.png'}"/></td>
             <td>{$req.cp_city}</td>
             <td><a href="{$req.page_url}" target="_blank">{$req.page_title}</a></td>
-            <td>{$req.cp_title}</td>
+            <td>
+                {$req.cp_title}
+                <br />
+                <span>{$req.cp_addr}</span>
+            </td>
             <td style="text-align: right; background-color:{if $req.text_len < 100}#FF4500{elseif $req.text_len < 200}#FFA583{elseif $req.text_len < 500}#FFA583{else}#CCE4CC{/if};">
                 {$req.text_len}
             </td>
@@ -103,5 +107,9 @@
     }
     .commontable tr td.m_checked {
         background-color:#bcf5bc;
+    }
+    .commontable tr td span {
+        font-size: 70%;
+        color: #777;
     }
 </style>
