@@ -9,6 +9,14 @@ class DataChecker {
     protected $entity_type = 'type';
     protected $entity_id = 'id';
     protected $entity_field;
+    protected $dotting = array(
+        ' г ' => ' г. ',
+        ' пос ' => ' пос. ',
+        ' ул ' => ' ул. ',
+        ' пл ' => ' пл. ',
+        ' им ' => ' им. ',
+        ' д ' => ' д. ',
+    );
 
     public function __construct($db) {
         $this->db = $db;
@@ -120,7 +128,7 @@ class DataChecker {
             $response = $api->check(DadataAPI::ADDRESS, $addr);
             $result = $response[0]['result'];
             if ($response[0]['quality_parse'] == 0) {
-                $dotted = str_replace(array(' г ', ' ул ', ' пл ', ' д ',), array(' г. ', ' ул. ', ' пл. ', ' д. '), $response[0]['result']);
+                $dotted = str_replace(array_keys($this->dotting), array_values($this->dotting), $response[0]['result']);
                 $typograf->set_text($dotted);
                 $cleaned = $typograf->apply();
                 $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
