@@ -8,10 +8,10 @@ class DadataAPI {
     protected $url = 'https://dadata.ru/api/v2/clean/';
     protected $fields = array(
         self::ADDRESS => array(
-            'direct' => 'source', 'result', 'geo_lat', 'geo_lon', 'qc_geo', 'unparsed_parts',
+            'direct' => array('source', 'result', 'geo_lat', 'geo_lon', 'qc_geo', 'unparsed_parts',),
         ),
         self::PHONE => array(
-            'direct' => 'source', 'phone',
+            'direct' => array('source', 'phone',),
         ),
     );
     protected $curl;

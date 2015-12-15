@@ -46,7 +46,6 @@ class Curl {
 
     public function post($url, $data = array()) {
         try {
-            print_x($this->getHeaders());
             curl_setopt($this->curl, CURLOPT_URL, $url);
             curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($this->curl, CURLOPT_POST, true);
