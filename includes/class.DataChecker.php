@@ -84,7 +84,7 @@ class DataChecker {
         $log = array();
 
         $typograf = $this->buildTypograph();
-        $fields = array('cp_text', 'cp_title',);
+        $fields = array('cp_text', 'cp_title', 'cp_addr', 'cp_phone');
         foreach ($fields as $fld) {
             $this->entity_field = $fld;
             $items = $this->getCheckingPortion($count, 'cp_active');
