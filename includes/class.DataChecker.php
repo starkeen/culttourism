@@ -120,7 +120,8 @@ class DataChecker {
             $response = $api->check(DadataAPI::ADDRESS, $addr);
             $result = $response[0]['result'];
             if ($response[0]['quality_parse'] == 0) {
-                $typograf->set_text($response[0]['result']);
+                $dotted = str_replace(array(' г ', ' ул ', ' пл ', ' д ',), array(' г. ', ' ул. ', ' пл. ', ' д. '), $response[0]['result']);
+                $typograf->set_text($dotted);
                 $cleaned = $typograf->apply();
                 $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
                 $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
