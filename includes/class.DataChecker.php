@@ -84,7 +84,7 @@ class DataChecker {
         $log = array();
 
         $typograf = $this->buildTypograph();
-        $fields = array('cp_text', 'cp_title', 'cp_addr', 'cp_phone');
+        $fields = array('cp_text', 'cp_title', 'cp_phone');
         foreach ($fields as $fld) {
             $this->entity_field = $fld;
             $items = $this->getCheckingPortion($count, 'cp_active');
@@ -99,14 +99,45 @@ class DataChecker {
 
         return $log;
     }
-    
+
+    public function repairCandidatesAddrs($count = 10) {
+        $log = array();
+        $this->entity_type = 'candidate_points';
+        $this->entity_id = 'cp_id';
+        $this->entity_field = 'cp_addr';
+        $dc = new MDataCheck($this->db);
+        $cp = new MCandidatePoints($this->db);
+
+        $api = new DadataAPI($this->db);
+        $items = $this->getCheckingPortion($count, 'cp_active');
+        foreach ($items as $item) {
+            $response = $api->check(DadataAPI::ADDRESS, $item[$this->entity_field]);
+            $result = $response[0]['result'];
+            if ($response[0]['quality_parse'] == 0) {
+                $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
+                if ($response[0]['qc_geo'] == 0) {
+                    $geodata = array(
+                        'cp_latitude' => $response[0]['geo_lat'],
+                        'cp_longitude' => $response[0]['geo_lon'],
+                    );
+                    $cp->updateByPk($item[$this->entity_id], $geodata);
+                }
+            } else {
+                $result = '[quality:' . $response[0]['quality_parse'] . '] ' . $result;
+            }
+            $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
+        }
+
+        return $log;
+    }
+
     public function repairBlog($count = 10) {
         $log = array();
         $this->entity_type = 'blogentries';
         $this->entity_id = 'br_id';
         $dc = new MDataCheck($this->db);
         $be = new MBlogEntries($this->db);
-        
+
         $typograf = $this->buildTypograph();
         $this->entity_field = 'br_text';
         $items = $this->getCheckingPortion($count, 'br_id');
@@ -117,7 +148,7 @@ class DataChecker {
             $be->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
             $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
         }
-        
+
         return $log;
     }
 
