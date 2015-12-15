@@ -109,7 +109,7 @@ class DataChecker {
         $cp = new MCandidatePoints($this->db);
 
         $api = new DadataAPI($this->db);
-        $items = $this->getCheckingPortion($count, 'cp_active');
+        $items = $this->getCheckingPortion($count, 'cp_active', true);
         foreach ($items as $item) {
             $response = $api->check(DadataAPI::ADDRESS, $item[$this->entity_field]);
             $result = $response[0]['result'];
@@ -152,7 +152,7 @@ class DataChecker {
         return $log;
     }
 
-    public function getCheckingPortion($limit, $active) {
+    public function getCheckingPortion($limit, $active, $unchecked = false) {
         $checkertable = $this->db->getTableName('data_check');
         $tname = $this->db->getTableName($this->entity_type);
         $this->db->sql = "SELECT t.*
@@ -161,8 +161,11 @@ class DataChecker {
                                     AND dc.dc_type = :item_type
                                     AND dc.dc_field = :field
                             WHERE t.$active > 0
-                                AND t.$this->entity_field != ''
-                            GROUP BY t.$this->entity_id
+                                AND t.$this->entity_field != ''\n";
+        if ($unchecked) {
+            $this->db->sql .= " AND dc.dc_id IS NULL\n";
+        }
+        $this->db->sql .= " GROUP BY t.$this->entity_id
                             ORDER BY dc.dc_date
                             LIMIT :limit";
         $this->db->execute(array(
