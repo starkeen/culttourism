@@ -129,6 +129,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
         'type' => isset($_GET['type']) ? intval($_GET['type']) : 0,
         'pcid' => isset($_GET['pcid']) ? intval($_GET['pcid']) : 0,
         'state' => isset($_GET['state']) ? intval($_GET['state']) : 0,
+        'gps' => isset($_GET['gps']) ? intval($_GET['gps']) : 0,
     );
 
     $list = $c->getByFilter($filter);

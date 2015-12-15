@@ -92,6 +92,12 @@ class MCandidatePoints extends Model {
         if ($filter['pcid'] > 0) {
             $this->_db->sql .= "AND t.cp_citypage_id = '" . intval($filter['pcid']) . "'\n";
         }
+        if ($filter['gps'] == 1) {
+            $this->_db->sql .= "AND t.cp_latitude > 0 AND t.cp_longitude > 0\n";
+        }
+        if ($filter['gps'] == -1) {
+            $this->_db->sql .= "AND (t.cp_latitude = 0 OR t.cp_longitude = 0 OR t.cp_latitude IS NULL OR t.cp_longitude IS NULL)\n";
+        }
         if ($filter['state'] != 0) {
             $this->_db->sql .= "AND t.cp_state = '" . intval($filter['state']) . "'\n";
         }
