@@ -21,7 +21,7 @@ class DadataAPI {
     }
 
     public function check($type, $data) {
-        if (!in_array($type, array_keys($this->types))) {
+        if (!in_array($type, array_keys($this->fields))) {
             throw new RuntimeException('Unsupported checking type');
         }
         $context = is_array($data) ? $data : array($data);
