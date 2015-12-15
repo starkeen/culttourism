@@ -4,6 +4,7 @@ class DadataAPI {
 
     const ADDRESS = 'address';
     const PHONE = 'phone';
+    const BALANCE = 'balance';
 
     protected $url = 'https://dadata.ru/api/v2/clean/';
     protected $keyToken;
@@ -33,6 +34,18 @@ class DadataAPI {
         $response = $this->request($type, $context);
 
         return $this->mapResponse($type, $response);
+    }
+
+    public function getBalance() {
+        $this->curl->addHeader('Content-Type', 'application/json');
+        $this->curl->addHeader('Authorization', 'Token ' . $this->keyToken);
+        $this->curl->addHeader('X-Secret', $this->keySecret);
+        $this->curl->config(CURLOPT_SSL_VERIFYPEER, false);
+
+        $this->curl->setTTL(0);
+        $json = $this->curl->get('https://dadata.ru/api/v2/profile/balance');
+        $data = json_decode($json);
+        return $data->balance;
     }
 
     /**

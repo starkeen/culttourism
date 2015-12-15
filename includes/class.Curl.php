@@ -32,6 +32,7 @@ class Curl {
             try {
                 curl_setopt($this->curl, CURLOPT_URL, $url);
                 curl_setopt($this->curl, CURLOPT_REFERER, $url);
+                curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->getHeaders());
                 $text = curl_exec($this->curl);
                 if ($this->encoding != self::INTERNAL_ENCODING) {
                     $text = mb_convert_encoding($text, self::INTERNAL_ENCODING, $this->encoding);

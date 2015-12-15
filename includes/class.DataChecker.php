@@ -109,6 +109,10 @@ class DataChecker {
         $cp = new MCandidatePoints($this->db);
 
         $api = new DadataAPI($this->db);
+        if ($api->getBalance()) {
+            echo 'Баланс Dadata.ru нулевой';
+            return;
+        }
         $items = $this->getCheckingPortion($count, 'cp_active', true);
         foreach ($items as $item) {
             $addr = preg_replace('/(\d{3})(\s{1})(\d{3})/', '$1$3', $item[$this->entity_field]);
