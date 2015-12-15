@@ -53,9 +53,9 @@ class DadataAPI {
         foreach ($response as $r) {
             $item = array();
             foreach ($this->fields[$type]['direct'] as $field) {
-                $item[$field] = $r[$field];
+                $item[$field] = $r->$field;
             }
-            $item['quality_parse'] = $r['qc'];
+            $item['quality_parse'] = $r->qc;
             $out[] = $item;
         }
         return $out;
