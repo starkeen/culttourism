@@ -113,13 +113,18 @@ class DataChecker {
             echo 'Баланс Dadata.ru нулевой';
             return;
         }
+        $typograf = $this->buildTypograph();
         $items = $this->getCheckingPortion($count, 'cp_active', true);
         foreach ($items as $item) {
             $addr = preg_replace('/(\d{3})(\s{1})(\d{3})/', '$1$3', $item[$this->entity_field]);
             $response = $api->check(DadataAPI::ADDRESS, $addr);
             $result = $response[0]['result'];
             if ($response[0]['quality_parse'] == 0) {
+                $typograf->set_text($response[0]['result']);
+                $cleaned = $typograf->apply();
+                $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
                 $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
+
                 if ($response[0]['qc_geo'] == 0) {
                     $geodata = array(
                         'cp_latitude' => $response[0]['geo_lat'],
