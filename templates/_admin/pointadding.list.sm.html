@@ -70,8 +70,8 @@
             <td>
                 <select name="gps" style="width:50px;" onchange="submit();">
                     <option value="0">--все--</option>
-                    <option value="-1">нет</option>
-                    <option value="1">есть</option>
+                    <option value="-1" {if -1==$filter.gps}selected{/if}>нет</option>
+                    <option value="1" {if 1==$filter.gps}selected{/if}>есть</option>
                 </select>
             </td>
             <td>
