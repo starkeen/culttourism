@@ -6,6 +6,8 @@ class DadataAPI {
     const PHONE = 'phone';
 
     protected $url = 'https://dadata.ru/api/v2/clean/';
+    protected $keyToken;
+    protected $keySecret;
     protected $fields = array(
         self::ADDRESS => array(
             'direct' => array('source', 'result', 'geo_lat', 'geo_lon', 'qc_geo', 'unparsed_parts',),
@@ -17,6 +19,9 @@ class DadataAPI {
     protected $curl;
 
     public function __construct(MyDB $db) {
+        $sp = new MSysProperties($db);
+        $this->keyToken = $sp->getByName('app_dadata_token');
+        $this->keySecret = $sp->getByName('app_dadata_secret');
         $this->curl = new Curl($db);
     }
 
@@ -40,8 +45,8 @@ class DadataAPI {
         $json = json_encode($context);
 
         $this->curl->addHeader('Content-Type', 'application/json');
-        $this->curl->addHeader('Authorization', 'Token bb95c26ae9c391ba2e9ca283024a123eae8c009b');
-        $this->curl->addHeader('X-Secret', '91fdd05aaa1f98ceeeecdfd9d147fdec1490665f');
+        $this->curl->addHeader('Authorization', 'Token ' . $this->keyToken);
+        $this->curl->addHeader('X-Secret', $this->keySecret);
         $this->curl->config(CURLOPT_SSL_VERIFYPEER, false);
         $out = $this->curl->post($this->url . $type, $json);
 

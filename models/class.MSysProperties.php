@@ -71,7 +71,6 @@ class MSysProperties extends Model {
         $this->_db->sql = "SELECT sp_value
                             FROM $this->_table_name
                             WHERE sp_name = :name";
-
         $this->_db->execute(array(
             ':name' => $name,
         ));
