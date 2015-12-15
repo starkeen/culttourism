@@ -130,6 +130,7 @@ class DataChecker {
                                     AND dc.dc_type = :item_type
                                     AND dc.dc_field = :field
                             WHERE t.$active > 0
+                                AND t.$this->entity_field != ''
                             GROUP BY t.$this->entity_id
                             ORDER BY dc.dc_date
                             LIMIT :limit";
