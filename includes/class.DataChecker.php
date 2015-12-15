@@ -99,6 +99,27 @@ class DataChecker {
 
         return $log;
     }
+    
+    public function repairBlog($count = 10) {
+        $log = array();
+        $this->entity_type = 'blogentries';
+        $this->entity_id = 'br_id';
+        $dc = new MDataCheck($this->db);
+        $be = new MBlogEntries($this->db);
+        
+        $typograf = $this->buildTypograph();
+        $this->entity_field = 'br_text';
+        $items = $this->getCheckingPortion($count, 'br_id');
+        foreach ($items as $item) {
+            $typograf->set_text($item[$this->entity_field]);
+            $cleaned = $typograf->apply();
+            $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+            $be->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
+            $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
+        }
+        
+        return $log;
+    }
 
     public function getCheckingPortion($limit, $active) {
         $checkertable = $this->db->getTableName('data_check');
@@ -108,7 +129,7 @@ class DataChecker {
                                 LEFT JOIN $checkertable dc ON dc.dc_item_id = t.$this->entity_id
                                     AND dc.dc_type = :item_type
                                     AND dc.dc_field = :field
-                            WHERE t.$active = 1
+                            WHERE t.$active > 0
                             GROUP BY t.$this->entity_id
                             ORDER BY dc.dc_date
                             LIMIT :limit";
