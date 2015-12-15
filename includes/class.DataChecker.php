@@ -109,7 +109,7 @@ class DataChecker {
         $cp = new MCandidatePoints($this->db);
 
         $api = new DadataAPI($this->db);
-        if ($api->getBalance()) {
+        if ($api->getBalance() == 0) {
             echo 'Баланс Dadata.ru нулевой';
             return;
         }
