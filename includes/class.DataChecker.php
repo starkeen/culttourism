@@ -111,7 +111,8 @@ class DataChecker {
         $api = new DadataAPI($this->db);
         $items = $this->getCheckingPortion($count, 'cp_active', true);
         foreach ($items as $item) {
-            $response = $api->check(DadataAPI::ADDRESS, $item[$this->entity_field]);
+            $addr = preg_replace('/(\d{3})(\s{1})(\d{3})/', '$1$3', $item[$this->entity_field]);
+            $response = $api->check(DadataAPI::ADDRESS, $addr);
             $result = $response[0]['result'];
             if ($response[0]['quality_parse'] == 0) {
                 $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
