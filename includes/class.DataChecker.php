@@ -135,7 +135,7 @@ class DataChecker {
                 $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
                 $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
 
-                if ($response[0]['qc_geo'] == 0) {
+                if ($item['cp_latitude'] == 0 && $item['cp_longitude'] == 0 && $response[0]['qc_geo'] == 0) {
                     $geodata = array(
                         'cp_latitude' => $response[0]['geo_lat'],
                         'cp_longitude' => $response[0]['geo_lon'],
