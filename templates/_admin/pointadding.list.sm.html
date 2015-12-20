@@ -1,7 +1,7 @@
 <img class="pageicon" src="/img/admin/ico.a_refs.gif" />
 <h3>{$title}</h3>
 
-<table class="commontable" style="float:left;">
+<table class="commontable pointadding-list" style="float:left;">
     <tr>
         <th>Регион</th>
         {foreach from=$matrix.types key=tid item=t}
@@ -106,16 +106,3 @@
         {/foreach}
     </table>
 </form>
-
-<style type="text/css">
-    .commontable tr td:first-child {
-        text-align: center;
-    }
-    .commontable tr td.m_checked {
-        background-color:#bcf5bc;
-    }
-    .commontable tr td span {
-        font-size: 70%;
-        color: #777;
-    }
-</style>

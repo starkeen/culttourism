@@ -260,6 +260,16 @@ input, textarea, select, #addmdbtn, hr {
     text-decoration: none;
     border-bottom: 1px dotted #4169E1;
 }
+.pointadding-list tr td:first-child {
+    text-align: center;
+}
+.pointadding-list tr td.m_checked {
+    background-color:#bcf5bc;
+}
+.pointadding-list tr td span {
+    font-size: 70%;
+    color: #777;
+}
 
 /* --------------------------------------  STAT_YANDEX ------------------------ */
 .ws-counts .ws-counts-minmax {
