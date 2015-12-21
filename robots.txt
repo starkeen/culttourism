@@ -2,6 +2,7 @@ User-agent: *
 Disallow: /sign/
 Disallow: /cgi-bin/
 Disallow: /ajax/
+Disallow: /addons/
 Disallow: /city/detail/
 Sitemap: https://culttourism.ru/sitemap.xml
 
@@ -9,5 +10,6 @@ User-agent: Yandex
 Disallow: /sign/
 Disallow: /cgi-bin/
 Disallow: /ajax/
+Disallow: /addons/
 Disallow: /city/detail/
 Host: https://culttourism.ru
