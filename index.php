@@ -66,7 +66,7 @@ header('Content-Type: text/html; charset=utf-8');
 if (_CACHE_DAYS != 0 && !$page->isAjax) {
     header('Expires: ' . $page->expiredate);
     header('Last-Modified: ' . $page->lastedit);
-    header('Cache-Control: private, max-age=' . _CACHE_DAYS * 3600);
+    header('Cache-Control: public, max-age=' . _CACHE_DAYS * 3600);
 
     $headers = getallheaders();
     if (isset($headers['If-Modified-Since'])) {
