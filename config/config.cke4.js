@@ -46,6 +46,16 @@ CKEDITOR.editorConfig = function(config) {
                 {name: 'insert', items: ['Image', 'Table']},
                 {name: 'styles', items: ['Format', 'FontSize']}
             ];
+    config.toolbar_Blog =
+            [
+                {name: 'document', items: ['Source']},
+                {name: 'clipboard', items: ['PasteFromWord', '-', 'Undo', 'Redo']},
+                {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline']},
+                {name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight']},
+                {name: 'links', items: ['Link', 'Unlink']},
+                {name: 'insert', items: ['Image', 'Table']},
+                {name: 'styles', items: ['Format', 'FontSize']}
+            ];
     config.toolbar_City =
             [
                 {name: 'document', items: ['Source']},
