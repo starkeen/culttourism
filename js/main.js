@@ -452,7 +452,7 @@ $(document).ready(function () {
             $("#eblog_text").ckeditor({
                 customConfig: '/config/config.cke4.js',
                 height: '250px',
-                toolbar: 'Lite'
+                toolbar: 'Blog'
             });
             $("#eblog_date").datepicker({
                 dateFormat: "dd.mm.yy"
