@@ -92,10 +92,10 @@ $(document).ready(function () {
                 id: $("#pc_id").val(),
                 ntitle: $("#pc_title_edit").val()
             },
-            function (data) {
-                $("div#pc_title_handler input").hide();
-                $("#pc_title_edit").removeClass("hiddenedit_active").val(data);
-            });
+                    function (data) {
+                        $("div#pc_title_handler input").hide();
+                        $("#pc_title_edit").removeClass("hiddenedit_active").val(data);
+                    });
             $(document).css("cursor", "default");
         }
 
@@ -377,12 +377,12 @@ $(document).ready(function () {
             pt_lon: $("#obj_lon").val(),
             pt_zoom: $("#obj_zoom").val()
         },
-        function (resp) {
-            if (resp) {
-                $("#gps_" + $("#obj_id").val()).text(resp);
-                $.modal.close()
-            }
-        })
+                function (resp) {
+                    if (resp) {
+                        $("#gps_" + $("#obj_id").val()).text(resp);
+                        $.modal.close()
+                    }
+                })
     });
     $("#pt_latlon_handler input.doesc").live("click", function () {//------------ escape
         $.modal.close();
@@ -401,13 +401,13 @@ $(document).ready(function () {
             pc_lon: $("#city_lon").val(),
             pc_zoom: $("#city_zoom").val()
         },
-        function (a) {
-            if (a) {
-                $("#pc_latitude").val($("#city_lat").val());
-                $("#pc_longitude").val($("#city_lon").val());
-                $.modal.close();
-            }
-        })
+                function (a) {
+                    if (a) {
+                        $("#pc_latitude").val($("#city_lat").val());
+                        $("#pc_longitude").val($("#city_lon").val());
+                        $.modal.close();
+                    }
+                })
     });
     $("#pc_latlon_handler input.doesc").live("click", function () {//------------ escape
         $.modal.close();
@@ -592,8 +592,7 @@ $(document).ready(function () {
                 $scrollerTopButton.stop().animate({
                     top: '50%'
                 }, 500);
-            }
-            else {
+            } else {
                 $scrollerTopButton.stop().animate({
                     top: '-100px'
                 }, 500);
@@ -658,8 +657,7 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
                 $("#city_lon").val(coords[0]);
                 $("#city_zoom").val(map.getZoom());
             });
-        }
-        else if (f_point == 0) {//от координат города
+        } else if (f_point == 0) {//от координат города
             var mapOnClick = function (e) {
                 map.events.remove("click", mapOnClick);
                 var coords = e.get('coords');
@@ -691,8 +689,7 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
                 map.geoObjects.add(myPlacemark);
             };
             map.events.add('click', mapOnClick);
-        }
-        else if (f_point == 1) {//от имеющихся координат объекта
+        } else if (f_point == 1) {//от имеющихся координат объекта
             myPlacemark = new ymaps.Placemark([c_lon, c_lat], {
                 hintContent: "Перетащите для изменения координат",
                 balloonContent: $("#obj_name").text()
@@ -748,11 +745,11 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
                 id: $("#obj_id").val(),
                 addr: $("#obj_addr_searcher").text()
             },
-            function (resp) {
-                if (resp) {
-                    $(".savereverse").hide();
-                }
-            });
+                    function (resp) {
+                        if (resp) {
+                            $(".savereverse").hide();
+                        }
+                    });
         });
 
 

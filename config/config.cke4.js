@@ -1,8 +1,8 @@
-CKEDITOR.editorConfig = function(config) {
+CKEDITOR.editorConfig = function (config) {
     config.height = '400px';
     config.language = 'ru';
     config.uiColor = '#F0FFFF';
-    config.toolbar = 'Main';
+
     config.toolbar_Full =
             [
                 {name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates']},
@@ -51,7 +51,7 @@ CKEDITOR.editorConfig = function(config) {
                 {name: 'document', items: ['Source']},
                 {name: 'clipboard', items: ['PasteFromWord', '-', 'Undo', 'Redo']},
                 {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline']},
-                {name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight']},
+                {name: 'paragraph', items: ['NumberedList', 'BulletedList', 'JustifyLeft', 'JustifyCenter', 'JustifyRight']},
                 {name: 'links', items: ['Link', 'Unlink']},
                 {name: 'insert', items: ['Image', 'Table']},
                 {name: 'styles', items: ['Format', 'FontSize']}
@@ -66,6 +66,8 @@ CKEDITOR.editorConfig = function(config) {
                 {name: 'insert', items: ['Image', 'Table']},
                 {name: 'styles', items: ['Format', 'FontSize']}
             ];
+    config.toolbar = 'Blog';
+    config.extraPlugins = 'justify';
     config.stylesSet = [];
     config.contentsCss = '/css/editors.css';
     config.disableNativeSpellChecker = false;
