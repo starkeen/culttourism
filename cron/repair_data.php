@@ -25,3 +25,5 @@ $pt->repairLinksAbsRel();
 $pc->repairLinksAbsRel();
 $ls->repairLinksAbsRel();
 $bg->repairLinksAbsRel();
+
+$bg->detectPictures();

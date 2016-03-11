@@ -13,6 +13,7 @@ class MBlogEntries extends Model {
             'br_title',
             'br_url',
             'br_text',
+            'br_picture',
             'br_us_id',
             'br_active',
         );
@@ -93,6 +94,32 @@ class MBlogEntries extends Model {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET br_text = REPLACE(br_text, '=\"https://" . _URL_ROOT . "/', '=\"/')";
         $this->_db->exec();
+    }
+
+    /**
+     * По всем записям проставляет главную картинку (ссылку)
+     */
+    public function detectPictures() {
+        $this->_db->sql = "SELECT bg.*
+                            FROM $this->_table_name bg
+                             WHERE bg.br_picture = ''
+                             ORDER BY bg.br_date DESC
+                             LIMIT :limit";
+        $this->_db->execute(array(
+            ':limit' => 20,
+        ));
+        $items = $this->_db->fetchAll();
+        foreach ($items as $item) {
+            $matches = array();
+            preg_match('/< *img[^>]*src *= *["\']?([^"\']*)/i', $item['br_text'], $matches);
+            $url = !empty($matches[1]) ? $matches[1] : '';
+            if (substr($url, 0, 1) == '/') {
+                $url = "http://" . _URL_ROOT . $url;
+            }
+            $this->updateByPk($item['br_id'], array(
+                'br_picture' => $url,
+            ));
+        }
     }
 
 }
