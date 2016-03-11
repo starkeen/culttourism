@@ -114,7 +114,7 @@ class MBlogEntries extends Model {
             preg_match('/< *img[^>]*src *= *["\']?([^"\']*)/i', $item['br_text'], $matches);
             $url = !empty($matches[1]) ? $matches[1] : '';
             if (substr($url, 0, 1) == '/') {
-                $url = "http://" . _URL_ROOT . $url;
+                $url = "https://" . _URL_ROOT . $url;
             }
             $this->updateByPk($item['br_id'], array(
                 'br_picture' => $url,
