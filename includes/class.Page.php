@@ -220,6 +220,11 @@ class Page extends PageCommon {
                 $this->addKeywords($row['pc_title_synonym']);
             }
 
+            $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $this->canonical);
+            $this->addOGMeta('title', 'Достопримечательности ' . $row['pc_inwheretext']);
+            $this->addOGMeta('description', $row['pc_description']);
+            $this->addOGMeta('updated_time', $this->lastedit_timestamp);
+
             $this->smarty->assign('city', $row);
             $this->smarty->assign('points', $points_data['points']);
             $this->smarty->assign('points_sight', $points_data['points_sight']);
