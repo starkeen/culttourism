@@ -15,6 +15,10 @@ class PageCommon extends Core {
         $this->key_yandexmaps = $this->globalsettings['key_yandexmaps'];
         $this->mainfile_css = $this->globalsettings['mainfile_css'];
         $this->mainfile_js = $this->globalsettings['mainfile_js'];
+        
+        $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $_SERVER['REQUEST_URI']);
+        $this->addOGMeta('title', $this->title);
+        $this->addOGMeta('description', $this->description);
 
         if (isset($_SESSION['user'])) {
             $this->user['object'] = $_SESSION['user'];
