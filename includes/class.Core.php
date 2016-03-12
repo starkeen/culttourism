@@ -165,7 +165,7 @@ abstract class Core {
         if (!in_array($key, $allowTags)) {
             return false;
         }
-        $val = trim(strip_tags($value));
+        $val = trim(html_entity_decode(strip_tags($value)));
         if (empty($val)) {
             return false;
         }

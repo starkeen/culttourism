@@ -104,6 +104,12 @@ class Page extends PageCommon {
         if (isset($object['gps_dec'])) {
             $this->addKeywords('координаты GPS');
         }
+
+        $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $this->canonical);
+        $this->addOGMeta('title', $object['esc_name']);
+        $this->addOGMeta('description', $object['pt_description']);
+        $this->addOGMeta('updated_time', $this->lastedit_timestamp);
+
         $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=point') : $this->globalsettings['res_js_point'];
 
         $this->smarty->assign('object', $object);
