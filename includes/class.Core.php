@@ -90,6 +90,7 @@ abstract class Core {
             $this->addDescription($row['md_description']);
             $this->addOGMeta('site_name', $this->globalsettings['default_pagetitle']);
             $this->addOGMeta('locale', 'ru_RU');
+            $this->addOGMeta('type', 'website');
             $this->isCounters = $row['md_counters'];
             $this->content = $row['md_pagecontent'];
             $this->md_id = $row['md_id'];
