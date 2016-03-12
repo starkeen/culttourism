@@ -8,6 +8,10 @@
         <title>{$page->title}</title>
         <meta name="keywords" content="{$page->keywords|escape:"html"}" />
               <meta name="description" content="{$page->description|escape:"html"}" />
+                    <meta property="fb:admins" content="787133747" />
+                    {foreach from=$page->getOGMetas() key=property item=content}
+                    <meta property="{$property}" content="{$content|truncate:200}"/>
+                    {/foreach}
               <meta name="robots" content="index, follow" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <meta name="revisit-after" content="7 days" />

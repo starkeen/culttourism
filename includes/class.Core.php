@@ -16,6 +16,8 @@ abstract class Core {
     public $keywords = 'достопримечательности';
     private $_description = array();
     public $description = '';
+    private $metaTags = array();
+    private $metaTagsOpenGraph = array();
     public $canonical = null;
     public $h1 = '';
     public $counters = '';
@@ -86,6 +88,8 @@ abstract class Core {
             $this->addKeywords($row['md_keywords']);
             $this->description = $this->globalsettings['default_pagedescription'];
             $this->addDescription($row['md_description']);
+            $this->addOGMeta('site_name', $this->globalsettings['default_pagetitle']);
+            $this->addOGMeta('locale', 'ru_RU');
             $this->isCounters = $row['md_counters'];
             $this->content = $row['md_pagecontent'];
             $this->md_id = $row['md_id'];
@@ -114,22 +118,55 @@ abstract class Core {
         }
     }
 
+    /**
+     * 
+     * @param string $text
+     */
     public function addTitle($text) {
         $this->_title[] = $text;
         krsort($this->_title);
         $this->title = implode(' ' . $this->globalsettings['title_delimiter'] . ' ', $this->_title);
     }
 
+    /**
+     * 
+     * @param string $text
+     */
     public function addKeywords($text) {
         $this->_keywords[] = $text;
         krsort($this->_keywords);
         $this->keywords = implode(', ', $this->_keywords);
     }
 
+    /**
+     * 
+     * @param string $text
+     */
     public function addDescription($text) {
         $this->_description[] = trim($text);
         krsort($this->_description);
         $this->description = implode('. ', $this->_description);
+    }
+
+    /**
+     * Добавляет в разметку мета-теги OpenGraph
+     * @param string $key
+     * @param string $value
+     */
+    public function addOGMeta($key, $value) {
+        $allowTags = array('title', 'type', 'locale', 'url', 'image', 'site_name', 'description');
+        if (!in_array($key, $allowTags)) {
+            return false;
+        }
+        $val = trim(strip_tags($value));
+        if (empty($val)) {
+            return false;
+        }
+        $this->metaTagsOpenGraph['og:' . $key] = $val;
+    }
+
+    public function getOGMetas() {
+        return $this->metaTagsOpenGraph;
     }
 
     private function getSuggestions404Local($req) {

@@ -81,6 +81,21 @@ class Page extends PageCommon {
         } else {
             $this->getError('404');
         }
+        $this->addTitle($entry['br_title']);
+        $this->addDescription($entry['br_title']);
+        $this->addKeywords($entry['br_title']);
+        $this->addKeywords($entry['br_url']);
+        $this->addKeywords('месяц ' . $entry['bg_month']);
+        $this->addKeywords($entry['bg_year'] . ' год');
+        $this->lastedit_timestamp = $entry['last_update'];
+        $this->canonical = $entry['br_canonical'];
+        $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $entry['br_canonical']);
+        $this->addOGMeta('type', 'article');
+        $this->addOGMeta('title', $entry['br_title']);
+        $this->addOGMeta('description', $entry['br_text']);
+        if (!empty($entry['br_picture'])) {
+            $this->addOGMeta('image', $entry['br_picture']);
+        }
         $this->smarty->assign('entry', $entry);
         return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.one.sm.html');
     }
@@ -196,13 +211,7 @@ class Page extends PageCommon {
             return FALSE;
         }
         $out = $this->db->fetch();
-        $this->addTitle($out['br_title']);
-        $this->addDescription($out['br_title']);
-        $this->addKeywords($out['br_title']);
-        $this->addKeywords($out['br_url']);
-        $this->addKeywords('месяц ' . $out['bg_month']);
-        $this->addKeywords($out['bg_year'] . ' год');
-        $this->lastedit_timestamp = $out['last_update'];
+        $out['br_canonical'] = '/blog/' . $out['bg_year']. '/'.$out['bg_month'].'/'.$out['br_url'].'.html';
         return $out;
     }
 
