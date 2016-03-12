@@ -16,7 +16,7 @@ abstract class Core {
     public $keywords = 'достопримечательности';
     private $_description = array();
     public $description = '';
-    private $metaTags = array();
+    private $metaTagsCustom = array();
     private $metaTagsOpenGraph = array();
     public $canonical = null;
     public $h1 = '';
@@ -169,15 +169,30 @@ abstract class Core {
         if (!in_array($key, $allowTags)) {
             return false;
         }
+        $this->addCustomMeta('og:' . $key, $value);
+    }
+
+    /**
+     * Добавление произвольного мета-тега
+     * @param string $key
+     * @param string $value
+     * @return boolean
+     */
+    public function addCustomMeta($key, $value) {
         $val = trim(html_entity_decode(strip_tags($value)));
         if (empty($val)) {
             return false;
         }
-        $this->metaTagsOpenGraph['og:' . $key] = $val;
+        $this->metaTagsCustom[$key] = $val;
     }
 
-    public function getOGMetas() {
-        return $this->metaTagsOpenGraph;
+    /**
+     * Получение набора кастомных мета-тегов
+     * @return array
+     */
+    public function getCustomMetas() {
+        ksort($this->metaTagsCustom);
+        return $this->metaTagsCustom;
     }
 
     private function getSuggestions404Local($req) {
