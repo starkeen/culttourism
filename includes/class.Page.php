@@ -105,6 +105,7 @@ class Page extends PageCommon {
             $this->addKeywords('координаты GPS');
         }
 
+        $this->addOGMeta('type', 'article');
         $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $this->canonical);
         $this->addOGMeta('title', $object['esc_name']);
         $this->addOGMeta('description', $object['pt_description']);
@@ -220,6 +221,7 @@ class Page extends PageCommon {
                 $this->addKeywords($row['pc_title_synonym']);
             }
 
+            $this->addOGMeta('type', 'article');
             $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $this->canonical);
             $this->addOGMeta('title', 'Достопримечательности ' . $row['pc_inwheretext']);
             $this->addOGMeta('description', $row['pc_description']);
