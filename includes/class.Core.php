@@ -91,8 +91,9 @@ abstract class Core {
             $this->addOGMeta('site_name', $this->globalsettings['default_pagetitle']);
             $this->addOGMeta('locale', 'ru_RU');
             $this->addOGMeta('type', 'website');
+            $this->addOGMeta('app_id', '345000545624253');
             $this->addOGMeta('url', _SITE_URL);
-            $this->addOGMeta('image', _SITE_URL.'img/header/logotype-200.jpg');
+            $this->addOGMeta('image', _SITE_URL . 'img/header/logotype-200.jpg');
             $this->addOGMeta('title', $this->globalsettings['default_pagetitle']);
             $this->addOGMeta('description', $this->globalsettings['default_pagedescription']);
             $this->addOGMeta('updated_time', $this->lastedit_timestamp);
@@ -160,7 +161,7 @@ abstract class Core {
      * @param string $value
      */
     public function addOGMeta($key, $value) {
-        $allowTags = array('title', 'type', 'locale', 'url', 'image', 'site_name', 'description', 'updated_time');
+        $allowTags = array('app_id', 'title', 'type', 'locale', 'url', 'image', 'site_name', 'description', 'updated_time');
         if (!in_array($key, $allowTags)) {
             return false;
         }
