@@ -2,6 +2,8 @@
 
 class Page extends PageCommon {
 
+    const DESCRIPTION_TRESHOLD = 200;
+
     public function __construct($db, $mod) {
         parent::__construct($db, $mod[0]); //встроеные модули
         //if ($mod[1]!=null) $this->getSubContent($this->md_id, $mod[1]);
@@ -64,8 +66,8 @@ class Page extends PageCommon {
 
         $city = $pcs->getItemByPk($object['pt_citypage_id']);
 
-        $short = strip_tags($object['pt_description']);
-        $short = mb_strlen($short) >= 100 ? mb_substr($short, 0, mb_strpos($short, ' ', 100), 'utf-8') : $short;
+        $shortDescr = strip_tags($object['pt_description']);
+        $short = mb_strlen($shortDescr) >= self::DESCRIPTION_TRESHOLD ? mb_substr($shortDescr, 0, mb_strpos($shortDescr, ' ', self::DESCRIPTION_TRESHOLD), 'utf-8') : $shortDescr;
         $object['esc_name'] = htmlentities($object['pt_name'], ENT_QUOTES, 'utf-8');
         $object['map_zoom'] = ($object['pt_latlon_zoom']) ? $object['pt_latlon_zoom'] : 14;
         if ($object['pt_latitude'] && $object['pt_longitude']) {
@@ -95,7 +97,7 @@ class Page extends PageCommon {
 
         $this->addDataLD('@type', 'Place');
         $this->addDataLD('name', $object['esc_name']);
-        $this->addDataLD('description', $object['pt_description']);
+        $this->addDataLD('description', $short);
         $this->addDataLD('address', array(
             '@type' => 'PostalAddress',
             'addressLocality' => $city['pc_title_unique'],
@@ -128,7 +130,7 @@ class Page extends PageCommon {
         $this->addOGMeta('type', 'article');
         $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $this->canonical);
         $this->addOGMeta('title', $object['esc_name']);
-        $this->addOGMeta('description', $object['pt_description']);
+        $this->addOGMeta('description', $short);
         $this->addOGMeta('updated_time', $this->lastedit_timestamp);
 
         if (!empty($object['pt_description'])) {
