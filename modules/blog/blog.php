@@ -81,6 +81,9 @@ class Page extends PageCommon {
         } else {
             $this->getError('404');
         }
+        if (empty($entry['br_title'])) {
+            $this->getError('404');
+        }
         $this->addTitle($entry['br_title']);
         $this->addDescription($entry['br_title']);
         $this->addKeywords($entry['br_title']);
@@ -211,7 +214,7 @@ class Page extends PageCommon {
             return FALSE;
         }
         $out = $this->db->fetch();
-        $out['br_canonical'] = '/blog/' . $out['bg_year']. '/'.$out['bg_month'].'/'.$out['br_url'].'.html';
+        $out['br_canonical'] = '/blog/' . $out['bg_year'] . '/' . $out['bg_month'] . '/' . $out['br_url'] . '.html';
         return $out;
     }
 
