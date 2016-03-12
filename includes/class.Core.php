@@ -91,7 +91,11 @@ abstract class Core {
             $this->addOGMeta('site_name', $this->globalsettings['default_pagetitle']);
             $this->addOGMeta('locale', 'ru_RU');
             $this->addOGMeta('type', 'website');
+            $this->addOGMeta('url', _SITE_URL);
+            $this->addOGMeta('image', _SITE_URL.'img/header/logotype-200.jpg');
             $this->addOGMeta('title', $this->globalsettings['default_pagetitle']);
+            $this->addOGMeta('description', $this->globalsettings['default_pagedescription']);
+            $this->addOGMeta('updated_time', $this->lastedit_timestamp);
             $this->isCounters = $row['md_counters'];
             $this->content = $row['md_pagecontent'];
             $this->md_id = $row['md_id'];
@@ -156,7 +160,7 @@ abstract class Core {
      * @param string $value
      */
     public function addOGMeta($key, $value) {
-        $allowTags = array('title', 'type', 'locale', 'url', 'image', 'site_name', 'description');
+        $allowTags = array('title', 'type', 'locale', 'url', 'image', 'site_name', 'description', 'updated_time');
         if (!in_array($key, $allowTags)) {
             return false;
         }
