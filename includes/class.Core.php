@@ -17,7 +17,9 @@ abstract class Core {
     private $_description = array();
     public $description = '';
     private $metaTagsCustom = array();
-    private $metaTagsOpenGraph = array();
+    private $metaTagsJSONLD = array(
+        '@context' => 'http://schema.org',
+    );
     public $canonical = null;
     public $h1 = '';
     public $counters = '';
@@ -81,6 +83,8 @@ abstract class Core {
         $this->addOGMeta('app_id', '345000545624253');
         $this->addOGMeta('url', _SITE_URL);
         $this->addOGMeta('image', _SITE_URL . 'img/header/logotype-200.jpg');
+
+        $this->addDataLD('image', _SITE_URL . 'img/header/logotype-200.jpg');
 
         if (!empty($row)) {
             if ($row['md_redirect'] !== null) {
@@ -193,6 +197,33 @@ abstract class Core {
     public function getCustomMetas() {
         ksort($this->metaTagsCustom);
         return $this->metaTagsCustom;
+    }
+
+    /**
+     * Добавляет данные в набор JSON+LD
+     * @param string $key
+     * @param string $value
+     * @return boolean
+     */
+    public function addDataLD($key, $value) {
+        if (is_scalar($value)) {
+            $val = trim(html_entity_decode(strip_tags($value)));
+        } elseif (is_array($value)) {
+            $val = array_filter($value);
+        }
+        if (empty($val)) {
+            return false;
+        }
+        $this->metaTagsJSONLD[$key] = $val;
+    }
+
+    /**
+     * Данные для блока ld+json
+     * @return string
+     */
+    public function getJSONLD() {
+        ksort($this->metaTagsJSONLD);
+        return !empty($this->metaTagsJSONLD['@type']) ? $this->metaTagsJSONLD : null;
     }
 
     private function getSuggestions404Local($req) {

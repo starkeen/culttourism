@@ -90,15 +90,31 @@ class Page extends PageCommon {
 
         $this->addTitle($city['pc_title_unique']);
         $this->addTitle($object['esc_name']);
+
         $this->addCustomMeta('business:contact_data:locality', $city['pc_title_unique']);
+
+        $this->addDataLD('@type', 'Place');
+        $this->addDataLD('name', $object['esc_name']);
+        $this->addDataLD('description', $object['pt_description']);
+        $this->addDataLD('address', array(
+            '@type' => 'PostalAddress',
+            'addressLocality' => $city['pc_title_unique'],
+        ));
+
         if ($object['tr_sight']) {
             $this->addDescription('Достопримечательности ' . $city['pc_inwheretext']);
         }
         if (isset($object['gps_dec'])) {
             $this->addDescription('GPS-координаты');
-            
+
             $this->addCustomMeta('place:location:latitude', $object['pt_latitude']);
             $this->addCustomMeta('place:location:longitude', $object['pt_longitude']);
+
+            $this->addDataLD('geo', array(
+                '@type' => 'GeoCoordinates',
+                'latitude' => $object['pt_latitude'],
+                'longitude' => $object['pt_longitude'],
+            ));
         }
         $this->addDescription("{$object['tp_short']} {$city['pc_inwheretext']}");
         $this->addDescription($object['esc_name']);
@@ -114,12 +130,17 @@ class Page extends PageCommon {
         $this->addOGMeta('title', $object['esc_name']);
         $this->addOGMeta('description', $object['pt_description']);
         $this->addOGMeta('updated_time', $this->lastedit_timestamp);
-        
+
         if (!empty($object['pt_description'])) {
             $this->addCustomMeta('business:contact_data:website', $object['pt_website']);
+            $this->addDataLD('url', $object['pt_website']);
         }
         if (!empty($object['pt_description'])) {
             $this->addCustomMeta('business:contact_data:phone_number', $object['pt_phone']);
+            $this->addDataLD('telephone', $object['pt_phone']);
+        }
+        if (!empty($object['pt_worktime'])) {
+            $this->addDataLD('openingHours', $object['pt_worktime']);
         }
 
         $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=point') : $this->globalsettings['res_js_point'];
