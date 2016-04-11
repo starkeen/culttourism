@@ -24,7 +24,8 @@ class MPhotos extends Model {
     }
 
     public function getCityPagesWithoutPhotos() {
-        $this->_db->sql = "SELECT * FROM {$this->_tables_related['pagecity']}
+        $this->_db->sql = "SELECT *
+                            FROM {$this->_tables_related['pagecity']}
                             WHERE pc_coverphoto_id = 0
                             LIMIT 5";
         $this->_db->execute();
