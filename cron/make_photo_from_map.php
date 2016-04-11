@@ -27,9 +27,13 @@ foreach ($cities as $pc) {
             'ph_date_add' => $ph->now(),
         ));
 
-        $city->updateByPk($pc['pc_id'], array(
-            'pc_coverphoto_id' => $id,
-        ));
+        if ($id > 0) {
+            $city->updateByPk($pc['pc_id'], array(
+                'pc_coverphoto_id' => $id,
+            ));
+        } else {
+            echo 'Нулевой идентификатор: ', $pc['pc_title_unique'];
+        }
     } else {
         echo 'Ошибка загрузки карты: ', $pc['pc_title_unique'];
     }
