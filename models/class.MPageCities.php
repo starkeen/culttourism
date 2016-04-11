@@ -32,6 +32,7 @@ class MPageCities extends Model {
             'pc_title_english',
             'pc_title_synonym',
             'pc_website',
+            'pc_coverphoto_id',
             'pc_lastup_date',
             'pc_lastup_user',
             'pc_add_date',
@@ -342,6 +343,17 @@ class MPageCities extends Model {
                                 ON stat.pc = pc.pc_id
                             SET pc.pc_count_metas = stat.cnt";
         $this->_db->exec();
+    }
+
+    public function getCityPagesWithoutPhotos($limit = 5) {
+        $this->_db->sql = "SELECT *
+                            FROM $this->_table_name pc
+                            WHERE pc_coverphoto_id = 0
+                            LIMIT :limit";
+        $this->_db->execute(array(
+            ':limit' => (int) $limit,
+        ));
+        return $this->_db->fetchAll();
     }
 
     /**

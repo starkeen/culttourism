@@ -7,7 +7,8 @@ $size = 500;
 $ph = new MPhotos($db);
 $city = new MPageCities($db);
 
-$cities = $ph->getCityPagesWithoutPhotos();
+$cities = $city->getCityPagesWithoutPhotos();
+
 foreach ($cities as $pc) {
     $url = sprintf("https://maps.googleapis.com/maps/api/staticmap?center=%F,%F&zoom=%d&size=%dx%d&maptype=roadmap&key=%s", $pc['pc_latitude'], $pc['pc_longitude'], $pc['pc_latlon_zoom'], $size, $size, $googleAPIkey);
 
