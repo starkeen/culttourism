@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 
 header('Content-Type: text/html; charset=utf-8');
 include(realpath(dirname(__FILE__) . '/../config/configuration.php'));
-include(_DIR_ROOT . '/includes/class.myDB.php');
+include(_DIR_ROOT . '/includes/class.MyDB.php');
 include(_DIR_ROOT . '/includes/class.mySmarty.php');
 include(_DIR_ROOT . '/includes/class.Logging.php');
 include(_DIR_ROOT . '/includes/debug.php');
