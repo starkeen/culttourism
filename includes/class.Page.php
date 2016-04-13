@@ -260,6 +260,11 @@ class Page extends PageCommon {
             $this->addOGMeta('title', 'Достопримечательности ' . $row['pc_inwheretext']);
             $this->addOGMeta('description', $row['pc_description']);
             $this->addOGMeta('updated_time', $this->lastedit_timestamp);
+            if ($row['pc_coverphoto_id']) {
+                $ph = new MPhotos($this->db);
+                $photo = $ph->getItemByPk($row['pc_coverphoto_id']);
+                $this->addOGMeta('image', rtrim(_SITE_URL, '/') . $photo['ph_src']);
+            }
 
             $this->smarty->assign('city', $row);
             $this->smarty->assign('points', $points_data['points']);
