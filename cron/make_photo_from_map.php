@@ -1,7 +1,7 @@
 <?php
 
-$dirSave = _DIR_DATA . '/photos';
-$dirRelative = '/data/photos';
+$dirSave = _DIR_DATA . '/photos/maps';
+$dirRelative = '/data/photos/maps';
 $googleAPIkey = 'AIzaSyBiuHllm_OCLEKww8y02DJPeePMtvEnTiE';
 $size = 500;
 $ph = new MPhotos($db);
