@@ -33,13 +33,27 @@ class MSearchLog extends Model {
     }
 
     /**
+     * Поиск запросов в логе
+     * @param string $query
+     */
+    public function searchByQuery($query) {
+        $this->_db->sql = "SELECT * FROM $this->_table_name WHERE sl_query_hash = :hash";
+        $this->_db->execute(array(
+            ':hash' => self::getQueryHash($query),
+        ));
+        $row = $this->_db->fetch();
+        return $row['sl_answer'];
+    }
+
+    /**
      * Индексируемый ключ уникализации запроса
      * @param type $query
      */
     public static function getQueryHash($query) {
         $lower = mb_strtolower($query);
         $symbols = preg_replace('|s+|', '', $lower);
-        return md5($symbols);
+        $trimmed = trim($symbols);
+        return sha1($trimmed);
     }
 
 }
