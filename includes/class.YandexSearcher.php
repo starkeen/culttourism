@@ -38,6 +38,7 @@ class YandexSearcher {
         if ($this->loggingEnabled) {
             $cached = $this->logger->searchByQuery($request);
             if (!empty($cached)) {
+                $this->logger->updateHashData($request);
                 $results = $this->parseResponse($cached);
                 $out['results'] = $results;
                 $out['pages_cnt'] = $this->meta['pages_cnt'];
