@@ -35,10 +35,13 @@ class YandexSearcher {
             'error_code' => null,
             'error_text' => null,
         );
+
+        $doc = $this->buildQuery($request);
+
         if ($this->loggingEnabled) {
-            $cached = $this->logger->searchByQuery($request);
+            $cached = $this->logger->searchByHash($doc);
             if (!empty($cached)) {
-                $this->logger->updateHashData($request);
+                $this->logger->updateHashData($doc);
                 $results = $this->parseResponse($cached);
                 $out['results'] = $results;
                 $out['pages_cnt'] = $this->meta['pages_cnt'];
@@ -47,7 +50,6 @@ class YandexSearcher {
             }
         }
 
-        $doc = $this->buildQuery($request);
         try {
             if ($this->loggingEnabled) {
                 $this->logger->add(array(

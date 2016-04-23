@@ -23,26 +23,35 @@ class MSearchLog extends Model {
         parent::__construct($db);
     }
 
+    /**
+     * 
+     * @param array $data
+     * @return int
+     */
     public function add($data) {
         $data['sl_date'] = $this->now();
         $data['sl_date_last'] = $this->now();
-        $data['sl_query_hash'] = self::getQueryHash($data['sl_query']);
+        $data['sl_query_hash'] = self::getQueryHash($data['sl_request']);
         $this->_record_id = $this->insert($data);
         return $this->_record_id;
     }
 
+    /**
+     * 
+     * @param array $data
+     */
     public function setAnswer($data) {
         $this->updateByPk($this->_record_id, $data);
     }
 
     /**
      * Поиск запросов в логе
-     * @param string $query
+     * @param string $doc
      */
-    public function searchByQuery($query) {
+    public function searchByHash($doc) {
         $this->_db->sql = "SELECT * FROM $this->_table_name WHERE sl_query_hash = :hash";
         $this->_db->execute(array(
-            ':hash' => self::getQueryHash($query),
+            ':hash' => self::getQueryHash($doc),
         ));
         $row = $this->_db->fetch();
         return $row['sl_answer'];
@@ -50,15 +59,15 @@ class MSearchLog extends Model {
 
     /**
      * Увеличиваем счетчик попыток поиска
-     * @param type $query
+     * @param type $doc
      */
-    public function updateHashData($query) {
+    public function updateHashData($doc) {
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 sl_requests_count = sl_requests_count + 1,
                                 sl_date_last = NOW()
                             WHERE sl_query_hash = :hash";
         $this->_db->execute(array(
-            ':hash' => self::getQueryHash($query),
+            ':hash' => self::getQueryHash($doc),
         ));
     }
 
