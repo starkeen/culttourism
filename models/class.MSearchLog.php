@@ -12,6 +12,7 @@ class MSearchLog extends Model {
         $this->_table_fields = array(
             'sl_date',
             'sl_query',
+            'sl_query_hash',
             'sl_request',
             'sl_answer',
             'sl_error_code',
@@ -22,12 +23,23 @@ class MSearchLog extends Model {
 
     public function add($data) {
         $data['sl_date'] = $this->now();
+        $data['sl_query_hash'] = self::getQueryHash($data['sl_query']);
         $this->_record_id = $this->insert($data);
         return $this->_record_id;
     }
 
     public function setAnswer($data) {
         $this->updateByPk($this->_record_id, $data);
+    }
+
+    /**
+     * Индексируемый ключ уникализации запроса
+     * @param type $query
+     */
+    public static function getQueryHash($query) {
+        $lower = mb_strtolower($query);
+        $symbols = preg_replace('|s+|', '', $lower);
+        return md5($symbols);
     }
 
 }
