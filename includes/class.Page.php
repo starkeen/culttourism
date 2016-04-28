@@ -258,7 +258,7 @@ class Page extends PageCommon {
             $this->addOGMeta('type', 'article');
             $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $this->canonical);
             $this->addOGMeta('title', 'Достопримечательности ' . $row['pc_inwheretext']);
-            $this->addOGMeta('description', $row['pc_description']);
+            $this->addOGMeta('description', $row['pc_description'] . ($row['pc_announcement'] ? '. '.$row['pc_announcement'] : ''));
             $this->addOGMeta('updated_time', $this->lastedit_timestamp);
             if ($row['pc_coverphoto_id']) {
                 $ph = new MPhotos($this->db);
