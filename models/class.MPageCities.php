@@ -349,6 +349,7 @@ class MPageCities extends Model {
         $this->_db->sql = "SELECT *
                             FROM $this->_table_name pc
                             WHERE pc_coverphoto_id = 0
+                            ORDER BY pc_rank DESC, pc_id
                             LIMIT :limit";
         $this->_db->execute(array(
             ':limit' => (int) $limit,
