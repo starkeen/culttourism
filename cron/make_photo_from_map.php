@@ -21,6 +21,7 @@ foreach ($cities as $pc) {
             'ph_src' => $dirRelative . '/' . $fileName,
             'ph_title' => $pc['pc_title_unique'],
             'ph_author' => 'Google Maps',
+            'ph_link' => 'https://www.google.ru/maps/@' . $pc['pc_latitude'] . ',' . $pc['pc_longitude'] . ',' . $pc['pc_latlon_zoom'] . 'z?hl=ru',
             'ph_width' => $size,
             'ph_height' => $size,
             'ph_lat' => $pc['pc_latitude'],
