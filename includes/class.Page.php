@@ -263,7 +263,8 @@ class Page extends PageCommon {
             if ($row['pc_coverphoto_id']) {
                 $ph = new MPhotos($this->db);
                 $photo = $ph->getItemByPk($row['pc_coverphoto_id']);
-                $this->addOGMeta('image', rtrim(_SITE_URL, '/') . $photo['ph_src']);
+                $image = substr($photo['ph_src'], 0, 1) == '/' ? rtrim(_SITE_URL, '/') . $photo['ph_src'] : $photo['ph_src'];
+                $this->addOGMeta('image', $image);
             }
 
             $this->smarty->assign('city', $row);
