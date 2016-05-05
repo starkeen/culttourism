@@ -19,6 +19,8 @@ class MPhotos extends Model {
             'ph_lon',
             'ph_pc_id',
             'ph_date_add',
+            'ph_order',
+            'ph_active',
         );
         parent::__construct($db);
         $this->_addRelatedTable('pagecity');

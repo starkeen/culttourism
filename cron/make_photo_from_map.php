@@ -28,6 +28,7 @@ foreach ($cities as $pc) {
             'ph_lon' => $pc['pc_longitude'],
             'ph_pc_id' => $pc['pc_id'],
             'ph_date_add' => $ph->now(),
+            'ph_order' => 0,
         ));
 
         if ($id > 0) {
