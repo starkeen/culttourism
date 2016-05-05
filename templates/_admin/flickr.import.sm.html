@@ -1,0 +1,34 @@
+<img class="pageicon" src="/img/admin/ico.a_refs.gif" />
+<h3>{$title}</h3>
+
+<div id="flickr-import-content">
+    <input type="text" id="flickr-import-url" />
+    <input type="button" id="flickr-import-button" value="Запрос" />
+    <div id="flickr-import-console"></div>
+
+    <div id="flickr-import-add" class="m_hide">
+        <input type="text" id="flickr-import-city" value="" placeholder="регион" />
+        <input type="hidden" id="flickr-import-photo-id" value="0" />
+        <input type="hidden" id="flickr-import-city-id" value="0" />
+        <input type="button" id="flickr-import-save" value="Сохранить" />
+    </div>
+
+</div>
+
+
+<script type="text/javascript" src="/js/admin/flickr.js" defer="defer"></script>
+
+<style>
+    #flickr-import-content {
+        margin: 5px;
+    }
+    #flickr-import-url {
+        width: 300px;
+    }
+    #flickr-import-console {
+        min-height: 50px;
+        margin:5px;
+    }
+    #flickr-import-add {
+    }
+</style>
