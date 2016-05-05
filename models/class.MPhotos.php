@@ -17,6 +17,7 @@ class MPhotos extends Model {
             'ph_height',
             'ph_lat',
             'ph_lon',
+            'ph_pc_id',
             'ph_date_add',
         );
         parent::__construct($db);

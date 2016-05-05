@@ -26,6 +26,7 @@ foreach ($cities as $pc) {
             'ph_height' => $size,
             'ph_lat' => $pc['pc_latitude'],
             'ph_lon' => $pc['pc_longitude'],
+            'ph_pc_id' => $pc['pc_id'],
             'ph_date_add' => $ph->now(),
         ));
 
