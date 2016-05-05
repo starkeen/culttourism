@@ -49,6 +49,7 @@ $adm_menu_items[] = array('link' => 'modules.php', 'title' => 'Страницы 
 //$adm_menu_items[] = array('link' => 'counters.php', 'title' => 'Счетчики', 'ico' => 'ico.a_counters.gif');
 $adm_menu_items[] = array('link' => 'points.php', 'title' => 'Точки', 'ico' => 'ico.a_refs.gif');
 $adm_menu_items[] = array('link' => 'parser.php', 'title' => 'Парсер', 'ico' => 'ico.a_refs.gif');
+$adm_menu_items[] = array('link' => 'flickr.php', 'title' => 'Flickr', 'ico' => 'ico.a_refs.gif');
 $adm_menu_items[] = array('link' => 'addpoints.php', 'title' => 'Заявки', 'ico' => 'ico.a_refs.gif');
 $adm_menu_items[] = array('link' => 'lists.php', 'title' => 'Списки', 'ico' => 'ico.a_refs.gif');
 //$adm_menu_items[] = array('link' => 'nogps.php', 'title' => 'Точки без координат', 'ico' => 'ico.a_modules.gif');

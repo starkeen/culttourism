@@ -61,6 +61,5 @@ $smarty->assign('direct_apikey', $direct_apikey);
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/stat_yandex.sm.html'));
 
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
-exit
-();
+exit();
 
