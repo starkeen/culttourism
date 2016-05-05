@@ -17,17 +17,21 @@ if (isset($_GET['act'])) {
         $photoId = $urlParts[5];
 
         $data = $api->getPhotoInfo($photoId);
+        $sizes = $api->getSizes($photoId);
         $out['data'] = $data;
+        $out['sizes'] = $sizes;
     } elseif ($_GET['act'] == 'save') {
         $data = $api->getPhotoInfo($_POST['phid']);
+        $sizes = $api->getSizes($_POST['phid']);
+        $size = $sizes['sizes']['size'][8];
 
-        $ph->insert(array(
+        $id = $ph->insert(array(
             'ph_title' => $data['photo']['title']['_content'],
             'ph_author' => $data['photo']['owner']['realname'],
             'ph_link' => $data['photo']['urls']['url'][0]['_content'],
-            'ph_src' => $data['photo']['urls']['url'][0]['_content'],
-            'ph_width' => 0,
-            'ph_height' => 0,
+            'ph_src' => $size['source'],
+            'ph_width' => $size['width'],
+            'ph_height' => $size['height'],
             'ph_lat' => $data['photo']['location']['latitude'],
             'ph_lon' => $data['photo']['location']['longitude'],
             'ph_pc_id' => (int) $_POST['pcid'],
@@ -35,7 +39,7 @@ if (isset($_GET['act'])) {
             'ph_order' => 10,
         ));
 
-        $out['state'] = true;
+        $out['state'] = $id > 0;
     }
 
     header('Content-Type: application/json');

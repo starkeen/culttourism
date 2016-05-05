@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Класс для работы с API flickr.com
+ */
 class FlickrAPI {
 
     const URL = 'https://api.flickr.com/services/rest/';
@@ -10,12 +13,39 @@ class FlickrAPI {
         $this->token = $token;
     }
 
+    /**
+     * Информация о фотографии
+     * @param int $id
+     * @return array
+     */
     public function getPhotoInfo($id) {
         $requestData = array(
             'api_key' => $this->token,
             'format' => 'json',
             'nojsoncallback' => '1',
             'method' => 'flickr.photos.getInfo',
+            'photo_id' => $id,
+        );
+        $url = self::URL . '?' . http_build_query($requestData);
+        try {
+            $data = $this->request($url);
+            return json_decode($data, true);
+        } catch (Exception $e) {
+            //
+        }
+    }
+
+    /**
+     * Доступные размеры картинки
+     * @param int $id
+     * @return array
+     */
+    public function getSizes($id) {
+        $requestData = array(
+            'api_key' => $this->token,
+            'format' => 'json',
+            'nojsoncallback' => '1',
+            'method' => 'flickr.photos.getSizes',
             'photo_id' => $id,
         );
         $url = self::URL . '?' . http_build_query($requestData);
