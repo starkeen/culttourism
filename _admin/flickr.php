@@ -23,7 +23,7 @@ if (isset($_GET['act'])) {
     } elseif ($_GET['act'] == 'save') {
         $data = $api->getPhotoInfo($_POST['phid']);
         $sizes = $api->getSizes($_POST['phid']);
-        $size = $sizes['sizes']['size'][8];
+        $size = !empty($sizes['sizes']['size'][7]) ? $sizes['sizes']['size'][7] : $sizes['sizes']['size'][6];
 
         $id = $ph->insert(array(
             'ph_title' => $data['photo']['title']['_content'],
