@@ -46,6 +46,7 @@ if (isset($_GET['act'])) {
         if ($pcid > 0) {
             $pc->updateByPk($pcid, array(
                 'pc_coverphoto_id' => $id,
+                'pc_lastup_date' => $pc->now(),
             ));
         }
 
