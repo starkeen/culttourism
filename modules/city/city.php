@@ -452,6 +452,7 @@ class Page extends PageCommon {
                             city.pc_pagepath,
                             city.pc_count_points,
                             city.pc_count_metas,
+                            city.pc_count_photos,
                             ws.ws_weight_max, ws.ws_position,
                             UNIX_TIMESTAMP(city.pc_lastup_date) AS last_update
                     FROM $dbc city
