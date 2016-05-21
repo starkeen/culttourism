@@ -71,6 +71,10 @@ class FlickrAPI {
         }
     }
 
+    public function getLocation() {
+        
+    }
+
     private function request($url) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
