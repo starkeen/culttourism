@@ -33,6 +33,9 @@ class MPageCities extends Model {
             'pc_title_synonym',
             'pc_website',
             'pc_coverphoto_id',
+            'pc_count_points',
+            'pc_count_metas',
+            'pc_count_photos',
             'pc_lastup_date',
             'pc_lastup_user',
             'pc_add_date',
@@ -44,6 +47,7 @@ class MPageCities extends Model {
         $this->_addRelatedTable('region_url');
         $this->_addRelatedTable('pagepoints');
         $this->_addRelatedTable('city_data');
+        $this->_addRelatedTable('photos');
     }
 
     /**
@@ -342,6 +346,14 @@ class MPageCities extends Model {
                                         GROUP BY cd.cd_pc_id) AS stat
                                 ON stat.pc = pc.pc_id
                             SET pc.pc_count_metas = stat.cnt";
+        $this->_db->exec();
+        
+        $this->_db->sql = "UPDATE $this->_table_name pc
+                            LEFT JOIN (SELECT ph.ph_pc_id AS pc, COUNT(1) cnt
+                                        FROM {$this->_tables_related['photos']} ph
+                                        GROUP BY ph.ph_pc_id) AS stat
+                                ON stat.pc = pc.pc_id
+                            SET pc.pc_count_photos = stat.cnt";
         $this->_db->exec();
     }
 
