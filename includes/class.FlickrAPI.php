@@ -19,6 +19,17 @@ class FlickrAPI {
      * @return array
      */
     public function getPhotoInfo($id) {
+        $licenses = array(
+            0 => 'All Rights Reserved',
+            1 => 'Attribution-NonCommercial-ShareAlike License',
+            2 => 'Attribution-NonCommercial License',
+            3 => 'Attribution-NonCommercial-NoDerivs License',
+            4 => 'Attribution License',
+            5 => 'Attribution-ShareAlike License',
+            6 => 'Attribution-NoDerivs License',
+            7 => 'No known copyright restrictions',
+            8 => 'United States Government Work',
+        );
         $requestData = array(
             'api_key' => $this->token,
             'format' => 'json',
@@ -29,7 +40,10 @@ class FlickrAPI {
         $url = self::URL . '?' . http_build_query($requestData);
         try {
             $data = $this->request($url);
-            return json_decode($data, true);
+            $out = json_decode($data, true);
+            $out['photo']['license_text'] = isset($licenses[$out['photo']['license']]) ?
+                    $licenses[$out['photo']['license']] : 'undefined license';
+            return $out;
         } catch (Exception $e) {
             //
         }

@@ -1,6 +1,7 @@
 $(document).ready(function () {
     $("#flickr-import-button").on("click", function () {
         $("#flickr-import-console").text('');
+        $("#flickr-import-preview").text('');
         $.getJSON('flickr.php', {
             act: "fetch",
             url: $("#flickr-import-url").val()
@@ -10,7 +11,17 @@ $(document).ready(function () {
                 $("#flickr-import-console")
                         .append('ID: ' + response.data.photo.id + '<br>')
                         .append('URL: ' + response.data.photo.urls.url[0]._content + '<br>')
-                        .append('title: ' + response.data.photo.title._content + '<br>');
+                        .append('title: ' + response.data.photo.title._content + '<br>')
+                        .append('license: ' + response.data.photo.license_text + '<br>')
+                        .append('permissions: '
+                                + 'blog:' + response.data.photo.usage.canblog + '; '
+                                + 'download:' + response.data.photo.usage.candownload + '; '
+                                + 'print:' + response.data.photo.usage.canprint + '; '
+                                + 'share:' + response.data.photo.usage.canshare + '<br>')
+                        .append('sizes: ' + response.sizes.sizes.size.length + '<br>');
+                var img = new Image();
+                img.src = response.sizes.sizes.size[1].source;
+                $("#flickr-import-preview").append(img);
                 $("#flickr-import-add").removeClass("m_hide");
             }
         });

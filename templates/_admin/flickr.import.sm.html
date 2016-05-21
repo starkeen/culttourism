@@ -5,6 +5,7 @@
     <input type="text" id="flickr-import-url" />
     <input type="button" id="flickr-import-button" value="Запрос" />
     <div id="flickr-import-console"></div>
+    <div id="flickr-import-preview"></div>
 
     <div id="flickr-import-add" class="m_hide">
         <input type="text" id="flickr-import-city" value="" placeholder="регион" />
@@ -20,14 +21,20 @@
 
 <style>
     #flickr-import-content {
+        position: relative;
         margin: 5px;
     }
     #flickr-import-url {
         width: 300px;
     }
     #flickr-import-console {
-        min-height: 50px;
+        min-height: 70px;
         margin:5px;
+    }
+    #flickr-import-preview {
+        position:absolute;
+        top: 0;
+        left: 400px;
     }
     #flickr-import-add {
     }
