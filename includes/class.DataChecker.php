@@ -101,6 +101,7 @@ class DataChecker {
                 $typograf->set_text($item[$this->entity_field]);
                 $cleaned = $typograf->apply();
                 $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+                $result = ($fld === 'cp_phone') ? str_replace('−', '-', $result) : $result;
                 $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
                 $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
             }
