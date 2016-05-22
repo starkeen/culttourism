@@ -24,7 +24,7 @@ class DataChecker {
     }
 
     public function repairPointsAddrs($count = 100) {
-        $this->entity_type = 'pagepoints';
+        $this->entity_type = MDataCheck::ENTITY_POINTS;
         $this->entity_field = 'pt_adress';
         $p = new MPagePoints($this->db);
         $dc = new MDataCheck($this->db);
@@ -86,7 +86,7 @@ class DataChecker {
     }
 
     public function repairCandidates($count = 10) {
-        $this->entity_type = 'candidate_points';
+        $this->entity_type = MDataCheck::ENTITY_CANDIDATES;
         $this->entity_id = 'cp_id';
         $dc = new MDataCheck($this->db);
         $cp = new MCandidatePoints($this->db);
@@ -112,7 +112,7 @@ class DataChecker {
 
     public function repairCandidatesAddrs($count = 10) {
         $log = array();
-        $this->entity_type = 'candidate_points';
+        $this->entity_type = MDataCheck::ENTITY_CANDIDATES;
         $this->entity_id = 'cp_id';
         $this->entity_field = 'cp_addr';
         $dc = new MDataCheck($this->db);
@@ -154,7 +154,7 @@ class DataChecker {
 
     public function repairBlog($count = 10) {
         $log = array();
-        $this->entity_type = 'blogentries';
+        $this->entity_type = MDataCheck::ENTITY_BLOG;
         $this->entity_id = 'br_id';
         $dc = new MDataCheck($this->db);
         $be = new MBlogEntries($this->db);
@@ -175,7 +175,7 @@ class DataChecker {
 
     public function repairPoints($count = 10) {
         $log = array();
-        $this->entity_type = 'pagepoints';
+        $this->entity_type = MDataCheck::ENTITY_POINTS;
         $this->entity_id = 'pt_id';
         $dc = new MDataCheck($this->db);
         $pt = new MPagePoints($this->db);
@@ -198,7 +198,7 @@ class DataChecker {
 
     public function repairCity($count = 10) {
         $log = array();
-        $this->entity_type = 'pagecity';
+        $this->entity_type = MDataCheck::ENTITY_CITIES;
         $this->entity_id = 'pc_id';
         $dc = new MDataCheck($this->db);
         $pc = new MPageCities($this->db);
