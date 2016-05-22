@@ -39,4 +39,19 @@ class MDataCheck extends Model {
         return $dcid;
     }
 
+    /**
+     * Удалить связку из истории проверок
+     * @param type $entity
+     * @param type $id
+     */
+    public function deleteChecked($entity, $id) {
+        $this->_db->sql = "DELETE FROM $this->_table_name 
+                            WHERE dc_type = :type
+                            AND dc_item_id = :id";
+        $this->_db->execute(array(
+            ':type' => $entity,
+            ':id' => $id,
+        ));
+    }
+
 }

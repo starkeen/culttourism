@@ -198,7 +198,7 @@ class DataChecker {
 
     public function repairCity($count = 10) {
         $log = array();
-        $this->entity_type = 'pagepoints';
+        $this->entity_type = 'pagecity';
         $this->entity_id = 'pc_id';
         $dc = new MDataCheck($this->db);
         $pc = new MPageCities($this->db);
