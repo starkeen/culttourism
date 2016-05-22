@@ -17,7 +17,7 @@ class Page extends PageCommon {
         if ($page_id == '') {
             $this->ymaps_ver = 2;
 
-            $this->addOGMeta('type', 'article');
+            $this->addOGMeta('type', 'website');
             $this->addOGMeta('title', 'Достопримечательности на интерактивной карте');
             $this->addOGMeta('description', 'Найдите на карте все достопримечательности в окрестностях интересного вам места, города или даже региона');
             $this->addOGMeta('image', 'https://culttourism.ru/data/images/pages/map-example-500.png');
