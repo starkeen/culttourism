@@ -23,12 +23,12 @@ if (isset($_GET['act'])) {
         $out['sizes'] = $sizes;
     } elseif ($_GET['act'] == 'save') {
         $pcid = (int) $_POST['pcid'];
-        
+
         $data = $api->getPhotoInfo($_POST['phid']);
         $sizes = $api->getSizes($_POST['phid']);
         $size = !empty($sizes['sizes']['size'][7]) ? $sizes['sizes']['size'][7] : $sizes['sizes']['size'][6];
         $location = isset($data['photo']['location']) ? $data['photo']['location'] : array('latitude' => 0, 'longitude' => 0);
-        
+
         $id = $ph->insert(array(
             'ph_title' => $data['photo']['title']['_content'],
             'ph_author' => $data['photo']['owner']['realname'],
@@ -42,12 +42,13 @@ if (isset($_GET['act'])) {
             'ph_date_add' => $ph->now(),
             'ph_order' => 10,
         ));
-        
-        if ($pcid > 0) {
+
+        if ($id > 0 && $pcid > 0) {
             $pc->updateByPk($pcid, array(
                 'pc_coverphoto_id' => $id,
                 'pc_lastup_date' => $pc->now(),
             ));
+            $pc->updateStatPhotos();
         }
 
         $out['state'] = $id > 0;

@@ -347,7 +347,9 @@ class MPageCities extends Model {
                                 ON stat.pc = pc.pc_id
                             SET pc.pc_count_metas = stat.cnt";
         $this->_db->exec();
-        
+    }
+
+    public function updateStatPhotos() {
         $this->_db->sql = "UPDATE $this->_table_name pc
                             LEFT JOIN (SELECT ph.ph_pc_id AS pc, COUNT(1) cnt
                                         FROM {$this->_tables_related['photos']} ph

@@ -18,3 +18,4 @@ $text = $cnt_pt . ' '
 $sp->updateByName('stat_text', $text);
 
 $pc->updateStat();
+$pc->updateStatPhotos();
