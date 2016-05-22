@@ -172,6 +172,29 @@ class DataChecker {
         return $log;
     }
 
+    public function repairPoints($count = 10) {
+        $log = array();
+        $this->entity_type = 'pagepoints';
+        $this->entity_id = 'pt_id';
+        $dc = new MDataCheck($this->db);
+        $pt = new MPagePoints($this->db);
+
+        $typograf = $this->buildTypograph();
+        $fields = array('pt_name', 'pt_description', 'pt_adress');
+        foreach ($fields as $fld) {
+            $this->entity_field = $fld;
+            $items = $this->getCheckingPortion($count, 'pt_active');
+            foreach ($items as $item) {
+                $typograf->set_text($item[$this->entity_field]);
+                $cleaned = $typograf->apply();
+                $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+                $pt->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
+                $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
+            }
+        }
+        return $log;
+    }
+
     public function getCheckingPortion($limit, $active, $unchecked = false) {
         $checkertable = $this->db->getTableName('data_check');
         $tname = $this->db->getTableName($this->entity_type);

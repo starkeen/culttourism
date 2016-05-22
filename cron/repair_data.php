@@ -2,7 +2,6 @@
 
 $checker = new DataChecker($db);
 $pc = new MPageCities($db);
-$p = new MPagePoints($db);
 $pt = new MPagePoints($db);
 $ls = new MLists($db);
 $bg = new MBlogEntries($db);
@@ -13,6 +12,7 @@ $log[] = $checker->repairPointsAddrs(30);
 $log[] = $checker->repairCandidates(50);
 $log[] = $checker->repairCandidatesAddrs(50);
 $log[] = $checker->repairBlog(50);
+$log[] = $checker->repairPoints(50);
 $logs = array_filter($log);
 if (!empty($logs)) {
     print_r($logs);
