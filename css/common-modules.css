@@ -193,6 +193,9 @@
 #city_map {
     border:1px solid #99B099;
     background-color:#DDFEDD;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
     height: 400px;
     width: 500px;
     margin:5px;

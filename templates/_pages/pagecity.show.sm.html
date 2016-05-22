@@ -2,7 +2,7 @@
 <div id="city_path">{$city.pc_pagepath}</div>
 {if $city.pc_latitude && $city.pc_longitude}
 <div id="map_container">
-    <div id="city_map"></div>
+    <div id="city_map" style="{if $page_image}background-image: url({$page_image});{/if}"></div>
     <div id="city_types">
         {foreach from=$ptypes item=ptype}
         <a href="#" title="{$ptype.tp_name}"><img src="/img/points/32/{$ptype.tp_icon}" alt="{$ptype.tp_name}" /></a>

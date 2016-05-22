@@ -258,13 +258,15 @@ class Page extends PageCommon {
             $this->addOGMeta('type', 'article');
             $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $this->canonical);
             $this->addOGMeta('title', 'Достопримечательности ' . $row['pc_inwheretext']);
-            $this->addOGMeta('description', $row['pc_description'] . ($row['pc_announcement'] ? '. '.$row['pc_announcement'] : ''));
+            $this->addOGMeta('description', $row['pc_description'] . ($row['pc_announcement'] ? '. ' . $row['pc_announcement'] : ''));
             $this->addOGMeta('updated_time', $this->lastedit_timestamp);
             if ($row['pc_coverphoto_id']) {
                 $ph = new MPhotos($this->db);
                 $photo = $ph->getItemByPk($row['pc_coverphoto_id']);
-                $image = substr($photo['ph_src'], 0, 1) == '/' ? rtrim(_SITE_URL, '/') . $photo['ph_src'] : $photo['ph_src'];
-                $this->addOGMeta('image', $image);
+                $cityImage = substr($photo['ph_src'], 0, 1) == '/' ? rtrim(_SITE_URL, '/') . $photo['ph_src'] : $photo['ph_src'];
+                $this->addOGMeta('image', $cityImage);
+            } else {
+                $cityImage = null;
             }
 
             $this->smarty->assign('city', $row);
@@ -272,6 +274,7 @@ class Page extends PageCommon {
             $this->smarty->assign('points_sight', $points_data['points_sight']);
             $this->smarty->assign('points_servo', $points_data['points_service']);
             $this->smarty->assign('page_url', $this->basepath);
+            $this->smarty->assign('page_image', $cityImage);
             $this->smarty->assign('types_select', $points_data['types']);
             $this->smarty->assign('ptypes', array());
             $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=city') : $this->globalsettings['res_js_city'];
