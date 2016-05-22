@@ -472,6 +472,8 @@ class Page extends PageCommon {
             $cities[] = $row;
         }
 
+        $this->addOGMeta('image', 'https://culttourism.ru/data/images/pages/map-example-500.png');
+
         $this->smarty->assign('tcity', $cities);
         $this->smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : 0);
 
