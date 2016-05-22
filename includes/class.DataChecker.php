@@ -196,6 +196,29 @@ class DataChecker {
         return $log;
     }
 
+    public function repairCity($count = 10) {
+        $log = array();
+        $this->entity_type = 'pagepoints';
+        $this->entity_id = 'pc_id';
+        $dc = new MDataCheck($this->db);
+        $pc = new MPageCities($this->db);
+
+        $typograf = $this->buildTypograph();
+        $fields = array('pc_text', 'pc_announcement', 'pc_description');
+        foreach ($fields as $fld) {
+            $this->entity_field = $fld;
+            $items = $this->getCheckingPortion($count, 'pc_active');
+            foreach ($items as $item) {
+                $typograf->set_text($item[$this->entity_field]);
+                $cleaned = $typograf->apply();
+                $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+                $pc->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
+                $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
+            }
+        }
+        return $log;
+    }
+
     public function getCheckingPortion($limit, $active, $unchecked = false) {
         $checkertable = $this->db->getTableName('data_check');
         $tname = $this->db->getTableName($this->entity_type);

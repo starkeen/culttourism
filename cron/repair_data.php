@@ -13,6 +13,7 @@ $log[] = $checker->repairCandidates(50);
 $log[] = $checker->repairCandidatesAddrs(50);
 $log[] = $checker->repairBlog(50);
 $log[] = $checker->repairPoints(50);
+$log[] = $checker->repairCity(50);
 $logs = array_filter($log);
 if (!empty($logs)) {
     print_r($logs);
