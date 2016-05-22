@@ -6,6 +6,7 @@ include (_DIR_INCLUDES . '/class.Pager.php');
 $smarty->assign('title', 'Заявки на добавление');
 
 $c = new MCandidatePoints($db);
+$dc = new MDataCheck($db);
 
 if (isset($_GET['id']) && isset($_GET['act'])) {
     $out = array('state' => false, 'id' => intval($_GET['id']), 'data' => null, 'error' => null);
@@ -62,6 +63,7 @@ if (isset($_GET['id']) && isset($_GET['act'])) {
                 'cp_zoom' => cut_trash_float($_POST['zoom']),
                 'cp_state' => intval($_POST['state_id']),
             ));
+            $dc->deleteChecked(MDataCheck::ENTITY_CANDIDATES, $out['id']);
             break;
         case "set_ignore":
             $out['state'] = $c->updateByPk($out['id'], array(
