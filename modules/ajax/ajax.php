@@ -2,6 +2,8 @@
 
 class Page extends PageCommon {
 
+    private $mDataCheck;
+
     public function __construct($db, $mod) {
         list($module_id, $page_id, $id) = $mod;
         parent::__construct($db, 'ajax');
@@ -12,6 +14,8 @@ class Page extends PageCommon {
         }
         $this->id = $id;
         $this->auth->setService('ajax');
+
+        $this->mDataCheck = new MDataCheck($db);
 
         if ($page_id == 'point') {
             if ($id == '' && isset($_GET['id']) && intval($_GET['id'])) {
@@ -103,6 +107,7 @@ class Page extends PageCommon {
             'pt_adress' => $_POST['nadress'],
         ));
         if ($out) {
+            $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $cid);
             return TRUE;
         } else {
             return FALSE;
@@ -114,6 +119,7 @@ class Page extends PageCommon {
             return $this->getError('403');
         }
         $p = new MPagePoints($this->db);
+        $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $pid);
         return $p->updateByPk($pid, array('pt_adress' => $_POST['addr']));
     }
 
@@ -306,6 +312,7 @@ class Page extends PageCommon {
             'pt_lastup_user' => $this->getUserId(),
         ));
         if ($state) {
+            $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $nid);
             $point = $pp->getItemByPk($nid);
             return $point['pt_name'];
         } else {
@@ -330,6 +337,7 @@ class Page extends PageCommon {
             'pt_lastup_user' => $this->getUserId(),
         ));
         if ($state) {
+            $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $nid);
             $point = $pp->getItemByPk($nid);
             return $point['pt_description'];
         } else {
@@ -445,6 +453,7 @@ class Page extends PageCommon {
             'pc_title' => $_POST['ntitle'],
         ));
         if ($state) {
+            $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_CITIES, $nid);
             $city = $pc->getItemByPk($nid);
             return $city['pc_title'];
         } else {
@@ -469,6 +478,7 @@ class Page extends PageCommon {
             'pc_text' => $_POST['ntext'],
         ));
         if ($state) {
+            $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_CITIES, $nid);
             $city = $pc->getItemByPk($nid);
             return $city['pc_text'];
         } else {

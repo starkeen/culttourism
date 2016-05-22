@@ -2,6 +2,11 @@
 
 class MDataCheck extends Model {
 
+    const ENTITY_POINTS = 'pagepoints';
+    const ENTITY_CITIES = 'pagecity';
+    const ENTITY_CANDIDATES = 'candidate_points';
+    const ENTITY_BLOG = 'blogentries';
+
     protected $_table_pk = 'dc_id';
     protected $_table_order = 'dc_id';
     protected $_table_active = 'dc_id';
