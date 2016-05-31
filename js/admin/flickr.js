@@ -26,6 +26,10 @@ $(document).ready(function () {
             }
         });
     });
+    
+    $("#flickr-import-clean").click(function() {
+        //
+    });
 
     $("#flickr-import-save").on("click", function () {
         $("#flickr-import-console").text('');
