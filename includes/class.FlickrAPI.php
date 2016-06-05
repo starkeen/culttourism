@@ -71,8 +71,21 @@ class FlickrAPI {
         }
     }
 
-    public function getLocation() {
-        
+    public function getLocation($id) {
+        $requestData = array(
+            'api_key' => $this->token,
+            'format' => 'json',
+            'nojsoncallback' => '1',
+            'method' => 'flickr.photos.geo.getLocation',
+            'photo_id' => $id,
+        );
+        $url = self::URL . '?' . http_build_query($requestData);
+        try {
+            $data = $this->request($url);
+            return json_decode($data, true);
+        } catch (Exception $e) {
+            //
+        }
     }
 
     private function request($url) {
