@@ -29,6 +29,7 @@ $(document).ready(function () {
 
     $("#flickr-import-clean").click(function () {
         $("#flickr-import-url").val("");
+        $("#flickr-import-photo-id").val(0);
     });
 
     $("#flickr-import-save-clean").click(function () {
