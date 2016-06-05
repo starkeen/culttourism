@@ -27,6 +27,10 @@ class MPhotos extends Model {
         $this->_addRelatedTable('wordstat');
     }
 
+    /**
+     * Список городов с одной (автоматической) фоткой
+     * @return array
+     */
     public function getPopularCitiesWithOnePhoto() {
         $this->_db->sql = "SELECT pc.*
                             FROM {$this->_tables_related['pagecity']} pc
