@@ -26,10 +26,16 @@ $(document).ready(function () {
             }
         });
     });
-    
-    $("#flickr-import-clean").click(function() {
+
+    $("#flickr-import-clean").click(function () {
         $("#flickr-import-url").val("");
-     });
+    });
+
+    $("#flickr-import-save-clean").click(function () {
+        $("#flickr-import-city").val("");
+        $("#flickr-import-city-id").val(0);
+        $("#flickr-import-photo-id").val(0);
+    });
 
     $("#flickr-import-save").on("click", function () {
         $("#flickr-import-console").text('');
