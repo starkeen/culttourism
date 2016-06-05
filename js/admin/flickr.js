@@ -45,9 +45,23 @@ $(document).ready(function () {
         }, function (response) {
             if (response.state) {
                 $("#flickr-import-console").append("сохранено");
+                $("#flickr-suggestions").dblclick();
             }
         });
     });
+
+    $("#flickr-suggestions").on("dblclick", function () {
+        $.get("flickr.php?act=suggestions", function (response) {
+            $("#flickr-suggestions ul").empty();
+            $.each(response.data, function (index, value) {
+                $("#flickr-suggestions ul").append("<li>" + value.pc_title + "</li>");
+            });
+            console.log(response.data);
+        });
+    });
+
+    $("#flickr-suggestions").dblclick();
+
 
     $("#flickr-import-city").autocomplete({
         serviceUrl: "/search/suggest/",

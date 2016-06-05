@@ -52,6 +52,8 @@ if (isset($_GET['act'])) {
         }
 
         $out['state'] = $id > 0;
+    } elseif ($_GET['act'] == 'suggestions') {
+        $out['data'] = $ph->getPopularCitiesWithOnePhoto();
     }
 
     header('Content-Type: application/json');

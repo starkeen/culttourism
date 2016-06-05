@@ -26,4 +26,16 @@ class MPhotos extends Model {
         $this->_addRelatedTable('pagecity');
     }
 
+    public function getPopularCitiesWithOnePhoto() {
+        $this->_db->sql = "SELECT *
+                            FROM {$this->_tables_related['pagecity']} pc
+                            WHERE pc_count_photos = 1
+                            ORDER BY pc_rank DESC, pc_id
+                            LIMIT :limit";
+        $this->_db->execute(array(
+            ':limit' => (int) 20,
+        ));
+        return $this->_db->fetchAll();
+    }
+
 }
