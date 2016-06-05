@@ -24,13 +24,16 @@ class MPhotos extends Model {
         );
         parent::__construct($db);
         $this->_addRelatedTable('pagecity');
+        $this->_addRelatedTable('wordstat');
     }
 
     public function getPopularCitiesWithOnePhoto() {
-        $this->_db->sql = "SELECT *
+        $this->_db->sql = "SELECT pc.*
                             FROM {$this->_tables_related['pagecity']} pc
+                                LEFT JOIN {$this->_tables_related['wordstat']} ws
+                                    ON ws.ws_city_id = pc.pc_city_id AND ws.ws_city_title = pc.pc_title
                             WHERE pc_count_photos = 1
-                            ORDER BY pc_rank DESC, pc_id
+                            ORDER BY ws.ws_weight_min DESC, pc_rank DESC, pc_id
                             LIMIT :limit";
         $this->_db->execute(array(
             ':limit' => (int) 20,
