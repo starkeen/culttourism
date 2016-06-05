@@ -1,6 +1,7 @@
 #!/bin/sh
 
 echo "deploy start"
+echo 'pwd'
 git fetch origin
-bin/composer install
+php bin/composer.phar install
 echo "deploy finish"
