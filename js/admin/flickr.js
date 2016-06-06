@@ -55,9 +55,12 @@ $(document).ready(function () {
         $.get("flickr.php?act=suggestions", function (response) {
             $("#flickr-suggestions ul").empty();
             $.each(response.data, function (index, value) {
-                $("#flickr-suggestions ul").append("<li>" + value.pc_title + " ("+ value.ws_weight_min +")" + "</li>");
+                $("#flickr-suggestions ul")
+                        .append("<li>"
+                                + value.pc_title_unique
+                                + " (" + value.ws_weight_min + ")"
+                                + "</li>");
             });
-            console.log(response.data);
         });
     });
 
