@@ -6,7 +6,7 @@ $(document).ready(function () {
             act: "fetch",
             url: $("#flickr-import-url").val()
         }, function (response) {
-            if (response.data.stat == "ok") {
+            if (response.data.stat === "ok") {
                 $("#flickr-import-photo-id").val(response.data.photo.id);
                 $("#flickr-import-console")
                         .append('ID: ' + response.data.photo.id + '<br>')
@@ -30,16 +30,18 @@ $(document).ready(function () {
     $("#flickr-import-clean").click(function () {
         $("#flickr-import-url").val("");
         $("#flickr-import-photo-id").val(0);
+        $("#flickr-import-console").text("");
     });
 
     $("#flickr-import-save-clean").click(function () {
         $("#flickr-import-city").val("");
         $("#flickr-import-city-id").val(0);
         $("#flickr-import-photo-id").val(0);
+        $("#flickr-import-console").text("");
     });
 
     $("#flickr-import-save").on("click", function () {
-        $("#flickr-import-console").text('');
+        $("#flickr-import-console").text("");
         $.post("flickr.php?act=save", {
             pcid: $("#flickr-import-city-id").val(),
             phid: $("#flickr-import-photo-id").val()

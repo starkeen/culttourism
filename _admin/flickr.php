@@ -14,13 +14,22 @@ $api = new FlickrAPI($apikey);
 if (isset($_GET['act'])) {
     $out = array();
     if ($_GET['act'] == 'fetch') {
-        $urlParts = explode('/', urldecode($_GET['url']));
-        $photoId = $urlParts[5];
+        $urlData = parse_url($_GET['url']);
+        if ($urlData['scheme'] === 'https' && $urlData['host'] === 'www.flickr.com') {
+            $urlParts = explode('/', urldecode($_GET['url']));
+            $photoId = $urlParts[5];
+        } elseif ($urlData['scheme'] === 'https' && $urlData['host'] === 'flic.kr') {
+            $photoId = 0;
+        } else {
+            $photoId = 0;
+        }
 
         $data = $api->getPhotoInfo($photoId);
         $sizes = $api->getSizes($photoId);
+        $geo = $api->getLocation($photoId);
         $out['data'] = $data;
         $out['sizes'] = $sizes;
+        $out['geo'] = $geo;
     } elseif ($_GET['act'] == 'save') {
         $pcid = isset($_POST['pcid']) ? (int) $_POST['pcid'] : 0;
         try {
