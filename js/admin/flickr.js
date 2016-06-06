@@ -47,6 +47,8 @@ $(document).ready(function () {
             if (response.state) {
                 $("#flickr-import-console").append("сохранено");
                 $("#flickr-suggestions").dblclick();
+            } else {
+                $("#flickr-import-console").append("ошибка!");
             }
         });
     });
