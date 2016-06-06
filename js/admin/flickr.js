@@ -19,6 +19,10 @@ $(document).ready(function () {
                                 + 'print:' + response.data.photo.usage.canprint + '; '
                                 + 'share:' + response.data.photo.usage.canshare + '<br>')
                         .append('sizes: ' + response.sizes.sizes.size.length + '<br>');
+                if (response.geo.stat === "ok") {
+                    $("#flickr-import-console")
+                            .append('Location: ' + response.geo.photo.location.locality._content + '<br>');
+                }
                 var img = new Image();
                 img.src = response.sizes.sizes.size[1].source;
                 $("#flickr-import-preview").append(img);
