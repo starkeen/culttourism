@@ -32,7 +32,7 @@ class MPhotos extends Model {
      * @return array
      */
     public function getPopularCitiesWithOnePhoto() {
-        $this->_db->sql = "SELECT pc.*
+        $this->_db->sql = "SELECT pc.*, ws.ws_weight, ws.ws_weight_min, ws.ws_weight_max
                             FROM {$this->_tables_related['pagecity']} pc
                                 LEFT JOIN {$this->_tables_related['wordstat']} ws
                                     ON ws.ws_city_id = pc.pc_city_id AND ws.ws_city_title = pc.pc_title
