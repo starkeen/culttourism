@@ -189,7 +189,7 @@ class DataChecker {
                 $typograf->set_text($item[$this->entity_field]);
                 $cleaned = $typograf->apply();
                 $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
-                $result = str_replace(array('<nobr>', '</nobr>'), '', $result);
+                //$result = str_replace(array('<nobr>', '</nobr>'), '', $result);
                 $pt->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
                 $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
             }
@@ -258,6 +258,7 @@ class DataChecker {
             'Nobr.nbsp_in_the_end' => 'off',
             'Nobr.phone_builder' => 'off',
             'Nobr.phone_builder_v2' => 'off',
+            'Nobr.spaces_nobr_in_surname_abbr' => 'off',
         ));
 
         return $typograf;
