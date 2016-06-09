@@ -1,6 +1,3 @@
-[submodule "addons/smarty"]
-	path = addons/smarty
-	url = https://github.com/smarty-php/smarty.git
 [submodule "addons/ckeditor"]
 	path = addons/ckeditor
 	url = https://github.com/ckeditor/ckeditor-releases.git
