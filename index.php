@@ -18,6 +18,7 @@ if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS']
     exit();
 }
 
+include _DIR_ROOT . '/vendor/autoload.php';
 include(_DIR_INCLUDES . '/class.Helper.php');
 spl_autoload_register('Helper::autoloader');
 

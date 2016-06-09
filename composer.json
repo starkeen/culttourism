@@ -7,7 +7,8 @@
         }
     ],
     "require": {
-        "iamsalnikov/mdash": "^3.5"
+        "iamsalnikov/mdash": "^3.5",
+        "smarty/smarty": "^3.1"
     },
     "require-dev": {}
 }
