@@ -1,7 +1,8 @@
 #!/bin/sh
 
 echo "deploy start"
-pwd
+
 git fetch origin
-php bin/composer.phar install
+php /home/s/starkeen/culttourism.ru/public_html/bin/composer.phar install
+
 echo "deploy finish"
