@@ -5,6 +5,6 @@
 #photos-to-flickr a {
     color: #87CEEB;
 }
-#photos-upload-data {
+#photos-upload-data, #photos-upload-bind {
     margin: 3px;
 }
