@@ -49,7 +49,6 @@ if (isset($_GET['act'])) {
                         //
                     }
                 }
-                exit;
             }
             break;
     }

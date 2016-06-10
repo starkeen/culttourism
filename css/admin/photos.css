@@ -1,0 +1,7 @@
+.photos-block {
+    padding: 5px;
+    border-bottom: 1px solid #87CEEB;
+}
+#photos-to-flickr a {
+    color: #87CEEB;
+}

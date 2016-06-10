@@ -1,23 +1,30 @@
 <img class="pageicon" src="/img/admin/ico.a_refs.gif" />
 <h3>{$title}</h3>
 
-<a href="./flickr.php">импорт из Flickr</a>
+<div id="photos-to-flickr" class="photos-block">
+    <a href="./flickr.php">Импорт из Flickr</a>
+</div>
 
-<hr/>
 
-<form action="?act=upload" method="post" enctype="multipart/form-data">
-    Добавить фото
-    <input type="file" name="photo" accept="image/jpeg,image/png" />
-    <input type="submit" value="Загрузить" />
-</form>
+<div id="photos-upload" class="photos-block">
+    <form action="?act=upload" method="post" enctype="multipart/form-data">
+        Добавить фото
+        <input type="file" name="photo" accept="image/jpeg,image/png" />
+        <input type="submit" value="Загрузить" />
+    </form>
+</div>
 
-<hr/>
 
-<table class="commontable">
-    <tr>
-        <th>ID</th>
-        <th>Название</th>
-        <th>Город</th>
-        <th>Объект</th>
-    </tr>
-</table>
+<div id="photos-list" class="photos-block">
+    <table class="commontable">
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Город</th>
+            <th>Объект</th>
+        </tr>
+    </table>
+</div>
+
+<link rel="stylesheet" href="/css/admin/photos.css" type="text/css" />
+<script type="text/javascript" src="/js/admin/photos.js" defer="defer"></script>
