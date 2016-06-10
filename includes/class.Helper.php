@@ -156,7 +156,6 @@ class Helper {
      * @param float $long2
      * @return float
      */
-    
     public static function distanceGPS($lat1, $long1, $lat2, $long2) {
         $R = 6372795; // радиус Земли
         //перевод коордитат в радианы
@@ -181,6 +180,22 @@ class Helper {
         $dist = round($ad * $R); //расстояние между двумя координатами в метрах
 
         return $dist;
+    }
+
+    /**
+     * Функция возвращает расширение файла по его MIME-типу
+     * @param  $mimetype String MIME-тип файла
+     * @return String
+     */
+    public static function getExt($mimetype) {
+        $types = array(
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'application/vnd.ms-excel' => 'xls',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
+        );
+        return isset($types[$mimetype]) ? $types[$mimetype] : false;
     }
 
 }
