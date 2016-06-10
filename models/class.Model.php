@@ -38,6 +38,11 @@ abstract class Model {
         return $this->_db->fetchAll();
     }
 
+    /**
+     * 
+     * @param array $filter
+     * @return array
+     */
     public function getItemsByFilter($filter) {
         $out = array(
             'fields' => '*',

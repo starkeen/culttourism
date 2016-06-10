@@ -45,4 +45,14 @@ class MPhotos extends Model {
         return $this->_db->fetchAll();
     }
 
+    /**
+     * 
+     * @param array $filter
+     * @return array
+     */
+    public function getItemsByFilter($filter) {
+        $filter['join'][] = 'LEFT JOIN ' . $this->_tables_related['pagecity'] . ' pc ON pc.pc_id = t.ph_pc_id';
+        return parent::getItemsByFilter($filter);
+    }
+
 }

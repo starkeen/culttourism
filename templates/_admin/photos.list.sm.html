@@ -37,9 +37,26 @@
         <tr>
             <th>ID</th>
             <th>Название</th>
-            <th>Город</th>
-            <th>Объект</th>
+            <th>Автор</th>
+            <th>Ссылка</th>
+            <th>Размеры</th>
+            <th>&nbsp;</th>
         </tr>
+        {foreach from=$list.items item=ph}
+        <tr>
+            <td>{$ph.ph_id}</td>
+            <td>
+                {$ph.ph_title}
+                <span>{$ph.pc_title}</span>
+            </td>
+            <td>{$ph.ph_author}</td>
+            <td>{$ph.ph_link}</td>
+            <td>{$ph.ph_width}x{$ph.ph_height}</td>
+            <td>
+                <img src="{$ph.ph_src}" style="max-height: 50px" />
+            </td>
+        </tr>
+        {/foreach}
     </table>
 </div>
 
