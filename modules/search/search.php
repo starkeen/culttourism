@@ -10,10 +10,15 @@ class Page extends PageCommon {
         }
         if ($page_id == 'suggest' && isset($_GET['query'])) {
             $this->getSuggests();
+        } elseif ($page_id == 'suggest-object' && isset($_GET['query'])) {
+            $this->getObjectSuggests();
         }
         $this->content = $this->getSearchYandex($this->db);
     }
 
+    /**
+     * Саджест регионов
+     */
     private function getSuggests() {
         $out = array('query' => '', 'suggestions' => array());
         $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
@@ -25,6 +30,29 @@ class Page extends PageCommon {
                 'value' => "{$row['pc_title']}",
                 'data' => $row['pc_id'],
                 'url' => $row['url'] . '/',
+            );
+        }
+
+        header('Content-type: application/json');
+        echo json_encode($out);
+        exit();
+    }
+
+    /**
+     * Саджест объектов
+     */
+    private function getObjectSuggests() {
+        $out = array('query' => '', 'suggestions' => array());
+        $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
+        $pt = new MPagePoints($this->db);
+        $variants = $pt->getSuggestion($out['query']);
+
+        foreach ($variants as $row) {
+            $out['suggestions'][] = array(
+                'value' => "{$row['pt_name']}",
+                'data' => $row['pt_id'],
+                'city_id' => $row['pc_id'],
+                'city_title' => $row['pc_title'],
             );
         }
 

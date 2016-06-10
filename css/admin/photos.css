@@ -8,3 +8,6 @@
 #photos-upload-data, #photos-upload-bind {
     margin: 3px;
 }
+#photos-upload-bind-pt {
+    width: 280px;
+}

@@ -433,4 +433,25 @@ class MPagePoints extends Model {
         return 0;
     }
 
+    /**
+     * Ищет подходящие страницы объектов
+     * @param string $query
+     * @return array
+     */
+    public function getSuggestion($query) {
+        $this->_db->sql = "SELECT pt_id, pt_name, pc_id, pc_title_unique AS pc_title, url
+                            FROM $this->_table_name pt
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
+                                    LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
+                            WHERE pt.pt_name LIKE :name1 OR pt_name LIKE :name2
+                                AND pt.pt_active = 1
+                            ORDER BY pc.pc_title_unique, pt.pt_name";
+
+        $this->_db->execute(array(
+            ':name1' => '%' . trim($query) . '%',
+            ':name2' => '%' . trim(Helper::getQwerty($query)) . '%',
+        ));
+        return $this->_db->fetchAll();
+    }
+
 }
