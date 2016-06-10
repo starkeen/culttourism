@@ -132,6 +132,14 @@ class Page extends PageCommon {
         $this->addOGMeta('title', $object['esc_name']);
         $this->addOGMeta('description', $short);
         $this->addOGMeta('updated_time', $this->lastedit_timestamp);
+        if ($object['pt_photo_id'] != 0) {
+            $ph = new MPhotos($this->db);
+            $photo = $ph->getItemByPk($object['pt_photo_id']);
+            $objImage = substr($photo['ph_src'], 0, 1) == '/' ? rtrim(_SITE_URL, '/') . $photo['ph_src'] : $photo['ph_src'];
+            $this->addOGMeta('image', $objImage);
+        } else {
+            $objImage = null;
+        }
 
         if (!empty($object['pt_description'])) {
             $this->addCustomMeta('business:contact_data:website', $object['pt_website']);
@@ -149,6 +157,7 @@ class Page extends PageCommon {
 
         $this->smarty->assign('object', $object);
         $this->smarty->assign('city', $city);
+        $this->smarty->assign('page_image', $objImage);
         $this->smarty->assign('lists', $li->getListsForPointId($object['pt_id']));
 
         return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.sm.html');

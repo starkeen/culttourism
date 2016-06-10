@@ -2,7 +2,7 @@
 <div id="city_path">{$city.pc_pagepath}</div>
 {if $object.pt_latitude && $object.pt_longitude}
 <div id="map_container">
-    <div id="city_map"></div>
+    <div id="city_map" style="{if $page_image}background-image: url({$page_image});{/if}"></div>
     <div id="point_gps">GPS-координаты: {$object.gps_dec}</div>
 </div>
 {/if}
