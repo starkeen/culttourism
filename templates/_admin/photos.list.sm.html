@@ -10,6 +10,17 @@
     <form action="?act=upload" method="post" enctype="multipart/form-data">
         Добавить фото
         <input type="file" name="photo" accept="image/jpeg,image/png" />
+        <div id="photos-upload-data">
+            <input type="text" name="title" placeholder="Название" />
+            <input type="text" name="author" placeholder="Автор" />
+            <input type="text" name="link" placeholder="Ссылка" />
+        </div>
+        <div id="photos-upload-bind">
+            <input type="hidden" id="photos-upload-bind-pcid" name="pcid" value="0" />
+            <input type="hidden" id="photos-upload-bind-ptid" name="ptid" value="0" />
+            <input type="hidden" id="photos-upload-bind-mdid" name="mdid" value="0" />
+            <input type="hidden" id="photos-upload-bind-pgid" name="pgid" value="0" />
+        </div>
         <input type="submit" value="Загрузить" />
     </form>
 </div>

@@ -5,6 +5,8 @@ require_once('common.php');
 $smarty->assign('title', 'Фотографии');
 
 $ph = new MPhotos($db);
+$pc = new MPageCities($db);
+$pt = new MPagePoints($db);
 
 if (isset($_GET['act'])) {
     switch ($_GET['act']) {
@@ -31,19 +33,35 @@ if (isset($_GET['act'])) {
                             $size = getimagesize($filePath);
                             $imgWidth = $size[0];
                             $imgHeight = $size[1];
+                            $pcid = intval($_POST['pcid']);
+                            $ptid = intval($_POST['ptid']);
                             $id = $ph->insert(array(
-                                'ph_title' => '',
-                                'ph_author' => '',
-                                'ph_link' => '',
+                                'ph_title' => $_POST['title'],
+                                'ph_author' => $_POST['author'],
+                                'ph_link' => $_POST['link'],
                                 'ph_src' => $fileSrc,
                                 'ph_width' => $imgWidth,
                                 'ph_height' => $imgHeight,
                                 'ph_lat' => 0,
                                 'ph_lon' => 0,
-                                'ph_pc_id' => 0,
+                                'ph_pc_id' => $pcid,
                                 'ph_date_add' => $ph->now(),
                                 'ph_order' => 20,
                             ));
+                            if ($id > 0) {
+                                if ($pcid > 0) {
+                                    $pc->updateByPk($pcid, array(
+                                        'pc_coverphoto_id' => $id,
+                                        'pc_lastup_date' => $pc->now(),
+                                    ));
+                                }
+                                if ($ptid > 0) {
+                                    $pt->updateByPk($ptid, array(
+                                        'pt_photo_id' => $id,
+                                        'pt_lastup_date' => $pt->now(),
+                                    ));
+                                }
+                            }
                         }
                     } catch (Exception $e) {
                         //
