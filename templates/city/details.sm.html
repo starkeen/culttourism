@@ -52,7 +52,24 @@
             </tr>
         </table>
     </div>
-    <hr />
+
+
+    <div class="city-details-photos">
+        <input type="hidden" name="photo_id" value="0" />
+        {foreach from=$photos item=ph}
+        <div class="city-details-photoitem">
+            <input type="radio" name="photo_id" value="{$ph.ph_id}" {if $city.pc_coverphoto_id == $ph.ph_id}checked{/if} />
+                   <br />
+            <img src="{$ph.ph_src}" alt="" />
+            <br />
+            {$ph.ph_title}
+            <br />
+            <a href="{$ph.ph_link}">link</a>
+        </div>
+        {/foreach}
+    </div>
+
+
     <input type="hidden" name="web" value="{$city.pc_website}" />
     <input type="submit" value="сохранить" />
 </form>

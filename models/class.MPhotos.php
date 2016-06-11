@@ -47,6 +47,15 @@ class MPhotos extends Model {
     }
 
     /**
+     * Все фотографии региона
+     */
+    public function getItemsByRegion($pcid) {
+        $filter = array();
+        $filter['where'][] = 'ph_pc_id = ' . (int) $pcid;
+        return $this->getItemsByFilter($filter);
+    }
+
+    /**
      * 
      * @param array $filter
      * @return array

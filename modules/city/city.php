@@ -239,6 +239,8 @@ class Page extends PageCommon {
             return $this->getError('404');
         }
 
+        $ph = new MPhotos($this->db);
+
         $pc = new MPageCities($this->db);
 
         $dbcd = $this->db->getTableName('city_data');
@@ -259,6 +261,7 @@ class Page extends PageCommon {
                 'pc_title_english' => $_POST['title_eng'],
                 'pc_title_translit' => $_POST['translit'],
                 'pc_website' => $_POST['web'],
+                'pc_coverphoto_id' => intval($_POST['photo_id']),
                 'pc_lastup_user' => $this->getUserId(),
             ));
             $city = $pc->getItemByPk($city_id);
@@ -269,6 +272,8 @@ class Page extends PageCommon {
         }
 
         $citypage = $pc->getItemByPk($city_id);
+
+        $photos = $ph->getItemsByRegion($city_id);
 
         $this->db->sql = "SELECT *
                     FROM $dbcd cd
@@ -301,6 +306,7 @@ class Page extends PageCommon {
         $this->smarty->assign('city', $citypage);
         $this->smarty->assign('baseurl', $this->basepath);
         $this->smarty->assign('meta', $meta);
+        $this->smarty->assign('photos', $photos['items']);
         $this->smarty->assign('ref_meta', $ref_meta);
         $this->smarty->assign('yandex', $yandex);
 

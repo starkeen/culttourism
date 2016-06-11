@@ -90,6 +90,27 @@
     margin:0 auto;
     border:1px solid #777;
 }
+.city-details-photos {
+    width: 99%;
+    margin: 2px;
+    text-align: center;
+}
+.city-details-photoitem {
+    display: inline-block;
+    margin:2px;
+    padding:2px;
+    text-align: center;
+    border: 1px solid #777;
+    font-size: 80%;
+    overflow: hidden;
+}
+.city-details-photoitem input {
+    margin-bottom: 3px;
+}
+.city-details-photoitem img {
+    max-height: 80px;
+    margin: 0 5px;
+}
 .city-details-metas {
     width:400px;
     margin:0 auto;
