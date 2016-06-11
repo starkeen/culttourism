@@ -73,6 +73,10 @@ if (isset($_GET['act'])) {
 
     header('Location: photos.php');
     exit;
+} elseif (!empty($_GET['id'])) {
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/photos.item.sm.html'));
+    $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
+    exit();
 } else {
     $filter = array();
     $list = $ph->getItemsByFilter($filter);

@@ -54,7 +54,7 @@
             <td>{$ph.ph_link}</td>
             <td>{$ph.ph_width}x{$ph.ph_height}</td>
             <td>
-                <img src="{$ph.ph_src}" style="max-height: 50px" />
+                <a href="?id={$ph.ph_id}"><img src="{$ph.ph_src}" style="max-height: 50px" /></a>
             </td>
         </tr>
         {/foreach}
