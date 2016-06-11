@@ -12,8 +12,6 @@ class Mailing {
     }
 
     private static function sendOnly($letter) {
-        require_once(_DIR_ADDONS . '/phpmailer/class.phpmailer.php');
-        require_once _DIR_ADDONS . '/phpmailer/PHPMailerAutoload.php';
         $mailer = new PHPMailer();
         $mailer->IsSMTP();
         $mailer->ContentType = "text/html";
