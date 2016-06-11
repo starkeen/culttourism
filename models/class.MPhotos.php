@@ -24,6 +24,7 @@ class MPhotos extends Model {
         );
         parent::__construct($db);
         $this->_addRelatedTable('pagecity');
+        $this->_addRelatedTable('pagepoints');
         $this->_addRelatedTable('wordstat');
     }
 
@@ -52,6 +53,7 @@ class MPhotos extends Model {
      */
     public function getItemsByFilter($filter) {
         $filter['join'][] = 'LEFT JOIN ' . $this->_tables_related['pagecity'] . ' pc ON pc.pc_id = t.ph_pc_id';
+        $filter['join'][] = 'LEFT JOIN ' . $this->_tables_related['pagepoints'] . ' pt ON pt.pt_id = t.ph_pt_id';
         return parent::getItemsByFilter($filter);
     }
 
