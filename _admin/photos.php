@@ -25,7 +25,7 @@ if (isset($_GET['act'])) {
                     if (!file_exists(_DIR_DATA . $fileDir2)) {
                         mkdir(_DIR_DATA . $fileDir2);
                     }
-                    $fileSrc = '/data' . $fileDir2 . '/' . $fileName;
+                    $fileSrc = _SITE_URL . 'data' . $fileDir2 . '/' . $fileName;
                     $filePath = _DIR_DATA . $fileDir2 . '/' . $fileName;
 
                     try {
