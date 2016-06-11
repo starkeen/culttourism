@@ -85,6 +85,27 @@
     font-size: 90%;
     font-style: italic;
 }
+.city-details-main {
+    width:70%;
+    margin:0 auto;
+    border:1px solid #777;
+}
+.city-details-metas {
+    width:400px;
+    margin:0 auto;
+    border:1px solid #777;
+}
+.city-details-yandex {
+    width:250px;
+    margin:5px auto;
+    border:1px solid #777;
+    padding: 4px;
+}
+.city-details-yandex img {
+    vertical-align:middle;
+    float:left;
+    margin: 5px;
+}
 
 /*------------------------------------- LIST --------------------------*/
 .list-half-left {

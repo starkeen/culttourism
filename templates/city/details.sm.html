@@ -1,7 +1,7 @@
 <h2>{$city.pc_title}</h2>
 <hr />
 <form method="post">
-    <div style="width:70%;margin:0 auto;border:1px solid #777;">
+    <div class="city-details-main">
         <table>
             <tr>
                 <td nowrap>ключевые слова</td>
@@ -60,7 +60,7 @@
 
 <hr />
 
-<div style="width:400px;margin:0 auto;border:1px solid #777;">
+<div class="city-details-metas">
     <input type="hidden" id="city_meta_pcid" value="{$city.pc_id}" />
     <table id="city_meta_table">
         {foreach from=$meta item=item}
@@ -89,8 +89,8 @@
     </table>
 </div>
 
-<div style="width:250px; margin:5px auto; border:1px solid #777; padding: 4px;">
-    <img src="/img/yandex.png" alt="Поиск от Яндекс" style="vertical-align:middle; float:left; margin: 5px;">
+<div class="city-details-yandex">
+    <img src="/img/yandex.png" alt="Поиск от Яндекс">
     Вес: {$yandex.ws_weight_min} < {$yandex.ws_weight} < {$yandex.ws_weight_max}<br />
     Позиция: {$yandex.ws_position}
 </div>
