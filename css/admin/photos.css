@@ -12,6 +12,11 @@
     width: 280px;
 }
 
+.photos-listpager {
+    margin-top: 5px;
+    font-size: 80%;
+}
+
 .photos-listitem {
     
 }
