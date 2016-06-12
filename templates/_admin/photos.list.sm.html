@@ -55,18 +55,39 @@
             </tr>
             <tr>
                 <th>
-                    <input type="text" name="fid" value="{$get.fid}" style="width: 40px;" />
+                    <input type="text" name="fid" value="{$get.fid}" placeholder="ID" style="width: 40px;" />
                 </th>
                 <th>
-                    <input type="text" name="ftitle" value="{$get.ftitle}" /><br />
-                    <input type="text" name="fregion" value="{$get.fregion}" /><br />
-                    <input type="text" name="fobject" value="{$get.fobject}" />
+                    <input type="text" name="ftitle"
+                           value="{$get.ftitle}"
+                           id="photos-listfilter-title"
+                           placeholder="название" />
+                    <input type="button" id="photos-listfilter-title-clean" value="X" />
+                    <br />
+                    <input type="text" name="fregion"
+                           value="{$get.fregion}"
+                           id="photos-listfilter-region"
+                           placeholder="регион" />
+                    <input type="button" id="photos-listfilter-region-clean" value="X" />
+                    <br />
+                    <input type="text" name="fobject"
+                           value="{$get.fobject}"
+                           id="photos-listfilter-object"
+                           placeholder="объект" />
+                    <input type="button" id="photos-listfilter-object-clean" value="X" />
+                    <br />
+                    <input type="hidden" name="fregionid"
+                           id="photos-listfilter-regionid"
+                           value="{$get.fregionid}" />
+                    <input type="hidden" name="fobjectid"
+                           id="photos-listfilter-objectid"
+                           value="{$get.fobjectid}" />
                 </th>
                 <th>
-                    <input type="text" name="fauthor" value="{$get.fauthor}" />
+                    <input type="text" name="fauthor" value="{$get.fauthor}" placeholder="автор" />
                 </th>
                 <th>
-                    <input type="text" name="flink" value="{$get.flink}" />
+                    <input type="text" name="flink" value="{$get.flink}" placeholder="ссылка" />
                 </th>
                 <th>&nbsp;</th>
                 <th>

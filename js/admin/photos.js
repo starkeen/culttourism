@@ -39,4 +39,36 @@ $(document).ready(function () {
         $("#photos-upload-bind-pt").val("");
         $("#photos-upload-bind-ptid").val(0);
     });
+
+    $("#photos-listfilter-title-clean").on("click", function () {
+        $("#photos-listfilter-title").val("");
+    });
+    $("#photos-listfilter-region-clean").on("click", function () {
+        $("#photos-listfilter-region").val("");
+        $("#photos-listfilter-regionid").val("0");
+    });
+    $("#photos-listfilter-object-clean").on("click", function () {
+        $("#photos-listfilter-object").val("");
+        $("#photos-listfilter-objectid").val("0");
+    });
+
+    $("#photos-listfilter-region").autocomplete({
+        serviceUrl: "/search/suggest/",
+        minChars: 2,
+        paramName: "query",
+        width: 200,
+        onSelect: function (suggestion) {
+            $("#photos-listfilter-regionid").val(suggestion.data);
+        }
+    });
+
+    $("#photos-listfilter-object").autocomplete({
+        serviceUrl: "/search/suggest-object/",
+        minChars: 3,
+        paramName: "query",
+        width: 200,
+        onSelect: function (suggestion) {
+            $("#photos-listfilter-objectid").val(suggestion.data);
+        }
+    });
 });

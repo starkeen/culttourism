@@ -76,22 +76,25 @@ if (isset($_GET['act'])) {
     header('Location: photos.php');
     exit;
 } elseif (!empty($_GET['id'])) {
+    $id = intval($_GET['id']);
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/photos.item.sm.html'));
     $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
     exit();
 } else {
     $get = array(
-        'fid' => isset($_GET['fid']) ? intval($_GET['fid']) : null,
+        'fid' => isset($_GET['fid']) ? trim($_GET['fid']) : null,
         'ftitle' => isset($_GET['ftitle']) ? trim($_GET['ftitle']) : null,
         'fregion' => isset($_GET['fregion']) ? trim($_GET['fregion']) : null,
         'fobject' => isset($_GET['fobject']) ? trim($_GET['fobject']) : null,
+        'fregionid' => isset($_GET['fregionid']) ? trim($_GET['fregionid']) : null,
+        'fobjectid' => isset($_GET['fobjectid']) ? trim($_GET['fobjectid']) : null,
         'fauthor' => isset($_GET['fauthor']) ? trim($_GET['fauthor']) : null,
         'flink' => isset($_GET['flink']) ? trim($_GET['flink']) : null,
     );
     $filter = array();
     if (!empty($get['fid'])) {
         $filter['where'][] = 'ph_id = :id';
-        $filter['binds'][':id'] = $get['fid'];
+        $filter['binds'][':id'] = (int) $get['fid'];
     }
     if (!empty($get['ftitle'])) {
         $filter['where'][] = 'ph_title LIKE :title';
@@ -112,6 +115,14 @@ if (isset($_GET['act'])) {
     if (!empty($get['flink'])) {
         $filter['where'][] = 'ph_link LIKE :link';
         $filter['binds'][':link'] = '%' . $get['flink'] . '%';
+    }
+    if (!empty($get['fregionid'])) {
+        $filter['where'][] = 'pc.pc_id = :pcid';
+        $filter['binds'][':pcid'] = (int) $get['fregionid'];
+    }
+    if (!empty($get['fobjectid'])) {
+        $filter['where'][] = 'pt.pt_id = :ptid';
+        $filter['binds'][':ptid'] = (int) $get['fobjectid'];
     }
     $list = $ph->getItemsByFilter($filter);
     $smarty->assign('get', $get);
