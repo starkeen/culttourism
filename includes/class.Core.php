@@ -83,8 +83,14 @@ abstract class Core {
         $this->addOGMeta('app_id', '345000545624253');
         $this->addOGMeta('url', _SITE_URL);
         $this->addOGMeta('image', _SITE_URL . 'img/header/logotype-200.jpg');
-
         $this->addDataLD('image', _SITE_URL . 'img/header/logotype-200.jpg');
+        if ($row['md_photo_id']) {
+            $ph = new MPhotos($this->db);
+            $photo = $ph->getItemByPk($row['md_photo_id']);
+            $objImage = substr($photo['ph_src'], 0, 1) == '/' ? rtrim(_SITE_URL, '/') . $photo['ph_src'] : $photo['ph_src'];
+            $this->addOGMeta('image', $objImage);
+            $this->addDataLD('image', $objImage);
+        }
 
         if (!empty($row)) {
             if ($row['md_redirect'] !== null) {
