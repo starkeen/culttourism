@@ -68,8 +68,9 @@
             </tr>
             <tr>
                 <th colspan="4">
+                    <input type="hidden" name="referer" value="{$referer}" />
                     <input type="submit" value="сохранить" />
-                    <a href="?" onclick="javascript: history.back(-1);">вернуться</a>
+                    <a href="{$referer}">вернуться</a>
                 </th>
             </tr>
         </table>

@@ -77,6 +77,7 @@ if (isset($_GET['act'])) {
     exit;
 } elseif (!empty($_GET['id'])) {
     $id = intval($_GET['id']);
+    $referer = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'photos.php';
 
     if (isset($_POST) && !empty($_POST)) {
         $pcid = (int) $_POST['region_id'];
@@ -97,6 +98,7 @@ if (isset($_GET['act'])) {
                 'pt_lastup_date' => $pt->now(),
             ));
         }
+        $referer = $_POST['referer'];
     }
 
     $photo = $ph->getItemByPk($id);
@@ -114,6 +116,7 @@ if (isset($_GET['act'])) {
     }
 
     $smarty->assign('photo', $photo);
+    $smarty->assign('referer', $referer);
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/photos.item.sm.html'));
 } else {
     $get = array(
