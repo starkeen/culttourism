@@ -11,3 +11,21 @@
 #photos-upload-bind-pt {
     width: 280px;
 }
+
+.photos-listitem {
+    
+}
+.photos-listitem td.m_center {
+    text-align: center;
+}
+.photos-listitem-region {
+    display: block;
+    font-size: 80%;
+    color: #006a00;
+}
+
+.photos-listitem-object {
+    display: block;
+    font-size: 80%;
+    color: #880088;
+}

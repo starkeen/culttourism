@@ -53,6 +53,7 @@ abstract class Model {
             'offset' => 0,
             'order' => "$this->_table_order ASC",
             'groupby' => array(),
+            'binds' => array(),
             'items' => array(),
             'total' => 0,
         );
@@ -66,6 +67,8 @@ abstract class Model {
         }
         $this->_pager->setParam('limit', $out['limit']);
         $out['offset'] = $this->_pager->getParam('offset');
+        $out['binds'][':offset'] = $out['offset'];
+        $out['binds'][':limit'] = $out['limit'];
 
         $this->_db->sql = "SELECT SQL_CALC_FOUND_ROWS {$out['fields']}
                             FROM $this->_table_name t
@@ -74,9 +77,9 @@ abstract class Model {
                             " . (!empty($out['having']) ? ('HAVING ' . implode("\n AND ", $out['having'])) : '') . "
                             " . (!empty($out['groupby']) ? ('GROUP BY ' . implode(", ", $out['groupby'])) : '') . "
                             ORDER BY {$out['order']}
-                            LIMIT {$out['offset']}, {$out['limit']}";
+                            LIMIT :offset, :limit";
         //$this->_db->showSQL();exit();
-        $this->_db->exec();
+        $this->_db->execute($out['binds']);
         $out['items'] = $this->_db->fetchAll();
         $this->_db->sql = "SELECT FOUND_ROWS() AS cnt";
         $this->_db->exec();

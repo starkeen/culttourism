@@ -80,8 +80,41 @@ if (isset($_GET['act'])) {
     $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
     exit();
 } else {
+    $get = array(
+        'fid' => isset($_GET['fid']) ? intval($_GET['fid']) : null,
+        'ftitle' => isset($_GET['ftitle']) ? trim($_GET['ftitle']) : null,
+        'fregion' => isset($_GET['fregion']) ? trim($_GET['fregion']) : null,
+        'fobject' => isset($_GET['fobject']) ? trim($_GET['fobject']) : null,
+        'fauthor' => isset($_GET['fauthor']) ? trim($_GET['fauthor']) : null,
+        'flink' => isset($_GET['flink']) ? trim($_GET['flink']) : null,
+    );
     $filter = array();
+    if (!empty($get['fid'])) {
+        $filter['where'][] = 'ph_id = :id';
+        $filter['binds'][':id'] = $get['fid'];
+    }
+    if (!empty($get['ftitle'])) {
+        $filter['where'][] = 'ph_title LIKE :title';
+        $filter['binds'][':title'] = '%' . $get['ftitle'] . '%';
+    }
+    if (!empty($get['fregion'])) {
+        $filter['where'][] = 'pc.pc_title LIKE :region';
+        $filter['binds'][':region'] = '%' . $get['fregion'] . '%';
+    }
+    if (!empty($get['fobject'])) {
+        $filter['where'][] = 'pt.pt_name LIKE :object';
+        $filter['binds'][':object'] = '%' . $get['fobject'] . '%';
+    }
+    if (!empty($get['fauthor'])) {
+        $filter['where'][] = 'ph_author LIKE :author';
+        $filter['binds'][':author'] = '%' . $get['fauthor'] . '%';
+    }
+    if (!empty($get['flink'])) {
+        $filter['where'][] = 'ph_link LIKE :link';
+        $filter['binds'][':link'] = '%' . $get['flink'] . '%';
+    }
     $list = $ph->getItemsByFilter($filter);
+    $smarty->assign('get', $get);
     $smarty->assign('list', $list);
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/photos.list.sm.html'));
     $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');

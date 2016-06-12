@@ -43,32 +43,58 @@
 
 
 <div id="photos-list" class="photos-block">
-    <table class="commontable">
-        <tr>
-            <th>ID</th>
-            <th>Название</th>
-            <th>Автор</th>
-            <th>Ссылка</th>
-            <th>Размеры</th>
-            <th>&nbsp;</th>
-        </tr>
-        {foreach from=$list.items item=ph}
-        <tr>
-            <td>{$ph.ph_id}</td>
-            <td>
-                {$ph.ph_title}
-                <span class="photos-listitem-region">{$ph.pc_title}</span>
-                <span class="photos-listitem-object">{$ph.pt_name}</span>
-            </td>
-            <td>{$ph.ph_author}</td>
-            <td>{$ph.ph_link}</td>
-            <td>{$ph.ph_width}x{$ph.ph_height}</td>
-            <td>
-                <a href="?id={$ph.ph_id}"><img src="{$ph.ph_src}" style="max-height: 50px" /></a>
-            </td>
-        </tr>
-        {/foreach}
-    </table>
+    <form action="" method="get">
+        <table class="commontable">
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Ссылка</th>
+                <th>Размеры</th>
+                <th>&nbsp;</th>
+            </tr>
+            <tr>
+                <th>
+                    <input type="text" name="fid" value="{$get.fid}" style="width: 40px;" />
+                </th>
+                <th>
+                    <input type="text" name="ftitle" value="{$get.ftitle}" /><br />
+                    <input type="text" name="fregion" value="{$get.fregion}" /><br />
+                    <input type="text" name="fobject" value="{$get.fobject}" />
+                </th>
+                <th>
+                    <input type="text" name="fauthor" value="{$get.fauthor}" />
+                </th>
+                <th>
+                    <input type="text" name="flink" value="{$get.flink}" />
+                </th>
+                <th>&nbsp;</th>
+                <th>
+                    <input type="submit" value="искать" />
+                </th>
+            </tr>
+            {foreach from=$list.items item=ph}
+            <tr class="photos-listitem">
+                <td class="m_center">{$ph.ph_id}</td>
+                <td>
+                    {$ph.ph_title}
+                    <span class="photos-listitem-region">{$ph.pc_title}</span>
+                    <span class="photos-listitem-object">{$ph.pt_name}</span>
+                </td>
+                <td>{$ph.ph_author}</td>
+                <td>
+                    <a href="{$ph.ph_link}" target="_blank">
+                        {$ph.ph_link|truncate:25:"…"}
+                    </a>
+                </td>
+                <td>{$ph.ph_width}x{$ph.ph_height}</td>
+                <td>
+                    <a href="?id={$ph.ph_id}"><img src="{$ph.ph_src}" style="max-height: 50px" /></a>
+                </td>
+            </tr>
+            {/foreach}
+        </table>
+    </form>
 </div>
 
 <link rel="stylesheet" href="/css/admin/photos.css" type="text/css" />
