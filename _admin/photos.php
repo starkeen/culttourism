@@ -167,6 +167,7 @@ if (isset($_GET['act'])) {
         $filter['where'][] = 'pt.pt_id = :ptid';
         $filter['binds'][':ptid'] = (int) $get['fobjectid'];
     }
+
     $list = $ph->getItemsByFilter($filter);
     $smarty->assign('get', $get);
     $smarty->assign('list', $list);

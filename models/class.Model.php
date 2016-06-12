@@ -78,8 +78,8 @@ abstract class Model {
                             " . (!empty($out['groupby']) ? ('GROUP BY ' . implode(", ", $out['groupby'])) : '') . "
                             ORDER BY {$out['order']}
                             LIMIT :offset, :limit";
-        //$this->_db->showSQL();exit();
         $this->_db->execute($out['binds']);
+        //$this->_db->showSQL();exit();
         $out['items'] = $this->_db->fetchAll();
         $this->_db->sql = "SELECT FOUND_ROWS() AS cnt";
         $this->_db->exec();

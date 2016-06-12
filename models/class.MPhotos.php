@@ -64,6 +64,7 @@ class MPhotos extends Model {
     public function getItemsByFilter($filter) {
         $filter['join'][] = 'LEFT JOIN ' . $this->_tables_related['pagecity'] . ' pc ON pc.pc_id = t.ph_pc_id';
         $filter['join'][] = 'LEFT JOIN ' . $this->_tables_related['pagepoints'] . ' pt ON pt.pt_id = t.ph_pt_id';
+        $filter['order'] = 'ph_date_add DESC';
         return parent::getItemsByFilter($filter);
     }
 
