@@ -98,7 +98,12 @@ if (isset($_GET['act'])) {
                 'pt_lastup_date' => $pt->now(),
             ));
         }
-        $referer = $_POST['referer'];
+        if (!empty($_POST['referer'])) {
+            $referer = $_POST['referer'];
+        }
+
+        header('Location: ' . $referer);
+        exit;
     }
 
     $photo = $ph->getItemByPk($id);
