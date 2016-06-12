@@ -49,13 +49,15 @@ if (isset($_GET['act'])) {
                                 'ph_order' => 20,
                             ));
                             if ($id > 0) {
-                                if ($pcid > 0) {
+                                $addpc = intval($_POST['pcid_add']);
+                                $addpt = intval($_POST['ptid_add']);
+                                if ($pcid > 0 && $addpc === 1) {
                                     $pc->updateByPk($pcid, array(
                                         'pc_coverphoto_id' => $id,
                                         'pc_lastup_date' => $pc->now(),
                                     ));
                                 }
-                                if ($ptid > 0) {
+                                if ($ptid > 0 && $addpt === 1) {
                                     $pt->updateByPk($ptid, array(
                                         'pt_photo_id' => $id,
                                         'pt_lastup_date' => $pt->now(),
