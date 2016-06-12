@@ -19,6 +19,7 @@ class MModules extends Model {
             'md_active',
             'md_counters',
             'md_pagecontent',
+            'md_photo_id',
             'md_redirect',
             'md_sort',
             'md_css',

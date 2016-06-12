@@ -31,6 +31,7 @@ class MPagePoints extends Model {
             'pt_adress',
             'pt_phone',
             'pt_email',
+            'pt_photo_id',
             'pt_is_best',
             'pt_active',
         );
