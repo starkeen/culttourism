@@ -48,7 +48,8 @@ $(document).ready(function () {
         $("#flickr-import-console").text("");
         $.post("flickr.php?act=save", {
             pcid: $("#flickr-import-city-id").val(),
-            phid: $("#flickr-import-photo-id").val()
+            phid: $("#flickr-import-photo-id").val(),
+            bindpc: $("#flickr-import-city-bind").attr("checked") ? 1 : 0
         }, function (response) {
             if (response.state) {
                 $("#flickr-import-console").append("сохранено");

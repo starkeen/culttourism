@@ -32,6 +32,7 @@ if (isset($_GET['act'])) {
         $out['geo'] = $geo;
     } elseif ($_GET['act'] == 'save') {
         $pcid = isset($_POST['pcid']) ? (int) $_POST['pcid'] : 0;
+        $bindpc = isset($_POST['bindpc']) ? (int) $_POST['bindpc'] : 0;
         try {
             $data = $api->getPhotoInfo($_POST['phid']);
             $sizes = $api->getSizes($_POST['phid']);
@@ -52,7 +53,7 @@ if (isset($_GET['act'])) {
                 'ph_order' => 10,
             ));
 
-            if ($id > 0 && $pcid > 0) {
+            if ($id > 0 && $pcid > 0 && $bindpc > 0) {
                 $pc->updateByPk($pcid, array(
                     'pc_coverphoto_id' => $id,
                     'pc_lastup_date' => $pc->now(),
