@@ -71,4 +71,47 @@ $(document).ready(function () {
             $("#photos-listfilter-objectid").val(suggestion.data);
         }
     });
+
+
+
+    $("#photos-item-region").autocomplete({
+        serviceUrl: "/search/suggest/",
+        minChars: 2,
+        paramName: "query",
+        width: 200,
+        onSelect: function (suggestion) {
+            $("#photos-item-region-id").val(suggestion.data);
+        }
+    });
+    $("#photos-item-object").autocomplete({
+        serviceUrl: "/search/suggest-object/",
+        minChars: 2,
+        paramName: "query",
+        width: 200,
+        transformResult: function (response) {
+            var pc = $("#photos-item-region-id").val();
+            var resultSuggestions = [];
+            $.map(response.suggestions, function (dataItem) {
+                if (pc === "0" || dataItem.city_id.toString() === pc.toString()) {
+                    resultSuggestions.push({
+                        value: dataItem.value,
+                        data: dataItem.data
+                    });
+                }
+            });
+            return resultSuggestions;
+        },
+        onSelect: function (suggestion) {
+            $("#photos-item-object-id").val(suggestion.data);
+        }
+    });
+
+    $("#photos-item-region-clean").on("click", function () {
+        $("#photos-item-region").val("");
+        $("#photos-item-region-id").val("0");
+    });
+    $("#photos-item-object-clean").on("click", function () {
+        $("#photos-item-object").val("");
+        $("#photos-item-object-id").val("0");
+    });
 });

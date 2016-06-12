@@ -18,6 +18,7 @@ class MPhotos extends Model {
             'ph_lat',
             'ph_lon',
             'ph_pc_id',
+            'ph_pt_id',
             'ph_date_add',
             'ph_order',
             'ph_active',

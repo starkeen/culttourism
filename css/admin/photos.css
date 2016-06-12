@@ -34,3 +34,12 @@
     font-size: 80%;
     color: #880088;
 }
+
+#photos-item {
+    position: relative;
+}
+#photos-item-img {
+    position: absolute;
+    left: 600px;
+    max-width: 300px;
+}
