@@ -24,6 +24,14 @@ class Page extends PageCommon {
             }
         }
         if ($url != '') {
+            $redirects = include realpath(dirname(__FILE__) . '/../config/redirects.php');
+            foreach ($redirects as $from => $to) {
+                $redir = preg_filter($from, $to, $url);
+                if ($redir) {
+                    $this->getError(301, $redir);
+                }
+            }
+
             $regs = array();
             $url_parts_array = !empty($url) ? explode('/', $url) : array();
             $url_parts = array_pop($url_parts_array);
