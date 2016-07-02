@@ -3,6 +3,7 @@ Disallow: /sign/
 Disallow: /cgi-bin/
 Disallow: /ajax/
 Disallow: /addons/
+Disallow: /search/
 Disallow: /city/detail/
 Sitemap: https://culttourism.ru/sitemap.xml
 
@@ -11,5 +12,6 @@ Disallow: /sign/
 Disallow: /cgi-bin/
 Disallow: /ajax/
 Disallow: /addons/
+Disallow: /search/
 Disallow: /city/detail/
 Host: https://culttourism.ru
