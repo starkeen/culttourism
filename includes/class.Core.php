@@ -365,7 +365,7 @@ abstract class Core {
         $redir = new MRedirects($this->db);
         $redirects = $redir->getActive();
         foreach ($redirects as $redirect) {
-            $redir = preg_filter($redirect['from'], $redirect['to'], $url);
+            $redir = preg_filter($redirect['rd_from'], $redirect['rd_to'], $url);
             if ($redir) {
                 $this->getError(301, $redir);
             }
