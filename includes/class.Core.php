@@ -361,6 +361,17 @@ abstract class Core {
         exit();
     }
 
+    protected function checkRedirect($url) {
+        $redir = new MRedirects($this->db);
+        $redirects = $redir->getActive();
+        foreach ($redirects as $redirect) {
+            $redir = preg_filter($redirect['from'], $redirect['to'], $url);
+            if ($redir) {
+                $this->getError(301, $redir);
+            }
+        }
+    }
+
     /* запрещаем клонировать экземпляр класса */
 
     protected function __clone() {

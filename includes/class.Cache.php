@@ -20,6 +20,10 @@ class Cache {
             'dir' => 'sysprops',
             'lifetime' => 3600,
         ),
+        'redirects' => array(
+            'dir' => 'redirects',
+            'lifetime' => 3600,
+        ),
     );
     private $cacheDir = null;
     private $cacheCurrent = null;
