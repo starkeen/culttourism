@@ -123,6 +123,8 @@ set_exception_handler(function($e) {
     $msg = "Error: " . $e->getMessage() . "\n"
             . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
             . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
+            . 'UA: ' . (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'none') . "\n"
+            . 'Cookies: ' . (isset($_COOKIE) ? print_r($_COOKIE, true) : 'none') . "\n"
             . "\n__________________________\n\n\n"
             . 'trace: ' . print_r($e->getTrace(), true) . "\n"
             . 'date: ' . date('d.m.Y H:i:s') . "\n";
@@ -136,6 +138,8 @@ register_shutdown_function(function() {
         $msg = "Error: " . $error['message'] . "\n"
                 . 'file: ' . $error['file'] . ':' . $error['line'] . "\n"
                 . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
+                . 'UA: ' . (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'none') . "\n"
+                . 'Cookies: ' . (isset($_COOKIE) ? print_r($_COOKIE, true) : 'none') . "\n"
                 . "\n__________________________\n\n\n"
                 . 'trace: ' . print_r(debug_backtrace(), true) . "\n"
                 . 'date: ' . date('d.m.Y H:i:s') . "\n";
