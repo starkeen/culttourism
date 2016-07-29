@@ -51,7 +51,7 @@ class MWordstat extends Model {
                             WHERE ws_weight > 0
                                 AND pc_id IS NULL
                             ORDER BY (ws_weight_max+ws_weight_min)/2 DESC, ws_weight_min DESC, ws_weight_max DESC, ws_weight DESC
-                            LIMIT 50";
+                            LIMIT 80";
         $this->_db->exec();
         $stat = array();
         while ($row = $this->_db->fetch()) {
@@ -97,7 +97,7 @@ class MWordstat extends Model {
                                 AND (ws_position > 10 OR ws_position = 0)
                             GROUP BY city_name
                             ORDER BY ws_weight_min DESC, ws_position_real DESC
-                            LIMIT 70";
+                            LIMIT 100";
         $this->_db->exec();
         $seo = array();
         while ($row = $this->_db->fetch()) {
