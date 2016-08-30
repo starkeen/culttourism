@@ -3,6 +3,12 @@
 class Page extends PageCommon {
 
     const DESCRIPTION_TRESHOLD = 200;
+    
+    const REDIR_SUFFIXES = [
+        'undefined',
+        'com.google.android.googlequicksearchbox',
+        'android-app%3A',
+    ];
 
     public function __construct($db, $mod) {
         parent::__construct($db, $mod[0]); //встроеные модули
@@ -33,7 +39,7 @@ class Page extends PageCommon {
                 return $this->getPageMap($url);
             } elseif ($urlParts == 'index.html') {
                 return $this->getPageCity($url);
-            } elseif ($urlParts == 'undefined') {
+            } elseif (in_array($urlParts, self::REDIR_SUFFIXES)) {
                 $url = substr($url, 0, stripos($url, $urlParts));
                 header("HTTP/1.1 301 Moved Permanently");
                 header("Location: " . $url);
