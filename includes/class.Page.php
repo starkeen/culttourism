@@ -28,14 +28,19 @@ class Page extends PageCommon {
 
             $regs = array();
             $url_parts_array = !empty($url) ? explode('/', $url) : array();
-            $url_parts = array_pop($url_parts_array);
-            if ($url_parts == 'map.html') {
+            $urlParts = array_pop($url_parts_array);
+            if ($urlParts == 'map.html') {
                 return $this->getPageMap($url);
-            } elseif ($url_parts == 'index.html') {
+            } elseif ($urlParts == 'index.html') {
                 return $this->getPageCity($url);
-            } elseif (preg_match('/object([0-9]+)\.html/i', $url_parts, $regs)) {
+            } elseif ($urlParts == 'undefined') {
+                $url = substr($url, 0, stripos($url, $urlParts));
+                header("HTTP/1.1 301 Moved Permanently");
+                header("Location: " . $url);
+                exit();
+            } elseif (preg_match('/object([0-9]+)\.html/i', $urlParts, $regs)) {
                 return $this->getPageObject(intval($regs[1]));
-            } elseif (preg_match('/([a-z0-9_-]+)\.html/i', $url_parts, $regs)) {
+            } elseif (preg_match('/([a-z0-9_-]+)\.html/i', $urlParts, $regs)) {
                 return $this->getPageObjectBySlug($regs[1]);
             } else {
                 return $this->getPageCity($url);
@@ -212,7 +217,8 @@ class Page extends PageCommon {
 
     private function getPageCity($url) {
         $url_parts = explode('/', $url);
-        if (array_pop($url_parts) == 'index.html') {
+        $lastPart = array_pop($url_parts);
+        if ($lastPart == 'index.html') {
             header("HTTP/1.1 301 Moved Permanently");
             header("Location: " . str_replace("index.html", '', $url));
             exit();
