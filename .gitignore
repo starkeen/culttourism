@@ -7,10 +7,10 @@
 *.xls
 *.csv
 *.log
-.idea/
-/css/ct-*.css
-/js/ct-*.js
-/templates_c/
+.idea
+ct-*.css
+ct-*.js
+templates_c/
 templates_cache/
 /config/configuration.php
 /data/private/
@@ -20,8 +20,8 @@ templates_cache/
 /data/photos/
 /data/_thumbs/
 /vendor/
-/sitemap.xml
-/robots.txt
+sitemap.xml
+robots.txt
 data/file/
 data/files/
 data/logs/
