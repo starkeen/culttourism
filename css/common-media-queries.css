@@ -37,6 +37,11 @@
         height: 36px;
         top: 0px;
     }
+    #header-slogan {
+        position: relative;
+        right: auto;
+        margin: 0 auto;
+    }
     #content {
         line-height: 1.6;
         font-size: 90%;
