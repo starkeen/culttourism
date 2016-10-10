@@ -223,6 +223,9 @@ class Page extends PageCommon {
 
     private function getPageCity($url) {
         $url_parts = explode('/', $url);
+        $urlFiltered = implode('/', array_map(function ($uItem) {
+            return trim(str_replace('+', ' ', $uItem));
+        }, $url_parts));
         $lastPart = array_pop($url_parts);
         if ($lastPart == 'index.html') {
             header("HTTP/1.1 301 Moved Permanently");
@@ -232,7 +235,7 @@ class Page extends PageCommon {
 
         $pcs = new MPageCities($this->db);
         $pts = new MPagePoints($this->db);
-        $row = $pcs->getCityByUrl($url);
+        $row = $pcs->getCityByUrl($urlFiltered);
 
         if (!empty($row) && isset($row['pc_title']) && $row['pc_title'] != '') {
             $row['pc_zoom'] = ($row['pc_latlon_zoom']) ? $row['pc_latlon_zoom'] : 12;
