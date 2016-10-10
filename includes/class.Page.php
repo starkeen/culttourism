@@ -226,7 +226,7 @@ class Page extends PageCommon {
         $urlFiltered = array_map(function ($uItem) {
             return trim(str_replace('+', ' ', $uItem));
         }, $url_parts);
-        $urlFiltered = implode('/', array_filter($urlFiltered));
+        $urlFiltered = '/'.implode('/', array_filter($urlFiltered));
         $lastPart = array_pop($url_parts);
         if ($lastPart == 'index.html') {
             header("HTTP/1.1 301 Moved Permanently");
