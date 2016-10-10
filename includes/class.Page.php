@@ -223,9 +223,10 @@ class Page extends PageCommon {
 
     private function getPageCity($url) {
         $url_parts = explode('/', $url);
-        $urlFiltered = implode('/', array_map(function ($uItem) {
+        $urlFiltered = array_map(function ($uItem) {
             return trim(str_replace('+', ' ', $uItem));
-        }, $url_parts));
+        }, $url_parts);
+        $urlFiltered = implode('/', array_filter($urlFiltered));
         $lastPart = array_pop($url_parts);
         if ($lastPart == 'index.html') {
             header("HTTP/1.1 301 Moved Permanently");
