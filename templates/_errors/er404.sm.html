@@ -20,8 +20,9 @@
 </p>
 <div class="m_clear"></div>
 <script type="text/javascript">
-$(function() {
+$(document).ready(function() {
+    var yaParams = {error404: {page: url, from: url_referrer}};
     ga('send', 'event', '404', document.location.pathname + document.location.search, document.referrer, { 'nonInteraction': 1 });
-    window.yaCounter1209661.reachGoal('error-404', { url: document.location.pathname + document.location.search, referer: document.referrer });
+    window.yaCounter1209661.reachGoal('error404', { url: document.location.pathname + document.location.search, referer: document.referrer });
 });
 </script>
