@@ -16,7 +16,6 @@ templates_cache/
 /data/private/
 /data/feed/
 /data/images/
-/data/images/*.jpg
 /data/photos/
 /data/_thumbs/
 /vendor/
@@ -27,3 +26,4 @@ data/files/
 data/logs/
 data/store/
 
+templates/sys/
