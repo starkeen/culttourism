@@ -20,6 +20,8 @@ class Page extends PageCommon {
         } elseif ($page_id == 'delentry' && intval($_GET['bid'])) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             $this->content = $this->deleteBlogEntry(intval($_GET['bid']));
+        } elseif ($page_id == 'blog') {
+            $this->getError(301, '/blog/');
         } elseif ($id2 != '') {
             $this->content = $this->getOneEntry($id2, $page_id, $id); //одна запись
         } elseif ($page_id != '') {
