@@ -1,37 +1,48 @@
 <?php
 
 /**
- * Description of MyPDO
  *
  * @author Andrey_Panisko
  */
 include 'interfaces/IDB.php';
 
-class MyPDO implements IDB {
-
+class MyPDO implements IDB
+{
     private static $_instances = false;
-    public $link = null;
-    protected $prefix = null;
-    private $_sql = null;
-    private $_pdo = null;
-    private $_stm = null;
+
+    public $link;
+    protected $prefix;
+    /** @var string */
+    private $_sql;
+    /** @var PDO */
+    private $_pdo;
+    /** @var PDOStatement */
+    private $_stm;
     private $_stm_params = array();
-    private $_affected_rows = null;
-    private $_last_inserted_id = null;
+    private $_affected_rows = 0;
+    private $_last_inserted_id;
     private $_errors = array();
     private $_cfg_trim_quotes = true;
     private $_stat_queries_cnt = 0;
     private $_stat_worktime_last = 0;
     private $_stat_worktime_all = 0;
 
-    public function __construct($db_host, $db_user, $db_pwd, $db_base, $db_prefix = null) {
+    /**
+     * @param string $db_host
+     * @param string $db_user
+     * @param string $db_pwd
+     * @param string $db_base
+     * @param string|null $db_prefix
+     */
+    public function __construct($db_host, $db_user, $db_pwd, $db_base, $db_prefix = null)
+    {
         if (!MyPDO::$_instances) {
             $opts = array(
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
                 PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-                    //PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'",
+                //PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'",
             );
             $this->prefix = $db_prefix;
             try {
@@ -44,7 +55,12 @@ class MyPDO implements IDB {
         }
     }
 
-    public function getTableName($alias) {
+    /**
+     * @param string $alias
+     * @return string
+     */
+    public function getTableName($alias)
+    {
         if ($this->prefix === null) {
             return '`' . $alias . '`';
         } else {
@@ -52,7 +68,12 @@ class MyPDO implements IDB {
         }
     }
 
-    public function getEscapedString($text) {
+    /**
+     * @param string $text
+     * @return string
+     */
+    public function getEscapedString($text)
+    {
         $out = $this->_pdo->quote($text);
         if ($this->_cfg_trim_quotes) {
             $out = trim($out, "'");
@@ -64,7 +85,8 @@ class MyPDO implements IDB {
      * Подготавливаем запрос
      * @param string $sql
      */
-    public function prepare($sql = '') {
+    public function prepare($sql = '')
+    {
         if (!empty($sql)) {
             $this->_sql = $sql;
         }
@@ -76,15 +98,18 @@ class MyPDO implements IDB {
      * @param string $key
      * @param mixed $value
      */
-    public function bind($key, $value) {
+    public function bind($key, $value)
+    {
         $this->_stm_params[$key] = $value;
         //$this->_stm->bindParam($key, $value);
     }
 
     /**
      * Выполняем PDO::execute
+     * @return PDOStatement
      */
-    public function execute($params = array()) {
+    public function execute($params = array())
+    {
         if (!empty($params)) {
             $this->_stm_params = $params;
         }
@@ -103,12 +128,12 @@ class MyPDO implements IDB {
         } catch (PDOException $e) {
             $this->_errors[] = $e->getMessage();
             $msg = "SQL-execute error: " . $e->getMessage() . "\n"
-                    . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
-                    . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
-                    . "\n__________________________\n\n\n"
-                    . 'SQL: ' . $this->_sql . "\n"
-                    . "\n__________________________\n\n\n"
-                    . 'trace: ' . $e->getTraceAsString() . "\n";
+                . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
+                . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
+                . "\n__________________________\n\n\n"
+                . 'SQL: ' . $this->_sql . "\n"
+                . "\n__________________________\n\n\n"
+                . 'trace: ' . $e->getTraceAsString() . "\n";
 
             mail('starkeen@gmail.com', 'SQL error on ' . _URL_ROOT, $msg);
         }
@@ -117,9 +142,10 @@ class MyPDO implements IDB {
     /**
      * Выполняем PDO::query - совместимость со старыми вызовами
      * @param mixed $data
-     * @return type
+     * @return PDOStatement
      */
-    public function exec($data = null) {
+    public function exec($data = null)
+    {
         if ($data !== null) {
             if (is_string($data)) {
                 $this->sql = $data;
@@ -145,18 +171,23 @@ class MyPDO implements IDB {
         } catch (PDOException $e) {
             $this->_errors[] = $e->getMessage();
             $msg = "SQL-exec error: " . $e->getMessage() . "\n"
-                    . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
-                    . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
-                    . "\n__________________________\n\n\n"
-                    . 'SQL: ' . $this->_sql . "\n"
-                    . "\n__________________________\n\n\n"
-                    . 'trace: ' . $e->getTraceAsString() . "\n";
+                . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
+                . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
+                . "\n__________________________\n\n\n"
+                . 'SQL: ' . $this->_sql . "\n"
+                . "\n__________________________\n\n\n"
+                . 'trace: ' . $e->getTraceAsString() . "\n";
 
             mail('starkeen@gmail.com', 'SQL error on ' . _URL_ROOT, $msg);
         }
     }
 
-    public function fetch($res = null) {
+    /**
+     * @param null $res
+     * @return mixed|null
+     */
+    public function fetch($res = null)
+    {
         $out = null;
         try {
             $out = $this->_stm->fetch();
@@ -169,11 +200,22 @@ class MyPDO implements IDB {
         return $out;
     }
 
-    public function fetchCol($res = null) {
+    /**
+     * @param null $res
+     * @return mixed
+     */
+    public function fetchCol($res = null)
+    {
         return $this->_stm->fetchColumn();
     }
 
-    public function fetchAll($res = null) {
+    /**
+     * @param null $res
+     * @return array
+     * @throws Exception
+     */
+    public function fetchAll($res = null)
+    {
         try {
             $out = $this->_stm->fetchAll();
             $this->_stm->closeCursor();
@@ -185,27 +227,51 @@ class MyPDO implements IDB {
         return $out;
     }
 
-    public function getLastInserted() {
+    /**
+     * @return mixed
+     */
+    public function getLastInserted()
+    {
         return $this->_last_inserted_id;
     }
 
-    public function getAffectedRows() {
+    /**
+     * @return int
+     */
+    public function getAffectedRows()
+    {
         return $this->_affected_rows;
     }
 
-    public function beginTransaction() {
-        $this->_pdo->beginTransaction();
+    /**
+     * @return bool
+     */
+    public function beginTransaction()
+    {
+        return $this->_pdo->beginTransaction();
     }
 
-    public function commitTransaction() {
-        $this->_pdo->commit();
+    /**
+     * @return bool
+     */
+    public function commitTransaction()
+    {
+        return $this->_pdo->commit();
     }
 
-    public function rollbackTransaction() {
-        $this->_pdo->rollBack();
+    /**
+     * @return bool
+     */
+    public function rollbackTransaction()
+    {
+        return $this->_pdo->rollBack();
     }
 
-    public function showSQL($sql = null) {
+    /**
+     * @param string $sql
+     */
+    public function showSQL($sql = null)
+    {
         if ($sql !== null) {
             $this->sql = $sql;
         }
@@ -234,27 +300,49 @@ class MyPDO implements IDB {
         return;
     }
 
-    public function getDebugInfo() {
+    /**
+     * @return array
+     */
+    public function getDebugInfo()
+    {
         return array('queries' => $this->_stat_queries_cnt, 'worktime' => $this->_stat_worktime_all);
     }
 
-    public function getDebugLast() {
+    /**
+     * @return string
+     */
+    public function getDebugLast()
+    {
         return $this->cnt_worktime_this;
     }
 
-    public function getDebugInfoText() {
+    /**
+     * @return string
+     */
+    public function getDebugInfoText()
+    {
         $data = $this->getDebugInfo();
         return "SQL-запросов: {$data['queries']}, время MySQL: "
-                . substr($this->_stat_worktime_all, 0, 6) . ' c.';
+        . substr($this->_stat_worktime_all, 0, 6) . ' c.';
     }
 
-    public function __set($name, $value) {
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
+    public function __set($name, $value)
+    {
         if ($name == 'sql') {
             $this->_sql = $value;
         }
     }
 
-    public function __get($name) {
+    /**
+     * @param string $name
+     * @return string
+     */
+    public function __get($name)
+    {
         if ($name == 'sql') {
             return $this->_sql;
         }

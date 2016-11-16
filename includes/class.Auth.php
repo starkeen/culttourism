@@ -1,22 +1,25 @@
 <?php
 
 class Auth {
-
-    private $db = null;
+    const SECRET_STRING = 'И вновь продолжается бой. И гёл. Если очень захотеть, можно в космос полететь, и на Марсе будут яблони цвести';
+    /** @var MyDB|null */
+    private $db;
     private $key_lifetime_hours = 2592000; //3600 * 24 * 30;
-    public $key = null;
-    private $session = null;
+    public $key;
+    private $session;
     private $meta = array(
         'uri' => null,
         'host' => null,
         'ip' => null,
         'browser' => null,
     );
-    public $user_id = null;
-    public $username = null;
-    private $secretstring = 'И вновь продолжается бой. И гёл. Если очень захотеть, можно в космос полететь, и на Марсе будут яблони цвести';
+    public $user_id;
+    public $username;
 
-    public function __construct($db) {
+    /**
+     * @param MyDB $db
+     */
+    public function __construct(MyDB $db) {
         $this->db = $db;
         $this->session = session_id();
         $this->getKey();
@@ -40,21 +43,24 @@ class Auth {
         if (isset($_COOKIE['apikey'])) {
             $this->key = trim($_COOKIE['apikey']);
         } else {
-            $this->key = md5(uniqid() . $this->secretstring);
+            $this->key = md5(uniqid() . self::SECRET_STRING);
             if (!setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/')) {
-                $this->key = + 'x_';
+                $this->key = 'x_'.$this->key;
             }
         }
         return $this->key;
     }
 
+    /**
+     * @param string $service
+     */
     public function checkSession($service = 'web') {
         $dba = $this->db->getTableName('authorizations');
-        $this->db->sql = "SELECT au_session, IF(au_date_expire < NOW(), 1, 0) expired FROM $dba
+        $this->db->sql = "SELECT au_session, IF(au_date_expire < NOW(), 1, 0) AS expired FROM $dba
                             WHERE au_key = :key
                             LIMIT 1";
         $this->db->execute(array(
-            ':key' => $this->key,
+            ':key' => (string) $this->key,
         ));
         $row = $this->db->fetch();
         if ($row['expired'] == 1) {
