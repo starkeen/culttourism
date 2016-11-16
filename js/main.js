@@ -30,7 +30,6 @@ window.sentryInitialiser = setInterval(function() {
             id: ''
         });
     }
-</script>
 
 $(document).ready(function () {
     //------------------------------------- BEST OBJECTS -------------------------------
