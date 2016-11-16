@@ -2,34 +2,12 @@ jQuery.error = function (message) {
     ga('send', 'event', 'jQuery Error', message, navigator.userAgent);
 };
 
-window.sentryInitialiser = setInterval(function() {
-        if (window.Raven !== undefined) {
-            clearInterval(window.sentryInitialiser);
-            initSentry();
-        }
-    }, 300);
-
-    function initSentry() {
-        Raven.config('https://e3bccedd75864d36ab2a0cf1e0273737@sentry.io/114324', {
-            release: 'master',
-            whitelistUrls: [
-                /https?:\/\/(\w+\.)?getsentry\.ru/,
-                /https?:\/\/(\w+\.)?relap\.io/
-            ],
-            ignoreErrors: [
-            ],
-            ignoreUrls: [
-                // Chrome extensions
-                /extensions\//i,
-                /^chrome:\/\//i,
-            ]
-        }).install();
-
-        Raven.setUserContext({
-            type: 'guest',
-            id: ''
-        });
+window.sentryInitialiser = setInterval(function () {
+    if (window.Raven !== undefined) {
+        clearInterval(window.sentryInitialiser);
+        initSentry();
     }
+}, 300);
 
 $(document).ready(function () {
     //------------------------------------- BEST OBJECTS -------------------------------
@@ -99,13 +77,13 @@ $(document).ready(function () {
         if (this.id == "pt_description_hidd") {//---------- описание точки -----
             $(document).css("cursor", "progress");
             $("#pt_description_edit").css("height", "300px").css("width", "100%")
-                    .val($(this).html())
-                    .ckeditor(function () {
-                    }, {
-                        customConfig: "/config/config.cke4.js",
-                        height: '230px',
-                        toolbar: "Lite"
-                    });
+                .val($(this).html())
+                .ckeditor(function () {
+                }, {
+                    customConfig: "/config/config.cke4.js",
+                    height: '230px',
+                    toolbar: "Lite"
+                });
             $(this).hide();
             $("#pt_description_edit").show().focus().css("height", "0");
             $("div#pt_description_handler input").show();
@@ -118,13 +96,13 @@ $(document).ready(function () {
             $(document).css("cursor", "progress");
             $("#pc_title_handler input").hide();
             $.post("/ajax/city/savetitle/?id=" + $("#pc_id").val(), {
-                id: $("#pc_id").val(),
-                ntitle: $("#pc_title_edit").val()
-            },
-                    function (data) {
-                        $("div#pc_title_handler input").hide();
-                        $("#pc_title_edit").removeClass("hiddenedit_active").val(data);
-                    });
+                    id: $("#pc_id").val(),
+                    ntitle: $("#pc_title_edit").val()
+                },
+                function (data) {
+                    $("div#pc_title_handler input").hide();
+                    $("#pc_title_edit").removeClass("hiddenedit_active").val(data);
+                });
             $(document).css("cursor", "default");
         }
 
@@ -402,16 +380,16 @@ $(document).ready(function () {
     });
     $("#pt_latlon_handler input.dosave").live("click", function () {//----------- save
         $.post("/ajax/point/saveformGPS/?pid=" + $("#obj_id").val(), {
-            pt_lat: $("#obj_lat").val(),
-            pt_lon: $("#obj_lon").val(),
-            pt_zoom: $("#obj_zoom").val()
-        },
-                function (resp) {
-                    if (resp) {
-                        $("#gps_" + $("#obj_id").val()).text(resp);
-                        $.modal.close()
-                    }
-                })
+                pt_lat: $("#obj_lat").val(),
+                pt_lon: $("#obj_lon").val(),
+                pt_zoom: $("#obj_zoom").val()
+            },
+            function (resp) {
+                if (resp) {
+                    $("#gps_" + $("#obj_id").val()).text(resp);
+                    $.modal.close()
+                }
+            })
     });
     $("#pt_latlon_handler input.doesc").live("click", function () {//------------ escape
         $.modal.close();
@@ -426,17 +404,17 @@ $(document).ready(function () {
     });
     $("#pc_latlon_handler input.dosave").live("click", function () {//----------- save
         $.post("/ajax/city/saveformGPS/?cid=" + $("#city_id").val(), {
-            pc_lat: $("#city_lat").val(),
-            pc_lon: $("#city_lon").val(),
-            pc_zoom: $("#city_zoom").val()
-        },
-                function (a) {
-                    if (a) {
-                        $("#pc_latitude").val($("#city_lat").val());
-                        $("#pc_longitude").val($("#city_lon").val());
-                        $.modal.close();
-                    }
-                })
+                pc_lat: $("#city_lat").val(),
+                pc_lon: $("#city_lon").val(),
+                pc_zoom: $("#city_zoom").val()
+            },
+            function (a) {
+                if (a) {
+                    $("#pc_latitude").val($("#city_lat").val());
+                    $("#pc_longitude").val($("#city_lon").val());
+                    $.modal.close();
+                }
+            })
     });
     $("#pc_latlon_handler input.doesc").live("click", function () {//------------ escape
         $.modal.close();
@@ -639,8 +617,6 @@ $(document).ready(function () {
     }
 });
 
-
-
 //======================= FUNCTIONS ==============================================
 function showWindByURL(url, get) {
     //*функция показа модального окна с контентом по URL*/
@@ -662,7 +638,7 @@ function showWindByURL(url, get) {
         $("#simplemodal-data").html(data);
         if ($("#object_container h2").position() !== undefined) {
             $("#object_text_container").css("bottom", $("#object_additional").height())
-                    .css("top", 2.7 * ($("#object_container h2").position().top + $("#object_container h2").height()));
+                .css("top", 2.7 * ($("#object_container h2").position().top + $("#object_container h2").height()));
         }
         $("body").trigger('afterShowWindByURL');
     });
@@ -771,14 +747,14 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
         });
         $(".savereverse").live("click", function () {
             $.post("/ajax/point/saveAddrGPS/?pid=" + $("#obj_id").val(), {
-                id: $("#obj_id").val(),
-                addr: $("#obj_addr_searcher").text()
-            },
-                    function (resp) {
-                        if (resp) {
-                            $(".savereverse").hide();
-                        }
-                    });
+                    id: $("#obj_id").val(),
+                    addr: $("#obj_addr_searcher").text()
+                },
+                function (resp) {
+                    if (resp) {
+                        $(".savereverse").hide();
+                    }
+                });
         });
 
 
@@ -801,3 +777,23 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
     });
 }
 
+function initSentry() {
+    Raven.config('https://e3bccedd75864d36ab2a0cf1e0273737@sentry.io/114324', {
+        release: 'master',
+        whitelistUrls: [
+            /https?:\/\/(\w+\.)?getsentry\.ru/,
+            /https?:\/\/(\w+\.)?relap\.io/
+        ],
+        ignoreErrors: [],
+        ignoreUrls: [
+            // Chrome extensions
+            /extensions\//i,
+            /^chrome:\/\//i,
+        ]
+    }).install();
+
+    Raven.setUserContext({
+        type: 'guest',
+        id: ''
+    });
+}

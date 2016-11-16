@@ -67,6 +67,8 @@ class Page extends PageCommon {
                         }
                     }
 
+                    $sp->updateByName('git_hash', $req->commits[0]->raw_node);
+
                     Logging::addHistory('sys', "Результаты деплоя", implode("\n", $res));
 
                     $mail_attrs = array(
