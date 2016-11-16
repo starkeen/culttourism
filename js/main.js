@@ -2,6 +2,36 @@ jQuery.error = function (message) {
     ga('send', 'event', 'jQuery Error', message, navigator.userAgent);
 };
 
+window.sentryInitialiser = setInterval(function() {
+        if (window.Raven !== undefined) {
+            clearInterval(window.sentryInitialiser);
+            initSentry();
+        }
+    }, 300);
+
+    function initSentry() {
+        Raven.config('https://e3bccedd75864d36ab2a0cf1e0273737@sentry.io/114324', {
+            release: 'master',
+            whitelistUrls: [
+                /https?:\/\/(\w+\.)?getsentry\.ru/,
+                /https?:\/\/(\w+\.)?relap\.io/
+            ],
+            ignoreErrors: [
+            ],
+            ignoreUrls: [
+                // Chrome extensions
+                /extensions\//i,
+                /^chrome:\/\//i,
+            ]
+        }).install();
+
+        Raven.setUserContext({
+            type: 'guest',
+            id: ''
+        });
+    }
+</script>
+
 $(document).ready(function () {
     //------------------------------------- BEST OBJECTS -------------------------------
     $(".obj_best").append("<img class=\"obj_best_pic\" src=\"/img/points/best-24.png\" />");
