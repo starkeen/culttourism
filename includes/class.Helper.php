@@ -197,5 +197,28 @@ class Helper {
         );
         return isset($types[$mimetype]) ? $types[$mimetype] : false;
     }
+    
+    /**
+     * Получение текущего коммита в git
+     * @param $root
+     *
+     * @return string
+     */
+    public static function getGitHeadCommit($root)
+    {
+        try {
+            if (!is_dir($root . '/.git')) {
+                return $root . '/.git is not dir';
+            }
+            $head = trim(file_get_contents($root . '/.git/HEAD'));
+            if (0 === strpos($head, 'ref:')) {
+                list(, $ref_file) = explode(' ', $head);
+                $head = trim(file_get_contents($root . '/.git/' . $ref_file));
+            }
+        } catch (Exception $e) {
+            $head = "Cannot read HEAD: " . $e->getMessage();
+        }
+        return $head;
+    }
 
 }
