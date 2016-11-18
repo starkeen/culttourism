@@ -781,14 +781,15 @@ function initSentry() {
     Raven.config('https://e3bccedd75864d36ab2a0cf1e0273737@sentry.io/114324', {
         release: 'master',
         whitelistUrls: [
-            /https?:\/\/(\w+\.)?getsentry\.ru/,
-            /https?:\/\/(\w+\.)?relap\.io/
+            /https?:\/\/(\w+\.)?getsentry\.ru/,            
         ],
         ignoreErrors: [],
         ignoreUrls: [
             // Chrome extensions
             /extensions\//i,
             /^chrome:\/\//i,
+            // Relap
+            /https?:\/\/(\w+\.)?relap\.io/,
         ]
     }).install();
 
