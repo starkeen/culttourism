@@ -22,6 +22,8 @@ include _DIR_ROOT . '/vendor/autoload.php';
 include(_DIR_INCLUDES . '/class.Helper.php');
 spl_autoload_register('Helper::autoloader');
 
+// TODO Sentry here
+
 $server_request_uri = urldecode($_SERVER['REQUEST_URI']);
 if (strpos($server_request_uri, '?')) {
     $server_request_uri = mb_substr($server_request_uri, 0, strpos($server_request_uri, '?'), 'utf-8');

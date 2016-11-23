@@ -143,6 +143,7 @@ class DeployBitbucket {
     }
 
     /**
+     * TODO Вынести Sentry DSN в конфиг
      * @param string $version
      * @return string
      */
