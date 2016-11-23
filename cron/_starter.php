@@ -5,11 +5,7 @@ ini_set('display_errors', false);
 $_timer_start_main = microtime(true);
 header('Content-Type: text/html; charset=utf-8');
 include(realpath(dirname(__FILE__) . '/../config/configuration.php'));
-include(_DIR_INCLUDES . '/debug.php');
-include(_DIR_INCLUDES . '/functions.php');
-include(_DIR_INCLUDES . '/class.Helper.php');
 include _DIR_ROOT . '/vendor/autoload.php';
-spl_autoload_register('Helper::autoloader');
 
 $db = FactoryDB::db();
 $smarty = new mySmarty();
