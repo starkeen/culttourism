@@ -7,7 +7,7 @@
         }
     ],
     "require": {
-        "smarty/smarty": "^3.1",
+        "smarty/smarty": "3.1.29",
         "phpmailer/phpmailer": "^5.2",
         "ezyang/htmlpurifier": "^4.7",
         "sentry/sentry": "^1.5",
@@ -18,7 +18,10 @@
         "psr-0": {
             "": ""
         },
-        "classmap": [],
+        "classmap": [
+            "includes/",
+            "models/"
+        ],
         "files": [
             "includes/functions.php",
             "includes/debug.php"

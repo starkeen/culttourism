@@ -5,11 +5,9 @@ include('config/configuration.php');
 error_reporting(E_ALL & ~E_DEPRECATED);
 if (_ER_REPORT) {
     ini_set('display_errors', true);
-    include('includes/debug.php');
 } else {
     ini_set('display_errors', false);
 }
-include('includes/functions.php');
 
 if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == "") && false) {
     //Redirect all to HTTPS
@@ -19,8 +17,6 @@ if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS']
 }
 
 include _DIR_ROOT . '/vendor/autoload.php';
-include(_DIR_INCLUDES . '/class.Helper.php');
-spl_autoload_register('Helper::autoloader');
 
 // TODO Sentry here
 
@@ -60,6 +56,7 @@ if (file_exists(_DIR_MODULES . "/$module_id/$module_id.php")) {
 } else {
     include(_DIR_INCLUDES . '/class.Page.php');
 }
+
 $page = Page::getInstance($db, array($module_id, $page_id, $id, $id2));
 $smarty->assign('page', $page);
 
