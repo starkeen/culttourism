@@ -7,13 +7,20 @@
  */
 class DeployBitbucket {
 
-    private $_config = array();
+    private $_config = [];
     private $_repo_path = null;
 
+    /**
+     * @param array $config
+     */
     public function __construct($config) {
         $this->_config = $config;
     }
 
+    /**
+     * @param stdClass $req
+     * @return array
+     */
     public function deploy($req) {
         $this->_repo_path = $req->canon_url
                 . $this->_config['git_url']
@@ -34,6 +41,8 @@ class DeployBitbucket {
                             $log[] = $this->delFile($file->file);
                         }
                     }
+
+                    $this->sendToSentry($commit->raw_node);
                 }
             }
         }
@@ -43,6 +52,10 @@ class DeployBitbucket {
         return $log;
     }
 
+    /**
+     * @param string $filename
+     * @return null|string
+     */
     private function addFile($filename) {
         $out = null;
         $contents = $this->getFileContents($this->_repo_path . $filename);
@@ -64,6 +77,10 @@ class DeployBitbucket {
         return $out;
     }
 
+    /**
+     * @param string $filename
+     * @return string
+     */
     private function delFile($filename) {
         $out = array();
         if (unlink($this->_config['location'] . $filename)) {
@@ -78,15 +95,23 @@ class DeployBitbucket {
         return implode("; ", $out);
     }
 
+    /**
+     * @param string $dirpath
+     * @return string|null
+     */
     private function delDir($dirpath) {
         if (!glob($dirpath . '/*')) {
             if (rmdir($dirpath)) {
                 return $dirpath;
             }
         }
-        return;
+        return null;
     }
 
+    /**
+     * @param string $url
+     * @return mixed
+     */
     private function getFileContents($url) {
         // create a new cURL resource
         $ch = curl_init();
@@ -114,6 +139,30 @@ class DeployBitbucket {
         // close cURL resource, and free up system resources
         curl_close($ch);
 
+        return $data;
+    }
+
+    /**
+     * @param string $version
+     * @return string
+     */
+    private function sendToSentry($version = 'master')
+    {
+        $data = ["version" => $version];
+        $url = 'https://sentry.io/api/hooks/release/builtin/114324/bfd5c7f4281799d21a588cc8a5927c3f0be4dc886896561c9c8833bc82d5b385/';
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        $data = curl_exec($ch);
+        curl_close($ch);
         return $data;
     }
 
