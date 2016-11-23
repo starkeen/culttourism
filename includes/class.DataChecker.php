@@ -3,7 +3,8 @@
 /**
  * Класс для проверки и исправления данных
  */
-class DataChecker {
+class DataChecker
+{
 
     protected $db;
     protected $entity_type = 'type';
@@ -19,11 +20,13 @@ class DataChecker {
         ' д ' => ' д. ',
     );
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->db = $db;
     }
 
-    public function repairPointsAddrs($count = 100) {
+    public function repairPointsAddrs($count = 100)
+    {
         $this->entity_type = MDataCheck::ENTITY_POINTS;
         $this->entity_field = 'pt_adress';
         $p = new MPagePoints($this->db);
@@ -39,9 +42,9 @@ class DataChecker {
         $log = array();
         foreach ($points as $i => $pt) {
             $request = 'https://geocode-maps.yandex.ru/1.x/?format=json'
-                    . '&geocode=' . $pt['pt_longitude'] . ',' . $pt['pt_latitude']
-                    . '&ll=37.618920,55.756994'
-                    . '&kind=house&results=1';
+                . '&geocode=' . $pt['pt_longitude'] . ',' . $pt['pt_latitude']
+                . '&ll=37.618920,55.756994'
+                . '&kind=house&results=1';
             $answer = $curl->get($request);
             $data = json_decode($answer);
             if (empty($data->response->GeoObjectCollection)) {
@@ -56,7 +59,7 @@ class DataChecker {
             foreach ($featureMember as $fm) {
                 $latlon = explode(' ', $fm->GeoObject->Point->pos);
                 $addr_variant = array(
-                    'text' => $fm->GeoObject->metaDataProperty->GeocoderMetaData->text,
+                    'text' => isset($fm->GeoObject->metaDataProperty->GeocoderMetaData) ? $fm->GeoObject->metaDataProperty->GeocoderMetaData->text : $fm->GeoObject->name,
                     'gps' => array(
                         'latitude' => $latlon[1],
                         'longitude' => $latlon[0],
@@ -85,7 +88,8 @@ class DataChecker {
         return $log;
     }
 
-    public function repairCandidates($count = 10) {
+    public function repairCandidates($count = 10)
+    {
         $this->entity_type = MDataCheck::ENTITY_CANDIDATES;
         $this->entity_id = 'cp_id';
         $dc = new MDataCheck($this->db);
@@ -110,7 +114,8 @@ class DataChecker {
         return $log;
     }
 
-    public function repairCandidatesAddrs($count = 10) {
+    public function repairCandidatesAddrs($count = 10)
+    {
         $log = array();
         $this->entity_type = MDataCheck::ENTITY_CANDIDATES;
         $this->entity_id = 'cp_id';
@@ -152,7 +157,8 @@ class DataChecker {
         return $log;
     }
 
-    public function repairBlog($count = 10) {
+    public function repairBlog($count = 10)
+    {
         $log = array();
         $this->entity_type = MDataCheck::ENTITY_BLOG;
         $this->entity_id = 'br_id';
@@ -173,7 +179,8 @@ class DataChecker {
         return $log;
     }
 
-    public function repairPoints($count = 10) {
+    public function repairPoints($count = 10)
+    {
         $log = array();
         $this->entity_type = MDataCheck::ENTITY_POINTS;
         $this->entity_id = 'pt_id';
@@ -197,7 +204,8 @@ class DataChecker {
         return $log;
     }
 
-    public function repairCity($count = 10) {
+    public function repairCity($count = 10)
+    {
         $log = array();
         $this->entity_type = MDataCheck::ENTITY_CITIES;
         $this->entity_id = 'pc_id';
@@ -220,7 +228,8 @@ class DataChecker {
         return $log;
     }
 
-    public function getCheckingPortion($limit, $active, $unchecked = false) {
+    public function getCheckingPortion($limit, $active, $unchecked = false)
+    {
         $checkertable = $this->db->getTableName('data_check');
         $tname = $this->db->getTableName($this->entity_type);
         $this->db->sql = "SELECT t.*
@@ -244,7 +253,8 @@ class DataChecker {
         return $this->db->fetchAll();
     }
 
-    protected function buildTypograph() {
+    protected function buildTypograph()
+    {
         $typograf = new EMTypograph();
         $typograf->setup(array(
             'Text.paragraphs' => 'off',
