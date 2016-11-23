@@ -7,12 +7,6 @@ session_start();
 /* Общие функции и опции */
 require_once('../config/configuration.php');
 include _DIR_ROOT . '/vendor/autoload.php';
-include(_DIR_INCLUDES . '/class.Helper.php');
-spl_autoload_register('Helper::autoloader');
-require_once('debug.php');
-require_once('class.mySmarty.php');
-require_once('class.Auth.php');
-require_once('functions.php');
 
 if (true && !_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == "")) {
     header("HTTP/1.1 301 Moved Permanently");
