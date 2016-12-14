@@ -8,7 +8,8 @@
         <title>{$page->title}</title>
         <meta name="keywords" content="{$page->keywords|escape:"html"}"/>
         <meta name="description" content="{$page->description|escape:"html"}"/>
-        <meta property="fb:admins" content="787133747"/>
+        <meta property="fb:pages" content="251308854921643" />
+        <meta property="fb:admins" content="787133747" />
         {foreach from=$page->getCustomMetas() key=property item=content}
             <meta property="{$property}" content="{$content|truncate:800:"…"}"/>
         {/foreach}
