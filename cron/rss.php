@@ -1,5 +1,13 @@
 <?php
 
+$filesRSS = [
+    'blog.xml',
+    'blog-dlvrit.xml',
+    'blog-facebook.xml',
+    'blog-twitter.xml',
+    'blog-telegram.xml',
+];
+
 $be = new MBlogEntries($db);
 
 $feed['title'] = 'Культурный туризм в России';
@@ -14,18 +22,11 @@ $feed['generator'] = 'Cultural tourism / ' . _SITE_URL;
 $smarty->assign('entries', $be->getLastActive(10));
 $smarty->assign('feed', $feed);
 
-$filecontent = $smarty->fetch(_DIR_TEMPLATES . '/_XML/rss.sm.xml');
-//echo $filecontent;
-$filename = _DIR_ROOT . '/data/feed/blog.xml'; //имя sitemap-файла
+$fileContent = $smarty->fetch(_DIR_TEMPLATES . '/_XML/rss.sm.xml');
 
-chmod("$filename", 0777);
-//echo "<p>Запись в $filename... ";
-$file_hndlr = fopen("$filename", "w+");
-if ($file_hndlr) {
-    fwrite($file_hndlr, $filecontent);
-    $filesize = filesize($filename);
-    fclose($file_hndlr);
-    //echo 'Файл записан!</p>';
-} else {
-    echo '<br>Ошибка доступа к файлу!';
+foreach ($filesRSS as $fileType) {
+    $fileName = sprintf('%s/feed/%s', _DIR_DATA, $fileType); //имя sitemap-файла
+    //chmod($fileName, 0777);
+    file_put_contents($fileName, $fileContent);
 }
+
