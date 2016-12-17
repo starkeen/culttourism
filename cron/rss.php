@@ -26,7 +26,6 @@ $fileContent = $smarty->fetch(_DIR_TEMPLATES . '/_XML/rss.sm.xml');
 
 foreach ($filesRSS as $fileType) {
     $fileName = sprintf('%s/feed/%s', _DIR_DATA, $fileType); //имя sitemap-файла
-    //chmod($fileName, 0777);
     file_put_contents($fileName, $fileContent);
 }
 
