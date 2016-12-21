@@ -22,6 +22,7 @@ return array(
             'addr' => array(
                 'path' => array(
                     "//div[@class='obj_in_itwr clearm'][4]/div",
+                    "//div[@class='obj_in_itwr clearm'][5]/div",
                 ),
                 'type' => 1,
             ),
