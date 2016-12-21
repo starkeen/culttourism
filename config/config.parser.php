@@ -6,9 +6,9 @@ return array(
         'doctype' => 'XHTML 1.0 Transitional',
         'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href]',
         'list_items' => array(
-            "//div[@class='ajax_objects']/div/div/div[@class='detail_h']/a[1]", //приоритетные
-            "//div[@class='ajax_objects']/div/a[1]", //топ
-            "//div[@class='ajax_objects']/div/div/a[1]", //обычные
+            "//div[@class='ajax_objects clearm']/div/div/div[@class='detail_h']/a[1]", //приоритетные
+            "//div[@class='ajax_objects clearm']/div/a[1]", //топ
+            "//div[@class='ajax_objects clearm']/div/div/a[1]", //обычные
         ),
         'item' => array(
             'title' => array(

@@ -51,7 +51,7 @@ class Parser {
         $finder = new DomXPath($this->_dom);
         foreach ($this->_config['list_items'] as $xpath) {
             $elements = $finder->query($xpath);
-            if (!is_null($elements)) {
+            if ($elements->length > 0) {
                 foreach ($elements as $element) {
                     $item = array(
                         'title' => $element->nodeValue,
