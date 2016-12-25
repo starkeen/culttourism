@@ -305,6 +305,7 @@ class MPagePoints extends Model {
                                     AND dc.dc_field = 'pt_adress'
                             WHERE pt.pt_active = 1
                                 # AND ABS(CHAR_LENGTH(pt.pt_adress)-CHAR_LENGTH(pc.pc_title)) < 6
+                                AND pt.pt_adress NOT REGEXP '([0-9])+'
                                 AND pt.pt_latitude IS NOT NULL
                             ORDER BY dc.dc_date
                             LIMIT :limit";
