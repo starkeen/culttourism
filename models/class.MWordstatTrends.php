@@ -13,6 +13,7 @@ class MWordstatTrends extends Model {
             'wt_sum',
             'wt_count',
             'wt_avg',
+            'wp_positions_avg',
         );
         parent::__construct($db);
         $this->_addRelatedTable('wordstat');
@@ -21,9 +22,9 @@ class MWordstatTrends extends Model {
     public function calcToday()
     {
         $this->_db->sql = "INSERT INTO {$this->_table_name}
-                          (wt_date, wt_sum, wt_count, wt_avg)
+                          (wt_date, wt_sum, wt_count, wt_avg, wp_positions_avg)
                           (
-                            SELECT NOW(), SUM(ws_weight), COUNT(ws_id), ROUND(AVG(ws_weight))
+                            SELECT NOW(), SUM(ws_weight), COUNT(ws_id), ROUND(AVG(ws_weight)), ROUND(AVG(ws_position))
                             FROM {$this->_tables_related['wordstat']}
                           )";
         $this->_db->exec();
