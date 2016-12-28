@@ -21,7 +21,7 @@ class MWordstatTrends extends Model {
 
     public function calcToday()
     {
-        $this->_db->sql = "INSERT INTO {$this->_table_name}
+        $this->_db->sql = "INSERT IGNORE INTO {$this->_table_name}
                           (wt_date, wt_sum, wt_count, wt_avg, wp_positions_avg)
                           (
                             SELECT NOW(), SUM(ws_weight), COUNT(ws_id), ROUND(AVG(ws_weight)), ROUND(AVG(ws_position))
