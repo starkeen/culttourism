@@ -65,7 +65,7 @@ class RSSGenerator
     protected function mapEntity(array $entry)
     {
         return [
-            'title' => $entry['br_title'],
+            'title' => trim($entry['br_title']),
             'link' => $entry['br_link'],
             'date' => $entry['bg_pubdate'],
             'text' => $entry['br_text_absolute'],
@@ -87,7 +87,7 @@ class RSSGenerator
      */
     private function buildXML()
     {
-        $docType = '<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"/>';
+        $docType = '<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/"/>';
         return new RSSElement($docType);
     }
 }
