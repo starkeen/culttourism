@@ -3,6 +3,7 @@
 /**
  * @property string $title
  * @property string $link
+ * @property string $url
  * @property string $description
  * @property string $managingEditor
  * @property string $webMaster
@@ -10,22 +11,15 @@
  */
 class RSSGenerator
 {
-    protected $xml;
-
     protected $props = [
         'title' => '',
         'link' => '',
+        'url' => '',
         'description' => '',
         'email' => '',
         'managingEditor' => 'common@ourways.ru (OURWAYS.RU editor)',
         'webMaster' => 'starkeen@ourways.ru (Andrey Panisko)',
     ];
-
-    public function __construct()
-    {
-        $this->xml = $this->buildXML();
-        $this->xml->addAttribute('version', '2.0');
-    }
 
     /**
      * @param array $data
@@ -33,7 +27,9 @@ class RSSGenerator
      */
     public function process(array $data)
     {
-        $channel = $this->xml->addChild('channel');
+        $xml = $this->buildXML();
+        $xml->addAttribute('version', '2.0');
+        $channel = $xml->addChild('channel');
         $channel->addChild('title', $this->props['title']);
         $channel->addChild('link', $this->props['link']);
         $channel->addChild('description', $this->props['description']);
@@ -43,6 +39,10 @@ class RSSGenerator
         $channel->addChild('pubDate',date('r'));
         $channel->addChild('generator', 'RSS-gen / '. $this->props['link']);
         $channel->addChild('language', 'ru-RU');
+        $atom = $channel->addChild('atom:link', null, 'http://www.w3.org/2005/Atom');
+        $atom ->addAttribute('href', $this->props['url']);
+        $atom->addAttribute('rel', 'self');
+        $atom->addAttribute('type', 'application/rss+xml');
 
         foreach ($data as $entry) {
             $item = $channel->addChild('item');
@@ -57,7 +57,7 @@ class RSSGenerator
             $item->addChild('dc:creator', $entity['creator'], 'http://purl.org/dc/elements/1.1/');
         }
 
-        return $this->xml->asXML();
+        return $xml->asXML();
     }
 
     /**
@@ -90,7 +90,7 @@ class RSSGenerator
      */
     private function buildXML()
     {
-        $docType = '<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/"/>';
+        $docType = '<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" />';
         return new RSSElement($docType);
     }
 }
