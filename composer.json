@@ -16,7 +16,7 @@
     "require-dev": {},
     "autoload": {
         "psr-0": {
-            "": ""
+            "": "src"
         },
         "classmap": [
             "includes/",

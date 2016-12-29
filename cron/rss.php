@@ -9,23 +9,16 @@ $filesRSS = [
 ];
 
 $be = new MBlogEntries($db);
+$entries = $be->getLastActive(10);
 
-$feed['title'] = 'Культурный туризм в России';
-$feed['sitelink'] = _SITE_URL;
-$feed['mail_editor'] = 'common@ourways.ru (OURWAYS.RU editor)';
-$feed['mail_webmaster'] = 'starkeen@ourways.ru (Andrey Panisko)';
-$feed['description'] = 'Достопримечательности России и ближнего зарубежья: музеи, церкви и монастыри, памятники архитектуры';
-$feed['date_build'] = date('r');
-$feed['generator'] = 'Cultural tourism / ' . _SITE_URL;
+$gen = new RSSGenerator();
+$gen->title = 'Культурный туризм в России';
+$gen->link = _SITE_URL;
+$gen->description =  'Достопримечательности России и ближнего зарубежья: музеи, церкви и монастыри, памятники архитектуры';
 
-
-$smarty->assign('entries', $be->getLastActive(10));
-$smarty->assign('feed', $feed);
-
-$fileContent = $smarty->fetch(_DIR_TEMPLATES . '/_XML/rss.sm.xml');
+$fileContent = $gen->process($entries);
 
 foreach ($filesRSS as $fileType) {
     $fileName = sprintf('%s/feed/%s', _DIR_DATA, $fileType); //имя sitemap-файла
     file_put_contents($fileName, $fileContent);
 }
-

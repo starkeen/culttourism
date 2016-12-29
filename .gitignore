@@ -14,7 +14,7 @@ templates_c/
 templates_cache/
 /config/configuration.php
 /data/private/
-/data/feed/
+/data/feed/*
 /data/images/
 /data/photos/
 /data/_thumbs/
