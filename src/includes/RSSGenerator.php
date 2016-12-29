@@ -45,7 +45,7 @@ class RSSGenerator
         $channel->addChild('language', 'ru-RU');
 
         foreach ($data as $entry) {
-            $item = $this->xml->addChild('item');
+            $item = $channel->addChild('item');
             $entity = $this->mapEntity($entry);
             $item->addChildWithCData('title', $entity['title']);
             $item->addChild('guid', $entity['link'])->addAttribute('isPermaLink', 'true');
