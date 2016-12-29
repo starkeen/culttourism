@@ -45,12 +45,12 @@ class RSSGenerator
         foreach ($data as $entry) {
             $item = $this->xml->addChild('item');
             $entity = $this->mapEntity($entry);
-            $item->addChild('title', sprintf('<![CDATA[%s]]>', $entity['title']));
+            $item->addChildWithCData('title', $entity['title']);
             $item->addChild('guid', $entity['link'])->addAttribute('isPermaLink', 'true');
             $item->addChild('link', $entity['link']);
             $item->addChild('pubDate', $entity['date']);
-            $item->addChild('description', sprintf('<![CDATA[%s]]>', $entity['text']));
-            $item->addChild('content:encoded', sprintf('<![CDATA[%s]]>', $entity['text']), 'content');
+            $item->addChildWithCData('description',$entity['text']);
+            $item->addChildWithCData('content:encoded', $entity['text'], 'content');
             $item->addChild('author', $entity['author']);
             $item->addChild('dc:creator', $entity['author'], 'dc');
         }
@@ -88,6 +88,6 @@ class RSSGenerator
     private function buildXML()
     {
         $docType = '<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"/>';
-        return new SimpleXMLElement($docType);
+        return new RSSElement($docType);
     }
 }
