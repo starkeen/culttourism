@@ -6,6 +6,7 @@
  * @property string $description
  * @property string $managingEditor
  * @property string $webMaster
+ * @property string $email
  */
 class RSSGenerator
 {
@@ -15,6 +16,7 @@ class RSSGenerator
         'title' => '',
         'link' => '',
         'description' => '',
+        'email' => '',
         'managingEditor' => 'common@ourways.ru (OURWAYS.RU editor)',
         'webMaster' => 'starkeen@ourways.ru (Andrey Panisko)',
     ];
@@ -50,9 +52,9 @@ class RSSGenerator
             $item->addChild('link', $entity['link']);
             $item->addChild('pubDate', $entity['date']);
             $item->addChildWithCData('description',$entity['text']);
-            $item->addChildWithCData('content:encoded', $entity['text'], 'http://purl.org/rss/1.0/modules/content/');
+            //$item->addChildWithCData('content:encoded', $entity['text'], 'http://purl.org/rss/1.0/modules/content/');
             $item->addChild('author', $entity['author']);
-            $item->addChild('dc:creator', $entity['author'], 'http://purl.org/dc/elements/1.1/');
+            $item->addChild('dc:creator', $entity['creator'], 'http://purl.org/dc/elements/1.1/');
         }
 
         return $this->xml->asXML();
@@ -69,7 +71,8 @@ class RSSGenerator
             'link' => $entry['br_link'],
             'date' => $entry['bg_pubdate'],
             'text' => $entry['br_text_absolute'],
-            'author' => $entry['us_name'],
+            'creator' => $entry['us_name'],
+            'author' => sprintf('%s (%s)', $entry['us_email'], $entry['us_name']),
         ];
     }
 

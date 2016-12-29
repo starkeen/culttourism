@@ -14,6 +14,7 @@ $entries = $be->getLastActive(10);
 $gen = new RSSGenerator();
 $gen->title = 'Культурный туризм в России';
 $gen->link = _SITE_URL;
+$gen->email = 'abuse@culttourism.ru';
 $gen->description =  'Достопримечательности России и ближнего зарубежья: музеи, церкви и монастыри, памятники архитектуры';
 
 $fileContent = $gen->process($entries);
