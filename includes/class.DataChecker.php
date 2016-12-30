@@ -104,6 +104,7 @@ class DataChecker
             foreach ($items as $item) {
                 $typograf->set_text($item[$this->entity_field]);
                 $cleaned = $typograf->apply();
+                $cleaned = $this->repairTypographErrors($cleaned);
                 $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
                 $result = ($fld === 'cp_phone') ? str_replace('−', '-', $result) : $result;
                 $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
@@ -171,6 +172,7 @@ class DataChecker
         foreach ($items as $item) {
             $typograf->set_text($item[$this->entity_field]);
             $cleaned = $typograf->apply();
+            $cleaned = $this->repairTypographErrors($cleaned);
             $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
             $be->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
             $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
@@ -195,6 +197,7 @@ class DataChecker
             foreach ($items as $item) {
                 $typograf->set_text($item[$this->entity_field]);
                 $cleaned = $typograf->apply();
+                $cleaned = $this->repairTypographErrors($cleaned);
                 $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
                 //$result = str_replace(array('<nobr>', '</nobr>'), '', $result);
                 $pt->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
@@ -220,6 +223,7 @@ class DataChecker
             foreach ($items as $item) {
                 $typograf->set_text($item[$this->entity_field]);
                 $cleaned = $typograf->apply();
+                $cleaned = $this->repairTypographErrors($cleaned);
                 $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
                 $pc->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
                 $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
@@ -272,6 +276,14 @@ class DataChecker
         ));
 
         return $typograf;
+    }
+    
+    /**
+     * Исправляет в тексте ошибки, допущенные типографом
+     */
+    protected function repairTypographErrors($text)
+    {
+        return mb_str_replace(['вв.</nobr>ек', '<nobr>', '</nobr>'], ['век', '', ''], $text);
     }
 
 }
