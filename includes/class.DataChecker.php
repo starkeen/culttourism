@@ -283,7 +283,7 @@ class DataChecker
      */
     protected function repairTypographErrors($text)
     {
-        return mb_str_replace(['вв.</nobr>ек', '<nobr>', '</nobr>'], ['век', '', ''], $text);
+        return str_replace(['вв.</nobr>ек', '<nobr>', '</nobr>'], ['век', '', ''], $text);
     }
 
 }
