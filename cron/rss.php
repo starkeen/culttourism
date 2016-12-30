@@ -4,6 +4,7 @@ $filesRSS = [
     'blog.xml',
     'blog-dlvrit.xml',
     'blog-facebook.xml',
+    'blog-facebook-dev.xml',
     'blog-twitter.xml',
     'blog-telegram.xml',
 ];
