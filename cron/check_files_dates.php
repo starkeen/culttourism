@@ -35,6 +35,7 @@ $files[] = _DIR_ROOT . '/.htaccess';
 $files_skip[] = _DIR_ROOT . '/data/feed/blog.xml';
 $files_skip[] = _DIR_ROOT . '/data/feed/blog-dlvrit.xml';
 $files_skip[] = _DIR_ROOT . '/data/feed/blog-facebook.xml';
+$files_skip[] = _DIR_ROOT . '/data/feed/blog-facebook-dev.xml';
 $files_skip[] = _DIR_ROOT . '/data/feed/blog-twitter.xml';
 $files_skip[] = _DIR_ROOT . '/data/feed/blog-telegram.xml';
 
