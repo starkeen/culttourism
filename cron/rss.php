@@ -18,8 +18,10 @@ $gen->link = _SITE_URL;
 $gen->email = 'abuse@culttourism.ru';
 $gen->description =  'Достопримечательности России и ближнего зарубежья: музеи, церкви и монастыри, памятники архитектуры';
 
+$shorter = new RSSBitlyer($gen);
+
 foreach ($filesRSS as $fileType) {
     $fileName = sprintf('%s/feed/%s', _DIR_DATA, $fileType); //имя sitemap-файла
     $gen->url = sprintf('%sdata/feed/%s', _SITE_URL, $fileType);
-    file_put_contents($fileName, $gen->process($entries));
+    file_put_contents($fileName, $shorter->process($entries));
 }

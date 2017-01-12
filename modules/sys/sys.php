@@ -67,7 +67,9 @@ class Page extends PageCommon {
                         }
                     }
 
-                    $sp->updateByName('git_hash', $req->commits[0]->raw_node);
+                    if (!empty($req->commits[0])) {
+                        $sp->updateByName('git_hash', $req->commits[0]->raw_node);
+                    }
 
                     Logging::addHistory('sys', "Результаты деплоя", implode("\n", $res));
 
