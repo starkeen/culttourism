@@ -10,7 +10,7 @@ $filesRSS = [
 ];
 
 $be = new MBlogEntries($db);
-$entries = $be->getLastActive(10);
+$entries = $be->getLastActive(5);
 
 $gen = new RSSGenerator();
 $gen->title = 'Культурный туризм в России';
