@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8f454d218ce61ab39db212803152eec2",
+    "hash": "044125a99ce04fe562382b5b5f0c2c82",
     "content-hash": "0f25a58cf592d85b76805049f4b0eb4f",
     "packages": [
         {
@@ -268,21 +268,20 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "1.5.0",
+            "version": "1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "be326f6a8eacacd86598af2a82bd37e93d9126d2"
+                "reference": "7656110b7577c4239b5c76a5c2d67261b0122ca0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/be326f6a8eacacd86598af2a82bd37e93d9126d2",
-                "reference": "be326f6a8eacacd86598af2a82bd37e93d9126d2",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/7656110b7577c4239b5c76a5c2d67261b0122ca0",
+                "reference": "7656110b7577c4239b5c76a5c2d67261b0122ca0",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
-                "monolog/monolog": "*",
                 "php": ">=5.2.4"
             },
             "conflict": {
@@ -290,7 +289,11 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^1.8.0",
-                "phpunit/phpunit": "^4.6.6"
+                "monolog/monolog": "*",
+                "phpunit/phpunit": "^4.8 || ^5.0"
+            },
+            "suggest": {
+                "monolog/monolog": "Automatically capture Monolog events as breadcrumbs"
             },
             "bin": [
                 "bin/sentry"
@@ -298,7 +301,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.5.x-dev"
+                    "dev-master": "1.6.x-dev"
                 }
             },
             "autoload": {
@@ -322,7 +325,7 @@
                 "log",
                 "logging"
             ],
-            "time": "2016-09-29 21:31:50"
+            "time": "2016-12-14 21:57:27"
         },
         {
             "name": "smarty/smarty",
