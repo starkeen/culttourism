@@ -1,6 +1,6 @@
 <?php
 
-class RSSElement extends SimpleXMLElement
+class RSSElement extends \SimpleXMLElement
 {
     public function addChildWithCData($name , $value) {
         $new = parent::addChild($name);

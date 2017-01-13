@@ -9,7 +9,7 @@
  * @property string $webMaster
  * @property string $email
  */
-class RSSGenerator
+class RSSGenerator implements IRSSGenerator
 {
     protected $props = [
         'title' => '',
@@ -20,6 +20,15 @@ class RSSGenerator
         'managingEditor' => 'common@ourways.ru (OURWAYS.RU editor)',
         'webMaster' => 'starkeen@ourways.ru (Andrey Panisko)',
     ];
+
+    /**
+     * @param string $name
+     * @param string $value
+     */
+    public function __set($name, $value)
+    {
+        $this->props[$name] = $value;
+    }
 
     /**
      * @param array $data
@@ -74,15 +83,6 @@ class RSSGenerator
             'creator' => $entry['us_name'],
             'author' => sprintf('%s (%s)', $entry['us_email'], $entry['us_name']),
         ];
-    }
-
-    /**
-     * @param string $name
-     * @param string $value
-     */
-    public function __set($name, $value)
-    {
-        $this->props[$name] = $value;
     }
 
     /**
