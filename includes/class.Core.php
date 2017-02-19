@@ -32,7 +32,11 @@ abstract class Core {
     private $id_id = null;
     protected $db = null;
     public $basepath = '';
-    public $globalsettings = array();
+    public $globalsettings = [
+        'default_pagetitle' => '',
+        'main_rss' => '',
+        'stat_text' => '',
+    ];
     public $user = array('userid' => null);
     public $custom_css = null;
     public $robots_indexing = 'index,follow';
@@ -48,7 +52,7 @@ abstract class Core {
         $this->smarty = new mySmarty();
         if (!$this->db->link) {
             $this->module_id = $mod;
-            return $this->getError('503', $this->smarty);
+            $this->getError('503', $this->smarty);
         }
         $mod_id = $mod;
         $page_id = null;
@@ -70,14 +74,14 @@ abstract class Core {
             $this->globalsettings['mainfile_js'] = '../sys/static/?type=js&pack=common';
         }
 
-        if ($this->globalsettings['site_active'] == 'Off') {
+        if (!empty($this->globalsettings['site_active']) && $this->globalsettings['site_active'] === 'Off') {
             $this->getError('503');
         }
 
         $md = new MModules($this->db);
         $row = $md->getModuleByURI($mod_id);
 
-        $this->addOGMeta('site_name', $this->globalsettings['default_pagetitle']);
+        $this->addOGMeta('site_name', $this->globalsettings['default_pagetitle'] ?? '');
         $this->addOGMeta('locale', 'ru_RU');
         $this->addOGMeta('type', 'website');
         $this->addOGMeta('app_id', '345000545624253');
@@ -97,18 +101,18 @@ abstract class Core {
                 $this->getError('301', $row['md_redirect']);
             }
             $this->url = $row['md_url'];
-            $this->title = $this->globalsettings['default_pagetitle'];
+            $this->title = $this->globalsettings['default_pagetitle'] ?? '';
             if ($row['md_title']) {
                 $this->addTitle($row['md_title']);
             }
             $this->h1 = $row['md_title'];
-            $this->keywords = $this->globalsettings['default_pagekeywords'];
+            $this->keywords = $this->globalsettings['default_pagekeywords'] ?? '';
             $this->addKeywords($row['md_keywords']);
-            $this->description = $this->globalsettings['default_pagedescription'];
+            $this->description = $this->globalsettings['default_pagedescription'] ?? '';
             $this->addDescription($row['md_description']);
 
-            $this->addOGMeta('title', $this->globalsettings['default_pagetitle']);
-            $this->addOGMeta('description', $this->globalsettings['default_pagedescription']);
+            $this->addOGMeta('title', $this->globalsettings['default_pagetitle'] ?? '');
+            $this->addOGMeta('description', $this->globalsettings['default_pagedescription'] ?? '');
             $this->addOGMeta('updated_time', $this->lastedit_timestamp);
 
             $this->isCounters = $row['md_counters'];
@@ -131,12 +135,6 @@ abstract class Core {
                 $this->user['userid'] = $_SESSION['user_id'];
             }
         }
-
-        if (!$this->url) {
-            return FALSE;
-        } else {
-            return TRUE;
-        }
     }
 
     /**
@@ -146,7 +144,7 @@ abstract class Core {
     public function addTitle($text) {
         $this->_title[] = $text;
         krsort($this->_title);
-        $this->title = implode(' ' . $this->globalsettings['title_delimiter'] . ' ', $this->_title);
+        $this->title = implode(' ' . ($this->globalsettings['title_delimiter'] ?? '') . ' ', $this->_title);
     }
 
     /**
