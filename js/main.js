@@ -798,3 +798,7 @@ function initSentry() {
         id: ''
     });
 }
+
+function reCaptchaCallback() {
+    console.log('recaptcha');
+}
