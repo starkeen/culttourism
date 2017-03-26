@@ -8,9 +8,9 @@ class Page extends PageCommon {
         
         if ($page_id == '') {
             $this->getCommon();
-        } elseif ($page_id == 'getcapt') {
+        } elseif ($page_id === 'getcapt') {
             $this->getCaptcha();
-        } elseif ($page_id == 'newpoint') {
+        } elseif ($page_id === 'newpoint') {
             $this->getAdd();
         } else {
             $this->getError('404');
@@ -47,9 +47,11 @@ class Page extends PageCommon {
                 . ' ' . $_POST['web']
                 . ' ' . $_POST['worktime'],
                 'referer' => $_SESSION['feedback_referer']);
+
             Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 5, $mail_attrs);
             unset($_SESSION['feedback_referer']);
             unset($_SESSION['captcha_keystring']);
+
             $this->content = $this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']);
             unset($_POST);
         } else {
@@ -137,6 +139,7 @@ class Page extends PageCommon {
 
     private function getAddingForm() {
         $this->addTitle('Добавить объект (музей, гостиницу, кафе и др.)');
+        $this->smarty->assign('recaptcha_key', '6LcLZRoUAAAAADiMQC7i3obCBBRkKJZihgJZx2cV');
         return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addpoint.sm.html');
     }
 

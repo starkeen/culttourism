@@ -43,7 +43,12 @@
             <td><input type="email" name="email" value="" class="m_width_full m_highter" /></td>
         </tr>
         <tr>
-            <td colspan="4" class="m_center"><input type="submit" class="bigbutton" value="Отправить" /></td>
+            <td colspan="4" class="m_center">
+                <input type="submit"
+                       class="bigbutton g-recaptcha"
+                       data-sitekey="{$recaptcha_key}"
+                       value="Отправить" />
+            </td>
         </tr>
     </table>
 
