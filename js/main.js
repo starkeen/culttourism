@@ -800,5 +800,5 @@ function initSentry() {
 }
 
 function reCaptchaCallback() {
-    $('.g-recaptcha').parent('form').submit();
+    $('.g-recaptcha').parents('form').submit();
 }
