@@ -1,12 +1,18 @@
 <?php
 
-class MCandidatePoints extends Model {
+class MCandidatePoints extends Model
+{
+    const STATUS_NEW = 3;
+
+    const SOURCE_FORM = 4;
 
     protected $_table_pk = 'cp_id';
     protected $_table_order = 'cp_date';
     protected $_table_active = 'cp_active';
 
-    public function __construct($db) {
+    protected $types_markers;
+
+    public function __construct(MyDB $db) {
         $this->_table_name = $db->getTableName('candidate_points');
         $this->_table_fields = array(
             'cp_date',
@@ -43,8 +49,8 @@ class MCandidatePoints extends Model {
 
     public function add($data) {
         $data['cp_date'] = $this->now();
-        $data['cp_state'] = 3;
-        $data['cp_active'] = 1;
+        $data['cp_state'] = $data['cp_state'] ?? self::STATUS_NEW;
+        $data['cp_active'] = $data['cp_active'] ?? 1;
         if (empty($data['cp_title'])) {
             $data['cp_title'] = '[без названия]';
         }
@@ -58,7 +64,7 @@ class MCandidatePoints extends Model {
                 }
             }
         }
-        if (strlen($data['cp_web']) != 0 && strpos($data['cp_web'], 'http') === false) {
+        if ($data['cp_web'] !== '' && strpos($data['cp_web'], 'http') === false) {
             $data['cp_web'] = 'http://' . $data['cp_web'];
         }
         return $this->insert($data);

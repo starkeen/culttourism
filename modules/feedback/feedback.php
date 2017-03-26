@@ -23,7 +23,8 @@ class Page extends PageCommon {
             $_SESSION['feedback_referer'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
         }
         if (isset($_POST) && !empty($_POST)) {
-            $cp->add(array(
+            // TODO проверка reCaptcha
+            $cp->add([
                 'cp_title' => $_POST['title'],
                 'cp_city' => $_POST['region'],
                 'cp_text' => $_POST['descr'],
@@ -33,8 +34,9 @@ class Page extends PageCommon {
                 'cp_worktime' => $_POST['worktime'],
                 'cp_referer' => $_SESSION['feedback_referer'],
                 'cp_sender' => $_POST['name'] . ' <' . $_POST['email'] . '>',
-                'cp_source_id' => 4,
-            ));
+                'cp_source_id' => MCandidatePoints::SOURCE_FORM,
+                'cp_state' => MCandidatePoints::STATUS_NEW,
+            ]);
 
             $mail_attrs = array(
                 'user_name' => $_POST['name'],
@@ -49,8 +51,7 @@ class Page extends PageCommon {
                 'referer' => $_SESSION['feedback_referer']);
 
             Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 5, $mail_attrs);
-            unset($_SESSION['feedback_referer']);
-            unset($_SESSION['captcha_keystring']);
+            unset($_SESSION['feedback_referer'], $_SESSION['captcha_keystring']);
 
             $this->content = $this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']);
             unset($_POST);
