@@ -20,6 +20,8 @@
             "": ""
         },
         "psr-4": {
+            "app\\": "src/includes/",
+            "exceptions\\": "src/exceptions/",
             "": "src/"
         },
         "classmap": [

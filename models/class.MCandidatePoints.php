@@ -3,6 +3,7 @@
 class MCandidatePoints extends Model
 {
     const STATUS_NEW = 3;
+    const STATUS_SPAM = 7;
 
     const SOURCE_FORM = 4;
 
