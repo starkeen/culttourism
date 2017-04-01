@@ -47,24 +47,27 @@ class Page extends PageCommon
                     'cp_sender' => $_POST['name'] . ' <' . $_POST['email'] . '>',
                     'cp_source_id' => MCandidatePoints::SOURCE_FORM,
                     'cp_state' => $spamStatusOK === true ? MCandidatePoints::STATUS_NEW : MCandidatePoints::STATUS_SPAM,
+                    'cp_active' => $spamStatusOK === true ? 1 : 0,
                 ]
             );
 
-            $mail_attrs = [
-                'user_name' => $_POST['name'],
-                'user_mail' => $_POST['email'],
-                'add_city' => $_POST['region'],
-                'add_title' => $_POST['title'],
-                'add_text' => $_POST['descr'],
-                'add_contacts' => $_POST['addrs']
-                    . ' ' . $_POST['phone']
-                    . ' ' . $_POST['web']
-                    . ' ' . $_POST['worktime'],
-                'referer' => $_SESSION['feedback_referer']
-            ];
+            if ($spamStatusOK === true) {
+                $mail_attrs = [
+                    'user_name' => $_POST['name'],
+                    'user_mail' => $_POST['email'],
+                    'add_city' => $_POST['region'],
+                    'add_title' => $_POST['title'],
+                    'add_text' => $_POST['descr'],
+                    'add_contacts' => $_POST['addrs']
+                        . ' ' . $_POST['phone']
+                        . ' ' . $_POST['web']
+                        . ' ' . $_POST['worktime'],
+                    'referer' => $_SESSION['feedback_referer']
+                ];
 
-            Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 5, $mail_attrs);
-            unset($_SESSION['feedback_referer'], $_SESSION['captcha_keystring']);
+                Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 5, $mail_attrs);
+                unset($_SESSION['feedback_referer'], $_SESSION['captcha_keystring']);
+            }
 
             $this->content = $this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']);
             unset($_POST);
