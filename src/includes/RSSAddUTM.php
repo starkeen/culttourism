@@ -3,7 +3,7 @@
 /**
  * Компонент для добавления меток utm_ к ссылкам в RSS
  */
-class RSSUTM implements IRSSGenerator
+class RSSAddUTM implements IRSSGenerator
 {
     /** @var RSSGenerator */
     private $generator;
