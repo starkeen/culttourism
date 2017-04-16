@@ -1,6 +1,8 @@
 <?php
 
-
+/**
+ * @property string $url
+ */
 interface IRSSGenerator
 {
     public function __set($name, $value);
