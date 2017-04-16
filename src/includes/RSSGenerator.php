@@ -22,15 +22,6 @@ class RSSGenerator implements IRSSGenerator
     ];
 
     /**
-     * @param string $name
-     * @param string $value
-     */
-    public function __set($name, $value)
-    {
-        $this->props[$name] = $value;
-    }
-
-    /**
      * @param array $data
      * @return string
      */
@@ -92,5 +83,34 @@ class RSSGenerator implements IRSSGenerator
     {
         $docType = '<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" />';
         return new RSSElement($docType);
+    }
+
+    /**
+     * @param string $name
+     * @param string $value
+     */
+    public function __set($name, $value)
+    {
+        $this->props[$name] = $value;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return null
+     */
+    public function __get($name)
+    {
+        return $this->props[$name] ?? null;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return isset($this->props[$name]);
     }
 }

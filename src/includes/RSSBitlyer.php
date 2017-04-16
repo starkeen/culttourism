@@ -4,13 +4,24 @@ class RSSBitlyer implements IRSSGenerator
 {
     /** @var RSSGenerator */
     private $generator;
+
     /** @var Bitly */
     private $bitly;
 
-    public function __construct(RSSGenerator $generator, Bitly $bitly)
+    public function __construct(IRSSGenerator $generator, Bitly $bitly)
     {
         $this->generator = $generator;
         $this->bitly = $bitly;
+    }
+
+    public function __get($name)
+    {
+        return $this->generator->{$name} ?? null;
+    }
+
+    public function __isset($name)
+    {
+        return $this->generator->{$name} !== null;
     }
 
     public function __set($name, $value)
@@ -18,6 +29,11 @@ class RSSBitlyer implements IRSSGenerator
         $this->generator->{$name} = $value;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return string
+     */
     public function process(array $data)
     {
         $pattern = sprintf('#(.*)href="(%s.*)"(.*)#uUi', _SITE_URL);

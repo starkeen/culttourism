@@ -21,12 +21,12 @@ $gen->description = 'Достопримечательности России и 
 $shorter = new RSSBitlyer($gen, $bitly);
 
 $generators = [
-    'blog.xml' => new RSSBitlyer($gen, $bitly),
-    'blog-dlvrit.xml' => new RSSBitlyer($gen, $bitly),
-    'blog-facebook.xml' => new RSSBitlyer($gen, $bitly),
-    'blog-facebook-dev.xml' => new RSSBitlyer($gen, $bitly),
-    'blog-twitter.xml' => new RSSBitlyer($gen, $bitly),
-    'blog-telegram.xml' => new RSSBitlyer($gen, $bitly),
+    'blog.xml' => new RSSBitlyer(new RSSUTM($gen), $bitly),
+    'blog-dlvrit.xml' => new RSSBitlyer(new RSSUTM($gen), $bitly),
+    'blog-facebook.xml' => new RSSBitlyer(new RSSUTM($gen), $bitly),
+    'blog-facebook-dev.xml' => new RSSBitlyer(new RSSUTM(new RSSInstantArticler($gen)), $bitly),
+    'blog-twitter.xml' => new RSSBitlyer(new RSSUTM($gen), $bitly),
+    'blog-telegram.xml' => new RSSBitlyer(new RSSUTM($gen), $bitly),
 ];
 
 foreach ($generators as $fileType => $generator) {
