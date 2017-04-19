@@ -45,7 +45,7 @@ class ReCaptcha
     {
         return [
             'form_params' => [
-                'secret' => self::SECRET,
+                'secret' => self::KEY,
                 'response' => $token,
                 'remoteip' => $_SERVER['REMOTE_ADDR'],
             ],
