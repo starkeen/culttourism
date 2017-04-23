@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class RSSAddUTMTest extends TestCase
+class RSSInstantArticlerTest extends TestCase
 {
     /** @var IRSSGenerator */
     private $generator;

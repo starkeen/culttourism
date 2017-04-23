@@ -1,0 +1,10 @@
+<phpunit bootstrap="phpunit.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         syntaxCheck="false">
+    <testsuites>
+        <testsuite name="all">
+            <directory suffix=".php">./</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
