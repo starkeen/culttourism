@@ -13,10 +13,14 @@ class RSSInstantArticlerTest extends TestCase
         $this->generator->method('process')
                         ->willReturnCallback(
                             function ($arg) {
-                                return [
-                                    'title' => $arg['title'],
-                                    'text' => $arg['text'],
-                                ];
+                                $out = [];
+                                foreach ($arg as $item) {
+                                    $out[] = [
+                                        'title' => $item['title'],
+                                        'text' => $item['text'],
+                                    ];
+                                }
+                                return $out;
                             }
                         );
     }
@@ -41,12 +45,24 @@ class RSSInstantArticlerTest extends TestCase
         return [
             [
                 [
-                    'title' => 'title 1',
-                    'text' => 'text 1',
+                    [
+                        'title' => 'title 1',
+                        'text' => 'text 1',
+                    ],
+                    [
+                        'title' => 'title 2',
+                        'text' => 'text 2',
+                    ],
                 ],
                 [
-                    'title' => 'title 1',
-                    'text' => 'text 1',
+                    [
+                        'title' => 'title 1',
+                        'text' => 'text 1',
+                    ],
+                    [
+                        'title' => 'title 2',
+                        'text' => 'text 2',
+                    ],
                 ],
             ],
         ];
