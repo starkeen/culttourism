@@ -47,21 +47,37 @@ class RSSInstantArticlerTest extends TestCase
                 [
                     [
                         'title' => 'title 1',
-                        'text' => 'text 1',
+                        'text' => '<p>Обычный текст</p>',
                     ],
                     [
                         'title' => 'title 2',
-                        'text' => 'text 2',
+                        'text' => '
+                            <p style="color:red;">текст</p>
+                            <p style="margin: 2px;">
+                                <a href="http://ya.ru/">
+                                    <img src="image.jpg" style="width: 50px;" />
+                                </a>
+                            </p>
+                            <p style="font-size: 12px;"><a href="#">снова</a> текст</p>
+                        ',
                     ],
                 ],
                 [
                     [
                         'title' => 'title 1',
-                        'text' => 'text 1',
+                        'text' => '<p>Обычный текст</p>',
                     ],
                     [
                         'title' => 'title 2',
-                        'text' => 'text 2',
+                        'text' => '
+                            <p style="color:red;">текст</p>
+                            
+                                <a href="http://ya.ru/">
+                                    <img src="image.jpg" style="width: 50px;" />
+                                </a>
+                            
+                            <p style="font-size: 12px;"><a href="#">снова</a> текст</p>
+                        ',
                     ],
                 ],
             ],

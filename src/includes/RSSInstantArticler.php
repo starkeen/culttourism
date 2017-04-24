@@ -34,6 +34,15 @@ class RSSInstantArticler implements IRSSGenerator
      */
     public function process(array $data)
     {
-        return $this->generator->process($data);
+        $pattern = '~(<p[^>]+>)(\s*<a[^>]+>\s*<img[^>]+>\s*</a>\s*)(</p>)~uis';
+        $replace = '$2';
+        $prepared = [];
+
+        foreach ($data as $item) {
+            $item['text'] = preg_replace($pattern, $replace, $item['text']);
+            $prepared[] = $item;
+        }
+
+        return $this->generator->process($prepared);
     }
 }
