@@ -39,7 +39,8 @@ class RSSInstantArticler implements IRSSGenerator
         $prepared = [];
 
         foreach ($data as $item) {
-            $item['text'] = preg_replace($pattern, $replace, $item['text']);
+            $item['br_text'] = preg_replace($pattern, $replace, $item['br_text']);
+            $item['br_text_absolute'] = preg_replace($pattern, $replace, $item['br_text_absolute']);
             $prepared[] = $item;
         }
 

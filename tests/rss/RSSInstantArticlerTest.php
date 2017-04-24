@@ -17,7 +17,8 @@ class RSSInstantArticlerTest extends TestCase
                                 foreach ($arg as $item) {
                                     $out[] = [
                                         'title' => $item['title'],
-                                        'text' => $item['text'],
+                                        'br_text_absolute' => $item['br_text_absolute'],
+                                        'br_text' => $item['br_text'],
                                     ];
                                 }
                                 return $out;
@@ -47,11 +48,12 @@ class RSSInstantArticlerTest extends TestCase
                 [
                     [
                         'title' => 'title 1',
-                        'text' => '<p>Обычный текст</p>',
+                        'br_text' => '<p>Обычный текст</p>',
+                        'br_text_absolute' => '<p>Обычный текст</p>',
                     ],
                     [
                         'title' => 'title 2',
-                        'text' => '
+                        'br_text' => '
                             <p style="color:red;">текст</p>
                             <p style="margin: 2px;">
                                 <a href="http://ya.ru/">
@@ -60,16 +62,18 @@ class RSSInstantArticlerTest extends TestCase
                             </p>
                             <p style="font-size: 12px;"><a href="#">снова</a> текст</p>
                         ',
+                        'br_text_absolute' => '',
                     ],
                 ],
                 [
                     [
                         'title' => 'title 1',
-                        'text' => '<p>Обычный текст</p>',
+                        'br_text' => '<p>Обычный текст</p>',
+                        'br_text_absolute' => '<p>Обычный текст</p>',
                     ],
                     [
                         'title' => 'title 2',
-                        'text' => '
+                        'br_text' => '
                             <p style="color:red;">текст</p>
                             
                                 <a href="http://ya.ru/">
@@ -78,6 +82,7 @@ class RSSInstantArticlerTest extends TestCase
                             
                             <p style="font-size: 12px;"><a href="#">снова</a> текст</p>
                         ',
+                        'br_text_absolute' => '',
                     ],
                 ],
             ],
