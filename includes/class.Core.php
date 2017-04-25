@@ -84,7 +84,6 @@ abstract class Core {
         $this->addOGMeta('site_name', $this->globalsettings['default_pagetitle'] ?? '');
         $this->addOGMeta('locale', 'ru_RU');
         $this->addOGMeta('type', 'website');
-        $this->addOGMeta('app_id', '345000545624253');
         $this->addOGMeta('url', _SITE_URL);
         $this->addOGMeta('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
         $this->addDataLD('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
