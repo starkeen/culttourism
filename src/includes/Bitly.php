@@ -1,10 +1,14 @@
 <?php
 
+use GuzzleHttp\Client;
+
 class Bitly
 {
     const BITLY_HOST = 'https://api-ssl.bitly.com';
     /** @var \GuzzleHttp\Client */
     private $client;
+    /** @var string */
+    private $bitlyHost;
     /** @var string */
     private $token = 'cdba9cb93629303877a0e9ae5a33ff0a6877eac5';
     /** @var string */
@@ -14,7 +18,7 @@ class Bitly
     /** @var string */
     private $clientSecret = 'ccd85b27dc6d77ddf409250b5f5f07f8924fdd6b';
 
-    public function __construct(GuzzleHttp\Client $client)
+    public function __construct(Client $client)
     {
         $this->client = $client;
     }
@@ -22,12 +26,12 @@ class Bitly
     /**
      * @param string $url
      * @return string
+     * @throws RuntimeException
      */
     public function short($url)
     {
         $result = $url;
-        $uri = sprintf('/v3/shorten?access_token=%s&longUrl=%s&format=json', $this->getToken(), urlencode($url));
-        $res = $this->client->get(self::BITLY_HOST . $uri);
+        $res = $this->client->get($this->buildUrl($url));
 
         if ($res->getStatusCode() === 200) {
             $response = $res->getBody()->getContents();
@@ -52,9 +56,52 @@ class Bitly
                 'client_secret' => $this->clientSecret,
                 'code' => 200,
             ]);
-            //print_r($res->getBody()->getContents());
         }
 
         return $this->token;
+    }
+
+    /**
+     * @param string $token
+     */
+    public function setToken(string $token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @param string $host
+     */
+    public function setHost(string $host)
+    {
+        $this->bitlyHost = $host;
+    }
+
+    /**
+     * @param $url
+     *
+     * @return string
+     */
+    private function buildUrl($url)
+    {
+        $pattern = '%s/v3/shorten?access_token=%s&longUrl=%s&format=json';
+
+        return vsprintf($pattern, [
+            $this->getBitlyHost(),
+            $this->getToken(),
+            urlencode($url),
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getBitlyHost()
+    {
+        if ($this->bitlyHost === null) {
+            $this->bitlyHost = self::BITLY_HOST;
+        }
+
+        return $this->bitlyHost;
     }
 }

@@ -12,7 +12,8 @@ class RSSBitlyerTest extends TestCase
 
     public function setUp()
     {
-        $this->generator = $this->getMockBuilder(IRSSGenerator::class)->getMock();
+        $this->generator = $this->getMockBuilder(IRSSGenerator::class)
+                                ->getMock();
         $this->generator->method('process')
                         ->willReturnCallback(
                             function ($arg) {
@@ -28,16 +29,22 @@ class RSSBitlyerTest extends TestCase
                             }
                         );
 
-        $this->bitly = $this->getMockBuilder(Bitly::class)->disableOriginalConstructor()->getMock();
-        $this->bitly->method('short')->willReturnCallback(function ($arg) {
-            return sprintf('https://%s.tld/', md5($arg));
-        });
+        $this->bitly = $this->getMockBuilder(Bitly::class)
+                            ->disableOriginalConstructor()
+                            ->setMethods(['short'])
+                            ->getMock();
+        $this->bitly->method('short')->willReturnCallback(
+            function ($arg) {
+                return sprintf('https://%s.tld/', md5($arg));
+            }
+        );
     }
 
     /**
-     * @param array $in
+     * @param array  $in
      * @param string $expected
-     * @param int $count
+     * @param int    $count
+     *
      * @dataProvider getExamples
      */
     public function testProcessing($in, $expected, $count)
