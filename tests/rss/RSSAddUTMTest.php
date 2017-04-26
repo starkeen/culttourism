@@ -27,6 +27,8 @@ class RSSAddUTMTest extends TestCase
     }
 
     /**
+     * @param array $in
+     * @param string $expected
      * @dataProvider getExamples
      */
     public function testProcessing($in, $expected)

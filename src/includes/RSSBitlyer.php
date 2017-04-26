@@ -8,6 +8,9 @@ class RSSBitlyer implements IRSSGenerator
     /** @var Bitly */
     private $bitly;
 
+    /** @var string */
+    public $rootUrl;
+
     public function __construct(IRSSGenerator $generator, Bitly $bitly)
     {
         $this->generator = $generator;
@@ -36,7 +39,7 @@ class RSSBitlyer implements IRSSGenerator
      */
     public function process(array $data)
     {
-        $pattern = sprintf('#(.*)href="(%s.*)"(.*)#uUi', _SITE_URL);
+        $pattern = sprintf('#(.*)href="(%s.*)"(.*)#uUi', $this->getRootUrl());
         foreach($data as $i => $item) {
             $text = preg_replace_callback($pattern, function ($matches) {
                 $linkOld = $matches[2];
@@ -48,5 +51,16 @@ class RSSBitlyer implements IRSSGenerator
         }
 
         return $this->generator->process($data);
+    }
+
+    /**
+     * @return string
+     */
+    private function getRootUrl()
+    {
+        if ($this->rootUrl === null) {
+            $this->rootUrl = _SITE_URL;
+        }
+        return $this->rootUrl;
     }
 }
