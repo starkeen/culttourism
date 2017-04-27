@@ -7,7 +7,8 @@ $client = new Client(
         'timeout' => 0,
     ]
 );
-$bitly = new Bitly($client);
+$curlCache = new MCurlCache($db);
+$bitly = new Bitly($client, $curlCache);
 
 $be = new MBlogEntries($db);
 $entries = $be->getLastActive(5);

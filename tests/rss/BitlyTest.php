@@ -13,6 +13,8 @@ class BitlyTest extends TestCase
     private $guzzleResponse;
     /** @var StreamInterface|PHPUnit_Framework_MockObject_MockObject */
     private $guzzleResponseBody;
+    /** @var MCurlCache|PHPUnit_Framework_MockObject_MockObject */
+    private $curlCache;
 
     public function setUp()
     {
@@ -23,15 +25,20 @@ class BitlyTest extends TestCase
                                      ->getMock();
         $this->guzzleResponseBody = $this->getMockBuilder(StreamInterface::class)
                                          ->getMock();
+        $this->curlCache = $this->getMockBuilder(MCurlCache::class)
+                                ->disableOriginalConstructor()
+                                ->setMethods(['get', 'put'])
+                                ->getMock();
     }
 
     /**
-     * Нормальный полный цикл
+     * Нормальный полный цикл без кэша
      */
-    public function testShorterNormal()
+    public function testShorterNormalWithoutCache()
     {
         $input = 'http://host.tld/';
         $expected = 'https://short.url';
+        $requestUrl = 'https://bit.ly/v3/shorten?access_token=[token]&longUrl=http%3A%2F%2Fhost.tld%2F&format=json';
         $answer = json_encode(
             [
                 'status_code' => 200,
@@ -52,12 +59,58 @@ class BitlyTest extends TestCase
                              ->willReturn($this->guzzleResponseBody);
         $this->guzzleClient->expects($this->once())
                            ->method('get')
-                           ->with(
-                               'https://bit.ly/v3/shorten?access_token=[token]&longUrl=http%3A%2F%2Fhost.tld%2F&format=json'
-                           )
+                           ->with($requestUrl)
                            ->willReturn($this->guzzleResponse);
+        $this->curlCache->expects($this->once())
+                        ->method('get')
+                        ->with($requestUrl)
+                        ->willReturn(null);
+        $this->curlCache->expects($this->once())
+                        ->method('put')
+                        ->with($requestUrl, $answer, Bitly::CURL_CACHE_TTL);
 
-        $bitly = new Bitly($this->guzzleClient);
+        $bitly = new Bitly($this->guzzleClient, $this->curlCache);
+        $bitly->setHost('https://bit.ly');
+        $bitly->setToken('[token]');
+
+        $result = $bitly->short($input);
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Нормальный полный цикл с кэшем
+     */
+    public function testShorterNormalWithCache()
+    {
+        $input = 'http://host.tld/';
+        $expected = 'https://short.url';
+        $requestUrl = 'https://bit.ly/v3/shorten?access_token=[token]&longUrl=http%3A%2F%2Fhost.tld%2F&format=json';
+        $answer = json_encode(
+            [
+                'status_code' => 200,
+                'data' => [
+                    'url' => $expected,
+                ],
+            ]
+        );
+
+        $this->guzzleResponseBody->expects($this->never())
+                                 ->method('getContents');
+        $this->guzzleResponse->expects($this->never())
+                             ->method('getStatusCode');
+        $this->guzzleResponse->expects($this->never())
+                             ->method('getBody');
+        $this->guzzleClient->expects($this->never())
+                           ->method('get');
+        $this->curlCache->expects($this->once())
+                        ->method('get')
+                        ->with($requestUrl)
+                        ->willReturn($answer);
+        $this->curlCache->expects($this->never())
+                        ->method('put');
+
+        $bitly = new Bitly($this->guzzleClient, $this->curlCache);
         $bitly->setHost('https://bit.ly');
         $bitly->setToken('[token]');
 
@@ -98,7 +151,7 @@ class BitlyTest extends TestCase
                            )
                            ->willReturn($this->guzzleResponse);
 
-        $bitly = new Bitly($this->guzzleClient);
+        $bitly = new Bitly($this->guzzleClient, $this->curlCache);
         $bitly->setHost('https://bit.ly');
         $bitly->setToken('[token]');
 
@@ -129,7 +182,7 @@ class BitlyTest extends TestCase
                            )
                            ->willReturn($this->guzzleResponse);
 
-        $bitly = new Bitly($this->guzzleClient);
+        $bitly = new Bitly($this->guzzleClient, $this->curlCache);
         $bitly->setHost('https://bit.ly');
         $bitly->setToken('[token]');
 

@@ -5,8 +5,14 @@ use GuzzleHttp\Client;
 class Bitly
 {
     const BITLY_HOST = 'https://api-ssl.bitly.com';
+    const CURL_CACHE_TTL = 86400;
+
     /** @var \GuzzleHttp\Client */
     private $client;
+
+    /** @var MCurlCache */
+    private $curlCache;
+
     /** @var string */
     private $bitlyHost;
     /** @var string */
@@ -18,9 +24,10 @@ class Bitly
     /** @var string */
     private $clientSecret = 'ccd85b27dc6d77ddf409250b5f5f07f8924fdd6b';
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, MCurlCache $cc)
     {
         $this->client = $client;
+        $this->curlCache = $cc;
     }
 
     /**
@@ -31,10 +38,18 @@ class Bitly
     public function short($url)
     {
         $result = $url;
-        $res = $this->client->get($this->buildUrl($url));
 
-        if ($res->getStatusCode() === 200) {
-            $response = $res->getBody()->getContents();
+        $requestUrl = $this->buildUrl($url);
+        $response = $this->curlCache->get($requestUrl);
+
+        if ($response === null) {
+            $res = $this->client->get($requestUrl);
+            if ($res->getStatusCode() === 200) {
+                $response = $res->getBody()->getContents();
+                $this->curlCache->put($requestUrl, $response, self::CURL_CACHE_TTL);
+            }
+        }
+        if ((string) $response !== '') {
             $responseData = json_decode($response, true);
             if ((int) $responseData['status_code'] === 200) {
                 $result = $responseData['data']['url'];
