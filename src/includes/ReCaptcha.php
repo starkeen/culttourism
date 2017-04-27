@@ -7,7 +7,7 @@ use GuzzleHttp\Client;
 class ReCaptcha
 {
     const KEY = '6LcLZRoUAAAAADiMQC7i3obCBBRkKJZihgJZx2cV';
-    const SECRET = '6LcLZRoUAAAAADiMQC7i3obCBBRkKJZihgJZx2cV';
+    const SECRET = '6LcLZRoUAAAAAGXgjcBiEFGtfKPJODLsInmOqNxT';
     const URL = 'https://www.google.com/recaptcha/api/siteverify';
 
     /** @var Client */
@@ -45,7 +45,7 @@ class ReCaptcha
     {
         return [
             'form_params' => [
-                'secret' => self::KEY,
+                'secret' => self::SECRET,
                 'response' => $token,
                 'remoteip' => $_SERVER['REMOTE_ADDR'],
             ],
