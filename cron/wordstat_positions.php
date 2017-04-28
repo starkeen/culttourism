@@ -18,7 +18,6 @@ $ys = new YandexSearcher();
 $ys->setPagesMax($limit_sites_per_answer);
 
 foreach ($cities as $city) {
-
     $domains = array(0 => null);
     $res = $ys->search("{$city['ws_city_title']} достопримечательности");
     if (!$res['error_text']) {
@@ -39,4 +38,5 @@ foreach ($cities as $city) {
     } else {
         echo "Ошибка: " . $res['error_text'];
     }
+    sleep(1);
 }
