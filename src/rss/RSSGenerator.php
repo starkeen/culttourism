@@ -1,5 +1,9 @@
 <?php
 
+namespace app\rss;
+
+use SimpleXMLElement;
+
 /**
  * @property string $title
  * @property string $link
@@ -64,7 +68,7 @@ class RSSGenerator implements IRSSGenerator
      * @param array $entry
      * @return array
      */
-    protected function mapEntity(array $entry)
+    protected function mapEntity(array $entry): array
     {
         return [
             'title' => trim($entry['br_title']),
@@ -79,7 +83,7 @@ class RSSGenerator implements IRSSGenerator
     /**
      * @return SimpleXMLElement
      */
-    private function buildXML()
+    private function buildXML(): SimpleXMLElement
     {
         $docType = '<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" />';
         return new RSSElement($docType);

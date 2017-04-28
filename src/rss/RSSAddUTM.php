@@ -1,6 +1,6 @@
 <?php
 
-use app\rss\RSSComponent;
+namespace app\rss;
 
 /**
  * Компонент для добавления меток utm_ к ссылкам в RSS

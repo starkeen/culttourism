@@ -1,6 +1,9 @@
 <?php
 
-use app\rss\RSSComponent;
+namespace app\rss;
+
+use Bitly;
+use RuntimeException;
 
 class RSSBitlyer extends RSSComponent
 {

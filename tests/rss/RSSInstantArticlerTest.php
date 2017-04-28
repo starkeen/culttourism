@@ -1,5 +1,9 @@
 <?php
 
+namespace tests\rss;
+
+use app\rss\IRSSGenerator;
+use app\rss\RSSInstantArticler;
 use PHPUnit\Framework\TestCase;
 
 class RSSInstantArticlerTest extends TestCase
@@ -28,8 +32,10 @@ class RSSInstantArticlerTest extends TestCase
 
     /**
      * @dataProvider getExamples
+     * @param array $in
+     * @param string $expected
      */
-    public function testProcessing($in, $expected)
+    public function testProcessing(array $in, string $expected)
     {
         $articler = new RSSInstantArticler($this->generator);
 
@@ -41,7 +47,7 @@ class RSSInstantArticlerTest extends TestCase
     /**
      * @return array
      */
-    public function getExamples()
+    public function getExamples(): array
     {
         return [
             [

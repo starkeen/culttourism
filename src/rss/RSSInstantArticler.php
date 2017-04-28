@@ -1,6 +1,6 @@
 <?php
 
-use app\rss\RSSComponent;
+namespace app\rss;
 
 /**
  * Компонент подготовки статей для Instant Articles

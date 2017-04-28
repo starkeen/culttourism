@@ -1,6 +1,11 @@
 <?php
 
 use GuzzleHttp\Client;
+use app\rss\RSSGenerator;
+use app\rss\RSSBitlyer;
+use app\rss\RSSAddUTM;
+use app\rss\RSSInstantArticler;
+use app\rss\IRSSGenerator;
 
 $client = new Client(
     [

@@ -2,9 +2,9 @@
 
 namespace tests\rss;
 
+use app\rss\IRSSGenerator;
+use app\rss\RSSAddUTM;
 use PHPUnit\Framework\TestCase;
-use IRSSGenerator;
-use RSSAddUTM;
 
 class RSSAddUTMTest extends TestCase
 {
@@ -39,7 +39,7 @@ class RSSAddUTMTest extends TestCase
      *
      * @dataProvider getExamples
      */
-    public function testProcessing($in, $expected)
+    public function testProcessing(array $in, string $expected)
     {
         $component = new RSSAddUTM($this->generator);
         $component->rootUrl = 'https://host.tld/';
@@ -52,7 +52,7 @@ class RSSAddUTMTest extends TestCase
     /**
      * @return array
      */
-    public function getExamples()
+    public function getExamples(): array
     {
         return [
             [

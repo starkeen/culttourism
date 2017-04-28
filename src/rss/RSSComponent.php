@@ -2,7 +2,6 @@
 
 namespace app\rss;
 
-use IRSSGenerator;
 use RSSGenerator;
 
 abstract class RSSComponent implements IRSSGenerator

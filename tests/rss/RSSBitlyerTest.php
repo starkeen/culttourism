@@ -1,6 +1,12 @@
 <?php
 
+namespace tests\rss;
+
+use app\rss\IRSSGenerator;
+use app\rss\RSSBitlyer;
+use Bitly;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 
 class RSSBitlyerTest extends TestCase
 {
@@ -50,7 +56,7 @@ class RSSBitlyerTest extends TestCase
      *
      * @dataProvider getExamples
      */
-    public function testProcessing($in, $expected, $count)
+    public function testProcessing(array $in, string $expected, int $count)
     {
         $this->bitly->expects($this->exactly($count))->method('short');
 
@@ -64,7 +70,7 @@ class RSSBitlyerTest extends TestCase
     /**
      * @return array
      */
-    public function getExamples()
+    public function getExamples(): array
     {
         return [
             [

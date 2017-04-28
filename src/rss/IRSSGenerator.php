@@ -1,5 +1,7 @@
 <?php
 
+namespace app\rss;
+
 /**
  * @property string $url
  */
