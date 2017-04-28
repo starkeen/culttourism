@@ -18,13 +18,10 @@
         "phpunit/phpunit": "^6.1"
     },
     "autoload": {
-        "psr-0": {
-            "": ""
-        },
         "psr-4": {
-            "app\\": "src/includes/",
+            "app\\": "src/",
             "exceptions\\": "src/exceptions/",
-            "": "src/"
+            "": ""
         },
         "classmap": [
             "includes/",
