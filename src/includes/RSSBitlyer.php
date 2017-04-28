@@ -36,15 +36,16 @@ class RSSBitlyer implements IRSSGenerator
      * @param array $data
      *
      * @return string
+     * @throws RuntimeException
      */
-    public function process(array $data)
+    public function process(array $data): string
     {
         $pattern = sprintf('#(.*)href="(%s.*)"(.*)#uUi', $this->getRootUrl());
+
         foreach($data as $i => $item) {
             $text = preg_replace_callback($pattern, function ($matches) {
                 $linkOld = $matches[2];
                 $linkNew = $this->bitly->short($linkOld);
-
                 return str_replace($linkOld, $linkNew, $matches[0]);
             }, $item['br_text_absolute']);
             $data[$i]['br_text_absolute'] = $text;
@@ -56,7 +57,7 @@ class RSSBitlyer implements IRSSGenerator
     /**
      * @return string
      */
-    private function getRootUrl()
+    private function getRootUrl(): string
     {
         if ($this->rootUrl === null) {
             $this->rootUrl = _SITE_URL;

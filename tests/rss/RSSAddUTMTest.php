@@ -42,6 +42,7 @@ class RSSAddUTMTest extends TestCase
     public function testProcessing($in, $expected)
     {
         $component = new RSSAddUTM($this->generator);
+        $component->rootUrl = 'https://host.tld/';
 
         $out = $component->process($in);
 

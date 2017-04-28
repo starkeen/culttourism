@@ -16,16 +16,19 @@ class RSSBitlyerTest extends TestCase
                                 ->getMock();
         $this->generator->method('process')
                         ->willReturnCallback(
-                            function ($arg) {
+                            function (array $arg) {
                                 $out = [];
                                 foreach ($arg as $item) {
-                                    $out[] = [
-                                        'br_title' => $item['br_title'],
-                                        'br_text' => $item['br_text'],
-                                        'br_text_absolute' => $item['br_text_absolute'],
-                                    ];
+                                    $out[] = implode(
+                                        PHP_EOL,
+                                        [
+                                            'br_title' => $item['br_title'],
+                                            'br_text' => $item['br_text'],
+                                            'br_text_absolute' => $item['br_text_absolute'],
+                                        ]
+                                    );
                                 }
-                                return $out;
+                                return implode(PHP_EOL, $out);
                             }
                         );
 
@@ -72,13 +75,9 @@ class RSSBitlyerTest extends TestCase
                         'br_text_absolute' => '<p>before <a href="https://host.tld" target="_blank">link</a> after</p>',
                     ],
                 ],
-                [
-                    [
-                        'br_title' => 'link without slash',
-                        'br_text' => '<p>before <a href="https://host.tld">link</a> after</p>',
-                        'br_text_absolute' => '<p>before <a href="https://host.tld" target="_blank">link</a> after</p>',
-                    ],
-                ],
+                'link without slash' . PHP_EOL
+                . '<p>before <a href="https://host.tld">link</a> after</p>' . PHP_EOL
+                . '<p>before <a href="https://host.tld" target="_blank">link</a> after</p>',
                 0,
             ],
             [
@@ -89,13 +88,9 @@ class RSSBitlyerTest extends TestCase
                         'br_text_absolute' => '<p>before <a href="https://host.tld/" target="_blank">link</a> after</p>',
                     ],
                 ],
-                [
-                    [
-                        'br_title' => 'link with slash',
-                        'br_text' => '<p>before <a href="https://host.tld/">link</a> after</p>',
-                        'br_text_absolute' => '<p>before <a href="https://6b94df3c128d0d2be90ae7e67a91bd9e.tld/" target="_blank">link</a> after</p>',
-                    ],
-                ],
+                'link with slash' . PHP_EOL
+                . '<p>before <a href="https://host.tld/">link</a> after</p>' . PHP_EOL
+                . '<p>before <a href="https://6b94df3c128d0d2be90ae7e67a91bd9e.tld/" target="_blank">link</a> after</p>',
                 1,
             ],
         ];
