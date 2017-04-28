@@ -38,5 +38,5 @@ foreach ($cities as $city) {
     } else {
         echo "Ошибка: " . $res['error_text'];
     }
-    sleep(1);
+    usleep(500000);
 }
