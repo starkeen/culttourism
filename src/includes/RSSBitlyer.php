@@ -1,10 +1,9 @@
 <?php
 
-class RSSBitlyer implements IRSSGenerator
-{
-    /** @var RSSGenerator */
-    private $generator;
+use app\rss\RSSComponent;
 
+class RSSBitlyer extends RSSComponent
+{
     /** @var Bitly */
     private $bitly;
 
@@ -15,21 +14,6 @@ class RSSBitlyer implements IRSSGenerator
     {
         $this->generator = $generator;
         $this->bitly = $bitly;
-    }
-
-    public function __get($name)
-    {
-        return $this->generator->{$name} ?? null;
-    }
-
-    public function __isset($name)
-    {
-        return $this->generator->{$name} !== null;
-    }
-
-    public function __set($name, $value)
-    {
-        $this->generator->{$name} = $value;
     }
 
     /**

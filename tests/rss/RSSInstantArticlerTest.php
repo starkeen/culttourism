@@ -15,13 +15,13 @@ class RSSInstantArticlerTest extends TestCase
                             function ($arg) {
                                 $out = [];
                                 foreach ($arg as $item) {
-                                    $out[] = [
+                                    $out[] = implode(PHP_EOL, [
                                         'title' => $item['title'],
                                         'br_text_absolute' => $item['br_text_absolute'],
                                         'br_text' => $item['br_text'],
-                                    ];
+                                    ]);
                                 }
-                                return $out;
+                                return implode(PHP_EOL, $out);
                             }
                         );
     }
@@ -65,15 +65,12 @@ class RSSInstantArticlerTest extends TestCase
                         'br_text_absolute' => '',
                     ],
                 ],
-                [
-                    [
-                        'title' => 'title 1',
-                        'br_text' => '<p>Обычный текст</p>',
-                        'br_text_absolute' => '<p>Обычный текст</p>',
-                    ],
-                    [
-                        'title' => 'title 2',
-                        'br_text' => '
+                'title 1' . PHP_EOL
+                . '<p>Обычный текст</p>' . PHP_EOL
+                . '<p>Обычный текст</p>' . PHP_EOL
+                . 'title 2' . PHP_EOL
+                 . PHP_EOL
+                . '
                             <p style="color:red;">текст</p>
                             
                                 <a href="http://ya.ru/">
@@ -82,9 +79,6 @@ class RSSInstantArticlerTest extends TestCase
                             
                             <p style="font-size: 12px;"><a href="#">снова</a> текст</p>
                         ',
-                        'br_text_absolute' => '',
-                    ],
-                ],
             ],
         ];
     }

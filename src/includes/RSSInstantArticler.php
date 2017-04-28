@@ -1,46 +1,31 @@
 <?php
 
+use app\rss\RSSComponent;
+
 /**
  * Компонент подготовки статей для Instant Articles
  */
-class RSSInstantArticler implements IRSSGenerator
+class RSSInstantArticler extends RSSComponent
 {
-    /** @var RSSGenerator */
-    private $generator;
+    const PATTERN = '~(<p[^>]+>)(\s*<a[^>]+>\s*<img[^>]+>\s*</a>\s*)(</p>)~uis';
+    const REPLACE = '$2';
 
     public function __construct(IRSSGenerator $generator)
     {
         $this->generator = $generator;
     }
 
-    public function __get($name)
-    {
-        return $this->generator->{$name} ?? null;
-    }
-
-    public function __set($name, $value)
-    {
-        $this->generator->{$name} = $value;
-    }
-
-    public function __isset($name)
-    {
-        return $this->generator->{$name} !== null;
-    }
-
     /**
      * @param array $data
      * @return string
      */
-    public function process(array $data)
+    public function process(array $data): string
     {
-        $pattern = '~(<p[^>]+>)(\s*<a[^>]+>\s*<img[^>]+>\s*</a>\s*)(</p>)~uis';
-        $replace = '$2';
         $prepared = [];
 
         foreach ($data as $item) {
-            $item['br_text'] = preg_replace($pattern, $replace, $item['br_text']);
-            $item['br_text_absolute'] = preg_replace($pattern, $replace, $item['br_text_absolute']);
+            $item['br_text'] = preg_replace(self::PATTERN, self::REPLACE, $item['br_text']);
+            $item['br_text_absolute'] = preg_replace(self::PATTERN, self::REPLACE, $item['br_text_absolute']);
             $prepared[] = $item;
         }
 
