@@ -21,6 +21,7 @@
         "psr-4": {
             "app\\": "src/",
             "exceptions\\": "src/exceptions/",
+            "tests\\": "tests/",
             "": ""
         },
         "classmap": [
