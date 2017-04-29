@@ -33,8 +33,9 @@ class RSSAddUTM extends RSSComponent
         $pattern = sprintf('#(.*)href="(%s.*)"(.*)#uUi', $this->getRootUrl());
 
         foreach($data as $i => $item) {
+            print_r($item);
             $text = preg_replace_callback($pattern, function ($matches) use ($item) {
-                $linkOld = $matches[2];
+                $linkOld = $matches[2];print_r($linkOld);
                 $utmContent = date('Ymd', strtotime($item['br_date']));
                 $linkNew = $this->addUTM($linkOld, $utmContent);
 
