@@ -38,7 +38,28 @@ class RSSAddUTM extends RSSComponent
      */
     private function addUTM(string $link): string
     {
-        return $link;
+        $result = '';
+
+        $url = parse_url($link);
+        $result .= $url['scheme'] . '://' . $url['host'];
+        if (!empty($url['port'])) {
+            $result .= ':' . $url['port'];
+        }
+        if (!empty($url['path'])) {
+            $result .= $url['path'];
+        }
+
+        $query = [];
+        parse_str($url['query'] ?? '', $query);
+
+        if (!empty($query)) {
+            $result .= '?' . http_build_query($query);
+        }
+        if (!empty($url['fragment'])) {
+            $result .= '#' . $url['fragment'];
+        }
+
+        return urldecode($result);
     }
 
     /**

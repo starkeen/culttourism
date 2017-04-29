@@ -110,10 +110,10 @@ class RSSAddUTMTest extends TestCase
                 ],
                 'link with slash and query' . PHP_EOL
                 . '<p>before <a href="https://host.tld/path/?a=1&b[]=2&c">link</a> after</p>' . PHP_EOL
-                . '<p>before <a href="https://host.tld/path/?a=1&b[]=2&c">link</a> after</p>' . PHP_EOL
+                . '<p>before <a href="https://host.tld/path/?a=1&b[0]=2&c=">link</a> after</p>' . PHP_EOL
                 . 'link with page and query' . PHP_EOL
                 . '<p>before <a href="https://host.tld/path/page.html?a=1&b[]=2&c">link</a> after</p>' . PHP_EOL
-                . '<p>before <a href="https://host.tld/path/page.html?a=1&b[]=2&c">link</a> after</p>',
+                . '<p>before <a href="https://host.tld/path/page.html?a=1&b[0]=2&c=">link</a> after</p>',
             ],
             [
                 [
@@ -130,10 +130,10 @@ class RSSAddUTMTest extends TestCase
                 ],
                 'link with page and encoded query' . PHP_EOL
                 . '<p>before <a href="https://host.tld/path/page.html?a=1&geo%5Bt%5D%5B14%5D=14&c">link</a> after</p>' . PHP_EOL
-                . '<p>before <a href="https://host.tld/path/page.html?a=1&geo%5Bt%5D%5B14%5D=14&c">link</a> after</p>' . PHP_EOL
+                . '<p>before <a href="https://host.tld/path/page.html?a=1&geo[t][14]=14&c=">link</a> after</p>' . PHP_EOL
                 . 'link with page and encoded cyrillic query' . PHP_EOL
                 . '<p>before <a href="https://host.tld/path/page.html?a=1&key=%D1%81%D0%BB%D0%BE%D0%B2%D0%BE&c">link</a> after</p>' . PHP_EOL
-                . '<p>before <a href="https://host.tld/path/page.html?a=1&key=%D1%81%D0%BB%D0%BE%D0%B2%D0%BE&c">link</a> after</p>',
+                . '<p>before <a href="https://host.tld/path/page.html?a=1&key=слово&c=">link</a> after</p>',
             ],
         ];
     }
