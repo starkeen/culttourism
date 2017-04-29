@@ -27,7 +27,7 @@ class MBlogEntries extends Model {
      * @return array
      */
     public function getLastActive($qnt = 10) {
-        $this->_db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text,
+        $this->_db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text, bg.br_date,
                                 REPLACE(bg.br_text, '=\"/', CONCAT('=\"', :site_url1)) AS br_text_absolute,
                                 'Роберт' AS us_name, 'abuse@culttourism.ru' AS us_email,
                                 DATE_FORMAT(bg.br_date,'%a, %d %b %Y %H:%i:%s GMT') as bg_pubdate,
