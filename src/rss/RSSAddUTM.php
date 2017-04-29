@@ -10,6 +10,20 @@ class RSSAddUTM extends RSSComponent
     /** @var string */
     public $rootUrl;
 
+    protected $utm = [
+        'utm_source' => null,
+        'utm_medium' => 'blog',
+        'utm_content' => null,
+        'utm_campaign' => 'feed',
+        'utm_term' => null,
+    ];
+
+    public function __construct(IRSSGenerator $generator, string $source = null)
+    {
+        parent::__construct($generator);
+        $this->utm['utm_source'] = $source;
+    }
+
     /**
      * @param array $data
      * @return string
@@ -19,12 +33,14 @@ class RSSAddUTM extends RSSComponent
         $pattern = sprintf('#(.*)href="(%s.*)"(.*)#uUi', $this->getRootUrl());
 
         foreach($data as $i => $item) {
-            $text = preg_replace_callback($pattern, function ($matches) {
+            $text = preg_replace_callback($pattern, function ($matches) use ($item) {
                 $linkOld = $matches[2];
-                $linkNew = $this->addUTM($linkOld);
+                $utmContent = date('Ymd', strtotime($item['br_date']));
+                $linkNew = $this->addUTM($linkOld, $utmContent);
 
                 return str_replace($linkOld, $linkNew, $matches[0]);
             }, $item['br_text_absolute']);
+
             $data[$i]['br_text_absolute'] = $text;
         }
 
@@ -33,10 +49,11 @@ class RSSAddUTM extends RSSComponent
 
     /**
      * @param string $link
+     * @param string $content
      *
      * @return string
      */
-    private function addUTM(string $link): string
+    private function addUTM(string $link, string $content = null): string
     {
         $result = '';
 
@@ -47,10 +64,15 @@ class RSSAddUTM extends RSSComponent
         }
         if (!empty($url['path'])) {
             $result .= $url['path'];
+        } else {
+            $result .= '/';
         }
 
         $query = [];
         parse_str($url['query'] ?? '', $query);
+
+        $utm = array_merge($this->utm, ['utm_content' => $content]);
+        $query = array_merge($query, array_filter($utm));
 
         if (!empty($query)) {
             $result .= '?' . http_build_query($query);
@@ -63,12 +85,12 @@ class RSSAddUTM extends RSSComponent
     }
 
     /**
-     * @return string
+     * @return string http://host.tld
      */
     private function getRootUrl(): string
     {
         if ($this->rootUrl === null) {
-            $this->rootUrl = _SITE_URL;
+            $this->rootUrl = rtrim(_SITE_URL, '/');
         }
 
         return $this->rootUrl;

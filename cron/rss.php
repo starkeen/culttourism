@@ -28,11 +28,11 @@ $shorter = new RSSBitlyer($gen, $bitly);
 
 $generators = [
     'blog.xml' => new RSSBitlyer(new RSSAddUTM($gen), $bitly),
-    'blog-dlvrit.xml' => new RSSBitlyer(new RSSAddUTM($gen), $bitly),
-    'blog-facebook.xml' => new RSSBitlyer(new RSSAddUTM(new RSSInstantArticler($gen)), $bitly),
-    'blog-facebook-dev.xml' => new RSSBitlyer(new RSSAddUTM(new RSSInstantArticler($gen)), $bitly),
-    'blog-twitter.xml' => new RSSBitlyer(new RSSAddUTM($gen), $bitly),
-    'blog-telegram.xml' => new RSSBitlyer(new RSSAddUTM($gen), $bitly),
+    'blog-dlvrit.xml' => new RSSBitlyer(new RSSAddUTM($gen, 'dlvrit'), $bitly),
+    'blog-facebook.xml' => new RSSBitlyer(new RSSAddUTM(new RSSInstantArticler($gen), 'facebook'), $bitly),
+    'blog-facebook-dev.xml' => new RSSBitlyer(new RSSAddUTM(new RSSInstantArticler($gen), 'facebook'), $bitly),
+    'blog-twitter.xml' => new RSSBitlyer(new RSSAddUTM($gen, 'twitter'), $bitly),
+    'blog-telegram.xml' => new RSSBitlyer(new RSSAddUTM($gen, 'telegram'), $bitly),
 ];
 
 foreach ($generators as $fileType => $generator) {

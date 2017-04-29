@@ -15,7 +15,7 @@ class RSSBitlyer extends RSSComponent
 
     public function __construct(IRSSGenerator $generator, Bitly $bitly)
     {
-        $this->generator = $generator;
+        parent::__construct($generator);
         $this->bitly = $bitly;
     }
 

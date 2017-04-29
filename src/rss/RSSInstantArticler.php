@@ -10,11 +10,6 @@ class RSSInstantArticler extends RSSComponent
     const PATTERN = '~(<p[^>]+>)(\s*<a[^>]+>\s*<img[^>]+>\s*</a>\s*)(</p>)~uis';
     const REPLACE = '$2';
 
-    public function __construct(IRSSGenerator $generator)
-    {
-        $this->generator = $generator;
-    }
-
     /**
      * @param array $data
      * @return string
