@@ -24,13 +24,15 @@ $gen->link = _SITE_URL;
 $gen->email = 'abuse@culttourism.ru';
 $gen->description = 'Достопримечательности России и ближнего зарубежья: музеи, церкви и монастыри, памятники архитектуры';
 
+$bitlyed = new RSSBitlyer($gen, $bitly);
+
 $generators = [
-    'blog.xml' => new RSSBitlyer(new RSSAddUTM(clone $gen), $bitly),
-    'blog-dlvrit.xml' => new RSSBitlyer(new RSSAddUTM(clone $gen, 'dlvrit'), $bitly),
-    'blog-facebook.xml' => new RSSBitlyer(new RSSAddUTM(new RSSInstantArticler(clone $gen), 'facebook'), $bitly),
-    'blog-facebook-dev.xml' => new RSSBitlyer(new RSSAddUTM(new RSSInstantArticler(clone $gen), 'facebook'), $bitly),
-    'blog-twitter.xml' => new RSSBitlyer(new RSSAddUTM(clone $gen, 'twitter'), $bitly),
-    'blog-telegram.xml' => new RSSBitlyer(new RSSAddUTM(clone $gen, 'telegram'), $bitly),
+    'blog.xml' => new RSSAddUTM($bitlyed, 'feedburner'),
+    'blog-dlvrit.xml' => new RSSAddUTM($bitlyed, 'dlvrit'),
+    'blog-facebook.xml' => new RSSAddUTM(new RSSInstantArticler($bitlyed), 'facebook'),
+    'blog-facebook-dev.xml' => new RSSAddUTM(new RSSInstantArticler($bitlyed), 'facebook'),
+    'blog-twitter.xml' => new RSSAddUTM($bitlyed, 'twitter'),
+    'blog-telegram.xml' => new RSSAddUTM($bitlyed, 'telegram'),
 ];
 
 foreach ($generators as $fileType => $generator) {
