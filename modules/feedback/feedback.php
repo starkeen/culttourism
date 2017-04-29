@@ -47,7 +47,7 @@ class Page extends PageCommon
                     'cp_sender' => $_POST['name'] . ' <' . $_POST['email'] . '>',
                     'cp_source_id' => MCandidatePoints::SOURCE_FORM,
                     'cp_state' => $spamStatusOK === true ? MCandidatePoints::STATUS_NEW : MCandidatePoints::STATUS_SPAM,
-                    'cp_active' => 1,
+                    'cp_active' => $spamStatusOK === true ? 1 : 0,
                 ]
             );
 
