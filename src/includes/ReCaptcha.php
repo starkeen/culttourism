@@ -3,6 +3,7 @@
 namespace app;
 
 use GuzzleHttp\Client;
+use RuntimeException;
 
 class ReCaptcha
 {
@@ -22,14 +23,15 @@ class ReCaptcha
      * @param string $token
      *
      * @return boolean
+     * @throws RuntimeException
      */
-    public function check($token)
+    public function check($token): bool
     {
         try {
             $response = $this->httpClient->post(self::URL, $this->getRequestData($token));
             $content = $response->getBody()->getContents();
             $answer = json_decode($content, true);
-        } catch (\RuntimeException $exception) {
+        } catch (RuntimeException $exception) {
             $answer = null;
         }
 
@@ -41,7 +43,7 @@ class ReCaptcha
      *
      * @return array
      */
-    private function getRequestData($token)
+    private function getRequestData($token): array
     {
         return [
             'form_params' => [
