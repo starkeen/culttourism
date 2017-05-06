@@ -31,6 +31,7 @@ $generators = [
     'blog-dlvrit.xml' => new RSSAddUTM($bitlyed, 'dlvrit'),
     'blog-facebook.xml' => new RSSAddUTM(new RSSInstantArticler($bitlyed), 'facebook'),
     'blog-facebook-dev.xml' => new RSSAddUTM(new RSSInstantArticler($bitlyed), 'facebook'),
+    'blog-facebook-ifttt.xml' => new RSSAddUTM(new RSSInstantArticler($bitlyed), 'facebook'),
     'blog-twitter.xml' => new RSSAddUTM($bitlyed, 'twitter'),
     'blog-telegram.xml' => new RSSAddUTM($bitlyed, 'telegram'),
 ];
