@@ -34,6 +34,7 @@ $generators = [
     'blog-facebook-ifttt.xml' => new RSSAddUTM(new RSSInstantArticler($bitlyed), 'facebook'),
     'blog-twitter.xml' => new RSSAddUTM($bitlyed, 'twitter'),
     'blog-telegram.xml' => new RSSAddUTM($bitlyed, 'telegram'),
+    'blog-zen.xml' => new RSSAddUTM($bitlyed, 'zen'),
 ];
 
 foreach ($generators as $fileType => $generator) {
