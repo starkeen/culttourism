@@ -39,6 +39,7 @@ $files_skip[] = _DIR_ROOT . '/data/feed/blog-facebook-dev.xml';
 $files_skip[] = _DIR_ROOT . '/data/feed/blog-facebook-ifttt.xml';
 $files_skip[] = _DIR_ROOT . '/data/feed/blog-twitter.xml';
 $files_skip[] = _DIR_ROOT . '/data/feed/blog-telegram.xml';
+$files_skip[] = _DIR_ROOT . '/data/feed/blog-zen.xml';
 
 foreach ($scan_dirs as $dir) {
     foreach (glob(_DIR_ROOT . "/$dir/*.*") as $filename) {
