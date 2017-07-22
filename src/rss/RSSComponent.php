@@ -2,11 +2,9 @@
 
 namespace app\rss;
 
-use RSSGenerator;
-
 abstract class RSSComponent implements IRSSGenerator
 {
-    /** @var RSSGenerator */
+    /** @var IRSSGenerator */
     protected $generator;
 
     public function __construct(IRSSGenerator $generator)
