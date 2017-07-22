@@ -65,12 +65,11 @@ class Page extends PageCommon {
             }
             $index_list[] = $list;
         }
-        
-        $this->addOGMeta('image', 'https://culttourism.ru/data/images/pages/map-example-500.png');
 
         $this->smarty->assign('index_text', $this->content);
         $this->smarty->assign('index_lists', $index_list);
         $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/list/index.sm.html');
+
         return true;
     }
 
