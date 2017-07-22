@@ -36,6 +36,7 @@ class Page extends PageCommon {
             $this->addKeywords($list['data']['ls_keywords']);
             $this->addTitle($list['data']['ls_title']);
             $this->addOGMeta('title', $list['data']['ls_title']);
+            $this->addOGMeta('description', $list['data']['ls_description']);
             if (!empty($list['data']['ls_image'])) {
                 $objImage = $this->getAbsoluteURL($list['data']['ls_image']);
                 $this->addOGMeta('image', $objImage);
