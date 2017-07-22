@@ -14,6 +14,7 @@ class MLists extends Model {
             'ls_keywords',
             'ls_description',
             'ls_text',
+            'ls_image',
             'ls_update_date',
             'ls_order',
             'ls_active',

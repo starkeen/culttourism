@@ -202,7 +202,8 @@ class Page extends PageCommon {
         $this->db->sql = "SELECT bg.*, us.us_name,
                         UNIX_TIMESTAMP(bg.br_date) AS last_update,
                         DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
-                        DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month
+                        DATE_FORMAT(bg.br_date,'%Y') as bg_year,
+                        DATE_FORMAT(bg.br_date,'%m') as bg_month
                     FROM $dbb bg
                         LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
                     WHERE br_active = 1
@@ -292,5 +293,4 @@ class Page extends PageCommon {
     public static function getInstance($db, $mod = null) {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
-
 }

@@ -5,21 +5,22 @@
  *
  * @author Andrey_Pns
  */
-abstract class Core {
+abstract class Core
+{
 
-    private static $hInstances = array(); // хэш экземпляров классов
+    private static $hInstances = []; // хэш экземпляров классов
     public $content = '';
     public $url = '';
-    private $_title = array('Культурный туризм');
+    private $_title = ['Культурный туризм'];
     public $title = 'Культурный туризм';
-    private $_keywords = array('достопримечательности');
+    private $_keywords = ['достопримечательности'];
     public $keywords = 'достопримечательности';
-    private $_description = array();
+    private $_description = [];
     public $description = '';
-    private $metaTagsCustom = array();
-    private $metaTagsJSONLD = array(
+    private $metaTagsCustom = [];
+    private $metaTagsJSONLD = [
         '@context' => 'http://schema.org',
-    );
+    ];
     public $canonical = null;
     public $h1 = '';
     public $counters = '';
@@ -37,7 +38,7 @@ abstract class Core {
         'main_rss' => '',
         'stat_text' => '',
     ];
-    public $user = array('userid' => null);
+    public $user = ['userid' => null];
     public $custom_css = null;
     public $robots_indexing = 'index,follow';
     public $lastedit = null;
@@ -46,8 +47,9 @@ abstract class Core {
     public $smarty = null;
     protected $auth = null;
 
-    protected function __construct($db, $mod) {
-        set_exception_handler(array($this, 'errorsExceptionsHandler'));
+    protected function __construct($db, $mod)
+    {
+        set_exception_handler([$this, 'errorsExceptionsHandler']);
         $this->db = $db;
         $this->smarty = new mySmarty();
         if (!$this->db->link) {
@@ -59,7 +61,9 @@ abstract class Core {
         $id = null;
         $this->basepath = _URL_ROOT;
 
-        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(
+                $_SERVER['HTTP_X_REQUESTED_WITH']
+            ) == 'xmlhttprequest') {
             $this->isAjax = true;
         }
 
@@ -90,7 +94,7 @@ abstract class Core {
         if ($row['md_photo_id']) {
             $ph = new MPhotos($this->db);
             $photo = $ph->getItemByPk($row['md_photo_id']);
-            $objImage = substr($photo['ph_src'], 0, 1) == '/' ? rtrim(_SITE_URL, '/') . $photo['ph_src'] : $photo['ph_src'];
+            $objImage = $this->getAbsoluteURL($photo['ph_src']);
             $this->addOGMeta('image', $objImage);
             $this->addDataLD('image', $objImage);
         }
@@ -137,30 +141,33 @@ abstract class Core {
     }
 
     /**
-     * 
+     *
      * @param string $text
      */
-    public function addTitle($text) {
+    public function addTitle($text)
+    {
         $this->_title[] = $text;
         krsort($this->_title);
         $this->title = implode(' ' . ($this->globalsettings['title_delimiter'] ?? '') . ' ', $this->_title);
     }
 
     /**
-     * 
+     *
      * @param string $text
      */
-    public function addKeywords($text) {
+    public function addKeywords($text)
+    {
         $this->_keywords[] = $text;
         krsort($this->_keywords);
         $this->keywords = implode(', ', $this->_keywords);
     }
 
     /**
-     * 
+     *
      * @param string $text
      */
-    public function addDescription($text) {
+    public function addDescription($text)
+    {
         $this->_description[] = trim($text);
         krsort($this->_description);
         $this->description = implode('. ', $this->_description);
@@ -168,12 +175,16 @@ abstract class Core {
 
     /**
      * Добавляет в разметку мета-теги OpenGraph
+     *
      * @param string $key
      * @param string $value
+     *
+     * @return bool
      */
-    public function addOGMeta($key, $value) {
-        $allowTags = array('app_id', 'title', 'type', 'locale', 'url', 'image', 'site_name', 'description', 'updated_time');
-        if (!in_array($key, $allowTags)) {
+    public function addOGMeta($key, $value)
+    {
+        $allowTags = ['app_id', 'title', 'type', 'locale', 'url', 'image', 'site_name', 'description', 'updated_time'];
+        if (!in_array($key, $allowTags, true)) {
             return false;
         }
         $this->addCustomMeta('og:' . $key, $value);
@@ -181,11 +192,14 @@ abstract class Core {
 
     /**
      * Добавление произвольного мета-тега
+     *
      * @param string $key
      * @param string $value
+     *
      * @return boolean
      */
-    public function addCustomMeta($key, $value) {
+    public function addCustomMeta($key, $value)
+    {
         $val = trim(html_entity_decode(strip_tags($value)));
         if (empty($val)) {
             return false;
@@ -197,18 +211,22 @@ abstract class Core {
      * Получение набора кастомных мета-тегов
      * @return array
      */
-    public function getCustomMetas() {
+    public function getCustomMetas()
+    {
         ksort($this->metaTagsCustom);
         return $this->metaTagsCustom;
     }
 
     /**
      * Добавляет данные в набор JSON+LD
+     *
      * @param string $key
      * @param string $value
+     *
      * @return boolean
      */
-    public function addDataLD($key, $value) {
+    public function addDataLD($key, $value)
+    {
         if (is_scalar($value)) {
             $val = trim(html_entity_decode(strip_tags($value)));
         } elseif (is_array($value)) {
@@ -224,13 +242,15 @@ abstract class Core {
      * Данные для блока ld+json
      * @return string
      */
-    public function getJSONLD() {
+    public function getJSONLD()
+    {
         ksort($this->metaTagsJSONLD);
         return !empty($this->metaTagsJSONLD['@type']) ? $this->metaTagsJSONLD : null;
     }
 
-    private function getSuggestions404Local($req) {
-        $out = array();
+    private function getSuggestions404Local($req)
+    {
+        $out = [];
         if (strpos($req, '.html') !== false) {
             $c = new MPageCities($this->db);
 
@@ -238,18 +258,22 @@ abstract class Core {
             array_pop($uri);
             $page = $c->getCityByUrl('/' . trim(implode('/', $uri), '/'));
             if (!empty($page)) {
-                $out[] = array(
+                $out[] = [
                     'url' => $page['url'] . '/',
                     'title' => $page['pc_title'],
-                );
+                ];
             }
         }
         return $out;
     }
 
-    private function getSuggestions404Yandex($req) {
-        $out = array();
-        if (strpos($req, '.css') === false && strpos($req, '.js') === false && strpos($req, '.png') === false && strpos($req, '.txt') === false && strpos($req, '.xml') === false) {
+    private function getSuggestions404Yandex($req)
+    {
+        $out = [];
+        if (strpos($req, '.css') === false && strpos($req, '.js') === false && strpos($req, '.png') === false && strpos(
+                $req,
+                '.txt'
+            ) === false && strpos($req, '.xml') === false) {
             $ys = new YandexSearcher();
             $ys->enableLogging($this->db);
             $searchstring = trim(implode(' ', explode('/', $req)));
@@ -257,10 +281,10 @@ abstract class Core {
             if (!empty($variants['results'])) {
                 $i = 0;
                 foreach ($variants['results'] as $variant) {
-                    $out[] = array(
+                    $out[] = [
                         'url' => $variant['url'],
                         'title' => trim(str_replace('| Культурный туризм', '', $variant['title'])),
-                    );
+                    ];
                     if ($i++ == 3) {
                         break;
                     }
@@ -270,12 +294,13 @@ abstract class Core {
         return $out;
     }
 
-    public function errorsExceptionsHandler($e) {
+    public function errorsExceptionsHandler($e)
+    {
         $msg = "Error: " . $e->getMessage() . "\n"
-                . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
-                . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
-                . "\n__________________________\n\n\n"
-                . 'trace: ' . print_r($e->getTrace(), true) . "\n";
+            . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
+            . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
+            . "\n__________________________\n\n\n"
+            . 'trace: ' . print_r($e->getTrace(), true) . "\n";
 
         mail('starkeen@gmail.com', 'Error on ' . _URL_ROOT, $msg);
         if (ob_get_length()) {
@@ -284,7 +309,8 @@ abstract class Core {
         $this->getError('503');
     }
 
-    public function getError($err_code = '404', $err_data = null) {
+    public function getError($err_code = '404', $err_data = null)
+    {
         if ($err_code != '301') {
             $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
             $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
@@ -297,55 +323,55 @@ abstract class Core {
         }
         switch ($err_code) {
             case '301': {
-                    header("HTTP/1.1 301 Moved Permanently");
-                    header("Location: $err_data");
-                    exit();
-                }
+                header("HTTP/1.1 301 Moved Permanently");
+                header("Location: $err_data");
+                exit();
+            }
                 break;
             case '403': {
-                    Logging::write($err_code, $err_data);
+                Logging::write($err_code, $err_data);
 
-                    header('Content-Type: text/html; charset=utf-8');
-                    header('HTTP/1.1 403 Forbidden');
+                header('Content-Type: text/html; charset=utf-8');
+                header('HTTP/1.1 403 Forbidden');
 
-                    $this->title = "$this->title - 403 Forbidden - страница недоступна (запрещено)";
-                    $this->h1 = 'Запрещено';
-                    $this->smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-                    $this->smarty->assign('host', _SITE_URL);
-                    $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html');
-                }
+                $this->title = "$this->title - 403 Forbidden - страница недоступна (запрещено)";
+                $this->h1 = 'Запрещено';
+                $this->smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+                $this->smarty->assign('host', _SITE_URL);
+                $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html');
+            }
                 break;
             case '404': {
-                    Logging::write($err_code, $err_data);
+                Logging::write($err_code, $err_data);
 
-                    header('Content-Type: text/html; charset=utf-8');
-                    header("HTTP/1.0 404 Not Found");
+                header('Content-Type: text/html; charset=utf-8');
+                header("HTTP/1.0 404 Not Found");
 
-                    $suggestions = array();
-                    //$suggestions = $this->getSuggestions404Local($_SERVER['REQUEST_URI']);
-                    if (false && empty($suggestions) && !strstr($_SERVER['REQUEST_URI'], 'php')) {
-                        $search_text = trim(str_replace(array('_', '/', '.html',), ' ', $_SERVER['REQUEST_URI']));
-                        $suggestions = $this->getSuggestions404Yandex($search_text);
-                    }
-
-                    $this->title = "$this->title - 404 Not Found - страница не найдена на сервере";
-                    $this->h1 = 'Не найдено';
-                    $this->smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-                    $this->smarty->assign('host', _SITE_URL);
-                    $this->smarty->assign('suggestions', $suggestions);
-                    $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html');
+                $suggestions = [];
+                //$suggestions = $this->getSuggestions404Local($_SERVER['REQUEST_URI']);
+                if (false && empty($suggestions) && !strstr($_SERVER['REQUEST_URI'], 'php')) {
+                    $search_text = trim(str_replace(['_', '/', '.html',], ' ', $_SERVER['REQUEST_URI']));
+                    $suggestions = $this->getSuggestions404Yandex($search_text);
                 }
+
+                $this->title = "$this->title - 404 Not Found - страница не найдена на сервере";
+                $this->h1 = 'Не найдено';
+                $this->smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+                $this->smarty->assign('host', _SITE_URL);
+                $this->smarty->assign('suggestions', $suggestions);
+                $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html');
+            }
                 break;
             case '503': {
-                    header('Content-Type: text/html; charset=utf-8');
-                    header('HTTP/1.1 503 Service Temporarily Unavailable');
-                    header('Status: 503 Service Temporarily Unavailable');
-                    header('Retry-After: 300');
+                header('Content-Type: text/html; charset=utf-8');
+                header('HTTP/1.1 503 Service Temporarily Unavailable');
+                header('Status: 503 Service Temporarily Unavailable');
+                header('Retry-After: 300');
 
-                    $this->title = "$this->title - Ошибка 503 - Сервис временно недоступен";
-                    $this->h1 = 'Сервис временно недоступен';
-                    $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html');
-                }
+                $this->title = "$this->title - Ошибка 503 - Сервис временно недоступен";
+                $this->h1 = 'Сервис временно недоступен';
+                $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html');
+            }
                 break;
         }
         if ($this->module_id == 'api') {
@@ -358,7 +384,8 @@ abstract class Core {
         exit();
     }
 
-    protected function checkRedirect($url) {
+    protected function checkRedirect($url)
+    {
         $redir = new MRedirects($this->db);
         $redirects = $redir->getActive();
         foreach ($redirects as $redirect) {
@@ -369,17 +396,31 @@ abstract class Core {
         }
     }
 
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    public function getAbsoluteURL(string $path): string
+    {
+        return substr($path, 0, 1) === '/' ? rtrim(
+                _SITE_URL,
+                '/'
+            ) . $path : $path;
+    }
+
     /* запрещаем клонировать экземпляр класса */
 
-    protected function __clone() {
+    protected function __clone()
+    {
         throw new Exception('Cannot clone singleton');
     }
 
-    protected static function getInstanceOf($sClassname, $db, $mod) {
+    protected static function getInstanceOf($sClassname, $db, $mod)
+    {
         if (!isset(self::$hInstances[$sClassname])) {
             self::$hInstances[$sClassname] = new $sClassname($db, $mod); // создаем экземпляр
         }
         return self::$hInstances[$sClassname];
     }
-
 }

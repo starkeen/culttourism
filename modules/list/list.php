@@ -35,6 +35,11 @@ class Page extends PageCommon {
             $this->addDescription($list['data']['ls_description']);
             $this->addKeywords($list['data']['ls_keywords']);
             $this->addTitle($list['data']['ls_title']);
+            $this->addOGMeta('title', $list['data']['ls_title']);
+            if (!empty($list['data']['ls_image'])) {
+                $objImage = $this->getAbsoluteURL($list['data']['ls_image']);
+                $this->addOGMeta('image', $objImage);
+            }
 
             $this->lastedit_timestamp = $list['data']['last_update'];
 
@@ -72,5 +77,4 @@ class Page extends PageCommon {
     public static function getInstance($db, $mod) {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
-
 }
