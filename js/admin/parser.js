@@ -22,7 +22,11 @@ $(document).ready(function () {
                 $(".parser-work-container").removeClass("m_hide");
             }
             else {
-                alert("Error: " + ans.error.join(";\n"));
+                var message = ans.error.join(";\n");
+                if (message === '') {
+                    message = 'ошибка разбора списка';
+                }
+                alert("Error: " + message);
             }
         });
     });
@@ -31,12 +35,13 @@ $(document).ready(function () {
         $(".parser-work-container table input").each(function () {
             var $that = $(this);
             if ($that.attr("checked")) {
+                var pointUrl = $that.parents('tr').find("a").attr("href");
                 $.getJSON("parser.php", {
                     act: "load_item",
                     mode: "auto",
                     city: $(".parser-work-region").val(),
                     pcid: $(".parser-work-region-id").val(),
-                    url: $that.parents('tr').find("a").attr("href")
+                    url: pointUrl
                 }, function (answer) {
                     if (answer.state) {
                         $that.parents('tr').find("span")
@@ -48,7 +53,11 @@ $(document).ready(function () {
                         $that.attr("disabled", "disabled");
                     }
                     else {
-                        alert("Error: " + answer.error.join(";\n"));
+                        var message = answer.error.join(";\n");
+                        if (message === '') {
+                            message = 'неизвестная ошибка разбора точки ' + pointUrl;
+                        }
+                        alert("Error: " + message);
                     }
                 });
             }

@@ -19,7 +19,7 @@ if (isset($_GET['act'])) {
             $p = new Parser($db, $_GET['url']);
             $out['data'] = $p->getItem();
             $out['state'] = true;
-            if (isset($_GET['mode']) && $_GET['mode'] == 'auto') {
+            if (!empty($_GET['mode']) && $_GET['mode'] === 'auto') {
                 $cp = new MCandidatePoints($db);
                 $out['state'] = $cp->add(
                         [

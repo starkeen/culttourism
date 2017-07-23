@@ -229,7 +229,7 @@ class Auth
         return false;
     }
 
-    public function checkKey($key)
+    public function checkKey($key): bool
     {
         $db = $this->db;
         $dba = $db->getTableName('authorizations');
@@ -245,10 +245,22 @@ class Auth
             ]
         );
         while ($row = $db->fetch()) {
-            if ($row['au_key'] == $key && session_id() == $row['au_session']) {
+            if ($row['au_key'] === $key && session_id() === $row['au_session']) {
                 return true;
             }
         }
+        $db->sql = "INSERT IGNORE INTO $dba SET
+                        au_key = :key,
+                        au_us_id = 0,
+                        au_session = :session,
+                        au_date_expire = DATE_ADD(now(), INTERVAL 1 HOUR)";
+        $this->db->execute(
+            [
+                ':session' => session_id(),
+                ':key' => $key,
+            ]
+        );
+
         return false;
     }
 

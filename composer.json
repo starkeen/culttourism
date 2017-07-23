@@ -1,38 +1,38 @@
 {
-    "name": "starkeen/culttourism",
-    "authors": [
+    "name"        : "starkeen/culttourism",
+    "authors"     : [
         {
-            "name": "culttourism",
-            "email": "andrey@culttourism.ru"
+            "name"  : "culttourism",
+            "email" : "andrey@culttourism.ru"
         }
     ],
-    "require": {
-        "smarty/smarty": "3.1.29",
-        "phpmailer/phpmailer": "^5.2",
-        "ezyang/htmlpurifier": "^4.7",
-        "sentry/sentry": "^1.5",
-        "guzzlehttp/guzzle": "^6.2",
-        "iamsalnikov/mdash": "^3.5"
+    "require"     : {
+        "smarty/smarty"       : "3.1.29",
+        "phpmailer/phpmailer" : "^5.2",
+        "ezyang/htmlpurifier" : "^4.7",
+        "sentry/sentry"       : "^1.5",
+        "guzzlehttp/guzzle"   : "^6.2",
+        "iamsalnikov/mdash"   : "^3.5"
     },
-    "require-dev": {
-        "phpunit/phpunit": "^6.1"
+    "require-dev" : {
+        "phpunit/phpunit" : "^6.1"
     },
-    "autoload": {
-        "psr-4": {
-            "app\\": "src/",
-            "exceptions\\": "src/exceptions/",
-            "tests\\": "tests/",
-            "": ""
+    "autoload"    : {
+        "psr-4"                 : {
+            "app\\"        : "src/",
+            "exceptions\\" : "src/exceptions/",
+            "tests\\"      : "tests/",
+            ""             : ""
         },
-        "classmap": [
+        "classmap"              : [
             "includes/",
             "models/"
         ],
-        "files": [
+        "files"                 : [
             "includes/functions.php",
             "includes/debug.php"
         ],
-        "exclude-from-classmap": [
+        "exclude-from-classmap" : [
             "/modules/",
             "/tests/"
         ]

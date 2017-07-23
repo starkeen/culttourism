@@ -1,8 +1,9 @@
 <?php
 
+use PHPHtmlParser\Dom;
+
 class Parser
 {
-
     private $_curl = null;
     private $_text = null;
     private $_dom = null;
@@ -47,7 +48,10 @@ class Parser
         $this->_dom->normalizeDocument();
     }
 
-    public function getList()
+    /**
+     * @return array
+     */
+    public function getList(): array
     {
         $out = [];
         //echo $this->_dom->saveHTML();
@@ -70,11 +74,13 @@ class Parser
         return $out;
     }
 
-    public function getItem()
+    /**
+     * @return array
+     */
+    public function getItem(): array
     {
         $out = [
             'title' => '',
-            'type_title' => '',
             'text' => '',
             'addr' => '',
             'phone' => '',
@@ -114,37 +120,73 @@ class Parser
                 '',
             ],
         ];
-        //echo $this->_dom->saveHTML();
-        $finder = new DomXPath($this->_dom);
-        foreach ($this->_config['item'] as $k => $item) {
-            $data = [];
-            foreach ($item['path'] as $path) {
-                $elements = $finder->query($path);
-                if (!is_null($elements)) {
-                    foreach ($elements as $element) {
-                        if ($item['type'] == 1) {
-                            $data[] = trim(preg_replace('/\s+/', ' ', htmlspecialchars_decode($element->nodeValue)));
-                        } elseif ($item['type'] == 2) {
-                            $data[] = trim($element->getAttribute('href'));
-                        }
-                        $meta[$k][] = $element->getNodePath();
+
+        if (false && !empty($this->_config['use_parser']) && $this->_config['use_parser'] === 'php-html-parser') {
+            $dom = new Dom();
+            $dom->setOptions(
+                [
+                    'whitespaceTextNode' => false,
+                ]
+            );
+
+            $dom->load($this->_dom->saveHTML());
+
+            foreach ((array) $this->_config['item'] as $k => $item) {
+                $data = [];
+                foreach ((array) $item['parser'] as $parserConfig) {
+                    $selector = $parserConfig['selector'] ?? null;
+                    $index = $parserConfig['index'] ?? 0;
+                    if ($selector !== null) {
+                        $container = $dom->find($selector);
+                        $data[] = $container[$index]->text;
                     }
                 }
+
+                $text_delimiter = $item['delimiter'] ?? '; ';
+                $out[$k] = trim(
+                    str_replace(
+                        $replaces['from'],
+                        $replaces['to'],
+                        implode($text_delimiter, array_filter(array_unique($data, SORT_LOCALE_STRING)))
+                    )
+                );
             }
-            //asort($data);
-            $text_delimiter = isset($item['delimiter']) ? $item['delimiter'] : '; ';
-            $out[$k] = trim(
-                str_replace(
-                    $replaces['from'],
-                    $replaces['to'],
-                    implode($text_delimiter, array_filter(array_unique($data, SORT_LOCALE_STRING)))
-                )
-            );
-            if ($k == 'geo_latlon') {
-                $out[$k] = trim(str_replace(', ', '', $out[$k]));
-                $out[$k] = mb_substr($out[$k], 0, mb_strpos($out[$k], ' '));
+        } else {
+            // echo $this->_dom->saveHTML();exit;
+            $finder = new DomXPath($this->_dom);
+            foreach ($this->_config['item'] as $k => $item) {
+                $data = [];
+                foreach ($item['path'] as $path) {
+                    $elements = $finder->query($path);
+                    if ($elements !== null) {
+                        foreach ($elements as $element) {
+                            if ($item['type'] == 1) {
+                                $data[] = trim(
+                                    preg_replace('/\s+/', ' ', htmlspecialchars_decode($element->nodeValue))
+                                );
+                            } elseif ($item['type'] == 2) {
+                                $data[] = trim($element->getAttribute('href'));
+                            }
+                            $meta[$k][] = $element->getNodePath();
+                        }
+                    }
+                }
+                //asort($data);
+                $text_delimiter = isset($item['delimiter']) ? $item['delimiter'] : '; ';
+                $out[$k] = trim(
+                    str_replace(
+                        $replaces['from'],
+                        $replaces['to'],
+                        implode($text_delimiter, array_filter(array_unique($data, SORT_LOCALE_STRING)))
+                    )
+                );
+                if ($k === 'geo_latlon') {
+                    $out[$k] = trim(str_replace(', ', '', $out[$k]));
+                    $out[$k] = mb_substr($out[$k], 0, mb_strpos($out[$k], ' '));
+                }
             }
         }
+
         if (strpos($out['web'], 'redirect') !== false) {
             $data = parse_url($out['web']);
             $parts = [];
