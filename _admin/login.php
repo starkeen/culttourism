@@ -19,7 +19,7 @@ if (isset($_GET['out'])) {
 if (isset($_POST) && !empty($_POST)) {
     $login = cut_trash_word($_POST['login']);
     $pwd = cut_trash_text($_POST['pass']);
-    $retpath = (isset($_GET['r']) && $_GET['r'] != '') ? urldecode(cut_trash_text($_GET['r'])) : 'index.php';
+    $retpath = !empty($_GET['r']) ? urldecode(cut_trash_text($_GET['r'])) : 'index.php';
 
     if ($ticket->checkPassword($login, $pwd)) {
         $_SESSION['auth'] = $ticket->key;
@@ -33,6 +33,7 @@ if (isset($_POST) && !empty($_POST)) {
 $smarty->assign('login', $login);
 $smarty->assign('error', $error);
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/login.sm.html'));
+
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
+
 exit();
-?>

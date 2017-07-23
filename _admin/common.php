@@ -4,6 +4,7 @@ error_reporting(E_ALL);
 ini_set("display_errors", false);
 ini_set("memory_limit", "512M");
 session_start();
+
 /* Общие функции и опции */
 require_once('../config/configuration.php');
 include _DIR_ROOT . '/vendor/autoload.php';
@@ -12,7 +13,7 @@ include _DIR_ROOT . '/vendor/autoload.php';
 $sentryClient = new Raven_Client('https://e3bccedd75864d36ab2a0cf1e0273737:8cc337e7289e485aa44a798a3e7e1eb6@sentry.io/114324');
 $sentryClient->install();
 
-if (true && !_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == "")) {
+if (true && !_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == '')) {
     header("HTTP/1.1 301 Moved Permanently");
     header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
     exit();
