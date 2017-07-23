@@ -1,27 +1,28 @@
 <?php
 
 include('common.php');
-include (_DIR_INCLUDES . '/class.Pager.php');
+include(_DIR_INCLUDES . '/class.Pager.php');
 
 $smarty->assign('title', 'Парсер');
 
 $c = new MCandidatePoints($db);
 
 if (isset($_GET['act'])) {
-    $out = array('state' => false, 'act' => $_GET['act'], 'data' => null, 'error' => array());
+    $out = ['state' => false, 'act' => $_GET['act'], 'data' => null, 'error' => []];
     switch ($_GET['act']) {
-        case "load_list":
+        case 'load_list':
             $p = new Parser($db, $_GET['url']);
             $out['data'] = $p->getList();
             $out['state'] = !empty($out['data']);
             break;
-        case "load_item":
+        case 'load_item':
             $p = new Parser($db, $_GET['url']);
             $out['data'] = $p->getItem();
             $out['state'] = true;
             if (isset($_GET['mode']) && $_GET['mode'] == 'auto') {
                 $cp = new MCandidatePoints($db);
-                $out['state'] = $cp->add(array(
+                $out['state'] = $cp->add(
+                        [
                             'cp_title' => $out['data']['title'],
                             'cp_text' => $out['data']['text'],
                             'cp_addr' => $out['data']['addr'],
@@ -37,7 +38,8 @@ if (isset($_GET['act'])) {
                             'cp_zoom' => $out['data']['geo_zoom'],
                             'cp_source_id' => 26,
                             'cp_referer' => $_GET['url'],
-                        )) > 0;
+                        ]
+                    ) > 0;
             }
             break;
     }

@@ -1,18 +1,20 @@
 <?php
 
-class Parser {
+class Parser
+{
 
     private $_curl = null;
     private $_text = null;
     private $_dom = null;
-    private $_url = array();
+    private $_url = [];
     private $_purifier = null;
-    private $_sites = array();
+    private $_sites = [];
     private $_config = null;
 
-    public function __construct($db, $url) {
-        if ($url == '') {
-            exit;
+    public function __construct($db, $url)
+    {
+        if (empty($url)) {
+            throw new RuntimeException('Не передан URL');
         }
         $this->_sites = include _DIR_ROOT . '/config/config.parser.php';
         $this->_url = parse_url($url);
@@ -41,23 +43,24 @@ class Parser {
         $encoded = $this->cleanXML($this->_text);
         @$this->_dom->loadHTML($encoded);
         $this->_dom->formatOutput = true;
-        $this->_dom->preserveWhiteSpace = FALSE;
+        $this->_dom->preserveWhiteSpace = false;
         $this->_dom->normalizeDocument();
     }
 
-    public function getList() {
-        $out = array();
+    public function getList()
+    {
+        $out = [];
         //echo $this->_dom->saveHTML();
         $finder = new DomXPath($this->_dom);
         foreach ($this->_config['list_items'] as $xpath) {
             $elements = $finder->query($xpath);
             if ($elements->length > 0) {
                 foreach ($elements as $element) {
-                    $item = array(
+                    $item = [
                         'title' => $element->nodeValue,
                         'link' => $element->getAttribute('href'),
                         'xpath' => $element->getNodePath(),
-                    );
+                    ];
                     if ($item['link'] && $item['title']) {
                         $out[] = $item;
                     }
@@ -67,8 +70,9 @@ class Parser {
         return $out;
     }
 
-    public function getItem() {
-        $out = array(
+    public function getItem()
+    {
+        $out = [
             'title' => '',
             'type_title' => '',
             'text' => '',
@@ -84,26 +88,36 @@ class Parser {
             'geo_lat' => '',
             'geo_lon' => '',
             'geo_zoom' => 14,
-        );
-        $meta = array();
-        $replaces = array(
-            'from' => array(
-                '+7', '  ', 'Адрес гостиницы:',
-                '+38 (0', 'Работает:', 'Адрес:',
-                'Координаты:', 'Режим работы:',
+        ];
+        $meta = [];
+        $replaces = [
+            'from' => [
+                '+7',
+                '  ',
+                'Адрес гостиницы:',
+                '+38 (0',
+                'Работает:',
+                'Адрес:',
+                'Координаты:',
+                'Режим работы:',
                 'Официальный сайт - ',
-            ),
-            'to' => array(
-                '', ' ', '',
-                '+380 (', '', '',
-                '', '',
+            ],
+            'to' => [
                 '',
-            ),
-        );
+                ' ',
+                '',
+                '+380 (',
+                '',
+                '',
+                '',
+                '',
+                '',
+            ],
+        ];
         //echo $this->_dom->saveHTML();
         $finder = new DomXPath($this->_dom);
         foreach ($this->_config['item'] as $k => $item) {
-            $data = array();
+            $data = [];
             foreach ($item['path'] as $path) {
                 $elements = $finder->query($path);
                 if (!is_null($elements)) {
@@ -119,7 +133,13 @@ class Parser {
             }
             //asort($data);
             $text_delimiter = isset($item['delimiter']) ? $item['delimiter'] : '; ';
-            $out[$k] = trim(str_replace($replaces['from'], $replaces['to'], implode($text_delimiter, array_filter(array_unique($data, SORT_LOCALE_STRING)))));
+            $out[$k] = trim(
+                str_replace(
+                    $replaces['from'],
+                    $replaces['to'],
+                    implode($text_delimiter, array_filter(array_unique($data, SORT_LOCALE_STRING)))
+                )
+            );
             if ($k == 'geo_latlon') {
                 $out[$k] = trim(str_replace(', ', '', $out[$k]));
                 $out[$k] = mb_substr($out[$k], 0, mb_strpos($out[$k], ' '));
@@ -127,11 +147,19 @@ class Parser {
         }
         if (strpos($out['web'], 'redirect') !== false) {
             $data = parse_url($out['web']);
-            $parts = array();
+            $parts = [];
             parse_str($data['query'], $parts);
             $out['web'] = $parts['goto'];
         }
-        $out['title'] = mb_strtoupper(mb_substr($out['title'], 0, 1, 'utf-8'), 'utf-8') . mb_substr($out['title'], 1, mb_strlen($out['title'], 'utf-8') - 1, 'utf-8');
+        $out['title'] = mb_strtoupper(mb_substr($out['title'], 0, 1, 'utf-8'), 'utf-8') . mb_substr(
+                $out['title'],
+                1,
+                mb_strlen(
+                    $out['title'],
+                    'utf-8'
+                ) - 1,
+                'utf-8'
+            );
         $out['text'] = nl2br(strip_tags(html_entity_decode($out['text'], ENT_QUOTES, 'utf-8')));
         if ($out['geo_latlon'] && mb_strpos($out['geo_latlon'], ',') !== false) {
             $latlon = explode(',', $out['geo_latlon']);
@@ -149,7 +177,7 @@ class Parser {
         }
         if ($out['geo_latlon_degmin1'] != '') {
             $latlon = trim($out['geo_latlon_degmin1'], '.');
-            $matches = array();
+            $matches = [];
             if (preg_match('/^N([0-9]*)\s(.*) E([0-9]*)\s(.*)/', $latlon, $matches)) {
                 $out['geo_lat'] = intval($matches[1]);
                 $out['geo_lon'] = intval($matches[3]);
@@ -159,7 +187,7 @@ class Parser {
         }
         if ($out['geo_latlon_degminsec'] != '') {
             $latlon = trim($out['geo_latlon_degminsec']);
-            $matches = array();
+            $matches = [];
             if (preg_match("/^([0-9]*)°([0-9]*)'([0-9\.]*)''N, ([0-9]*)°([0-9]*)'([0-9\.]*)''E/", $latlon, $matches)) {
                 $out['geo_lat'] = intval($matches[1]);
                 $out['geo_lon'] = intval($matches[4]);
@@ -173,7 +201,8 @@ class Parser {
         return $out;
     }
 
-    protected function cleanXML($string) {
+    protected function cleanXML($string)
+    {
         $encoded = mb_convert_encoding($string, 'HTML-ENTITIES', 'UTF-8');
         return preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', ' ', $encoded);
     }
