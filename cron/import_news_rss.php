@@ -23,7 +23,7 @@ foreach ($sourses as $sourse) {
             'pubdate' => date('Y-m-d H:i:s', strtotime($item['pubDate'])),
             'title' => !empty($item['title']) ? $item['title'] : '[no title]',
             'link' => $item['link'],
-            'description' => htmlentities($item['description'], ENT_QUOTES, 'UTF-8'),
+            'description' => htmlentities($item['description'] ?? '', ENT_QUOTES, 'UTF-8'),
         ));
     }
     $ns->updateByPk($sourse['ns_id'], array(
