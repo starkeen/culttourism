@@ -9,5 +9,7 @@ use PHPUnit\Framework\TestCase;
 class RSSCompositionTest extends TestCase
 {
     public function testComposition()
-    {}
+    {
+        $this->assertTrue(true);
+    }
 }

@@ -3,32 +3,34 @@
 /**
  * Класс для локального кэширования данных
  */
-class Cache {
+class Cache
+{
 
-    protected static $_instance = array();
+    protected static $_instance = [];
 
     /**
      * Список доступных кэшей
-     * @var array 
+     * @var array
      */
-    private $config = array(
-        'refs' => array(
+    private $config = [
+        'refs' => [
             'dir' => 'refs',
             'lifetime' => 3600,
-        ),
-        'sysprops' => array(
+        ],
+        'sysprops' => [
             'dir' => 'sysprops',
             'lifetime' => 3600,
-        ),
-        'redirects' => array(
+        ],
+        'redirects' => [
             'dir' => 'redirects',
             'lifetime' => 3600,
-        ),
-    );
+        ],
+    ];
     private $cacheDir = null;
     private $cacheCurrent = null;
 
-    private function __construct($cache_id) {
+    private function __construct($cache_id)
+    {
         if (isset($this->config[$cache_id])) {
             $this->cacheCurrent = $this->config[$cache_id];
             $this->cacheDir = _DIR_DATA . '/private/cache';
@@ -37,10 +39,13 @@ class Cache {
 
     /**
      * Инстанциатор кэша
+     *
      * @param string $cache
-     * @return object
+     *
+     * @return self
      */
-    public static function i($cache) {
+    public static function i($cache)
+    {
         if (!isset(self::$_instance[$cache])) {
             // создаем новый экземпляр
             self::$_instance[$cache] = new self($cache);
@@ -50,10 +55,13 @@ class Cache {
 
     /**
      * Читаем данные из кэша
+     *
      * @param string $key
+     *
      * @return mixed
      */
-    public function get($key) {
+    public function get($key)
+    {
         $filename = $this->cacheDir . '/' . $this->cacheCurrent['dir'] . '/' . $key;
         if (!file_exists($filename)) {
             return null;
@@ -63,35 +71,52 @@ class Cache {
             $this->remove($key);
             return null;
         }
+
         return unserialize(file_get_contents($filename));
     }
 
     /**
      * Записываем данные в кэш
+     *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return bool
      */
-    public function put($key, $value) {
-        $filedir = $this->cacheDir . '/' . $this->cacheCurrent['dir'] . '/';
-        if (!file_exists($filedir)) {
-            mkdir($filedir);
+    public function put($key, $value)
+    {
+        $fileDir = $this->cacheDir . '/' . $this->cacheCurrent['dir'] . '/';
+        if (!file_exists($fileDir)) {
+            try {
+                mkdir($fileDir);
+            } catch (Throwable $e) {
+                // ничего страшного
+            }
         }
-        return file_put_contents($filedir . $key, serialize($value), LOCK_EX) > 0;
+
+        return file_put_contents($fileDir . $key, serialize($value), LOCK_EX) > 0;
     }
 
     /**
      * Удаляем ключ из кэша
+     *
      * @param string $key
+     *
      * @return bool
      */
-    public function remove($key) {
+    public function remove($key): bool
+    {
         $filename = $this->cacheDir . '/' . $this->cacheCurrent['dir'] . '/' . $key;
+        $result = null;
         if (file_exists($filename)) {
-            return unlink($filename);
-        } else {
-            return null;
+            try {
+                $result = unlink($filename);
+            } catch (Throwable $e) {
+                // молча глотаем обиду
+            }
         }
+
+        return $result;
     }
 
 }
