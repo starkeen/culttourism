@@ -102,9 +102,9 @@ class Cache
      *
      * @param string $key
      *
-     * @return bool
+     * @return bool|null
      */
-    public function remove($key): bool
+    public function remove($key)
     {
         $filename = $this->cacheDir . '/' . $this->cacheCurrent['dir'] . '/' . $key;
         $result = null;
@@ -118,5 +118,4 @@ class Cache
 
         return $result;
     }
-
 }
