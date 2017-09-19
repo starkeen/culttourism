@@ -12,7 +12,7 @@ class Page extends PageCommon
         list($module_id, $page_id, $id) = $mod;
         parent::__construct($db, 'feedback', $page_id);
 
-        if ($page_id == '') {
+        if ((string) $page_id === '') {
             $this->getCommon();
         } elseif ($page_id === 'getcapt') {
             $this->getCaptcha();
@@ -39,7 +39,7 @@ class Page extends PageCommon
                     'cp_title' => $_POST['title'],
                     'cp_city' => $_POST['region'],
                     'cp_text' => $_POST['descr'],
-                    'cp_addr' => $_POST['addrs'],
+                    'cp_addr' => $_POST['addrs'] ?? '',
                     'cp_phone' => $_POST['phone'],
                     'cp_web' => $_POST['web'],
                     'cp_worktime' => $_POST['worktime'],

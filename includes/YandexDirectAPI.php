@@ -1,6 +1,7 @@
 <?php
 
-class YandexDirectAPI {
+class YandexDirectAPI
+{
 
     const MAX_COUNT = 5;
 
@@ -8,52 +9,62 @@ class YandexDirectAPI {
     protected $urlService = 'https://api.direct.yandex.ru/v4/json/';
     protected $urlOauth = 'https://oauth.yandex.ru/token';
 
-    public function __construct($token) {
+    public function __construct($token)
+    {
         $this->token = $token;
     }
 
     /**
      * Создание нового отчета с несколькими фразами
+     *
      * @param string[] $phrases
+     *
      * @return int - ID отчета
-     * @throws Exception
+     * @throws RuntimeException
      */
-    public function createReport($phrases = array()) {
-        $rq = array(
+    public function createReport($phrases = [])
+    {
+        $rq = [
             'method' => 'CreateNewWordstatReport',
-            'param' => array(
-                'Phrases' => array(),
-                'GeoID' => array(0),
-            ),
-        );
+            'param' => [
+                'Phrases' => [],
+                'GeoID' => [0],
+            ],
+        ];
         foreach ($phrases as $phrase) {
             $rq['param']['Phrases'][] = iconv('ISO-8859-1', 'utf-8', $phrase);
         }
         $res = $this->getRequest($rq);
         if (isset($res['data'])) {
             return $res['data'];
-        } elseif (isset($res['error_code'])) {
-            throw new Exception("API error:" . $res['error_detail'], $res['error_code']);
-        } else {
-            throw new Exception("Empty DATA response" . print_r($res, true));
         }
+        if (isset($res['error_code'])) {
+            throw new RuntimeException('API error:' . $res['error_detail'] ?? 'unknown', $res['error_code']);
+        }
+
+        throw new RuntimeException('Empty DATA response' . print_r($res, true));
     }
 
     /**
      * Получение данных по отчету
+     *
      * @param int $report_id - ID отчета
+     *
      * @return array список слов в отчете
-     * @throws Exception
+     * @throws RuntimeException
      */
-    public function getReport($report_id) {
-        $res = $this->getRequest(array(
-            'method' => 'GetWordstatReport',
-            'param' => $report_id,
-        ));
-        $reps = array();
+    public function getReport(int $report_id): array
+    {
+        $res = $this->getRequest(
+            [
+                'method' => 'GetWordstatReport',
+                'param' => $report_id,
+            ]
+        );
+        $reps = [];
         if (isset($res['data'])) {
             foreach ($res['data'] as $data) {
-                $rep = array('word' => $data['Phrase'], 'weight' => 0, 'rep_id' => $report_id);
+                $rep = ['word' => $data['Phrase'], 'weight' => 0, 'rep_id' => $report_id];
                 foreach ($data['SearchedWith'] as $item) {
                     if ($item['Shows'] >= $rep['weight']) {
                         $rep['weight'] = $item['Shows'];
@@ -62,8 +73,11 @@ class YandexDirectAPI {
                 $reps[] = $rep;
             }
         } else {
-            throw new Exception("Empty data in report $report_id");
+            $ex = new RuntimeException("Empty data in report $report_id");
+            $ex->level = 'warning';
+            throw $ex;
         }
+
         return $reps;
     }
 
@@ -71,11 +85,14 @@ class YandexDirectAPI {
      * Получить список всех отчетов
      * @return array
      */
-    public function getReportsAll() {
-        $res = $this->getRequest(array(
-            'method' => 'GetWordstatReportList',
-        ));
-        $open_reports = array();
+    public function getReportsAll()
+    {
+        $res = $this->getRequest(
+            [
+                'method' => 'GetWordstatReportList',
+            ]
+        );
+        $open_reports = [];
         if (isset($res['data']) && !empty($res['data'])) {
             foreach ($res['data'] as $rep) {
                 $open_reports[] = $rep;
@@ -90,8 +107,9 @@ class YandexDirectAPI {
      * Получить список ID готовых отчетов
      * @return array
      */
-    public function getReportsDone() {
-        $reports = array();
+    public function getReportsDone()
+    {
+        $reports = [];
         foreach ($this->getReportsAll() as $rep) {
             if ($rep['StatusReport'] == 'Done') {
                 $reports[] = $rep['ReportID'];
@@ -104,7 +122,8 @@ class YandexDirectAPI {
      * Общее количество текущих отчетов
      * @return int
      */
-    public function getReportsCount() {
+    public function getReportsCount()
+    {
         $all = $this->getReportsAll();
         $count = count($all);
         return $count;
@@ -114,7 +133,8 @@ class YandexDirectAPI {
      * Количество доступных для создания отчетов
      * @return int
      */
-    public function getReportsCountRemain() {
+    public function getReportsCountRemain()
+    {
         return $this->getReportsCountMax() - $this->getReportsCount();
     }
 
@@ -122,48 +142,60 @@ class YandexDirectAPI {
      * Максимально доступное количество отчетов
      * @return int
      */
-    public function getReportsCountMax() {
+    public function getReportsCountMax()
+    {
         return self::MAX_COUNT;
     }
 
     /**
      * Удаление отчета по ID
+     *
      * @param int $report_id - ID отчета
+     *
      * @return array
      */
-    public function deleteReport($report_id) {
-        return $this->getRequest(array(
-                    'method' => 'DeleteWordstatReport',
-                    'param' => $report_id,
-        ));
+    public function deleteReport($report_id)
+    {
+        return $this->getRequest(
+            [
+                'method' => 'DeleteWordstatReport',
+                'param' => $report_id,
+            ]
+        );
     }
 
     /**
      * Количество оставшихся баллов по клиенту
      * @return int
      */
-    public function getClientUnits() {
-        $res = $this->getRequest(array(
-            'method' => 'GetClientsUnits',
+    public function getClientUnits()
+    {
+        $res = $this->getRequest(
+            [
+                'method' => 'GetClientsUnits',
                 //'param' => array('starkeen'),
-        ));
+            ]
+        );
         return isset($res['data'][0]['UnitsRest']) ? $res['data'][0]['UnitsRest'] : 0;
     }
 
     /**
      * Получение токена по коду подтверждения
-     * @param string $apikey - ID приложения
+     *
+     * @param string $apikey  - ID приложения
      * @param string $apipass - пароль приложения
-     * @param string $code - полученный код
+     * @param string $code    - полученный код
+     *
      * @return string - токен
      */
-    public function getTokenConfirm($apikey, $apipass, $code) {
-        $query = array(
+    public function getTokenConfirm($apikey, $apipass, $code)
+    {
+        $query = [
             'grant_type' => 'authorization_code',
             'code' => $code,
             'client_id' => $apikey,
             'client_secret' => $apipass,
-        );
+        ];
         try {
             $answer = $this->curlPostExec($this->urlOauth, http_build_query($query));
             $response = json_decode($answer);
@@ -176,10 +208,13 @@ class YandexDirectAPI {
 
     /**
      * Новый запрос в API Яндекса
+     *
      * @param array $request
+     *
      * @return array
      */
-    protected function getRequest($request) {
+    protected function getRequest($request)
+    {
         $request['locale'] = 'ru';
         $request['token'] = $this->token;
         try {
@@ -193,16 +228,23 @@ class YandexDirectAPI {
 
     /**
      * Отправка POST-запроса по указанному URL
-     * @param string $url - URL запроса
+     *
+     * @param string $url  - URL запроса
      * @param string $data - данные запроса (json или http_build_query)
+     *
      * @return string чистый ответ сервера
      * @throws Exception
      */
-    protected function curlPostExec($url, $data) {
+    protected function curlPostExec($url, $data)
+    {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36');
+        curl_setopt(
+            $ch,
+            CURLOPT_USERAGENT,
+            'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36'
+        );
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         curl_setopt($ch, CURLOPT_URL, $url);

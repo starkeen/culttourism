@@ -12,8 +12,8 @@ $password = $sp->getByName('app_flikr_secret');
 $api = new FlickrAPI($apikey);
 
 if (isset($_GET['act'])) {
-    $out = array();
-    if ($_GET['act'] == 'fetch') {
+    $out = [];
+    if ($_GET['act'] === 'fetch') {
         $urlData = parse_url($_GET['url']);
         if ($urlData['scheme'] === 'https' && $urlData['host'] === 'www.flickr.com') {
             $urlParts = explode('/', urldecode($_GET['url']));
@@ -30,34 +30,42 @@ if (isset($_GET['act'])) {
         $out['data'] = $data;
         $out['sizes'] = $sizes;
         $out['geo'] = $geo;
-    } elseif ($_GET['act'] == 'save') {
+    } elseif ($_GET['act'] === 'save') {
         $pcid = isset($_POST['pcid']) ? (int) $_POST['pcid'] : 0;
         $bindpc = isset($_POST['bindpc']) ? (int) $_POST['bindpc'] : 0;
         try {
             $data = $api->getPhotoInfo($_POST['phid']);
             $sizes = $api->getSizes($_POST['phid']);
-            $size = !empty($sizes['sizes']['size'][7]) ? $sizes['sizes']['size'][7] : $sizes['sizes']['size'][6];
-            $location = isset($data['photo']['location']) ? $data['photo']['location'] : array('latitude' => 0, 'longitude' => 0);
+            $size = $sizes['sizes']['size'][7] ?? $sizes['sizes']['size'][6] ?? $sizes['sizes']['size'][5];
+            $location = $data['photo']['location'] ?? [
+                'latitude' => 0,
+                'longitude' => 0
+            ];
 
-            $id = $ph->insert(array(
-                'ph_title' => $data['photo']['title']['_content'],
-                'ph_author' => $data['photo']['owner']['realname'],
-                'ph_link' => $data['photo']['urls']['url'][0]['_content'],
-                'ph_src' => $size['source'],
-                'ph_width' => $size['width'],
-                'ph_height' => $size['height'],
-                'ph_lat' => $location['latitude'],
-                'ph_lon' => $location['longitude'],
-                'ph_pc_id' => $pcid,
-                'ph_date_add' => $ph->now(),
-                'ph_order' => 10,
-            ));
+            $id = $ph->insert(
+                [
+                    'ph_title' => $data['photo']['title']['_content'],
+                    'ph_author' => $data['photo']['owner']['realname'],
+                    'ph_link' => $data['photo']['urls']['url'][0]['_content'],
+                    'ph_src' => $size['source'],
+                    'ph_width' => $size['width'],
+                    'ph_height' => $size['height'],
+                    'ph_lat' => $location['latitude'],
+                    'ph_lon' => $location['longitude'],
+                    'ph_pc_id' => $pcid,
+                    'ph_date_add' => $ph->now(),
+                    'ph_order' => 10,
+                ]
+            );
 
             if ($id > 0 && $pcid > 0 && $bindpc > 0) {
-                $pc->updateByPk($pcid, array(
-                    'pc_coverphoto_id' => $id,
-                    'pc_lastup_date' => $pc->now(),
-                ));
+                $pc->updateByPk(
+                    $pcid,
+                    [
+                        'pc_coverphoto_id' => $id,
+                        'pc_lastup_date' => $pc->now(),
+                    ]
+                );
                 $pc->updateStatPhotos();
             }
 
@@ -65,7 +73,7 @@ if (isset($_GET['act'])) {
         } catch (Exception $e) {
             $out['state'] = false;
         }
-    } elseif ($_GET['act'] == 'suggestions') {
+    } elseif ($_GET['act'] === 'suggestions') {
         $out['data'] = $ph->getPopularCitiesWithOnePhoto();
     }
 
@@ -77,4 +85,3 @@ if (isset($_GET['act'])) {
     $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
     exit();
 }
-
