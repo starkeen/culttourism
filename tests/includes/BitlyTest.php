@@ -1,5 +1,6 @@
 <?php
 
+use app\includes\Bitly;
 use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;

@@ -2,9 +2,9 @@
 
 namespace tests\rss;
 
+use app\includes\Bitly;
 use app\rss\IRSSGenerator;
 use app\rss\RSSBitlyer;
-use Bitly;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 

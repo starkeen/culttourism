@@ -1,5 +1,6 @@
 <?php
 
+use app\includes\Bitly;
 use app\rss\IRSSGenerator;
 use app\rss\RSSAddUTM;
 use app\rss\RSSBitlyer;

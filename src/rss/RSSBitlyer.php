@@ -2,7 +2,7 @@
 
 namespace app\rss;
 
-use Bitly;
+use app\includes\Bitly;
 use RuntimeException;
 
 class RSSBitlyer extends RSSComponent

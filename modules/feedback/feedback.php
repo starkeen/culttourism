@@ -1,12 +1,10 @@
 <?php
 
-use app\ReCaptcha;
-use exceptions\SpamException;
+use app\includes\ReCaptcha;
 use GuzzleHttp\Client;
 
 class Page extends PageCommon
 {
-
     public function __construct($db, $mod)
     {
         list($module_id, $page_id, $id) = $mod;

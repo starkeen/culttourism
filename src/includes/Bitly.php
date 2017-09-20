@@ -1,13 +1,17 @@
 <?php
 
+namespace app\includes;
+
 use GuzzleHttp\Client;
+use MCurlCache;
+use RuntimeException;
 
 class Bitly
 {
     const BITLY_HOST = 'https://api-ssl.bitly.com';
     const CURL_CACHE_TTL = 86400;
 
-    /** @var \GuzzleHttp\Client */
+    /** @var Client */
     private $client;
 
     /** @var MCurlCache */
@@ -111,7 +115,7 @@ class Bitly
     /**
      * @return string
      */
-    public function getBitlyHost()
+    public function getBitlyHost(): string
     {
         if ($this->bitlyHost === null) {
             $this->bitlyHost = self::BITLY_HOST;

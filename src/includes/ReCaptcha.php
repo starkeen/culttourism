@@ -1,6 +1,6 @@
 <?php
 
-namespace app;
+namespace app\includes;
 
 use GuzzleHttp\Client;
 use RuntimeException;
