@@ -1,11 +1,17 @@
 <?php
 
+namespace app\db;
+
+use app\exceptions\MyPDOException;
+use Exception;
+use PDO;
+use PDOException;
+use PDOStatement;
+
 /**
  *
  * @author Andrey_Panisko
  */
-include 'interfaces/IDB.php';
-
 class MyPDO implements IDB
 {
     private static $_instances = false;
@@ -18,101 +24,131 @@ class MyPDO implements IDB
     private $_pdo;
     /** @var PDOStatement */
     private $_stm;
-    private $_stm_params = array();
+    private $_stm_params = [];
     private $_affected_rows = 0;
     private $_last_inserted_id;
-    private $_errors = array();
+    private $_errors = [];
     private $_cfg_trim_quotes = true;
     private $_stat_queries_cnt = 0;
     private $_stat_worktime_last = 0;
     private $_stat_worktime_all = 0;
 
+    /** @var float */
+    private $startTimestamp;
+    /** @var float */
+    private $time;
+
     /**
-     * @param string $db_host
-     * @param string $db_user
-     * @param string $db_pwd
-     * @param string $db_base
+     * @param string      $db_host
+     * @param string      $db_user
+     * @param string      $db_pwd
+     * @param string      $db_base
      * @param string|null $db_prefix
+     *
+     * @throws MyPDOException
      */
     public function __construct($db_host, $db_user, $db_pwd, $db_base, $db_prefix = null)
     {
-        if (!MyPDO::$_instances) {
-            $opts = array(
+        $this->startTimestamp = microtime(true);
+
+        if (!self::$_instances) {
+            $opts = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
                 PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+                PDO::ATTR_TIMEOUT => 600,
                 //PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'",
-            );
+            ];
             $this->prefix = $db_prefix;
             try {
-                $this->_pdo = new PDO("mysql:host=$db_host;dbname=$db_base;charset=utf8", $db_user, $db_pwd, $opts);
-                MyPDO::$_instances = true;
+                $dsn = "mysql:host=$db_host;dbname=$db_base;charset=utf8";
+                $this->_pdo = new PDO($dsn, $db_user, $db_pwd, $opts);
+                self::$_instances = true;
                 $this->link = true;
+                $this->time = microtime(true) - $this->startTimestamp;
             } catch (PDOException $e) {
+                $this->time = microtime(true) - $this->startTimestamp;
                 $this->_errors[] = $e->getMessage();
+                throw new MyPDOException('Ошибка соединения с БД', 0, $e);
             }
         }
     }
 
     /**
      * @param string $alias
+     *
      * @return string
      */
-    public function getTableName($alias)
+    public function getTableName($alias): string
     {
-        if ($this->prefix === null) {
-            return '`' . $alias . '`';
-        } else {
-            return '`' . $this->prefix . '_' . $alias . '`';
+        $result = '`' . $alias . '`';
+        if ($this->prefix !== null) {
+            $result = '`' . $this->prefix . '_' . $alias . '`';
         }
+
+        return $result;
     }
 
     /**
      * @param string $text
+     *
      * @return string
      */
-    public function getEscapedString($text)
+    public function getEscapedString($text): string
     {
         $out = $this->_pdo->quote($text);
+
         if ($this->_cfg_trim_quotes) {
             $out = trim($out, "'");
         }
+
         return $out;
     }
 
     /**
      * Подготавливаем запрос
+     *
      * @param string $sql
+     * @throws MyPDOException
      */
     public function prepare($sql = '')
     {
         if (!empty($sql)) {
             $this->_sql = $sql;
         }
-        $this->_stm = $this->_pdo->prepare($this->_sql);
+
+        $this->time = microtime(true) - $this->startTimestamp;
+        try {
+            $this->_stm = $this->_pdo->prepare($this->_sql);
+            $this->time = microtime(true) - $this->startTimestamp;
+        } catch (PDOException $e) {
+            throw new MyPDOException('Ошибка PDO:prepare', 0, $e);
+        }
     }
 
     /**
      * Привязываем параметры по одному
+     *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function bind($key, $value)
     {
         $this->_stm_params[$key] = $value;
-        //$this->_stm->bindParam($key, $value);
     }
 
     /**
      * Выполняем PDO::execute
      * @return PDOStatement
+     * @throws MyPDOException
      */
-    public function execute($params = array())
+    public function execute($params = [])
     {
         if (!empty($params)) {
             $this->_stm_params = $params;
         }
+        $this->time = microtime(true) - $this->startTimestamp;
         try {
             $timer_start = microtime(true);
             $this->prepare();
@@ -124,40 +160,39 @@ class MyPDO implements IDB
             $this->_stat_queries_cnt++;
             $this->_stat_worktime_last = microtime(true) - $timer_start;
             $this->_stat_worktime_all += $this->_stat_worktime_last;
+            $this->time = microtime(true) - $this->startTimestamp;
+
             return $this->_stm;
         } catch (PDOException $e) {
+            $this->time = microtime(true) - $this->startTimestamp;
             $this->_errors[] = $e->getMessage();
-            $msg = "SQL-execute error: " . $e->getMessage() . "\n"
-                . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
-                . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
-                . "\n__________________________\n\n\n"
-                . 'SQL: ' . $this->_sql . "\n"
-                . "\n__________________________\n\n\n"
-                . 'trace: ' . $e->getTraceAsString() . "\n";
 
-            mail('starkeen@gmail.com', 'SQL error on ' . _URL_ROOT, $msg);
+            throw new MyPDOException('Ошибка PDO:execute', 0, $e);
         }
     }
 
     /**
      * Выполняем PDO::query - совместимость со старыми вызовами
+     *
      * @param mixed $data
+     *
      * @return PDOStatement
+     *
+     * @throws MyPDOException
      */
     public function exec($data = null)
     {
         if ($data !== null) {
             if (is_string($data)) {
-                $this->sql = $data;
+                $this->_sql = $data;
             } elseif (is_array($data)) {
                 $this->_stm_params = $data;
             }
         }
+        $this->time = microtime(true) - $this->startTimestamp;
         try {
             $timer_start = microtime(true);
 
-            //$this->_stm = $this->_pdo->prepare($this->_sql);
-            //$this->_stm->execute($this->_stm_params);
             $this->_stm = $this->_pdo->query($this->_sql);
 
             if (is_object($this->_stm)) {
@@ -167,62 +202,67 @@ class MyPDO implements IDB
             $this->_stat_queries_cnt++;
             $this->_stat_worktime_last = microtime(true) - $timer_start;
             $this->_stat_worktime_all += $this->_stat_worktime_last;
+            $this->time = microtime(true) - $this->startTimestamp;
             return $this->_stm;
         } catch (PDOException $e) {
+            $this->time = microtime(true) - $this->startTimestamp;
             $this->_errors[] = $e->getMessage();
-            $msg = "SQL-exec error: " . $e->getMessage() . "\n"
-                . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
-                . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
-                . "\n__________________________\n\n\n"
-                . 'SQL: ' . $this->_sql . "\n"
-                . "\n__________________________\n\n\n"
-                . 'trace: ' . $e->getTraceAsString() . "\n";
 
-            mail('starkeen@gmail.com', 'SQL error on ' . _URL_ROOT, $msg);
+            throw new MyPDOException('Ошибка PDO:execute', 0, $e);
         }
     }
 
     /**
      * @param null $res
+     *
      * @return mixed|null
      */
     public function fetch($res = null)
     {
         $out = null;
+
         try {
+            $this->time = microtime(true) - $this->startTimestamp;
             $out = $this->_stm->fetch();
             if (!$out) {
                 $this->_stm->closeCursor();
             }
         } catch (PDOException $e) {
+            $this->time = microtime(true) - $this->startTimestamp;
             $this->_errors[] = $e->getMessage();
         }
+
         return $out;
     }
 
     /**
      * @param null $res
+     *
      * @return mixed
      */
     public function fetchCol($res = null)
     {
+        $this->time = microtime(true) - $this->startTimestamp;
         return $this->_stm->fetchColumn();
     }
 
     /**
      * @param null $res
+     *
      * @return array
-     * @throws Exception
+     * @throws MyPDOException
      */
     public function fetchAll($res = null)
     {
+        $this->time = microtime(true) - $this->startTimestamp;
         try {
             $out = $this->_stm->fetchAll();
             $this->_stm->closeCursor();
         } catch (Exception $e) {
+            $this->time = microtime(true) - $this->startTimestamp;
             $error = $e->getMessage();
             $this->_errors[] = $error;
-            throw new Exception($error);
+            throw new MyPDOException($error);
         }
         return $out;
     }
@@ -273,17 +313,27 @@ class MyPDO implements IDB
     public function showSQL($sql = null)
     {
         if ($sql !== null) {
-            $this->sql = $sql;
+            $this->_sql = $sql;
         }
         $nsql = $this->_sql;
 
-        $colors = array(
-            'SELECT' => 'green', 'FROM' => 'green', 'WHERE' => 'green', 'AND' => 'green',
-            'UPDATE' => 'green', 'SET' => 'green', 'DELETE' => 'green',
-            'ORDER BY' => 'blue', 'GROUP BY' => 'green',
-            'LIKE' => 'yellow', 'JOIN' => 'yellow', 'LEFT' => 'yellow',
-            'DESC' => 'magenta', 'LIMIT' => 'magenta', '%' => 'red',
-        );
+        $colors = [
+            'SELECT' => 'green',
+            'FROM' => 'green',
+            'WHERE' => 'green',
+            'AND' => 'green',
+            'UPDATE' => 'green',
+            'SET' => 'green',
+            'DELETE' => 'green',
+            'ORDER BY' => 'blue',
+            'GROUP BY' => 'green',
+            'LIKE' => 'yellow',
+            'JOIN' => 'yellow',
+            'LEFT' => 'yellow',
+            'DESC' => 'magenta',
+            'LIMIT' => 'magenta',
+            '%' => 'red',
+        ];
         $out = '<style>#sqlback {font-size:12px; background: black; color: white; padding: 10px; font-family: Courier New, Courier, monospace;}
                        #sqlback span.green {color:#00FF00;}
                        #sqlback span.red {color:#FB4F53;}
@@ -305,7 +355,7 @@ class MyPDO implements IDB
      */
     public function getDebugInfo()
     {
-        return array('queries' => $this->_stat_queries_cnt, 'worktime' => $this->_stat_worktime_all);
+        return ['queries' => $this->_stat_queries_cnt, 'worktime' => $this->_stat_worktime_all];
     }
 
     /**
@@ -319,33 +369,53 @@ class MyPDO implements IDB
     /**
      * @return string
      */
-    public function getDebugInfoText()
+    public function getDebugInfoText(): string
     {
         $data = $this->getDebugInfo();
         return "SQL-запросов: {$data['queries']}, время MySQL: "
-        . substr($this->_stat_worktime_all, 0, 6) . ' c.';
+            . substr($this->_stat_worktime_all, 0, 6) . ' c.';
     }
 
     /**
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function __set($name, $value)
     {
-        if ($name == 'sql') {
+        if ($name === 'sql') {
             $this->_sql = $value;
         }
     }
 
     /**
      * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset($name): bool
+    {
+        $result = false;
+
+        if ($name === 'sql') {
+            $result = true;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $name
+     *
      * @return string
      */
     public function __get($name)
     {
-        if ($name == 'sql') {
-            return $this->_sql;
-        }
-    }
+        $result = null;
 
+        if ($name === 'sql') {
+            $result = $this->_sql;
+        }
+
+        return $result;
+    }
 }

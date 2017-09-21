@@ -1,16 +1,19 @@
 <?php
 
-class Curl {
+use app\db\MyDB;
 
+class Curl
+{
     const INTERNAL_ENCODING = 'utf-8';
 
     private $cc = null;
     private $curl = null;
     private $ttl = 3600; //время жизни кэша в секундах
     private $encoding = 'utf-8';
-    private $headers = array();
+    private $headers = [];
 
-    public function __construct(MyDB $db = null) {
+    public function __construct(MyDB $db = null)
+    {
         if ($db) {
             $this->cc = new MCurlCache($db);
         }
@@ -18,15 +21,21 @@ class Curl {
         $this->curl = curl_init();
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($this->curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36');
+        curl_setopt(
+            $this->curl,
+            CURLOPT_USERAGENT,
+            'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36'
+        );
     }
 
     /**
-     * 
+     *
      * @param string $url
+     *
      * @return string
      */
-    public function get($url) {
+    public function get($url)
+    {
         $text = $this->cc->get($url);
         if ($text === null) {
             try {
@@ -45,7 +54,8 @@ class Curl {
         return $text;
     }
 
-    public function post($url, $data = array()) {
+    public function post($url, $data = [])
+    {
         try {
             curl_setopt($this->curl, CURLOPT_URL, $url);
             curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
@@ -63,35 +73,42 @@ class Curl {
         }
     }
 
-    public function addHeader($header, $value) {
+    public function addHeader($header, $value)
+    {
         $this->headers[$header] = $value;
     }
 
-    protected function getHeaders() {
-        $out = array();
+    protected function getHeaders()
+    {
+        $out = [];
         foreach ($this->headers as $k => $v) {
             $out[] = $k . ': ' . $v;
         }
         return $out;
     }
 
-    public function config($option, $value) {
+    public function config($option, $value)
+    {
         curl_setopt($this->curl, $option, $value);
     }
 
-    public function setTTL($ttl) {
+    public function setTTL($ttl)
+    {
         $this->ttl = intval($ttl);
     }
 
-    public function setTTLDays($ttl_days) {
+    public function setTTLDays($ttl_days)
+    {
         $this->ttl = 24 * 3600 * intval($ttl_days);
     }
 
-    public function setEncoding($encoding) {
+    public function setEncoding($encoding)
+    {
         $this->encoding = $encoding;
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         curl_close($this->curl);
     }
 

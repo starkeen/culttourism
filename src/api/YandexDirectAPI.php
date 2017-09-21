@@ -1,8 +1,15 @@
 <?php
 
+namespace app\api;
+
+use RuntimeException;
+use Throwable;
+
+/**
+ * Работа с API Яндекс.Директ
+ */
 class YandexDirectAPI
 {
-
     const MAX_COUNT = 5;
 
     protected $token = '';
@@ -22,7 +29,7 @@ class YandexDirectAPI
      * @return int - ID отчета
      * @throws RuntimeException
      */
-    public function createReport($phrases = [])
+    public function createReport(array $phrases = []): int
     {
         $rq = [
             'method' => 'CreateNewWordstatReport',
@@ -85,21 +92,21 @@ class YandexDirectAPI
      * Получить список всех отчетов
      * @return array
      */
-    public function getReportsAll()
+    public function getReportsAll(): array
     {
         $res = $this->getRequest(
             [
                 'method' => 'GetWordstatReportList',
             ]
         );
+
         $open_reports = [];
         if (isset($res['data']) && !empty($res['data'])) {
-            foreach ($res['data'] as $rep) {
+            foreach ((array) $res['data'] as $rep) {
                 $open_reports[] = $rep;
             }
-        } else {
-            //throw new Exception("Empty data in reports");
         }
+
         return $open_reports;
     }
 
@@ -107,11 +114,11 @@ class YandexDirectAPI
      * Получить список ID готовых отчетов
      * @return array
      */
-    public function getReportsDone()
+    public function getReportsDone(): array
     {
         $reports = [];
         foreach ($this->getReportsAll() as $rep) {
-            if ($rep['StatusReport'] == 'Done') {
+            if ($rep['StatusReport'] === 'Done') {
                 $reports[] = $rep['ReportID'];
             }
         }
@@ -122,18 +129,18 @@ class YandexDirectAPI
      * Общее количество текущих отчетов
      * @return int
      */
-    public function getReportsCount()
+    public function getReportsCount(): int
     {
         $all = $this->getReportsAll();
-        $count = count($all);
-        return $count;
+
+        return count($all);
     }
 
     /**
      * Количество доступных для создания отчетов
      * @return int
      */
-    public function getReportsCountRemain()
+    public function getReportsCountRemain(): int
     {
         return $this->getReportsCountMax() - $this->getReportsCount();
     }
@@ -142,7 +149,7 @@ class YandexDirectAPI
      * Максимально доступное количество отчетов
      * @return int
      */
-    public function getReportsCountMax()
+    public function getReportsCountMax(): int
     {
         return self::MAX_COUNT;
     }
@@ -154,7 +161,7 @@ class YandexDirectAPI
      *
      * @return array
      */
-    public function deleteReport($report_id)
+    public function deleteReport($report_id): array
     {
         return $this->getRequest(
             [
@@ -168,7 +175,7 @@ class YandexDirectAPI
      * Количество оставшихся баллов по клиенту
      * @return int
      */
-    public function getClientUnits()
+    public function getClientUnits(): int
     {
         $res = $this->getRequest(
             [
@@ -176,7 +183,8 @@ class YandexDirectAPI
                 //'param' => array('starkeen'),
             ]
         );
-        return isset($res['data'][0]['UnitsRest']) ? $res['data'][0]['UnitsRest'] : 0;
+
+        return $res['data'][0]['UnitsRest'] ?? 0;
     }
 
     /**
@@ -199,8 +207,9 @@ class YandexDirectAPI
         try {
             $answer = $this->curlPostExec($this->urlOauth, http_build_query($query));
             $response = json_decode($answer);
+
             return $response->access_token;
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             echo $e->getMessage();
             exit();
         }
@@ -219,10 +228,11 @@ class YandexDirectAPI
         $request['token'] = $this->token;
         try {
             $answer = $this->curlPostExec($this->urlService, json_encode($request));
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             echo $e->getMessage();
             exit();
         }
+
         return json_decode($answer, true);
     }
 
@@ -233,7 +243,7 @@ class YandexDirectAPI
      * @param string $data - данные запроса (json или http_build_query)
      *
      * @return string чистый ответ сервера
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function curlPostExec($url, $data)
     {
@@ -255,11 +265,10 @@ class YandexDirectAPI
         $errno = curl_errno($ch);
         if ($errno) {
             $error_message = curl_error($ch);
-            throw new Exception("cURL error ({$errno}):\n {$error_message}");
+            throw new RuntimeException("cURL error ({$errno}):\n {$error_message}");
         }
         curl_close($ch);
 
         return $text;
     }
-
 }

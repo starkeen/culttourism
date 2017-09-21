@@ -1,5 +1,7 @@
 <?php
 
+use app\db\FactoryDB;
+
 session_start();
 include('config/configuration.php');
 error_reporting(E_ALL & ~E_DEPRECATED);
@@ -17,7 +19,7 @@ $sentryClient->install();
 
 if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == "") && false) {
     //Redirect all to HTTPS
-    header("HTTP/1.1 301 Moved Permanently");
+    header('HTTP/1.1 301 Moved Permanently');
     header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
     exit();
 }
@@ -44,7 +46,7 @@ if ($request_uri_arr[1] == '' && !empty($request_uri_arr[2])) {
 @list($host_id, $module_id, $page_id, $id, $id2) = array_values($request_uri_arr);
 
 $module_id = (isset($module_id) && strlen($module_id) != 0) ? urldecode($module_id) : _INDEXPAGE_URI;
-if ($module_id == 'index') {
+if ($module_id === 'index') {
     $module_id = _INDEXPAGE_URI;
 }
 $page_id = isset($page_id) ? urlencode($page_id) : null;
@@ -111,9 +113,10 @@ if (_ER_REPORT || isset($_GET['debug'])) {
 
 if ($page->isAjax) {
     echo $page->content;
-} elseif ($module_id == 'api') {
+} elseif ($module_id === 'api') {
     $smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
 } else {
     $smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
 }
+
 exit();

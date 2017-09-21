@@ -1,5 +1,7 @@
 <?php
 
+use app\db\FactoryDB;
+
 error_reporting(E_ALL & ~E_DEPRECATED);
 ini_set('display_errors', false);
 $_timer_start_main = microtime(true);
