@@ -1,6 +1,7 @@
 <?php
 
 use app\db\MyDB;
+use app\exceptions\MyPDOException;
 
 class Auth
 {
@@ -28,11 +29,17 @@ class Auth
         $this->session = session_id();
         $this->getKey();
         $this->meta['uri'] = trim($_SERVER['REQUEST_URI']);
-        $this->meta['host'] = trim(isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : 'undef');
-        $this->meta['ip'] = trim(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'undef');
-        $this->meta['browser'] = trim(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'undef');
+        $this->meta['host'] = trim($_SERVER['REMOTE_HOST'] ?? 'undef');
+        $this->meta['ip'] = trim($_SERVER['REMOTE_ADDR'] ?? 'undef');
+        $this->meta['browser'] = trim($_SERVER['HTTP_USER_AGENT'] ?? 'undef');
+
+        $this->meta['browser'] = mb_substr($this->meta['browser'], 0, 50);
     }
 
+    /**
+     * @param string $service
+     * @throws MyPDOException
+     */
     public function setService($service = 'web')
     {
         $dba = $this->db->getTableName('authorizations');
@@ -46,12 +53,16 @@ class Auth
         );
     }
 
+    /**
+     * @return string
+     * @throws MyPDOException
+     */
     public function getKey()
     {
         if (isset($_COOKIE['apikey'])) {
             $this->key = trim($_COOKIE['apikey']);
         } else {
-            $this->key = md5(uniqid() . self::SECRET_STRING);
+            $this->key = md5(uniqid('ct', true) . self::SECRET_STRING);
             if (!setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/')) {
                 $this->key = 'x_' . $this->key;
             }
@@ -61,6 +72,7 @@ class Auth
 
     /**
      * @param string $service
+     * @throws MyPDOException
      */
     public function checkSession($service = 'web')
     {
@@ -145,6 +157,13 @@ class Auth
         }
     }
 
+    /**
+     * @param $email
+     * @param $password
+     *
+     * @return bool
+     * @throws MyPDOException
+     */
     public function checkMailPassword($email, $password)
     {
         $dbu = $this->db->getTableName('users');
@@ -186,6 +205,13 @@ class Auth
         return false;
     }
 
+    /**
+     * @param $login
+     * @param $password
+     *
+     * @return bool
+     * @throws MyPDOException
+     */
     public function checkPassword($login, $password)
     {
         $dbu = $this->db->getTableName('users');
@@ -231,6 +257,12 @@ class Auth
         return false;
     }
 
+    /**
+     * @param $key
+     *
+     * @return bool
+     * @throws MyPDOException
+     */
     public function checkKey($key): bool
     {
         $db = $this->db;
@@ -266,6 +298,10 @@ class Auth
         return false;
     }
 
+    /**
+     * @param $key
+     * @throws MyPDOException
+     */
     public function refreshKey($key)
     {
         $dba = $this->db->getTableName('authorizations');
@@ -282,6 +318,9 @@ class Auth
         );
     }
 
+    /**
+     * @throws MyPDOException
+     */
     public function deleteKey()
     {
         $dba = $this->db->getTableName('authorizations');

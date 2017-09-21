@@ -2,6 +2,7 @@
 
 namespace app\db;
 
+use app\exceptions\MyPDOException;
 use Exception;
 use PDO;
 use PDOException;
@@ -32,16 +33,25 @@ class MyPDO implements IDB
     private $_stat_worktime_last = 0;
     private $_stat_worktime_all = 0;
 
+    /** @var float */
+    private $startTimestamp;
+    /** @var float */
+    private $time;
+
     /**
      * @param string      $db_host
      * @param string      $db_user
      * @param string      $db_pwd
      * @param string      $db_base
      * @param string|null $db_prefix
+     *
+     * @throws MyPDOException
      */
     public function __construct($db_host, $db_user, $db_pwd, $db_base, $db_prefix = null)
     {
-        if (!MyPDO::$_instances) {
+        $this->startTimestamp = microtime(true);
+
+        if (!self::$_instances) {
             $opts = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -52,11 +62,15 @@ class MyPDO implements IDB
             ];
             $this->prefix = $db_prefix;
             try {
-                $this->_pdo = new PDO("mysql:host=$db_host;dbname=$db_base;charset=utf8", $db_user, $db_pwd, $opts);
-                MyPDO::$_instances = true;
+                $dsn = "mysql:host=$db_host;dbname=$db_base;charset=utf8";
+                $this->_pdo = new PDO($dsn, $db_user, $db_pwd, $opts);
+                self::$_instances = true;
                 $this->link = true;
+                $this->time = microtime(true) - $this->startTimestamp;
             } catch (PDOException $e) {
+                $this->time = microtime(true) - $this->startTimestamp;
                 $this->_errors[] = $e->getMessage();
+                throw new MyPDOException('Ошибка соединения с БД', 0, $e);
             }
         }
     }
@@ -96,14 +110,21 @@ class MyPDO implements IDB
      * Подготавливаем запрос
      *
      * @param string $sql
+     * @throws MyPDOException
      */
     public function prepare($sql = '')
     {
         if (!empty($sql)) {
-            $this->sql = $sql;
+            $this->_sql = $sql;
         }
 
-        $this->_stm = $this->_pdo->prepare($this->_sql);
+        $this->time = microtime(true) - $this->startTimestamp;
+        try {
+            $this->_stm = $this->_pdo->prepare($this->_sql);
+            $this->time = microtime(true) - $this->startTimestamp;
+        } catch (PDOException $e) {
+            throw new MyPDOException('Ошибка PDO:prepare', 0, $e);
+        }
     }
 
     /**
@@ -115,18 +136,19 @@ class MyPDO implements IDB
     public function bind($key, $value)
     {
         $this->_stm_params[$key] = $value;
-        //$this->_stm->bindParam($key, $value);
     }
 
     /**
      * Выполняем PDO::execute
      * @return PDOStatement
+     * @throws MyPDOException
      */
     public function execute($params = [])
     {
         if (!empty($params)) {
             $this->_stm_params = $params;
         }
+        $this->time = microtime(true) - $this->startTimestamp;
         try {
             $timer_start = microtime(true);
             $this->prepare();
@@ -138,18 +160,14 @@ class MyPDO implements IDB
             $this->_stat_queries_cnt++;
             $this->_stat_worktime_last = microtime(true) - $timer_start;
             $this->_stat_worktime_all += $this->_stat_worktime_last;
+            $this->time = microtime(true) - $this->startTimestamp;
+
             return $this->_stm;
         } catch (PDOException $e) {
+            $this->time = microtime(true) - $this->startTimestamp;
             $this->_errors[] = $e->getMessage();
-            $msg = "SQL-execute error: " . $e->getMessage() . "\n"
-                . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
-                . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
-                . "\n__________________________\n\n\n"
-                . 'SQL: ' . $this->_sql . "\n"
-                . "\n__________________________\n\n\n"
-                . 'trace: ' . $e->getTraceAsString() . "\n";
 
-            mail('starkeen@gmail.com', 'SQL error on ' . _URL_ROOT, $msg);
+            throw new MyPDOException('Ошибка PDO:execute', 0, $e);
         }
     }
 
@@ -159,6 +177,8 @@ class MyPDO implements IDB
      * @param mixed $data
      *
      * @return PDOStatement
+     *
+     * @throws MyPDOException
      */
     public function exec($data = null)
     {
@@ -169,6 +189,7 @@ class MyPDO implements IDB
                 $this->_stm_params = $data;
             }
         }
+        $this->time = microtime(true) - $this->startTimestamp;
         try {
             $timer_start = microtime(true);
 
@@ -181,18 +202,13 @@ class MyPDO implements IDB
             $this->_stat_queries_cnt++;
             $this->_stat_worktime_last = microtime(true) - $timer_start;
             $this->_stat_worktime_all += $this->_stat_worktime_last;
+            $this->time = microtime(true) - $this->startTimestamp;
             return $this->_stm;
         } catch (PDOException $e) {
+            $this->time = microtime(true) - $this->startTimestamp;
             $this->_errors[] = $e->getMessage();
-            $msg = "SQL-exec error: " . $e->getMessage() . "\n"
-                . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
-                . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
-                . "\n__________________________\n\n\n"
-                . 'SQL: ' . $this->_sql . "\n"
-                . "\n__________________________\n\n\n"
-                . 'trace: ' . $e->getTraceAsString() . "\n";
 
-            mail('starkeen@gmail.com', 'SQL error on ' . _URL_ROOT, $msg);
+            throw new MyPDOException('Ошибка PDO:execute', 0, $e);
         }
     }
 
@@ -204,14 +220,18 @@ class MyPDO implements IDB
     public function fetch($res = null)
     {
         $out = null;
+
         try {
+            $this->time = microtime(true) - $this->startTimestamp;
             $out = $this->_stm->fetch();
             if (!$out) {
                 $this->_stm->closeCursor();
             }
         } catch (PDOException $e) {
+            $this->time = microtime(true) - $this->startTimestamp;
             $this->_errors[] = $e->getMessage();
         }
+
         return $out;
     }
 
@@ -222,6 +242,7 @@ class MyPDO implements IDB
      */
     public function fetchCol($res = null)
     {
+        $this->time = microtime(true) - $this->startTimestamp;
         return $this->_stm->fetchColumn();
     }
 
@@ -229,17 +250,19 @@ class MyPDO implements IDB
      * @param null $res
      *
      * @return array
-     * @throws Exception
+     * @throws MyPDOException
      */
     public function fetchAll($res = null)
     {
+        $this->time = microtime(true) - $this->startTimestamp;
         try {
             $out = $this->_stm->fetchAll();
             $this->_stm->closeCursor();
         } catch (Exception $e) {
+            $this->time = microtime(true) - $this->startTimestamp;
             $error = $e->getMessage();
             $this->_errors[] = $error;
-            throw new Exception($error);
+            throw new MyPDOException($error);
         }
         return $out;
     }
@@ -290,7 +313,7 @@ class MyPDO implements IDB
     public function showSQL($sql = null)
     {
         if ($sql !== null) {
-            $this->sql = $sql;
+            $this->_sql = $sql;
         }
         $nsql = $this->_sql;
 
@@ -366,6 +389,7 @@ class MyPDO implements IDB
 
     /**
      * @param string $name
+     *
      * @return bool
      */
     public function __isset($name): bool
@@ -389,7 +413,7 @@ class MyPDO implements IDB
         $result = null;
 
         if ($name === 'sql') {
-            $result =  $this->_sql;
+            $result = $this->_sql;
         }
 
         return $result;
