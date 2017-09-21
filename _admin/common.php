@@ -1,7 +1,5 @@
 <?php
 
-use app\db\FactoryDB;
-
 error_reporting(E_ALL);
 ini_set("display_errors", false);
 ini_set("memory_limit", "512M");

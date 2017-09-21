@@ -1,7 +1,5 @@
 <?php
 
-use app\api\YandexDirectAPI;
-
 $sp = new MSysProperties($db);
 $token_direct = $sp->getByName('app_direct_token');
 $api = new YandexDirectAPI($token_direct);

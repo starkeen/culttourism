@@ -1,7 +1,5 @@
 <?php
 
-use app\db\MyDB;
-
 class MCandidatePoints extends Model
 {
     const STATUS_NEW = 3;
@@ -15,10 +13,9 @@ class MCandidatePoints extends Model
 
     protected $types_markers;
 
-    public function __construct(MyDB $db)
-    {
+    public function __construct(MyDB $db) {
         $this->_table_name = $db->getTableName('candidate_points');
-        $this->_table_fields = [
+        $this->_table_fields = array(
             'cp_date',
             'cp_title',
             'cp_text',
@@ -39,7 +36,7 @@ class MCandidatePoints extends Model
             'cp_point_id',
             'cp_state',
             'cp_active',
-        ];
+        );
         parent::__construct($db);
         $this->_addRelatedTable('pagecity');
         $this->_addRelatedTable('uniref_values');
@@ -51,8 +48,7 @@ class MCandidatePoints extends Model
         $this->types_markers = $rpt->getMarkers();
     }
 
-    public function add($data)
-    {
+    public function add($data) {
         $data['cp_date'] = $this->now();
         $data['cp_state'] = $data['cp_state'] ?? self::STATUS_NEW;
         $data['cp_active'] = $data['cp_active'] ?? 1;
@@ -75,8 +71,7 @@ class MCandidatePoints extends Model
         return $this->insert($data);
     }
 
-    public function getByFilter($filter)
-    {
+    public function getByFilter($filter) {
         $this->_db->sql = "SELECT t.*,
                                 pc.pc_title AS page_title, CONCAT(u.url, '/') AS page_url,
                                 uv_stat.uv_title AS state_title,
@@ -121,8 +116,7 @@ class MCandidatePoints extends Model
     /**
      * Статистика по набору активных заявок
      */
-    public function getMatrix()
-    {
+    public function getMatrix() {
         $this->_db->sql = "SELECT count(1) AS cnt,
                                 pc.pc_id, pc.pc_title,
                                 IFNULL(pt.tp_id, -1) AS tp_id, pt.tp_name, pt.tp_icon
@@ -135,16 +129,16 @@ class MCandidatePoints extends Model
                             GROUP BY pc.pc_id, pt.tp_id
                             ORDER BY cnt, pc.pc_title, pt.tr_order";
         $this->_db->exec();
-        $out = [
-            'types' => [],
-            'counts' => [],
-        ];
+        $out = array(
+            'types' => array(),
+            'counts' => array(),
+        );
         while ($row = $this->_db->fetch()) {
-            $out['types'][$row['tp_id']] = [
+            $out['types'][$row['tp_id']] = array(
                 'title' => $row['tp_name'],
                 'icon' => $row['tp_icon'],
                 'total' => 0,
-            ];
+            );
             $out['counts'][$row['pc_id']]['title'] = $row['pc_title'];
             $out['counts'][$row['pc_id']]['types'][$row['tp_id']] = $row['cnt'];
         }
@@ -162,8 +156,7 @@ class MCandidatePoints extends Model
     /**
      * Исправляет форматы данных
      */
-    public function repairData()
-    {
+    public function repairData() {
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 cp_phone = REPLACE(cp_phone, ';', ',')
                             WHERE cp_phone LIKE '%;%'";

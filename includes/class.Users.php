@@ -1,11 +1,6 @@
 <?php
-
-use app\db\FactoryDB;
-
-class Users
-{
-    public static function getAllUsers()
-    {
+class Users {
+    public static function getAllUsers() {
         $db = FactoryDB::db();
         $dbu = $db->getTableName('users');
         $db->sql = "SELECT us_id, us_name
@@ -16,13 +11,10 @@ class Users
                 $users[$row['us_id']] = $row;
             }
             return $users;
-        } else {
-            return false;
         }
+        else return false;
     }
-
-    public static function getUserProfile($id)
-    {
+    public static function getUserProfile($id) {
         $db = FactoryDB::db();
         $dbu = $db->getTableName('users');
         $dbuc = $db->getTableName('userscontacts');
@@ -51,13 +43,10 @@ class Users
                 }
             }
             return $user;
-        } else {
-            return false;
         }
+        else return false;
     }
-
-    public static function getRefContacts()
-    {
+    public static function getRefContacts() {
         $db = FactoryDB::db();
         $dbrc = $db->getTableName('ref_contacts');
         $db->sql = "SELECT rc_icon, rc_name, rc_id
@@ -68,13 +57,11 @@ class Users
                 $contacts[$row['rc_id']] = $row;
             }
             return $contacts;
-        } else {
-            return false;
         }
+        else return false;
     }
 
-    public static function saveUserProfile($uid, $uname, $ucontacts = [])
-    {
+    public static function saveUserProfile($uid,$uname,$ucontacts=array()) {
         $db = FactoryDB::db();
         $dbu = $db->getTableName('users');
         $dbuc = $db->getTableName('userscontacts');
@@ -83,19 +70,12 @@ class Users
             $db->sql = "DELETE FROM $dbuc WHERE uc_us_id = '$uid'";
             $db->exec();
             $db->sql = "INSERT INTO $dbuc (uc_us_id, uc_cnt_id, uc_value) VALUES\n";
-            $acont_temp = [];
-            foreach ($ucontacts as $cnt => $val) {
-                $acont_temp[] = "('$uid', '$cnt', '$val')";
-            }
+            $acont_temp = array();
+            foreach($ucontacts as $cnt=>$val) $acont_temp[] = "('$uid', '$cnt', '$val')";
             $db->sql .= implode(', ', $acont_temp);
-            if (!empty($acont_temp) && $db->exec()) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+            if (!empty($acont_temp) && $db->exec()) return TRUE;
+            else return FALSE;
+        } else return FALSE;
     }
 }
 
