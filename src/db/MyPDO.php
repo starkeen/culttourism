@@ -1,11 +1,16 @@
 <?php
 
+namespace app\db;
+
+use Exception;
+use PDO;
+use PDOException;
+use PDOStatement;
+
 /**
  *
  * @author Andrey_Panisko
  */
-include 'interfaces/IDB.php';
-
 class MyPDO implements IDB
 {
     private static $_instances = false;
@@ -18,32 +23,33 @@ class MyPDO implements IDB
     private $_pdo;
     /** @var PDOStatement */
     private $_stm;
-    private $_stm_params = array();
+    private $_stm_params = [];
     private $_affected_rows = 0;
     private $_last_inserted_id;
-    private $_errors = array();
+    private $_errors = [];
     private $_cfg_trim_quotes = true;
     private $_stat_queries_cnt = 0;
     private $_stat_worktime_last = 0;
     private $_stat_worktime_all = 0;
 
     /**
-     * @param string $db_host
-     * @param string $db_user
-     * @param string $db_pwd
-     * @param string $db_base
+     * @param string      $db_host
+     * @param string      $db_user
+     * @param string      $db_pwd
+     * @param string      $db_base
      * @param string|null $db_prefix
      */
     public function __construct($db_host, $db_user, $db_pwd, $db_base, $db_prefix = null)
     {
         if (!MyPDO::$_instances) {
-            $opts = array(
+            $opts = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
                 PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+                PDO::ATTR_TIMEOUT => 600,
                 //PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'",
-            );
+            ];
             $this->prefix = $db_prefix;
             try {
                 $this->_pdo = new PDO("mysql:host=$db_host;dbname=$db_base;charset=utf8", $db_user, $db_pwd, $opts);
@@ -57,46 +63,54 @@ class MyPDO implements IDB
 
     /**
      * @param string $alias
+     *
      * @return string
      */
-    public function getTableName($alias)
+    public function getTableName($alias): string
     {
-        if ($this->prefix === null) {
-            return '`' . $alias . '`';
-        } else {
-            return '`' . $this->prefix . '_' . $alias . '`';
+        $result = '`' . $alias . '`';
+        if ($this->prefix !== null) {
+            $result = '`' . $this->prefix . '_' . $alias . '`';
         }
+
+        return $result;
     }
 
     /**
      * @param string $text
+     *
      * @return string
      */
-    public function getEscapedString($text)
+    public function getEscapedString($text): string
     {
         $out = $this->_pdo->quote($text);
+
         if ($this->_cfg_trim_quotes) {
             $out = trim($out, "'");
         }
+
         return $out;
     }
 
     /**
      * Подготавливаем запрос
+     *
      * @param string $sql
      */
     public function prepare($sql = '')
     {
         if (!empty($sql)) {
-            $this->_sql = $sql;
+            $this->sql = $sql;
         }
+
         $this->_stm = $this->_pdo->prepare($this->_sql);
     }
 
     /**
      * Привязываем параметры по одному
+     *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function bind($key, $value)
     {
@@ -108,7 +122,7 @@ class MyPDO implements IDB
      * Выполняем PDO::execute
      * @return PDOStatement
      */
-    public function execute($params = array())
+    public function execute($params = [])
     {
         if (!empty($params)) {
             $this->_stm_params = $params;
@@ -141,14 +155,16 @@ class MyPDO implements IDB
 
     /**
      * Выполняем PDO::query - совместимость со старыми вызовами
+     *
      * @param mixed $data
+     *
      * @return PDOStatement
      */
     public function exec($data = null)
     {
         if ($data !== null) {
             if (is_string($data)) {
-                $this->sql = $data;
+                $this->_sql = $data;
             } elseif (is_array($data)) {
                 $this->_stm_params = $data;
             }
@@ -156,8 +172,6 @@ class MyPDO implements IDB
         try {
             $timer_start = microtime(true);
 
-            //$this->_stm = $this->_pdo->prepare($this->_sql);
-            //$this->_stm->execute($this->_stm_params);
             $this->_stm = $this->_pdo->query($this->_sql);
 
             if (is_object($this->_stm)) {
@@ -184,6 +198,7 @@ class MyPDO implements IDB
 
     /**
      * @param null $res
+     *
      * @return mixed|null
      */
     public function fetch($res = null)
@@ -202,6 +217,7 @@ class MyPDO implements IDB
 
     /**
      * @param null $res
+     *
      * @return mixed
      */
     public function fetchCol($res = null)
@@ -211,6 +227,7 @@ class MyPDO implements IDB
 
     /**
      * @param null $res
+     *
      * @return array
      * @throws Exception
      */
@@ -277,13 +294,23 @@ class MyPDO implements IDB
         }
         $nsql = $this->_sql;
 
-        $colors = array(
-            'SELECT' => 'green', 'FROM' => 'green', 'WHERE' => 'green', 'AND' => 'green',
-            'UPDATE' => 'green', 'SET' => 'green', 'DELETE' => 'green',
-            'ORDER BY' => 'blue', 'GROUP BY' => 'green',
-            'LIKE' => 'yellow', 'JOIN' => 'yellow', 'LEFT' => 'yellow',
-            'DESC' => 'magenta', 'LIMIT' => 'magenta', '%' => 'red',
-        );
+        $colors = [
+            'SELECT' => 'green',
+            'FROM' => 'green',
+            'WHERE' => 'green',
+            'AND' => 'green',
+            'UPDATE' => 'green',
+            'SET' => 'green',
+            'DELETE' => 'green',
+            'ORDER BY' => 'blue',
+            'GROUP BY' => 'green',
+            'LIKE' => 'yellow',
+            'JOIN' => 'yellow',
+            'LEFT' => 'yellow',
+            'DESC' => 'magenta',
+            'LIMIT' => 'magenta',
+            '%' => 'red',
+        ];
         $out = '<style>#sqlback {font-size:12px; background: black; color: white; padding: 10px; font-family: Courier New, Courier, monospace;}
                        #sqlback span.green {color:#00FF00;}
                        #sqlback span.red {color:#FB4F53;}
@@ -305,7 +332,7 @@ class MyPDO implements IDB
      */
     public function getDebugInfo()
     {
-        return array('queries' => $this->_stat_queries_cnt, 'worktime' => $this->_stat_worktime_all);
+        return ['queries' => $this->_stat_queries_cnt, 'worktime' => $this->_stat_worktime_all];
     }
 
     /**
@@ -319,33 +346,52 @@ class MyPDO implements IDB
     /**
      * @return string
      */
-    public function getDebugInfoText()
+    public function getDebugInfoText(): string
     {
         $data = $this->getDebugInfo();
         return "SQL-запросов: {$data['queries']}, время MySQL: "
-        . substr($this->_stat_worktime_all, 0, 6) . ' c.';
+            . substr($this->_stat_worktime_all, 0, 6) . ' c.';
     }
 
     /**
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function __set($name, $value)
     {
-        if ($name == 'sql') {
+        if ($name === 'sql') {
             $this->_sql = $value;
         }
     }
 
     /**
      * @param string $name
+     * @return bool
+     */
+    public function __isset($name): bool
+    {
+        $result = false;
+
+        if ($name === 'sql') {
+            $result = true;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $name
+     *
      * @return string
      */
     public function __get($name)
     {
-        if ($name == 'sql') {
-            return $this->_sql;
-        }
-    }
+        $result = null;
 
+        if ($name === 'sql') {
+            $result =  $this->_sql;
+        }
+
+        return $result;
+    }
 }

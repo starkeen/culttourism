@@ -1,10 +1,13 @@
 <?php
 
-class UserRequest {
+use app\db\FactoryDB;
 
+class UserRequest
+{
     private $key = '';
 
-    public function __construct($type_id = 1) {
+    public function __construct($type_id = 1)
+    {
         $this->key = getGUID();
         $owner_id = $_SESSION['user_id'];
         $this->req_type = intval($type_id);
@@ -17,7 +20,8 @@ class UserRequest {
         return $db->exec();
     }
 
-    public function setParam($param, $value) {
+    public function setParam($param, $value)
+    {
         $db = FactoryDB::db();
         $dbr = $db->getTableName('requests');
         $db->sql = "SELECT rq_attrs FROM $dbr
@@ -33,11 +37,13 @@ class UserRequest {
         return $db->exec();
     }
 
-    public function getKey() {
+    public function getKey()
+    {
         return $this->key;
     }
 
-    public function getReqLink() {
+    public function getReqLink()
+    {
         return 'https://' . _URL_ROOT . "/request/$this->key/";
     }
 

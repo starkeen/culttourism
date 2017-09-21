@@ -1,7 +1,9 @@
 <?php
 
-interface IDB {
+namespace app\db;
 
+interface IDB
+{
     public function __construct($db_host, $db_user, $db_pwd, $db_base, $db_prefix = null);
 
     public function getTableName($alias);
@@ -28,5 +30,3 @@ interface IDB {
 
     public function getDebugInfoText();
 }
-
-?>

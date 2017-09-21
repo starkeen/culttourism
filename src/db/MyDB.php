@@ -1,28 +1,28 @@
 <?php
 
+namespace app\db;
+
+use PDOStatement;
+
 /**
- * Description of class MyDB
- *
- * @author Andrey_Pns
  */
-include 'class.MyPDO.php';
-
-class MyDB extends MyPDO {
-
-    public function getTableName($alias) {
-        if ($this->prefix === null) {
-            return '`' . $alias . '`';
-        } else {
-            return '`' . $this->prefix . '_' . $alias . '`';
-        }
-    }
-
-    public function exec($sql = null) {
-        //$this->log();
+class MyDB extends MyPDO
+{
+    /**
+     * @param string|null $sql
+     *
+     * @return PDOStatement
+     */
+    public function exec($sql = null): PDOStatement
+    {
         return parent::exec($sql);
     }
 
-    public function log() {
+    /**
+     * Логгирование запросов в файл
+     */
+    public function log()
+    {
         $query = $this->sql;
         $query_mask = preg_replace('/\d/', '', $query);
         if (true) {
@@ -36,5 +36,4 @@ class MyDB extends MyPDO {
             file_put_contents($filename_log, date('Y-m-d H:i:s') . PHP_EOL, FILE_APPEND);
         }
     }
-
 }

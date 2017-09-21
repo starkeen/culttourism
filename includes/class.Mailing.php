@@ -1,17 +1,21 @@
 <?php
 
+use app\db\FactoryDB;
+
 /**
  * Description of classMailing
  *
  * @author Andrey_Pns
  */
-class Mailing {
-
-    public function __construct() {
+class Mailing
+{
+    public function __construct()
+    {
         //
     }
 
-    private static function sendOnly($letter) {
+    private static function sendOnly($letter)
+    {
         $mailer = new PHPMailer();
         $mailer->IsSMTP();
         $mailer->ContentType = "text/html";
@@ -37,7 +41,8 @@ class Mailing {
         $mailer->ClearAttachments();
     }
 
-    private static function sendLetter($db, $ml_id) {
+    private static function sendLetter($db, $ml_id)
+    {
         $mp = new MMailPool($db);
         $letter = $mp->getItemByPk($ml_id);
         $mp->markInwork($ml_id);
@@ -45,7 +50,8 @@ class Mailing {
         return $mp->markWorked($ml_id);
     }
 
-    public static function sendFromPool($limit = 20) {
+    public static function sendFromPool($limit = 20)
+    {
         $db = FactoryDB::db();
         $mp = new MMailPool($db);
         $pool = $mp->getPortion($limit);
@@ -59,7 +65,8 @@ class Mailing {
         return $cnt;
     }
 
-    public static function sendLetterInvite($to, $details) {
+    public static function sendLetterInvite($to, $details)
+    {
         $attrs['WHO_SEND'] = $details['owner_name'];
         $attrs['EVENT_LINK'] = $details['event_link'];
         $attrs['EVENT_TITLE'] = $details['ev_title'];
@@ -68,7 +75,8 @@ class Mailing {
         return self::sendInCache($to, $letter['mt_content'], $letter['mt_theme'], $_SESSION['user_id']);
     }
 
-    public static function sendLetterNewPassword($to, $details) {
+    public static function sendLetterNewPassword($to, $details)
+    {
         $db = FactoryDB::db();
         $attrs['REQUEST_LINK'] = _SITE_URL . 'request/' . $details['req_key'] . '/';
         $attrs['SITE_LINK'] = _SITE_URL;
@@ -76,7 +84,8 @@ class Mailing {
         return self::sendImmediately($db, $to, $letter['mt_content'], $letter['mt_theme'], $letter['mt_custom_header']);
     }
 
-    public static function sendLetterNewUser($to, $details) {
+    public static function sendLetterNewUser($to, $details)
+    {
         $db = FactoryDB::db();
         $attrs['USER_NAME'] = $details['user_name'];
         $attrs['REQUEST_KEY'] = $details['request_key'];
@@ -86,9 +95,10 @@ class Mailing {
         return self::sendImmediately($db, $to, $letter['mt_content'], $letter['mt_theme'], $letter['mt_custom_header']);
     }
 
-    public static function sendLetterCommon($to, $type, $details) {
+    public static function sendLetterCommon($to, $type, $details)
+    {
         $db = FactoryDB::db();
-        $attrs = array();
+        $attrs = [];
         $attrs['SITE_LINK'] = _SITE_URL;
         $attrs['USER_IP'] = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'cron';
         $attrs['NOW'] = date('d.m.Y H:i:s');
@@ -102,50 +112,60 @@ class Mailing {
         return self::sendImmediately($db, $to, $letter['mt_content'], $letter['mt_theme'], $letter['mt_custom_header']);
     }
 
-    public static function sendInCache($to, $text, $theme, $sender = null, $xheader = null) {
+    public static function sendInCache($to, $text, $theme, $sender = null, $xheader = null)
+    {
         $db = FactoryDB::db();
         $mp = new MMailPool($db);
-        $lt_id = $mp->insert(array(
-            'ml_datecreate' => $mp->now(),
-            'ml_text' => trim($text),
-            'ml_adr_to' => $to,
-            'ml_theme' => trim($theme),
-            'ml_inwork' => 0,
-            'ml_worked' => 0,
-            'ml_sender_id' => 0,
-            'ml_customheader' => $xheader,
-        ));
+        $lt_id = $mp->insert(
+            [
+                'ml_datecreate' => $mp->now(),
+                'ml_text' => trim($text),
+                'ml_adr_to' => $to,
+                'ml_theme' => trim($theme),
+                'ml_inwork' => 0,
+                'ml_worked' => 0,
+                'ml_sender_id' => 0,
+                'ml_customheader' => $xheader,
+            ]
+        );
         return $lt_id;
     }
 
-    public static function sendImmediately($db, $to, $text, $theme, $custom_header = '') {
+    public static function sendImmediately($db, $to, $text, $theme, $custom_header = '')
+    {
         $mp = new MMailPool($db);
-        $lt_id = $mp->insert(array(
-            'ml_datecreate' => $mp->now(),
-            'ml_text' => trim($text),
-            'ml_adr_to' => $to,
-            'ml_theme' => trim($theme),
-            'ml_inwork' => 0,
-            'ml_worked' => 0,
-            'ml_sender_id' => 0,
-            'ml_customheader' => $custom_header,
-        ));
+        $lt_id = $mp->insert(
+            [
+                'ml_datecreate' => $mp->now(),
+                'ml_text' => trim($text),
+                'ml_adr_to' => $to,
+                'ml_theme' => trim($theme),
+                'ml_inwork' => 0,
+                'ml_worked' => 0,
+                'ml_sender_id' => 0,
+                'ml_customheader' => $custom_header,
+            ]
+        );
         return self::sendLetter($db, $lt_id);
     }
 
     /* Отправка напрямую без записи в БД
      */
 
-    public static function sendDirect($to, $theme, $text, $headers = null) {
-        self::sendOnly(array(
-            'ml_adr_to' => $to,
-            'ml_theme' => $theme,
-            'ml_text' => $text,
-            'ml_customheader' => $headers ? $headers : '',
-        ));
+    public static function sendDirect($to, $theme, $text, $headers = null)
+    {
+        self::sendOnly(
+            [
+                'ml_adr_to' => $to,
+                'ml_theme' => $theme,
+                'ml_text' => $text,
+                'ml_customheader' => $headers ? $headers : '',
+            ]
+        );
     }
 
-    private static function prepareLetter($tmpl_id, $elements = array()) {
+    private static function prepareLetter($tmpl_id, $elements = [])
+    {
         $db = FactoryDB::db();
         $mt = new MMailTemplates($db);
         $template = $mt->getItemByPk($tmpl_id);
