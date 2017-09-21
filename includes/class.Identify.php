@@ -1,26 +1,30 @@
 <?php
 
-class Identify {
+use app\db\FactoryDB;
 
-    private $db = null;
+class Identify
+{
+    private $db;
     private $session_id = '';
     private $cookie_id = '';
     private $method = 'web';
 
-    public function __construct($method = 'web') {
+    public function __construct($method = 'web')
+    {
         $db = FactoryDB::db();
         $this->db = $db;
         $this->method = $method;
         $this->session_id = session_id();
-        if (isset($_COOKIE['apikey']))
+        if (isset($_COOKIE['apikey'])) {
             $this->cookie_id = $db->getEscapedString($_COOKIE['apikey']);
-        else {
+        } else {
             $this->cookie_id = uniqid();
             $_COOKIE['apikey'] = $this->cookie_id;
         }
     }
 
-    public function check() {
+    public function check()
+    {
         $dba = $this->db->getTableName('authorizations');
         $host = @$_SERVER['REMOTE_HOST'];
         $ip = $_SERVER['REMOTE_ADDR'];

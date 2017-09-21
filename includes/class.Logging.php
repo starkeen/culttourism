@@ -1,37 +1,46 @@
 <?php
 
-class Logging {
+use app\db\FactoryDB;
 
-    public static function write($type, $text = null) {
+class Logging
+{
+    public static function write($type, $text = null)
+    {
         $db = FactoryDB::db();
         $le = new MLogErrors($db);
-        if ($type != '301' && !strpos($_SERVER['REQUEST_URI'], 'precomposed')) {
-            $le->insert(array(
-                'le_type' => $type,
-                'le_date' => $le->now(),
-                'le_url' => $_SERVER['REQUEST_URI'],
-                'le_ip' => $_SERVER['REMOTE_ADDR'],
-                'le_browser' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null,
-                'le_script' => $_SERVER['SCRIPT_FILENAME'],
-                'le_referer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'undefined',
-            ));
+        if ($type !== '301' && !strpos($_SERVER['REQUEST_URI'], 'precomposed')) {
+            $le->insert(
+                [
+                    'le_type' => $type,
+                    'le_date' => $le->now(),
+                    'le_url' => $_SERVER['REQUEST_URI'],
+                    'le_ip' => $_SERVER['REMOTE_ADDR'],
+                    'le_browser' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null,
+                    'le_script' => $_SERVER['SCRIPT_FILENAME'],
+                    'le_referer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'undefined',
+                ]
+            );
         }
         return true;
     }
 
-    public static function addHistory($module, $action, $data = array()) {
+    public static function addHistory($module, $action, $data = [])
+    {
         $db = FactoryDB::db();
         $la = new MLogActions($db);
-        $la->insert(array(
-            'la_date' => $la->now(),
-            'la_module' => $module,
-            'la_action' => $action,
-            'la_text' => serialize($data),
-        ));
+        $la->insert(
+            [
+                'la_date' => $la->now(),
+                'la_module' => $module,
+                'la_action' => $action,
+                'la_text' => serialize($data),
+            ]
+        );
         return true;
     }
 
-    public static function addDebug($module_id, $time, $url = '') {
+    public static function addDebug($module_id, $time, $url = '')
+    {
         $db = FactoryDB::db();
         $dbld = $db->getTableName('log_debug');
         $url = $db->getEscapedString($url);

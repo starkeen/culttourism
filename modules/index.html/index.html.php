@@ -1,8 +1,11 @@
 <?php
 
-class Page extends PageCommon {
+use app\db\FactoryDB;
 
-    public function __construct($module_id, $page_id) {
+class Page extends PageCommon
+{
+    public function __construct($module_id, $page_id)
+    {
         $db = FactoryDB::db();
         parent::__construct($db, 'index.html', $page_id);
 
@@ -29,7 +32,8 @@ class Page extends PageCommon {
         $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/index.html/index.sm.html');
     }
 
-    public static function getInstance($db, $mod) {
+    public static function getInstance($db, $mod)
+    {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
 
