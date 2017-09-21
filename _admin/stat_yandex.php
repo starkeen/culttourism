@@ -2,6 +2,8 @@
 
 require_once('common.php');
 
+use app\api\YandexDirectAPI;
+
 $smarty->assign('title', 'Статистика Яндекса');
 
 $sp = new MSysProperties($db);
