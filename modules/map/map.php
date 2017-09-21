@@ -1,12 +1,15 @@
 <?php
 
-class Page extends PageCommon {
+use app\cache\Cache;
 
-    public function __construct($db, $mod) {
+class Page extends PageCommon
+{
+    public function __construct($db, $mod)
+    {
         list($module_id, $page_id, $id) = $mod;
         parent::__construct($db, 'map', $page_id);
         $id = urldecode($id);
-        if (strpos($id, '?') !== FALSE) {
+        if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
         }
         $this->id = $id;
@@ -21,8 +24,7 @@ class Page extends PageCommon {
 
             $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/map/map.sm.html');
             return true;
-        }
-        //====================  M A P   E N T R Y  ============================
+        } //====================  M A P   E N T R Y  ============================
         elseif ($page_id == 'common') {
             $this->auth->setService('map');
             $this->isAjax = true;
@@ -37,20 +39,24 @@ class Page extends PageCommon {
             $this->getYMapsMLList(intval($_GET['lid']));
         } elseif ($page_id == 'gpx' && isset($_GET['cid']) && intval($_GET['cid'])) {
             $this->content = $this->getCityPointsGPX(intval($_GET['cid']));
-        }
-        //==========================  E X I T  ================================
+        } //==========================  E X I T  ================================
         else {
             $this->getError('404');
         }
     }
 
-    private function getYMapsMLList($list_id) {
-        $bounds = array(
-            'max_lat' => 0, 'max_lon' => 0,
-            'min_lat' => 180, 'min_lon' => 180,
-            'center_lat' => null, 'center_lon' => null,
-            'delta_lat' => 0.1, 'delta_lon' => 0.3,
-        );
+    private function getYMapsMLList($list_id)
+    {
+        $bounds = [
+            'max_lat' => 0,
+            'max_lon' => 0,
+            'min_lat' => 180,
+            'min_lon' => 180,
+            'center_lat' => null,
+            'center_lon' => null,
+            'delta_lat' => 0.1,
+            'delta_lon' => 0.3,
+        ];
 
         $ptypes = $this->getRefPointTypes();
 
@@ -60,7 +66,10 @@ class Page extends PageCommon {
             $points[$i]['pt_description'] = strip_tags($points[$i]['pt_description']);
             $points[$i]['pt_description'] = html_entity_decode($points[$i]['pt_description'], ENT_QUOTES, 'UTF-8');
             $short_end = @mb_strpos($pt['pt_description'], ' ', 50, 'utf-8');
-            $points[$i]['pt_short'] = trim(mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
+            $points[$i]['pt_short'] = trim(
+                mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'),
+                "\x00..\x1F,.-"
+            );
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
 
             if ($pt['pt_latitude'] > $bounds['max_lat']) {
@@ -92,7 +101,8 @@ class Page extends PageCommon {
         exit();
     }
 
-    private function getYMapsMLRegion($cid) {
+    private function getYMapsMLRegion($cid)
+    {
         if (!$cid) {
             $this->getError('404');
         }
@@ -110,7 +120,10 @@ class Page extends PageCommon {
             $points[$i]['pt_description'] = strip_tags($points[$i]['pt_description']);
             $points[$i]['pt_description'] = html_entity_decode($points[$i]['pt_description'], ENT_QUOTES, 'UTF-8');
             $short_end = @mb_strpos($pt['pt_description'], ' ', 100, 'utf-8');
-            $points[$i]['pt_short'] = trim(mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
+            $points[$i]['pt_short'] = trim(
+                mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'),
+                "\x00..\x1F,.-"
+            );
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
         }
 
@@ -130,14 +143,19 @@ class Page extends PageCommon {
         exit();
     }
 
-    private function getYMapsMLCommon($get) {
+    private function getYMapsMLCommon($get)
+    {
         $ptypes = $this->getRefPointTypes();
-        $bounds = array(
-            'max_lat' => 55.9864578247, 'max_lon' => 37.9002265930,
-            'min_lat' => 55.4144554138, 'min_lon' => 37.1716384888,
-            'center_lat' => null, 'center_lon' => null,
-            'delta_lat' => 0.1, 'delta_lon' => 0.3,
-        );
+        $bounds = [
+            'max_lat' => 55.9864578247,
+            'max_lon' => 37.9002265930,
+            'min_lat' => 55.4144554138,
+            'min_lon' => 37.1716384888,
+            'center_lat' => null,
+            'center_lon' => null,
+            'delta_lat' => 0.1,
+            'delta_lon' => 0.3,
+        ];
 
         if (!isset($get['center']) && isset($get['clt']) && isset($get['cln']) && !isset($get['llt']) && !isset($get['lln']) && !isset($get['rlt']) && !isset($get['rln'])) {
             //---------- по координатам центра (раздельно)
@@ -186,7 +204,10 @@ class Page extends PageCommon {
             $points[$i]['pt_description'] = strip_tags($points[$i]['pt_description']);
             $points[$i]['pt_description'] = html_entity_decode($points[$i]['pt_description'], ENT_QUOTES, 'UTF-8');
             $short_end = @mb_strpos($points[$i]['pt_description'], ' ', 50, 'utf-8');
-            $points[$i]['pt_short'] = trim(mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-");
+            $points[$i]['pt_short'] = trim(
+                mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'),
+                "\x00..\x1F,.-"
+            );
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
         }
 
@@ -201,7 +222,8 @@ class Page extends PageCommon {
         exit();
     }
 
-    private function getCityPointsGPX($cid) {
+    private function getCityPointsGPX($cid)
+    {
         if (!$cid) {
             $this->getError('404');
         }
@@ -215,7 +237,8 @@ class Page extends PageCommon {
         exit();
     }
 
-    private function getRefPointTypes() {
+    private function getRefPointTypes()
+    {
         $cache = Cache::i('refs');
         $ptypes = $cache->get('point_types');
         if (empty($ptypes)) {
@@ -226,7 +249,8 @@ class Page extends PageCommon {
         return $ptypes;
     }
 
-    public static function getInstance($db, $mod) {
+    public static function getInstance($db, $mod)
+    {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
 

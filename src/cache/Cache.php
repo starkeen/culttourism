@@ -1,18 +1,21 @@
 <?php
 
+namespace app\cache;
+
+use Throwable;
+
 /**
  * Класс для локального кэширования данных
  */
 class Cache
 {
-
     protected static $_instance = [];
 
     /**
      * Список доступных кэшей
      * @var array
      */
-    private $config = [
+    const CONFIG = [
         'refs' => [
             'dir' => 'refs',
             'lifetime' => 3600,
@@ -26,13 +29,13 @@ class Cache
             'lifetime' => 3600,
         ],
     ];
-    private $cacheDir = null;
-    private $cacheCurrent = null;
+    private $cacheDir;
+    private $cacheCurrent;
 
     private function __construct($cache_id)
     {
-        if (isset($this->config[$cache_id])) {
-            $this->cacheCurrent = $this->config[$cache_id];
+        if (isset(self::CONFIG[$cache_id])) {
+            $this->cacheCurrent = self::CONFIG[$cache_id];
             $this->cacheDir = _DIR_DATA . '/private/cache';
         }
     }
@@ -44,7 +47,7 @@ class Cache
      *
      * @return self
      */
-    public static function i($cache)
+    public static function i($cache): self
     {
         if (!isset(self::$_instance[$cache])) {
             // создаем новый экземпляр
@@ -83,7 +86,7 @@ class Cache
      *
      * @return bool
      */
-    public function put($key, $value)
+    public function put($key, $value): bool
     {
         $fileDir = $this->cacheDir . '/' . $this->cacheCurrent['dir'] . '/';
         if (!file_exists($fileDir)) {
@@ -94,7 +97,7 @@ class Cache
             }
         }
 
-        return file_put_contents($fileDir . $key, serialize($value), LOCK_EX) > 0;
+        return (bool) file_put_contents($fileDir . $key, serialize($value), LOCK_EX) > 0;
     }
 
     /**
@@ -110,7 +113,9 @@ class Cache
         $result = null;
         if (file_exists($filename)) {
             try {
-                $result = unlink($filename);
+                if (is_file($filename)) {
+                    $result = unlink($filename);
+                }
             } catch (Throwable $e) {
                 // молча глотаем обиду
             }
