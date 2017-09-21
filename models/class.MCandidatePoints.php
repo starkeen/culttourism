@@ -41,6 +41,7 @@ class MCandidatePoints extends Model
             'cp_active',
         ];
         parent::__construct($db);
+
         $this->_addRelatedTable('pagecity');
         $this->_addRelatedTable('uniref_values');
         $this->_addRelatedTable('ref_pointtypes');
@@ -197,5 +198,4 @@ class MCandidatePoints extends Model
                             WHERE cp_title LIKE '%&raquo;%'";
         $this->_db->exec();
     }
-
 }
