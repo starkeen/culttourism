@@ -29,7 +29,11 @@ class Cache
             'lifetime' => 3600,
         ],
     ];
+
+    /** @var string */
     private $cacheDir;
+
+    /** @var mixed */
     private $cacheCurrent;
 
     private function __construct($cache_id)
@@ -53,6 +57,7 @@ class Cache
             // создаем новый экземпляр
             self::$_instance[$cache] = new self($cache);
         }
+
         return self::$_instance[$cache];
     }
 
@@ -66,7 +71,7 @@ class Cache
     public function get($key)
     {
         $filename = $this->cacheDir . '/' . $this->cacheCurrent['dir'] . '/' . $key;
-        if (!file_exists($filename)) {
+        if (!file_exists($filename) || !is_file($filename)) {
             return null;
         }
         $created = filectime($filename);
@@ -75,7 +80,9 @@ class Cache
             return null;
         }
 
-        return unserialize(file_get_contents($filename));
+        $content = file_get_contents($filename);
+
+        return $this->unserialize($content);
     }
 
     /**
@@ -97,7 +104,10 @@ class Cache
             }
         }
 
-        return (bool) file_put_contents($fileDir . $key, serialize($value), LOCK_EX) > 0;
+        $fileName = $fileDir . $key;
+        $data = $this->serialize($value);
+
+        return (bool) file_put_contents($fileName, $data, LOCK_EX) > 0;
     }
 
     /**
@@ -114,7 +124,7 @@ class Cache
         if (file_exists($filename)) {
             try {
                 if (is_file($filename)) {
-                    $result = unlink($filename);
+                    $result = @unlink($filename);
                 }
             } catch (Throwable $e) {
                 // молча глотаем обиду
@@ -122,5 +132,25 @@ class Cache
         }
 
         return $result;
+    }
+
+    /**
+     * @param $data
+     *
+     * @return string
+     */
+    private function serialize($data): string
+    {
+        return serialize($data);
+    }
+
+    /**
+     * @param string $data
+     *
+     * @return mixed
+     */
+    private function unserialize(string $data)
+    {
+        return unserialize($data, []);
     }
 }
