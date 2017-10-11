@@ -248,7 +248,7 @@ class MPageCities extends Model {
             'pc_country_id' => $values['pc_country_id'],
             'pc_city_id' => 0,
         ));
-        $parent = $parent_variants[0];
+        $parent = $parent_variants[0] ?? ['url' => ''];
         $ru = new MRegionUrl($this->_db);
         $url_id = $ru->insert(array(
             'url' => $parent['url'] . '/' . strtolower(str_replace(' ', '_', $values['pc_title_english'])),
