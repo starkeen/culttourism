@@ -38,7 +38,6 @@ class Curl
     {
         $text = $this->cc->get($url);
         if ($text === null) {
-            try {
                 curl_setopt($this->curl, CURLOPT_URL, $url);
                 curl_setopt($this->curl, CURLOPT_REFERER, $url);
                 curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->getHeaders());
@@ -47,9 +46,6 @@ class Curl
                     $text = mb_convert_encoding($text, self::INTERNAL_ENCODING, $this->encoding);
                     $text = iconv($this->encoding, self::INTERNAL_ENCODING . '//IGNORE//TRANSLIT', $text);
                 }
-            } catch (Exception $e) {
-                //echo $e->getMessage();
-            }
             $this->cc->put($url, $text, $this->ttl);
         }
         return $text;
