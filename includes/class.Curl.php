@@ -38,13 +38,16 @@ class Curl
     {
         $text = $this->cc->get($url);
         if ($text === null) {
-                curl_setopt($this->curl, CURLOPT_URL, $url);
-                curl_setopt($this->curl, CURLOPT_REFERER, $url);
-                curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->getHeaders());
-                $text = curl_exec($this->curl);
-                if ($this->encoding !== self::INTERNAL_ENCODING) {
-                    $text = mb_convert_encoding($text, self::INTERNAL_ENCODING, mb_detect_encoding($text));
-                }
+            curl_setopt($this->curl, CURLOPT_URL, $url);
+            curl_setopt($this->curl, CURLOPT_REFERER, $url);
+            curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->getHeaders());
+            $text = curl_exec($this->curl);
+            if ($this->encoding !== self::INTERNAL_ENCODING) {
+                $s = str_replace('С?', 'fgr43443443', $text);
+                $s = str_replace('Â€', 'â‚¬', $s);
+                $s = mb_convert_encoding($s, self::INTERNAL_ENCODING, mb_detect_encoding($text));
+                $text = str_replace('fgr43443443', 'ш', $s);
+            }
             $this->cc->put($url, $text, $this->ttl);
         }
         return $text;
