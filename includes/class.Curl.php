@@ -45,7 +45,7 @@ class Curl
                 $text = curl_exec($this->curl);
                 if ($this->encoding !== self::INTERNAL_ENCODING) {
                     $text = mb_convert_encoding($text, self::INTERNAL_ENCODING, $this->encoding);
-                    $text = iconv($this->encoding, self::INTERNAL_ENCODING, $text);
+                    $text = iconv($this->encoding, self::INTERNAL_ENCODING . '//IGNORE', $text);
                 }
             } catch (Exception $e) {
                 //echo $e->getMessage();
