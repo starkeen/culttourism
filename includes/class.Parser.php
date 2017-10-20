@@ -56,7 +56,7 @@ class Parser
         $out = [];
         //echo $this->_dom->saveHTML();
         $finder = new DomXPath($this->_dom);
-        foreach ($this->_config['list_items'] as $xpath) {
+        foreach ((array) $this->_config['list_items'] as $xpath) {
             $elements = $finder->query($xpath);
             if ($elements->length > 0) {
                 foreach ($elements as $element) {
@@ -154,17 +154,17 @@ class Parser
         } else {
             // echo $this->_dom->saveHTML();exit;
             $finder = new DomXPath($this->_dom);
-            foreach ($this->_config['item'] as $k => $item) {
+            foreach ((array) $this->_config['item'] as $k => $item) {
                 $data = [];
-                foreach ($item['path'] as $path) {
+                foreach ((array) $item['path'] as $path) {
                     $elements = $finder->query($path);
                     if ($elements !== null) {
                         foreach ($elements as $element) {
-                            if ($item['type'] == 1) {
+                            if ((int) $item['type'] === 1) {
                                 $data[] = trim(
                                     preg_replace('/\s+/', ' ', htmlspecialchars_decode($element->nodeValue))
                                 );
-                            } elseif ($item['type'] == 2) {
+                            } elseif ((int) $item['type'] === 2) {
                                 $data[] = trim($element->getAttribute('href'));
                             }
                             $meta[$k][] = $element->getNodePath();
