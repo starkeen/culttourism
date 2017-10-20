@@ -73,9 +73,17 @@ class MCandidatePoints extends Model
         if ($data['cp_web'] !== '' && strpos($data['cp_web'], 'http') === false) {
             $data['cp_web'] = 'http://' . $data['cp_web'];
         }
-        $data['cp_latitude'] = (float) $data['cp_latitude'] ?: 0;
-        $data['cp_longitude'] = (float) $data['cp_longitude'] ?: 0;
-        return $this->insert($data);
+        if (isset($data['cp_latitude'], $data['cp_longitude'])) {
+            $data['cp_latitude'] = (float) $data['cp_latitude'];
+            $data['cp_longitude'] = (float) $data['cp_longitude'];
+        }
+        try {
+            return $this->insert($data);
+        } catch (Throwable $e) {
+            print_x($data);
+            echo $e->getPrevious()->getMessage();
+            exit;
+        }
     }
 
     public function getByFilter($filter)

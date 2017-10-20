@@ -214,7 +214,7 @@ return [
     'rutraveller.ru' => [
         'encoding' => 'windows-1251',
         'doctype' => 'XHTML 1.0 Transitional',
-        'tagsallow' => 'h1,div[id],div[class],span[class],*[class],p,a[href]',
+        'tagsallow' => 'h1,div[id],div[class],span[class],*[class],p,a[href],ul[class],ul[id],li[class],li[id]',
         'list_items' => [
             '//a[@class="plc15-item-ttl"]',
         ],
@@ -225,26 +225,26 @@ return [
             ],
             'text' => [
                 'path' => [
-                    "//div[@class='pl-one-about']",
+                    "//div[@class='place-section place-description']/div[@class='text-min']/div[@class='text'][1]",
                 ],
                 'delimiter' => "\n",
                 'type' => 1,
             ],
             'addr' => [
                 'path' => [
-                    "//div[@class='pl-one-contact']/p[1]/span[@class='black'][1]",
+                    "//ul[@class='info-line info-line--regular']/li/a[1]",
                 ],
                 'type' => 1,
             ],
             'phone' => [
                 'path' => [
-                    "//div[@class='pl-one-contact']/p[1]/span[@class='black'][3]",
+                    "//div[@class='onmap-info']/div[1]/div[@class='onmap-info__item'][2]/div[2]",
                 ],
                 'type' => 1,
             ],
             'worktime' => [
                 'path' => [
-                    "//div[@class='pl-one-contact']/p[1]/span[@class='black'][2]",
+                    "//div[@class='onmap-info']/div[2]/div[@class='onmap-info__item'][1]/div[2]",
                 ],
                 'type' => 1,
             ],
