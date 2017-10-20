@@ -48,7 +48,7 @@ class Curl
                     $text = iconv($this->encoding, self::INTERNAL_ENCODING, $text);
                 }
             } catch (Exception $e) {
-                echo $e->getMessage();
+                //echo $e->getMessage();
             }
             $this->cc->put($url, $text, $this->ttl);
         }

@@ -77,13 +77,8 @@ class MCandidatePoints extends Model
             $data['cp_latitude'] = (float) $data['cp_latitude'];
             $data['cp_longitude'] = (float) $data['cp_longitude'];
         }
-        try {
-            return $this->insert($data);
-        } catch (Throwable $e) {
-            print_x($data);
-            echo $e->getPrevious()->getMessage();
-            exit;
-        }
+
+        return $this->insert($data);
     }
 
     public function getByFilter($filter)
