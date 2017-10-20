@@ -4,12 +4,12 @@ use app\db\MyDB;
 
 class Curl
 {
-    const INTERNAL_ENCODING = 'utf-8';
+    const INTERNAL_ENCODING = 'UTF-8';
 
-    private $cc = null;
-    private $curl = null;
+    private $cc;
+    private $curl;
     private $ttl = 3600; //время жизни кэша в секундах
-    private $encoding = 'utf-8';
+    private $encoding = 'UTF-8';
     private $headers = [];
 
     public function __construct(MyDB $db = null)
@@ -43,8 +43,7 @@ class Curl
                 curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->getHeaders());
                 $text = curl_exec($this->curl);
                 if ($this->encoding !== self::INTERNAL_ENCODING) {
-                    $text = mb_convert_encoding($text, self::INTERNAL_ENCODING, $this->encoding);
-                    $text = iconv($this->encoding, self::INTERNAL_ENCODING . '//IGNORE//TRANSLIT', $text);
+                    $text = mb_convert_encoding($text, self::INTERNAL_ENCODING, mb_detect_encoding($text));
                 }
             $this->cc->put($url, $text, $this->ttl);
         }
@@ -96,7 +95,7 @@ class Curl
 
     public function setTTLDays($ttl_days)
     {
-        $this->ttl = 24 * 3600 * intval($ttl_days);
+        $this->ttl = 24 * 3600 * (int) $ttl_days;
     }
 
     public function setEncoding($encoding)
