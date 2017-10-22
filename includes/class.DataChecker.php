@@ -145,7 +145,6 @@ class DataChecker
             $coordinates = '';
             if ((int) $result['qc'] === 0 && (int) $result['qc_geo'] === 0 && (float) $result['geo_lat'] !== 0 && (float) $result['geo_lon'] !== 0) {
                 $coordinates = sprintf('%f, %f', $result['geo_lat'], $result['geo_lon']);
-                $coordinates .= '; qc:' . $result['qc'];
                 $geoData = [
                     'pt_latitude' => (float) $result['geo_lat'],
                     'pt_longitude' => (float) $result['geo_lon'],
