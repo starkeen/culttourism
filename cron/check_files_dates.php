@@ -1,19 +1,17 @@
 <?php
 
 /**
- * Description of check_files_dates
- *
- * @author Андрей
+ * Проверка дат последнего изменения файлов
  */
-$dbsp = $db->getTableName('siteprorerties');
+$sp = new MSysProperties($db);
 
 clearstatcache(true);
-$files = array();
-$files_skip = array();
-$timestamp_max = 0;
-$filename_last = '';
+$files = [];
+$filesSkip = [];
+$timestampMax = 0;
+$filenameLast = '';
 
-$scan_dirs = array(
+$scanDirs = [
     '_admin',
     '_utils',
     'addons',
@@ -27,21 +25,17 @@ $scan_dirs = array(
     'css',
     'modules',
     'templates',
-);
+];
+$skipDirs = [
+    _DIR_ROOT . '/data/logs/',
+    _DIR_ROOT . '/data/feed/',
+];
 
 $files[] = _DIR_ROOT . '/index.php';
 $files[] = _DIR_ROOT . '/robots.txt';
 $files[] = _DIR_ROOT . '/.htaccess';
-$files_skip[] = _DIR_ROOT . '/data/feed/blog.xml';
-$files_skip[] = _DIR_ROOT . '/data/feed/blog-dlvrit.xml';
-$files_skip[] = _DIR_ROOT . '/data/feed/blog-facebook.xml';
-$files_skip[] = _DIR_ROOT . '/data/feed/blog-facebook-dev.xml';
-$files_skip[] = _DIR_ROOT . '/data/feed/blog-facebook-ifttt.xml';
-$files_skip[] = _DIR_ROOT . '/data/feed/blog-twitter.xml';
-$files_skip[] = _DIR_ROOT . '/data/feed/blog-telegram.xml';
-$files_skip[] = _DIR_ROOT . '/data/feed/blog-zen.xml';
 
-foreach ($scan_dirs as $dir) {
+foreach ($scanDirs as $dir) {
     foreach (glob(_DIR_ROOT . "/$dir/*.*") as $filename) {
         $files[] = $filename;
     }
@@ -52,8 +46,21 @@ foreach ($scan_dirs as $dir) {
         $files[] = $filename;
     }
 }
-foreach ($files_skip as $filename) {
-    $idx = array_search($filename, $files);
+
+foreach ($skipDirs as $dir) {
+    foreach (glob("$dir/*.*") as $filename) {
+        $filesSkip[] = $filename;
+    }
+    foreach (glob("$dir/*/*.*") as $filename) {
+        $filesSkip[] = $filename;
+    }
+    foreach (glob("$dir/*/*/*.*") as $filename) {
+        $filesSkip[] = $filename;
+    }
+}
+
+foreach ($filesSkip as $filename) {
+    $idx = array_search($filename, $files, true);
     if ($idx > 0) {
         unset($files[$idx]);
     }
@@ -61,25 +68,24 @@ foreach ($files_skip as $filename) {
 
 foreach ($files as $filename) {
     $timestamp = filemtime($filename);
-    if ($timestamp > $timestamp_max) {
-        $timestamp_max = $timestamp;
-        $filename_last = $filename;
+    if ($timestamp > $timestampMax) {
+        $timestampMax = $timestamp;
+        $filenameLast = $filename;
     }
 }
 
-$sp = new MSysProperties($db);
-$lastupdate = $sp->getByName('site_lastupdate');
+$lastUpdate = (int) $sp->getByName('site_lastupdate');
 
-$sp->updateByName('site_lastupdate', $timestamp_max);
-$sp->updateByName('site_version', date('Ymd-Hi', $timestamp_max));
+$sp->updateByName('site_lastupdate', $timestampMax);
+$sp->updateByName('site_version', date('Ymd-Hi', $timestampMax));
 
-if ($lastupdate != $timestamp_max) {
+if ($lastUpdate !== $timestampMax) {
     //тревожное пимьмо
     include_once _DIR_INCLUDES . '/class.Mailing.php';
-    $mail_attrs = array(
-        'datetime_max' => date('d.m.Y H:i:s', $timestamp_max),
-        'datetime_last' => date('d.m.Y H:i:s', $lastupdate),
-        'filename_last' => $filename_last,
-    );
-    Mailing::sendLetterCommon($global_cron_email, 3, $mail_attrs);
+    $mailAttrs = [
+        'datetime_max' => date('d.m.Y H:i:s', $timestampMax),
+        'datetime_last' => date('d.m.Y H:i:s', $lastUpdate),
+        'filename_last' => $filenameLast,
+    ];
+    Mailing::sendLetterCommon($global_cron_email, 3, $mailAttrs);
 }
