@@ -7,7 +7,7 @@ $ls = new MLists($db);
 $bg = new MBlogEntries($db);
 $ca = new MCandidatePoints($db);
 
-$log = array();
+$log = [];
 $log[] = $checker->repairPointsAddrs(30);
 $log[] = $checker->repairCandidates(50);
 $log[] = $checker->repairCandidatesAddrs(50);
