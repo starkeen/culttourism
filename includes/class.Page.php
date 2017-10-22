@@ -49,7 +49,7 @@ class Page extends PageCommon
     {
         $url = '';
         foreach ($aurl as $w) {
-            if ($w !== '') {
+            if ($w != '') {
                 $url .= '/' . $w;
             }
         }
@@ -242,7 +242,7 @@ class Page extends PageCommon
             $this->getError('404');
         }
         while ($row = $this->db->fetch($res)) {
-            if ($row['md_url'] == $p_url) {
+            if ($row['md_url'] === $p_url) {
                 $this->h1 .= ' ' . $this->globalsettings['title_delimiter'] . ' ' . $row['md_title'];
                 $this->content = $row['md_pagecontent'];
                 $this->addDescription($row['md_description']);
@@ -280,6 +280,11 @@ class Page extends PageCommon
         }
     }
 
+    /**
+     * @param string $url
+     *
+     * @return string|void
+     */
     private function getPageCity($url)
     {
         $url_parts = explode('/', $url);
@@ -291,9 +296,9 @@ class Page extends PageCommon
         );
         $urlFiltered = '/' . implode('/', array_filter($urlFiltered));
         $lastPart = array_pop($url_parts);
-        if ($lastPart == 'index.html') {
-            header("HTTP/1.1 301 Moved Permanently");
-            header("Location: " . str_replace("index.html", '', $url));
+        if ($lastPart === 'index.html') {
+            header('HTTP/1.1 301 Moved Permanently');
+            header('Location: ' . str_replace('index.html', '', $url));
             exit();
         }
 
@@ -308,7 +313,7 @@ class Page extends PageCommon
             //--------------------  c a n o n i c a l  ------------------------
             $this->canonical = $row['url_canonical'];
             if ($this->canonical != ($url . '/')) {
-                header("HTTP/1.1 301 Moved Permanently");
+                header('HTTP/1.1 301 Moved Permanently');
                 header("Location: $this->canonical");
                 exit();
             }
