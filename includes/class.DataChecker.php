@@ -32,6 +32,7 @@ class DataChecker
     public function repairPointsAddrs($count = 100): array
     {
         $this->entity_type = MDataCheck::ENTITY_POINTS;
+        $this->entity_id = 'pt_id';
         $this->entity_field = 'pt_adress';
         $p = new MPagePoints($this->db);
         $dc = new MDataCheck($this->db);
@@ -92,7 +93,7 @@ class DataChecker
                     $addrVariant['text'],
                     round($addrVariant['delta_meters'], 2),
                 ];
-                $dc->markChecked($this->entity_type, $pt['pt_id'], $this->entity_field, $addrVariant['text']);
+                $dc->markChecked($this->entity_type, $pt[$this->entity_id], $this->entity_field, $addrVariant['text']);
             } else {
                 $dc->markChecked(
                     $this->entity_type,
@@ -119,6 +120,7 @@ class DataChecker
         $log = [];
 
         $this->entity_type = MDataCheck::ENTITY_POINTS;
+        $this->entity_id = 'pt_id';
         $this->entity_field = 'pt_latitude';
         $p = new MPagePoints($this->db);
         $dc = new MDataCheck($this->db);
@@ -144,8 +146,8 @@ class DataChecker
             if ((int) $result['qc_geo'] === 0 && (float) $result['geo_lat'] !== 0 && (float) $result['geo_lon'] !== 0) {
                 $coordinates = sprintf('%f, %f', $result['geo_lat'], $result['geo_lon']);
                 $geoData = [
-                    'cp_latitude' => (float) $result['geo_lat'],
-                    'cp_longitude' => (float) $result['geo_lon'],
+                    'pt_latitude' => (float) $result['geo_lat'],
+                    'pt_longitude' => (float) $result['geo_lon'],
                 ];
                 $p->updateByPk($pt[$this->entity_id], $geoData);
                 $log[] = [
@@ -158,7 +160,7 @@ class DataChecker
                 ];
             }
 
-            $dc->markChecked($this->entity_type, $pt['pt_id'], $this->entity_field, $coordinates);
+            $dc->markChecked($this->entity_type, $pt[$this->entity_id], $this->entity_field, $coordinates);
         }
 
         return $log;
