@@ -13,14 +13,31 @@ class DadataAPI
     protected $keySecret;
     protected $fields = [
         self::ADDRESS => [
-            'direct' => ['source', 'result', 'geo_lat', 'geo_lon', 'qc_geo', 'unparsed_parts',],
+            'direct' => [
+                'source',
+                'result',
+                'geo_lat',
+                'geo_lon',
+                'qc',
+                'qc_geo',
+                'qc_complete',
+                'qc_house',
+                'unparsed_parts',
+            ],
         ],
         self::PHONE => [
-            'direct' => ['source', 'phone',],
+            'direct' => [
+                'source',
+                'phone',
+            ],
         ],
     ];
     protected $curl;
 
+    /**
+     *
+     * @param MyDB $db
+     */
     public function __construct(MyDB $db)
     {
         $sp = new MSysProperties($db);
@@ -29,9 +46,16 @@ class DadataAPI
         $this->curl = new Curl($db);
     }
 
-    public function check($type, $data)
+    /**
+     * @param $type
+     * @param $data
+     *
+     * @return array
+     * @throws RuntimeException
+     */
+    public function check($type, $data): array
     {
-        if (!in_array($type, array_keys($this->fields))) {
+        if (!array_key_exists($type, $this->fields)) {
             throw new RuntimeException('Unsupported checking type');
         }
         $context = is_array($data) ? $data : [$data];
@@ -40,7 +64,10 @@ class DadataAPI
         return $this->mapResponse($type, $response);
     }
 
-    public function getBalance()
+    /**
+     * @return float
+     */
+    public function getBalance(): float
     {
         $this->curl->addHeader('Content-Type', 'application/json');
         $this->curl->addHeader('Authorization', 'Token ' . $this->keyToken);
@@ -50,7 +77,8 @@ class DadataAPI
         $this->curl->setTTL(0);
         $json = $this->curl->get('https://dadata.ru/api/v2/profile/balance');
         $data = json_decode($json);
-        return $data->balance;
+
+        return (float) $data->balance;
     }
 
     /**
@@ -58,7 +86,7 @@ class DadataAPI
      * @param string $type
      * @param mixed  $context
      *
-     * @return array
+     * @return array|stdClass
      */
     protected function request($type, $context)
     {
@@ -73,17 +101,24 @@ class DadataAPI
         return json_decode($out);
     }
 
-    protected function mapResponse($type, $response)
+    /**
+     * @param string $type
+     * @param        $response
+     *
+     * @return array
+     */
+    protected function mapResponse($type, $response): array
     {
         $out = [];
-        foreach ($response as $r) {
+        foreach ((array) $response as $r) {
             $item = [];
-            foreach ($this->fields[$type]['direct'] as $field) {
+            foreach ((array) $this->fields[$type]['direct'] as $field) {
                 $item[$field] = $r->$field;
             }
             $item['quality_parse'] = $r->qc;
             $out[] = $item;
         }
+
         return $out;
     }
 

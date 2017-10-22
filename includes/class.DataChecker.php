@@ -107,6 +107,64 @@ class DataChecker
     }
 
     /**
+     * Указание координат по адресу
+     *
+     * @param int $count
+     *
+     * @return array
+     * @throws RuntimeException
+     */
+    public function repairPointsCoordinates(int $count = 10): array
+    {
+        $log = [];
+
+        $this->entity_type = MDataCheck::ENTITY_POINTS;
+        $this->entity_field = 'pt_latitude';
+        $p = new MPagePoints($this->db);
+        $dc = new MDataCheck($this->db);
+
+        $api = new DadataAPI($this->db);
+        if ($api->getBalance() < 5.0) {
+            echo 'Баланс Dadata.ru нулевой';
+            return [];
+        }
+
+        $curl = new Curl($this->db);
+        $curl->setTTLDays(7);
+        $curl->config(CURLOPT_TIMEOUT, 5);
+        $curl->config(CURLOPT_HEADER, 0);
+        $curl->config(CURLOPT_SSL_VERIFYPEER, false);
+
+        $points = $p->getPointsWithoutCoordinates($count);
+        foreach ($points as $i => $pt) {
+            $addr = preg_replace('/(\d{3})(\s{1})(\d{3})/', '$1$3', $pt['pt_adress']);
+            $response = $api->check(DadataAPI::ADDRESS, $addr);
+            $result = $response[0];
+            $coordinates = '';
+            if ((int) $result['qc_geo'] === 0 && (float) $result['geo_lat'] !== 0 && (float) $result['geo_lon'] !== 0) {
+                $coordinates = sprintf('%f, %f', $result['geo_lat'], $result['geo_lon']);
+                $geoData = [
+                    'cp_latitude' => (float) $result['geo_lat'],
+                    'cp_longitude' => (float) $result['geo_lon'],
+                ];
+                $p->updateByPk($pt[$this->entity_id], $geoData);
+                $log[] = [
+                    'Координаты точки',
+                    $pt['pt_id'],
+                    $pt['pt_name'],
+                    $pt['pt_adress'],
+                    $result['result'],
+                    $coordinates,
+                ];
+            }
+
+            $dc->markChecked($this->entity_type, $pt['pt_id'], $this->entity_field, $coordinates);
+        }
+
+        return $log;
+    }
+
+    /**
      * @param int $count
      *
      * @return array
@@ -153,9 +211,9 @@ class DataChecker
         $cp = new MCandidatePoints($this->db);
 
         $api = new DadataAPI($this->db);
-        if ($api->getBalance() == 0) {
+        if ($api->getBalance() < 5.0) {
             echo 'Баланс Dadata.ru нулевой';
-            return;
+            return [];
         }
         $typograph = $this->buildTypograph();
         $items = $this->getCheckingPortion($count, 'cp_active', true);
@@ -285,11 +343,11 @@ class DataChecker
      */
     public function getCheckingPortion($limit, $active, $unchecked = false): array
     {
-        $checkertable = $this->db->getTableName('data_check');
-        $tname = $this->db->getTableName($this->entity_type);
+        $checkerTable = $this->db->getTableName('data_check');
+        $tableName = $this->db->getTableName($this->entity_type);
         $this->db->sql = "SELECT t.*
-                            FROM $tname t
-                                LEFT JOIN $checkertable dc ON dc.dc_item_id = t.$this->entity_id
+                            FROM $tableName t
+                                LEFT JOIN $checkerTable dc ON dc.dc_item_id = t.$this->entity_id
                                     AND dc.dc_type = :item_type
                                     AND dc.dc_field = :field
                             WHERE t.$active > 0

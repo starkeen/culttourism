@@ -1,14 +1,16 @@
 <?php
 
-class MPagePoints extends Model {
+class MPagePoints extends Model
+{
 
     protected $_table_pk = 'pt_id';
     protected $_table_order = 'pt_id';
     protected $_table_active = 'pt_active';
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->_table_name = $db->getTableName('pagepoints');
-        $this->_table_fields = array(
+        $this->_table_fields = [
             'pt_name',
             'pt_description',
             'pt_slugline',
@@ -34,7 +36,7 @@ class MPagePoints extends Model {
             'pt_photo_id',
             'pt_is_best',
             'pt_active',
-        );
+        ];
         parent::__construct($db);
         $this->_addRelatedTable('pagecity');
         $this->_addRelatedTable('region_url');
@@ -46,21 +48,24 @@ class MPagePoints extends Model {
 
     /**
      * Все точки региона, сгруппированные по признаку достопримечательности
+     *
      * @param integer $city_id
-     * @param bool $show_all
+     * @param bool    $show_all
+     *
      * @return array
      */
-    public function getPointsByCity($city_id, $show_all = false) {
-        $out = array(
-            'points' => array(),
-            'points_sight' => array(),
-            'points_service' => array(),
-            'types' => array(
-                0 => array(),
-                1 => array(),
-            ),
+    public function getPointsByCity($city_id, $show_all = false)
+    {
+        $out = [
+            'points' => [],
+            'points_sight' => [],
+            'points_service' => [],
+            'types' => [
+                0 => [],
+                1 => [],
+            ],
             'last_update' => 0,
-        );
+        ];
         $this->_db->sql = "SELECT *,
                                 CONCAT(pt.pt_slugline, '.html') AS url_canonical,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update
@@ -72,15 +77,17 @@ class MPagePoints extends Model {
         }
         $this->_db->sql .= "ORDER BY pt.pt_active DESC, rt.tr_sight desc, pt.pt_rank desc, rt.tr_order, pt.pt_name";
 
-        $this->_db->execute(array(
-            ':city_id' => $city_id,
-        ));
+        $this->_db->execute(
+            [
+                ':city_id' => $city_id,
+            ]
+        );
         while ($point = $this->_db->fetch()) {
-            $out['types'][$point['tr_sight']][$point['pt_type_id']] = array(
+            $out['types'][$point['tr_sight']][$point['pt_type_id']] = [
                 'short' => $point['tp_short'],
                 'full' => $point['tp_name'],
                 'icon' => $point['tp_icon'],
-            );
+            ];
 
             $short_lenght = 300;
             $point['short'] = html_entity_decode(strip_tags($point['pt_description']), ENT_QUOTES, 'utf-8');
@@ -124,7 +131,8 @@ class MPagePoints extends Model {
         return $out;
     }
 
-    public function getPointsByBounds($bounds, $selected_object_id = 0) {
+    public function getPointsByBounds($bounds, $selected_object_id = 0)
+    {
         $this->_db->sql = "SELECT pp.*,
                                 IF (pp.pt_id = :selected_object_id2, 1, 0) AS obj_selected,
                                 CONCAT(:url_root1, ru.url, '/') AS cityurl,
@@ -141,20 +149,23 @@ class MPagePoints extends Model {
                             ORDER BY pt.tr_order DESC, pp.pt_rank
                             LIMIT 300";
 
-        $this->_db->execute(array(
-            ':url_root1' => _URL_ROOT,
-            ':url_root2' => _URL_ROOT,
-            ':selected_object_id1' => $selected_object_id,
-            ':selected_object_id2' => $selected_object_id,
-            ':bounds_min_lat' => $bounds['min_lat'],
-            ':bounds_max_lat' => $bounds['max_lat'],
-            ':bounds_min_lon' => $bounds['min_lon'],
-            ':bounds_max_lon' => $bounds['max_lon'],
-        ));
+        $this->_db->execute(
+            [
+                ':url_root1' => _URL_ROOT,
+                ':url_root2' => _URL_ROOT,
+                ':selected_object_id1' => $selected_object_id,
+                ':selected_object_id2' => $selected_object_id,
+                ':bounds_min_lat' => $bounds['min_lat'],
+                ':bounds_max_lat' => $bounds['max_lat'],
+                ':bounds_min_lon' => $bounds['min_lon'],
+                ':bounds_max_lon' => $bounds['max_lon'],
+            ]
+        );
         return $this->_db->fetchAll();
     }
 
-    public function getUnslug($limit = 10) {
+    public function getUnslug($limit = 10)
+    {
         $this->_db->sql = "SELECT pt_id, pt_name, pc_title, pc_title_english, tr_sight
                             FROM $this->_table_name pt
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
@@ -166,7 +177,8 @@ class MPagePoints extends Model {
         return $this->_db->fetchAll();
     }
 
-    public function searchSlugline($slugline) {
+    public function searchSlugline($slugline)
+    {
         $this->_db->sql = "SELECT *,
                                 '' AS gps_dec,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
@@ -178,13 +190,16 @@ class MPagePoints extends Model {
                             WHERE pt.pt_slugline = :slugline
                             ORDER BY pt.pt_rank DESC";
 
-        $this->_db->execute(array(
-            ':slugline' => trim($slugline),
-        ));
+        $this->_db->execute(
+            [
+                ':slugline' => trim($slugline),
+            ]
+        );
         return $this->_db->fetchAll();
     }
 
-    public function searchByName($name, $like = false) {
+    public function searchByName($name, $like = false)
+    {
         $this->_db->sql = "SELECT *
                             FROM $this->_table_name pt\n";
         if ($like) {
@@ -197,7 +212,8 @@ class MPagePoints extends Model {
         return $this->_db->fetchAll();
     }
 
-    public function createSluglineById($id) {
+    public function createSluglineById($id)
+    {
         $point = $this->getItemByPk($id);
 
         $name = trim($point['pt_name']);
@@ -223,15 +239,16 @@ class MPagePoints extends Model {
             $name_url = trim($name_url . '_' . $point['pt_id'], '_-');
         }
 
-        $this->updateByPk($point['pt_id'], array('pt_slugline' => $name_url));
+        $this->updateByPk($point['pt_id'], ['pt_slugline' => $name_url]);
     }
 
-    public function checkSluglines() {
-        $out = array(
+    public function checkSluglines()
+    {
+        $out = [
             'state' => true,
-            'errors' => array(),
-            'doubles' => array(),
-        );
+            'errors' => [],
+            'doubles' => [],
+        ];
         $this->_db->sql = "SELECT pt_id, pt_name, pt.pt_slugline, count(*) AS cnt
                             FROM $this->_table_name pt
                             WHERE pt.pt_slugline != ''
@@ -252,7 +269,8 @@ class MPagePoints extends Model {
         return $out;
     }
 
-    public function getItemByPk($id) {
+    public function getItemByPk($id)
+    {
         $this->_db->sql = "SELECT *,
                                 '' AS gps_dec,
                                 CONCAT(ru.url, '/', pt.pt_slugline, '.html') AS url_canonical,
@@ -263,13 +281,16 @@ class MPagePoints extends Model {
                                 LEFT JOIN {$this->_tables_related['ref_pointtypes']} rt ON rt.tp_id = pt.pt_type_id
                             WHERE $this->_table_pk = :oid";
 
-        $this->_db->execute(array(
-            ':oid' => intval($id),
-        ));
+        $this->_db->execute(
+            [
+                ':oid' => intval($id),
+            ]
+        );
         return $this->_db->fetch();
     }
 
-    public function getGeoPointsByCityId($cid) {
+    public function getGeoPointsByCityId($cid)
+    {
         $this->_db->sql = "SELECT pp.*,
                                 CONCAT(:url_root1, ru.url, '/') AS cityurl,
                                 CONCAT(:url_root2, ru.url, '/', pp.pt_slugline, '.html') AS objurl
@@ -281,48 +302,27 @@ class MPagePoints extends Model {
                                 AND pt_longitude != ''
                                 AND pt_active = 1";
 
-        $this->_db->execute(array(
-            ':cid' => $cid,
-            ':url_root1' => _URL_ROOT,
-            ':url_root2' => _URL_ROOT,
-        ));
-        return $this->_db->fetchAll();
-    }
-
-    /**
-     * Ищем точки с координатами, но без адреса
-     * @param int $limit
-     * @return array
-     */
-    public function getPointsWithoutAddrs($limit = 100) {
-        $this->_db->sql = "SELECT pt.pt_id, pt.pt_name, pt.pt_adress,
-                                pt.pt_latitude, pt.pt_longitude,
-                                pc.pc_title, pc.pc_latitude, pc.pc_longitude
-                            FROM $this->_table_name pt
-                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
-                                LEFT JOIN {$this->_tables_related['data_check']} dc ON dc.dc_item_id = pt.pt_id
-                                    AND dc.dc_type = 'point'
-                                    AND dc.dc_field = 'pt_adress'
-                            WHERE pt.pt_active = 1
-                                # AND ABS(CHAR_LENGTH(pt.pt_adress)-CHAR_LENGTH(pc.pc_title)) < 6
-                                AND pt.pt_adress NOT REGEXP '([0-9])+'
-                                AND pt.pt_latitude IS NOT NULL
-                            ORDER BY dc.dc_date
-                            LIMIT :limit";
-        $this->_db->execute(array(
-            ':limit' => $limit,
-        ));
+        $this->_db->execute(
+            [
+                ':cid' => $cid,
+                ':url_root1' => _URL_ROOT,
+                ':url_root2' => _URL_ROOT,
+            ]
+        );
         return $this->_db->fetchAll();
     }
 
     /**
      * Обновляем данные по точке в БД
+     *
      * @param int $id
      * @param array $values
      * @param array $files
+     *
      * @return boolean
      */
-    public function updateByPk($id, $values = array(), $files = array()) {
+    public function updateByPk($id, $values = [], $files = [])
+    {
         if (isset($values['pt_latitude'])) {
             $values['pt_latitude'] = floatval(str_replace(',', '.', trim($values['pt_latitude'])));
             if ($values['pt_latitude'] == 0) {
@@ -335,7 +335,10 @@ class MPagePoints extends Model {
                 unset($values['pt_longitude']);
             }
         }
-        if (isset($values['pt_website']) && strlen($values['pt_website']) != 0 && strpos($values['pt_website'], 'http') === false) {
+        if (isset($values['pt_website']) && strlen($values['pt_website']) != 0 && strpos(
+                $values['pt_website'],
+                'http'
+            ) === false) {
             $values['pt_website'] = 'http://' . $values['pt_website'];
         }
         $values['pt_lastup_date'] = $this->now();
@@ -344,12 +347,77 @@ class MPagePoints extends Model {
     }
 
     /**
+     * Ищем точки с координатами, но без адреса
+     *
+     * @param int $limit
+     *
+     * @return array
+     */
+    public function getPointsWithoutAddrs($limit = 100): array
+    {
+        $this->_db->sql = "SELECT pt.pt_id, pt.pt_name, pt.pt_adress,
+                                pt.pt_latitude, pt.pt_longitude,
+                                pc.pc_title, pc.pc_latitude, pc.pc_longitude
+                            FROM $this->_table_name pt
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
+                                LEFT JOIN {$this->_tables_related['data_check']} dc ON dc.dc_item_id = pt.pt_id
+                                    AND dc.dc_type = 'point'
+                                    AND dc.dc_field = 'pt_adress'
+                            WHERE pt.pt_active = 1
+                                AND pt.pt_adress NOT REGEXP '([0-9])+'
+                                AND pt.pt_latitude IS NOT NULL
+                            ORDER BY dc.dc_date
+                            LIMIT :limit";
+        $this->_db->execute(
+            [
+                ':limit' => $limit,
+            ]
+        );
+
+        return $this->_db->fetchAll();
+    }
+
+    /**
+     * Ищем точки с адресом, но без координат
+     *
+     * @param int $limit
+     *
+     * @return array
+     */
+    public function getPointsWithoutCoordinates($limit = 10): array
+    {
+        $this->_db->sql = "SELECT pt.pt_id, pt.pt_name, pt.pt_adress,
+                                pt.pt_latitude, pt.pt_longitude,
+                                pc.pc_title, pc.pc_latitude, pc.pc_longitude
+                            FROM $this->_table_name pt
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
+                                LEFT JOIN {$this->_tables_related['data_check']} dc ON dc.dc_item_id = pt.pt_id
+                                    AND dc.dc_type = 'point'
+                                    AND dc.dc_field = 'pt_latitude'
+                            WHERE pt.pt_active = 1
+                                AND pt.pt_adress REGEXP '([0-9])+'
+                                AND (pt.pt_latitude IS NULL OR pt.pt_latitude = 0)
+                            ORDER BY dc.dc_date
+                            LIMIT :limit";
+        $this->_db->execute(
+            [
+                ':limit' => $limit,
+            ]
+        );
+
+        return $this->_db->fetchAll();
+    }
+
+    /**
      * Добавление точки в базу
+     *
      * @param array $values
      * @param array $files
+     *
      * @return int ID точки
      */
-    public function insert($values = array(), $files = array()) {
+    public function insert($values = [], $files = [])
+    {
         if (isset($values['pt_latitude'])) {
             $values['pt_latitude'] = floatval(str_replace(',', '.', trim($values['pt_latitude'])));
             if ($values['pt_latitude'] == 0) {
@@ -373,7 +441,10 @@ class MPagePoints extends Model {
         }
         $values['pt_lastup_date'] = $values['pt_create_date'];
         $values['pt_lastup_user'] = $values['pt_create_user'];
-        if (isset($values['pt_website']) && strlen($values['pt_website']) != 0 && strpos($values['pt_website'], 'http') === false) {
+        if (isset($values['pt_website']) && strlen($values['pt_website']) != 0 && strpos(
+                $values['pt_website'],
+                'http'
+            ) === false) {
             $values['pt_website'] = 'http://' . $values['pt_website'];
         }
         $new_id = parent::insert($values, $files);
@@ -384,7 +455,8 @@ class MPagePoints extends Model {
     /**
      * Исправляет форматы данных
      */
-    public function repairData() {
+    public function repairData()
+    {
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 pt_phone = REPLACE(pt_phone, ';', ',')
                             WHERE pt_phone LIKE '%;%'";
@@ -397,17 +469,21 @@ class MPagePoints extends Model {
 
     /**
      * Помечаем точку удаленной
+     *
      * @param int $id
+     *
      * @return boolean
      */
-    public function deleteByPk($id) {
-        return $this->updateByPk($id, array($this->_table_active => 0));
+    public function deleteByPk($id)
+    {
+        return $this->updateByPk($id, [$this->_table_active => 0]);
     }
 
     /**
      * Заменяет все абсолютные ссылки относительными
      */
-    public function repairLinksAbsRel() {
+    public function repairLinksAbsRel()
+    {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET pt_description = REPLACE(pt_description, '=\"http://" . _URL_ROOT . "/', '=\"/')";
         $this->_db->exec();
@@ -419,10 +495,13 @@ class MPagePoints extends Model {
 
     /**
      * Определяем тип точки по имени
+     *
      * @param string $name
+     *
      * @return int
      */
-    public function getPointType($name) {
+    public function getPointType($name)
+    {
         $rpt = new MRefPointtypes($this->_db);
         $types_markers = $rpt->getMarkers();
         foreach ($types_markers as $type => $markers) {
@@ -437,10 +516,13 @@ class MPagePoints extends Model {
 
     /**
      * Ищет подходящие страницы объектов
+     *
      * @param string $query
+     *
      * @return array
      */
-    public function getSuggestion($query) {
+    public function getSuggestion($query)
+    {
         $this->_db->sql = "SELECT pt_id, pt_name, pc_id, pc_title_unique AS pc_title, url
                             FROM $this->_table_name pt
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
@@ -449,10 +531,12 @@ class MPagePoints extends Model {
                                 AND pt.pt_active = 1
                             ORDER BY pc.pc_title_unique, pt.pt_name";
 
-        $this->_db->execute(array(
-            ':name1' => '%' . trim($query) . '%',
-            ':name2' => '%' . trim(Helper::getQwerty($query)) . '%',
-        ));
+        $this->_db->execute(
+            [
+                ':name1' => '%' . trim($query) . '%',
+                ':name2' => '%' . trim(Helper::getQwerty($query)) . '%',
+            ]
+        );
         return $this->_db->fetchAll();
     }
 
