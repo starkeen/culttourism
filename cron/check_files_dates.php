@@ -27,8 +27,8 @@ $scanDirs = [
     'templates',
 ];
 $skipDirs = [
-    _DIR_ROOT . '/data/logs/',
-    _DIR_ROOT . '/data/feed/',
+    _DIR_ROOT . '/data/logs',
+    _DIR_ROOT . '/data/feed',
 ];
 
 $files[] = _DIR_ROOT . '/index.php';
