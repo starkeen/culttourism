@@ -419,11 +419,11 @@ class DataChecker
     public function resetOldData(string $type, string $field, int $ageDays)
     {
         $checkerTable = $this->db->getTableName('data_check');
-        $this->db->sql = "DELETE FROM $checkerTable dc
-                            WHERE dc.dc_type = :item_type
-                                AND dc.dc_field = :field
-                                AND dc.dc_result = ''
-                                AND dc.dc_date <= DATE_SUB(NOW(), INTERVAL :date_before DAY)";
+        $this->db->sql = "DELETE FROM $checkerTable
+                            WHERE dc_type = :item_type
+                                AND dc_field = :field
+                                AND dc_result = ''
+                                AND dc_date <= DATE_SUB(NOW(), INTERVAL :date_before DAY)";
         $this->db->execute(
             [
                 ':date_before' => $ageDays,
