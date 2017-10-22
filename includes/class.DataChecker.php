@@ -142,7 +142,7 @@ class DataChecker
             $addr = preg_replace('/(\d{3})(\s{1})(\d{3})/', '$1$3', $pt['pt_adress']);
             $response = $api->check(DadataAPI::ADDRESS, $addr);
             $result = $response[0];
-            $coordinates = '';
+            $coordinates = sprintf('qc:%d, qc_geo:%d', $result['qc'], $result['qc_geo']);
             if ((int) $result['qc'] === 0 && (int) $result['qc_geo'] === 0 && (float) $result['geo_lat'] !== 0 && (float) $result['geo_lon'] !== 0) {
                 $coordinates = sprintf('%f, %f', $result['geo_lat'], $result['geo_lon']);
                 $geoData = [
