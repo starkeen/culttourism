@@ -5,12 +5,11 @@
  */
 class DataChecker
 {
-
     protected $db;
     protected $entity_type = 'type';
     protected $entity_id = 'id';
     protected $entity_field;
-    protected $dotting = array(
+    protected $dotting = [
         ' г ' => ' г. ',
         ' пос ' => ' пос. ',
         ' ул ' => ' ул. ',
@@ -18,14 +17,19 @@ class DataChecker
         ' ш ' => ' ш. ',
         ' им ' => ' им. ',
         ' д ' => ' д. ',
-    );
+    ];
 
     public function __construct($db)
     {
         $this->db = $db;
     }
 
-    public function repairPointsAddrs($count = 100)
+    /**
+     * @param int $count
+     *
+     * @return array
+     */
+    public function repairPointsAddrs($count = 100): array
     {
         $this->entity_type = MDataCheck::ENTITY_POINTS;
         $this->entity_field = 'pt_adress';
@@ -39,7 +43,7 @@ class DataChecker
         $curl->config(CURLOPT_SSL_VERIFYPEER, false);
 
         $points = $p->getPointsWithoutAddrs($count);
-        $log = array();
+        $log = [];
         foreach ($points as $i => $pt) {
             $request = 'https://geocode-maps.yandex.ru/1.x/?format=json'
                 . '&geocode=' . $pt['pt_longitude'] . ',' . $pt['pt_latitude']
@@ -52,62 +56,81 @@ class DataChecker
             }
             $founded = $data->response->GeoObjectCollection->metaDataProperty->GeocoderResponseMetaData->found > 0;
             $featureMember = $data->response->GeoObjectCollection->featureMember;
-            $addr_variant = array(
+            $addrVariant = [
                 'text' => $pt['pt_adress'],
                 'delta_meters' => 100500,
-            );
+            ];
             foreach ($featureMember as $fm) {
                 $latlon = explode(' ', $fm->GeoObject->Point->pos);
-                $addr_variant = array(
+                $addrVariant = [
                     'text' => isset($fm->GeoObject->metaDataProperty->GeocoderMetaData) ? $fm->GeoObject->metaDataProperty->GeocoderMetaData->text : $fm->GeoObject->name,
-                    'gps' => array(
+                    'gps' => [
                         'latitude' => $latlon[1],
                         'longitude' => $latlon[0],
-                    ),
+                    ],
                     'delta_lat' => round(abs($pt['pt_latitude'] - $latlon[1]), 5),
                     'delta_lon' => round(abs($pt['pt_longitude'] - $latlon[0]), 5),
-                    'delta_meters' => Helper::distanceGPS($pt['pt_latitude'], $pt['pt_longitude'], $latlon[1], $latlon[0]),
-                );
+                    'delta_meters' => Helper::distanceGPS(
+                        $pt['pt_latitude'],
+                        $pt['pt_longitude'],
+                        $latlon[1],
+                        $latlon[0]
+                    ),
+                ];
             }
-            if ($founded && $addr_variant['delta_meters'] < 10) {
-                $p->updateByPk($pt['pt_id'], array(
-                    'pt_adress' => $addr_variant['text'],
-                ));
-                $log[] = array(
+            if ($founded && $addrVariant['delta_meters'] < 10) {
+                $p->updateByPk(
+                    $pt['pt_id'],
+                    [
+                        'pt_adress' => $addrVariant['text'],
+                    ]
+                );
+                $log[] = [
                     $pt['pt_id'],
                     $pt['pt_name'],
                     $pt['pt_adress'],
-                    $addr_variant['text'],
-                    round($addr_variant['delta_meters'], 2),
-                );
-                $dc->markChecked($this->entity_type, $pt['pt_id'], $this->entity_field, $addr_variant['text']);
+                    $addrVariant['text'],
+                    round($addrVariant['delta_meters'], 2),
+                ];
+                $dc->markChecked($this->entity_type, $pt['pt_id'], $this->entity_field, $addrVariant['text']);
             } else {
-                $dc->markChecked($this->entity_type, $pt['pt_id'], $this->entity_field, 'default: ' . $addr_variant['delta_meters']);
+                $dc->markChecked(
+                    $this->entity_type,
+                    $pt['pt_id'],
+                    $this->entity_field,
+                    'default: ' . $addrVariant['delta_meters']
+                );
             }
         }
+
         return $log;
     }
 
-    public function repairCandidates($count = 10)
+    /**
+     * @param int $count
+     *
+     * @return array
+     */
+    public function repairCandidates($count = 10): array
     {
         $this->entity_type = MDataCheck::ENTITY_CANDIDATES;
         $this->entity_id = 'cp_id';
         $dc = new MDataCheck($this->db);
         $cp = new MCandidatePoints($this->db);
-        $log = array();
+        $log = [];
 
-        $typograf = $this->buildTypograph();
-        $fields = array('cp_text', 'cp_title', 'cp_phone');
+        $typograph = $this->buildTypograph();
+        $fields = ['cp_text', 'cp_title', 'cp_phone'];
         foreach ($fields as $fld) {
             $this->entity_field = $fld;
             $items = $this->getCheckingPortion($count, 'cp_active');
             foreach ($items as $item) {
-                $typograf->set_text($item[$this->entity_field]);
-                $cleaned = $typograf->apply();
+                $typograph->set_text($item[$this->entity_field]);
+                $cleaned = $typograph->apply();
                 $cleaned = $this->repairTypographErrors($cleaned);
                 $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
                 $result = ($fld === 'cp_phone') ? str_replace('−', '-', $result) : $result;
-                $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
+                $cp->updateByPk($item[$this->entity_id], [$this->entity_field => $result]);
                 $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
             }
         }
@@ -115,9 +138,14 @@ class DataChecker
         return $log;
     }
 
-    public function repairCandidatesAddrs($count = 10)
+    /**
+     * @param int $count
+     *
+     * @return array
+     */
+    public function repairCandidatesAddrs($count = 10): array
     {
-        $log = array();
+        $log = [];
         $this->entity_type = MDataCheck::ENTITY_CANDIDATES;
         $this->entity_id = 'cp_id';
         $this->entity_field = 'cp_addr';
@@ -129,7 +157,7 @@ class DataChecker
             echo 'Баланс Dadata.ru нулевой';
             return;
         }
-        $typograf = $this->buildTypograph();
+        $typograph = $this->buildTypograph();
         $items = $this->getCheckingPortion($count, 'cp_active', true);
         foreach ($items as $item) {
             $addr = preg_replace('/(\d{3})(\s{1})(\d{3})/', '$1$3', $item[$this->entity_field]);
@@ -137,16 +165,16 @@ class DataChecker
             $result = $response[0]['result'];
             if ($response[0]['quality_parse'] == 0) {
                 $dotted = str_replace(array_keys($this->dotting), array_values($this->dotting), $response[0]['result']);
-                $typograf->set_text($dotted);
-                $cleaned = $typograf->apply();
+                $typograph->set_text($dotted);
+                $cleaned = $typograph->apply();
                 $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
-                $cp->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
+                $cp->updateByPk($item[$this->entity_id], [$this->entity_field => $result]);
 
                 if ($item['cp_latitude'] == 0 && $item['cp_longitude'] == 0 && $response[0]['qc_geo'] == 0) {
-                    $geodata = array(
+                    $geodata = [
                         'cp_latitude' => $response[0]['geo_lat'],
                         'cp_longitude' => $response[0]['geo_lon'],
-                    );
+                    ];
                     $cp->updateByPk($item[$this->entity_id], $geodata);
                 }
             } else {
@@ -158,65 +186,80 @@ class DataChecker
         return $log;
     }
 
-    public function repairBlog($count = 10)
+    /**
+     * @param int $count
+     *
+     * @return array
+     */
+    public function repairBlog($count = 10): array
     {
-        $log = array();
+        $log = [];
         $this->entity_type = MDataCheck::ENTITY_BLOG;
         $this->entity_id = 'br_id';
         $dc = new MDataCheck($this->db);
         $be = new MBlogEntries($this->db);
 
-        $typograf = $this->buildTypograph();
+        $typograph = $this->buildTypograph();
         $this->entity_field = 'br_text';
         $items = $this->getCheckingPortion($count, 'br_id');
         foreach ($items as $item) {
-            $typograf->set_text($item[$this->entity_field]);
-            $cleaned = $typograf->apply();
+            $typograph->set_text($item[$this->entity_field]);
+            $cleaned = $typograph->apply();
             $cleaned = $this->repairTypographErrors($cleaned);
             $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
-            $be->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
+            $be->updateByPk($item[$this->entity_id], [$this->entity_field => $result]);
             $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
         }
 
         return $log;
     }
 
-    public function repairPoints($count = 10)
+    /**
+     * @param int $count
+     *
+     * @return array
+     */
+    public function repairPoints($count = 10): array
     {
-        $log = array();
+        $log = [];
         $this->entity_type = MDataCheck::ENTITY_POINTS;
         $this->entity_id = 'pt_id';
         $dc = new MDataCheck($this->db);
         $pt = new MPagePoints($this->db);
 
-        $typograf = $this->buildTypograph();
-        $fields = array('pt_name', 'pt_description', 'pt_adress');
+        $typograph = $this->buildTypograph();
+        $fields = ['pt_name', 'pt_description', 'pt_adress'];
         foreach ($fields as $fld) {
             $this->entity_field = $fld;
             $items = $this->getCheckingPortion($count, 'pt_active');
             foreach ($items as $item) {
-                $typograf->set_text($item[$this->entity_field]);
-                $cleaned = $typograf->apply();
+                $typograph->set_text($item[$this->entity_field]);
+                $cleaned = $typograph->apply();
                 $cleaned = $this->repairTypographErrors($cleaned);
                 $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
-                //$result = str_replace(array('<nobr>', '</nobr>'), '', $result);
-                $pt->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
+                $pt->updateByPk($item[$this->entity_id], [$this->entity_field => $result]);
                 $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
             }
         }
+
         return $log;
     }
 
-    public function repairCity($count = 10)
+    /**
+     * @param int $count
+     *
+     * @return array
+     */
+    public function repairCity($count = 10): array
     {
-        $log = array();
+        $log = [];
         $this->entity_type = MDataCheck::ENTITY_CITIES;
         $this->entity_id = 'pc_id';
         $dc = new MDataCheck($this->db);
         $pc = new MPageCities($this->db);
 
         $typograf = $this->buildTypograph();
-        $fields = array('pc_text', 'pc_announcement', 'pc_description');
+        $fields = ['pc_text', 'pc_announcement', 'pc_description'];
         foreach ($fields as $fld) {
             $this->entity_field = $fld;
             $items = $this->getCheckingPortion($count, 'pc_active');
@@ -225,14 +268,22 @@ class DataChecker
                 $cleaned = $typograf->apply();
                 $cleaned = $this->repairTypographErrors($cleaned);
                 $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
-                $pc->updateByPk($item[$this->entity_id], array($this->entity_field => $result));
+                $pc->updateByPk($item[$this->entity_id], [$this->entity_field => $result]);
                 $dc->markChecked($this->entity_type, $item[$this->entity_id], $this->entity_field, $result);
             }
         }
+
         return $log;
     }
 
-    public function getCheckingPortion($limit, $active, $unchecked = false)
+    /**
+     * @param int  $limit
+     * @param bool $active
+     * @param bool $unchecked
+     *
+     * @return array
+     */
+    public function getCheckingPortion($limit, $active, $unchecked = false): array
     {
         $checkertable = $this->db->getTableName('data_check');
         $tname = $this->db->getTableName($this->entity_type);
@@ -249,41 +300,55 @@ class DataChecker
         $this->db->sql .= " GROUP BY t.$this->entity_id
                             ORDER BY dc.dc_date
                             LIMIT :limit";
-        $this->db->execute(array(
-            ':limit' => $limit,
-            ':field' => $this->entity_field,
-            ':item_type' => $this->entity_type,
-        ));
+        $this->db->execute(
+            [
+                ':limit' => $limit,
+                ':field' => $this->entity_field,
+                ':item_type' => $this->entity_type,
+            ]
+        );
+
         return $this->db->fetchAll();
     }
 
-    protected function buildTypograph()
+    /**
+     * @return EMTypograph
+     */
+    protected function buildTypograph(): EMTypograph
     {
-        $typograf = new EMTypograph();
-        $typograf->setup(array(
-            'Text.paragraphs' => 'off',
-            'Text.breakline' => 'off',
-            'OptAlign.oa_oquote' => 'off',
-            'OptAlign.oa_oquote_extra' => 'off',
-            'OptAlign.oa_obracket_coma' => 'off',
-            'Space.nbsp_before_open_quote' => 'off',
-            'Space.nbsp_before_month' => 'off',
-            'Nobr.super_nbsp' => 'off',
-            'Nobr.nbsp_in_the_end' => 'off',
-            'Nobr.phone_builder' => 'off',
-            'Nobr.phone_builder_v2' => 'off',
-            'Nobr.spaces_nobr_in_surname_abbr' => 'off',
-        ));
+        $typograph = new EMTypograph();
+        $typograph->setup(
+            [
+                'Text.paragraphs' => 'off',
+                'Text.breakline' => 'off',
+                'OptAlign.oa_oquote' => 'off',
+                'OptAlign.oa_oquote_extra' => 'off',
+                'OptAlign.oa_obracket_coma' => 'off',
+                'Space.nbsp_before_open_quote' => 'off',
+                'Space.nbsp_before_month' => 'off',
+                'Nobr.super_nbsp' => 'off',
+                'Nobr.nbsp_in_the_end' => 'off',
+                'Nobr.phone_builder' => 'off',
+                'Nobr.phone_builder_v2' => 'off',
+                'Nobr.spaces_nobr_in_surname_abbr' => 'off',
+            ]
+        );
 
-        return $typograf;
+        return $typograph;
     }
-    
+
     /**
      * Исправляет в тексте ошибки, допущенные типографом
+     *
+     * @param string $text
+     *
+     * @return string
      */
     protected function repairTypographErrors($text)
     {
-        return str_replace(['вв.</nobr>ек', '<nobr>', '</nobr>'], ['век', '', ''], $text);
-    }
+        $from = ['вв.</nobr>ек', '<nobr>', '</nobr>'];
+        $to = ['век', '', ''];
 
+        return str_replace($from, $to, $text);
+    }
 }
