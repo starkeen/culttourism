@@ -361,7 +361,7 @@ class MPagePoints extends Model
                             FROM $this->_table_name pt
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
                                 LEFT JOIN {$this->_tables_related['data_check']} dc ON dc.dc_item_id = pt.pt_id
-                                    AND dc.dc_type = 'point'
+                                    AND dc.dc_type = 'pagepoint'
                                     AND dc.dc_field = 'pt_adress'
                             WHERE pt.pt_active = 1
                                 AND pt.pt_adress NOT REGEXP '([0-9])+'
@@ -392,12 +392,13 @@ class MPagePoints extends Model
                             FROM $this->_table_name pt
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
                                 LEFT JOIN {$this->_tables_related['data_check']} dc ON dc.dc_item_id = pt.pt_id
-                                    AND dc.dc_type = 'point'
+                                    AND dc.dc_type = 'pagepoint'
                                     AND dc.dc_field = 'pt_latitude'
                             WHERE pt.pt_active = 1
                                 AND pt.pt_adress REGEXP '([0-9])+'
                                 AND (pt.pt_latitude IS NULL OR pt.pt_latitude = 0)
-                            ORDER BY dc.dc_date
+                                AND dc.dc_id IS NULL
+                            ORDER BY pt.pt_is_best DESC, pt.pt_rank DESC
                             LIMIT :limit";
         $this->_db->execute(
             [
