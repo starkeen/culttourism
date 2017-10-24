@@ -2,7 +2,6 @@
 
 class MPagePoints extends Model
 {
-
     protected $_table_pk = 'pt_id';
     protected $_table_order = 'pt_id';
     protected $_table_active = 'pt_active';
@@ -361,7 +360,7 @@ class MPagePoints extends Model
                             FROM $this->_table_name pt
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
                                 LEFT JOIN {$this->_tables_related['data_check']} dc ON dc.dc_item_id = pt.pt_id
-                                    AND dc.dc_type = 'pagepoint'
+                                    AND dc.dc_type = 'pagepoints'
                                     AND dc.dc_field = 'pt_adress'
                             WHERE pt.pt_active = 1
                                 AND pt.pt_adress NOT REGEXP '([0-9])+'
@@ -392,7 +391,7 @@ class MPagePoints extends Model
                             FROM $this->_table_name pt
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
                                 LEFT JOIN {$this->_tables_related['data_check']} dc ON dc.dc_item_id = pt.pt_id
-                                    AND dc.dc_type = 'pagepoint'
+                                    AND dc.dc_type = 'pagepoints'
                                     AND dc.dc_field = 'pt_latitude'
                             WHERE pt.pt_active = 1
                                 AND pt.pt_adress REGEXP '([0-9])+'
