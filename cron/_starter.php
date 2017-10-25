@@ -10,7 +10,9 @@ include(realpath(dirname(__FILE__) . '/../config/configuration.php'));
 include _DIR_ROOT . '/vendor/autoload.php';
 
 // TODO Вынести DSN в конфиг
-$sentryClient = new Raven_Client('https://e3bccedd75864d36ab2a0cf1e0273737:8cc337e7289e485aa44a798a3e7e1eb6@sentry.io/114324');
+$sentryClient = new Raven_Client(
+    'https://e3bccedd75864d36ab2a0cf1e0273737:8cc337e7289e485aa44a798a3e7e1eb6@sentry.io/114324'
+);
 $sentryClient->install();
 
 $db = FactoryDB::db();
@@ -29,13 +31,13 @@ if (empty($scripts)) {
     exit();
 }
 
-$nologging_ids = array(2,);
+$nologging_ids = [2,];
 
 foreach ($scripts as $job) {
     $script = $job['cr_script'];
-    $script_id = $job['cr_id'];
+    $script_id = (int) $job['cr_id'];
 
-    if (!in_array($script_id, $nologging_ids)) {
+    if (!in_array($script_id, $nologging_ids, true)) {
         Logging::addHistory('cron', "Начала работу задача №$script_id ({$job['cr_title']})");
     }
 
@@ -53,8 +55,12 @@ foreach ($scripts as $job) {
     }
     $cr->markWorkFinish($script_id, $content, $exectime);
 
-    if (!in_array($script_id, $nologging_ids) && $exectime >= 0.01) {
-        Logging::addHistory('cron', "Отработала задача №$script_id  ({$job['cr_title']}), время $exectime с.", $content);
+    if (!in_array($script_id, $nologging_ids, true) && $exectime >= 0.01) {
+        Logging::addHistory(
+            'cron',
+            "Отработала задача №$script_id  ({$job['cr_title']}), время $exectime с.",
+            $content
+        );
     }
 }
 //echo '<hr>Общее время работы скриптов: ' . substr(microtime(true) - $_timer_start_main, 0, 6) . ' c.';
