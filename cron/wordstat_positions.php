@@ -37,9 +37,9 @@ foreach ($cities as $city) {
                 'ws_position_date' => $ws->now(),
             ]
         );
-    } else {
+    } elseif ($res['error_code'] ?? -1 !== 15) {
         $msg = sprintf('ERROR %d: %s, query: [%s]', $res['error_code'] ?? -1, $res['error_text'], $query);
-        echo $msg;
+        echo $msg . PHP_EOL;
     }
 
     usleep(500000);
