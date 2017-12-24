@@ -38,7 +38,7 @@ foreach ($cities as $city) {
             ]
         );
     } else {
-        $msg = sprintf('ERROR %d: %s, query: [%s]', $res['sl_error_code'], $res['error_text'], $query);
+        $msg = sprintf('ERROR %d: %s, query: [%s]', $res['error_code'] ?? -1, $res['error_text'], $query);
         echo $msg;
     }
 
