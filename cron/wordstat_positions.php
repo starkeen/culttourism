@@ -1,42 +1,46 @@
 <?php
 
-$dbpc = $db->getTableName('pagecity');
-$dbws = $db->getTableName('wordstat');
-
-$limit_cities_per_time = 10;
-$limit_sites_per_answer = 90;
+$limitCitiesPerTime = 10;
+$limitSitesPerAnswer = 90;
 
 $ws = new MWordstat($db);
 
-if (date("H") > 7 && date("H") < 20) {
-    //$limit_cities_per_time = 5;
+$currentHour = date('H');
+if ($currentHour > 7 && $currentHour < 20) {
+    //$limitCitiesPerTime = 5;
 }
 
-$cities = $ws->getPortionPosition($limit_cities_per_time);
+$cities = $ws->getPortionPosition($limitCitiesPerTime);
 
 $ys = new YandexSearcher();
-$ys->setPagesMax($limit_sites_per_answer);
+$ys->setPagesMax($limitSitesPerAnswer);
 
 foreach ($cities as $city) {
-    $domains = array(0 => null);
-    $res = $ys->search("{$city['ws_city_title']} достопримечательности");
+    $domains = [0 => null];
+    $query = sprintf('%s  достопримечательности', $city['ws_city_title']);
+    $res = $ys->search($query);
     if (!$res['error_text']) {
-        foreach ($res['results'] as $site) {
+        foreach ((array) $res['results'] as $site) {
             $domains[] = (string) $site['domain'];
         }
-        $founded = array_search(_URL_ROOT, $domains);
+        $founded = array_search(_URL_ROOT, $domains, true);
         if ($founded === false) {
             $position = 0;
         } else {
             $position = $founded;
         }
 
-        $ws->updateByPk($city['ws_id'], array(
-            'ws_position' => $position,
-            'ws_position_date' => $ws->now(),
-        ));
+        $ws->updateByPk(
+            $city['ws_id'],
+            [
+                'ws_position' => $position,
+                'ws_position_date' => $ws->now(),
+            ]
+        );
     } else {
-        echo "Ошибка: " . $res['error_text'];
+        $msg = sprintf('ERROR %d: %s, query: [%s]', $res['sl_error_code'], $res['error_text'], $query);
+        echo $msg;
     }
+
     usleep(500000);
 }

@@ -1,14 +1,15 @@
 <?php
 
-class YandexSearcher {
+class YandexSearcher
+{
 
     protected $requestURL = "https://yandex.ru/search/xml?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80&l10n=ru&sortby=rlv&filter=strict";
-    protected $meta = array(
+    protected $meta = [
         'page' => 0,
         'pages' => 20,
         'pages_cnt' => 0,
         'error' => null,
-    );
+    ];
 
     /**
      *
@@ -24,17 +25,20 @@ class YandexSearcher {
 
     /**
      * Выполнение поискового запроса
+     *
      * @param string $request
+     *
      * @return array
-     * @throws Exception
+     * @throws RuntimeException
      */
-    public function search($request) {
-        $out = array(
+    public function search($request): array
+    {
+        $out = [
             'results' => null,
             'pages_cnt' => null,
             'error_code' => null,
             'error_text' => null,
-        );
+        ];
 
         $doc = $this->buildQuery($request);
 
@@ -52,18 +56,22 @@ class YandexSearcher {
 
         try {
             if ($this->loggingEnabled) {
-                $this->logger->add(array(
-                    'sl_query' => $request,
-                    'sl_request' => $doc,
-                    'sl_error_code' => 0,
-                ));
+                $this->logger->add(
+                    [
+                        'sl_query' => $request,
+                        'sl_request' => $doc,
+                        'sl_error_code' => 0,
+                    ]
+                );
             }
             $response = $this->getRequest($doc);
             if ($response) {
                 if ($this->loggingEnabled) {
-                    $this->logger->setAnswer(array(
-                        'sl_answer' => $response,
-                    ));
+                    $this->logger->setAnswer(
+                        [
+                            'sl_answer' => $response,
+                        ]
+                    );
                 }
                 $results = $this->parseResponse($response);
 
@@ -74,73 +82,91 @@ class YandexSearcher {
                     $out['error_code'] = $this->meta['error_code'];
                     $out['error_text'] = $this->meta['error_text'];
                     if ($this->loggingEnabled) {
-                        $this->logger->setAnswer(array(
-                            'sl_error_code' => $this->meta['error_code'],
-                            'sl_error_text' => (string) $this->meta['error'],
-                        ));
+                        $this->logger->setAnswer(
+                            [
+                                'sl_error_code' => (int) $this->meta['error_code'],
+                                'sl_error_text' => (string) $this->meta['error'],
+                            ]
+                        );
                     }
                 }
             } else {
                 $out['error_text'] = "Внутренняя ошибка сервера.\n";
-                throw new Exception('HTTP request failed!');
+                throw new RuntimeException('HTTP request failed!');
             }
         } catch (Exception $e) {
             $out['error_text'] .= ' ' . $e->getMessage();
         }
+
         return $out;
     }
 
     /**
      * Установка текущей страницы выдачи
-     * @param type $page
+     *
+     * @param int $page
      */
-    public function setPage($page) {
-        $this->meta['page'] = intval($page);
+    public function setPage(int $page)
+    {
+        $this->meta['page'] = $page;
     }
 
     /**
      * Установка максимума страниц в выдаче
-     * @param type $max
+     *
+     * @param int $max
      */
-    public function setPagesMax($max) {
-        $this->meta['pages'] = intval($max);
+    public function setPagesMax(int $max)
+    {
+        $this->meta['pages'] = $max;
     }
 
     /**
      * Включение лога запросов
-     * @param type $db
+     *
+     * @param \app\db\MyDB $db
      */
-    public function enableLogging($db) {
+    public function enableLogging($db)
+    {
         $this->logger = new MSearchLog($db);
         $this->loggingEnabled = true;
     }
 
     /**
      * Добавление тегов strong в подсветку
+     *
      * @param type $node
+     *
      * @return type
      */
-    private function highlight($node) {
+    private function highlight($node)
+    {
         $stripped = preg_replace('/<\/?(title|passage)[^>]*>/', '', $node->asXML());
         return str_replace('</hlword>', '</strong>', preg_replace('/<hlword[^>]*>/', '<strong>', $stripped));
     }
 
     /**
      * Очистка строки XML от некоторых тегов
+     *
      * @param type $node
+     *
      * @return type
      */
-    private function clean($node) {
+    private function clean($node)
+    {
         $stripped = preg_replace('/<\/?(title|passage)[^>]*>/', '', $node->asXML());
         return str_replace('</hlword>', '', preg_replace('/<hlword[^>]*>/', '', $stripped));
     }
 
     /**
      * Построение XML-запроса
+     *
      * @param string $request - поисковая строка
+     *
      * @return string
      */
-    protected function buildQuery($request) {
+    protected function buildQuery($request)
+    {
         $query = html_entity_decode($request, ENT_QUOTES, "utf-8");
         $doc = <<<DOC
 <?xml version="1.0" encoding="utf-8"?>
@@ -159,26 +185,29 @@ DOC;
 
     /**
      * Разбор ответа сервера
+     *
      * @param string $response
+     *
      * @return array
      */
-    protected function parseResponse($response) {
-        $results = array();
-        $xmldoc = new SimpleXMLElement($response);
+    protected function parseResponse($response)
+    {
+        $results = [];
+        $xmlDoc = new SimpleXMLElement($response);
 
-        $this->meta['error'] = $xmldoc->response->error;
-        $found = $xmldoc->xpath("response/results/grouping/group/doc");
+        $this->meta['error'] = $xmlDoc->response->error;
+        $found = $xmlDoc->xpath('response/results/grouping/group/doc');
         if (empty($this->meta['error'])) {
-            $this->meta['pages_cnt'] = (int) $xmldoc->response->found;
+            $this->meta['pages_cnt'] = (int) $xmlDoc->response->found;
             foreach ($found as $item) {
-                $result_item = array(
+                $result_item = [
                     'domain' => (string) $item->domain,
                     'url' => (string) $item->url,
                     'title' => $this->clean($item->title),
                     'title_hw' => $this->highlight($item->title),
                     'descr' => '',
                     'descr_hw' => '',
-                );
+                ];
                 if ($item->passages) {
                     foreach ($item->passages->passage as $passage) {
                         $result_item['descr'] .= $this->clean($passage) . "\n";
@@ -199,20 +228,28 @@ DOC;
 
     /**
      * Метод для запросов к Яндексу через cURL
+     *
      * @param string $data - XML запрос
-     * @return string ответ сервера Яндекса
+     *
+     * @return string - ответ сервера Яндекса
+     * @throws RuntimeException
      */
-    protected function getRequest($data) {
+    protected function getRequest($data)
+    {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_URL, $this->requestURL);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/xml',
-            'Content-length: ' . strlen($data),
-        ));
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            [
+                'Content-Type: application/xml',
+                'Content-length: ' . strlen($data),
+            ]
+        );
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -222,9 +259,10 @@ DOC;
         $errno = curl_errno($ch);
         if ($errno) {
             $error_message = curl_error($ch);
-            throw new Exception("cURL error ({$errno}):\n {$error_message}");
+            throw new RuntimeException("cURL error ({$errno}):\n {$error_message}");
         }
         curl_close($ch);
+
         return $response;
     }
 
