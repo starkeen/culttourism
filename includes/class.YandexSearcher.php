@@ -2,7 +2,6 @@
 
 class YandexSearcher
 {
-
     protected $requestURL = "https://yandex.ru/search/xml?user=starkeen&key=03.10766361:bbf1bd34a06a8c93a745fcca95b31b80&l10n=ru&sortby=rlv&filter=strict";
     protected $meta = [
         'page' => 0,
@@ -21,7 +20,7 @@ class YandexSearcher
      *
      * @var MSearchLog
      */
-    protected $logger = null;
+    protected $logger;
 
     /**
      * Выполнение поискового запроса
@@ -79,7 +78,7 @@ class YandexSearcher
                     $out['results'] = $results;
                     $out['pages_cnt'] = $this->meta['pages_cnt'];
                 } elseif (!empty($this->meta['error'])) {
-                    $out['error_code'] = $this->meta['error_code'];
+                    $out['error_code'] = (int) $this->meta['error_code'];
                     $out['error_text'] = $this->meta['error_text'];
                     if ($this->loggingEnabled) {
                         $this->logger->setAnswer(
@@ -220,7 +219,7 @@ DOC;
             }
         } else {
             $err_attr = $this->meta['error']->attributes();
-            $this->meta['error_code'] = $err_attr['code'];
+            $this->meta['error_code'] = (int) $err_attr['code'];
             $this->meta['error_text'] = "Ошибка: " . $this->meta['error'];
         }
         return $results;
