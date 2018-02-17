@@ -38,7 +38,6 @@ if ($_SERVER['HTTP_HOST'] != _URL_ROOT) {
 if ($request_uri_arr[1] == '' && !empty($request_uri_arr[2])) {
     unset($request_uri_arr[1]);
     $canonical = implode('/', $request_uri_arr);
-    mail('starkeen@gmail.com', 'Canonical redirect on ' . _URL_ROOT, $canonical);
     header("HTTP/1.1 301 Moved Permanently");
     header("Location: $canonical");
     exit();
