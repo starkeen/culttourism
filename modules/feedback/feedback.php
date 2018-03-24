@@ -97,6 +97,12 @@ class Page extends PageCommon
             if (isset($_SESSION['captcha_keystring']) && $fcapt != $_SESSION['captcha_keystring']) {
                 $data['error'] = 'fcapt';
             }
+            if ($data['fname'] === 'Сотруднк') {
+                $data['error'] = 'fcapt';
+            }
+            if (strpos($data['ftext'], 'drive.google.com') !== false) {
+                $data['error'] = 'fcapt';
+            }
             if ($ftextcheck != '') {
                 $data['error'] = 'fcapt';
             }
@@ -187,5 +193,4 @@ class Page extends PageCommon
     {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
-
 }
