@@ -53,7 +53,7 @@ class MCron extends Model {
                     cr_isrun = 0,
                     cr_lastexectime = :exectime,
                     cr_lastresult = :content,
-                    cr_datenext = DATE_ADD(cr_datenext, INTERVAL DATE_FORMAT(cr_period, '%d %H:%i') DAY_MINUTE),
+                    cr_datenext = ADDTIME(cr_datenext, cr_period),
                     cr_datelast = NOW()
                     WHERE cr_id = :crid";
         
