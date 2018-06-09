@@ -9,6 +9,7 @@ class Page extends PageCommon
         'com.google.android.googlequicksearchbox',
         'android-app%3A',
     ];
+
     const BOT_MARKERS =  [
         'YandexMetrika',
         'Googlebot',
@@ -81,13 +82,13 @@ class Page extends PageCommon
     }
 
     /**
-     * @param string $slugline
+     * @param string $slugLine
      *
      * @return string
      */
-    private function getPageObjectBySlug($slugline)
+    private function getPageObjectBySlug($slugLine)
     {
-        if (!$slugline) {
+        if (!$slugLine) {
             return false;
         }
 
@@ -95,7 +96,7 @@ class Page extends PageCommon
         $pcs = new MPageCities($this->db);
         $li = new MListsItems($this->db);
 
-        $objects = $pts->searchSlugline($slugline);
+        $objects = $pts->searchSlugline($slugLine);
         $object = isset($objects[0]) ? $objects[0] : false;
         if (!$object) {
             return false;
@@ -232,6 +233,12 @@ class Page extends PageCommon
         return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.sm.html');
     }
 
+    /**
+     * @param int $pid
+     * @param string $p_url
+     *
+     * @return bool
+     */
     public function getSubContent($pid, $p_url)
     {
         $dbm = $this->db->getTableName('modules');
@@ -254,6 +261,12 @@ class Page extends PageCommon
         $this->getError('404');
     }
 
+    /**
+     * @param string $module_id
+     * @param string $sub_url
+     *
+     * @return string
+     */
     public function getNavigation($module_id, $sub_url)
     {
         $dbm = $this->db->getTableName('modules');
@@ -312,7 +325,7 @@ class Page extends PageCommon
 
             //--------------------  c a n o n i c a l  ------------------------
             $this->canonical = $row['url_canonical'];
-            if ($this->canonical != ($url . '/')) {
+            if ($this->canonical !== ($url . '/')) {
                 header('HTTP/1.1 301 Moved Permanently');
                 header("Location: $this->canonical");
                 exit();
@@ -333,6 +346,7 @@ class Page extends PageCommon
             $sc->add($row['pc_id'], $this->getUserHash());
 
             $this->addTitle($row['pc_title_unique'] . ': достопримечательности');
+            $this->addDescription($row['pc_title_unique'] . ' - что посмотреть');
             if ($row['pc_description']) {
                 $this->addDescription($row['pc_description']);
             }
@@ -428,6 +442,9 @@ class Page extends PageCommon
         exit();
     }
 
+    /**
+     * @param string $url
+     */
     private function getPageMap($url)
     {
         $pc = new MPageCities($this->db);
@@ -436,6 +453,12 @@ class Page extends PageCommon
         exit();
     }
 
+    /**
+     * @param      $db
+     * @param null $mod
+     *
+     * @return Core
+     */
     public static function getInstance($db, $mod = null)
     {
         return self::getInstanceOf(__CLASS__, $db, $mod);

@@ -409,13 +409,22 @@ abstract class Core
             ) . $path : $path;
     }
 
-    /* запрещаем клонировать экземпляр класса */
-
+    /**
+     * запрещаем клонировать экземпляр класса
+     * @throws Exception
+     */
     protected function __clone()
     {
-        throw new Exception('Cannot clone singleton');
+        throw new Exception('Can not clone singleton');
     }
 
+    /**
+     * @param string $sClassname
+     * @param $db
+     * @param $mod
+     *
+     * @return self
+     */
     protected static function getInstanceOf($sClassname, $db, $mod)
     {
         if (!isset(self::$hInstances[$sClassname])) {
