@@ -1,49 +1,64 @@
 <?php
 
-/**
- * Description of header of "Sys" module
- *
- * @author starkeen
- */
-class Page extends PageCommon {
+use app\db\MyDB;
 
-    public function __construct($db, $mod) {
+/**
+ * Модуль служебных и системных процессов
+ */
+class Page extends PageCommon
+{
+    private const SETTINGS_BRANCH_DEPLOY = 9;
+    private const MODULE_KEY = 'sys';
+
+    public function __construct($db, $mod)
+    {
         list($module_id, $page_id, $id) = $mod;
-        parent::__construct($db, 'sys', $page_id);
+
+        parent::__construct($db, self::MODULE_KEY, $page_id);
 
         if ($page_id == '' && $id == '' && empty($_GET)) {
-            $this->content = $this->getError('301', '');
-        } elseif ($page_id == 'bitbucket' && $id == '' && isset($_GET['key'])) {
+            $this->content = $this->getError(Core::HTTP_CODE_301, '');
+        } elseif ($page_id === 'bitbucket' && $id == '' && isset($_GET['key'])) {
             $this->content = $this->getBitbucket(trim($_GET['key']));
-        } elseif ($page_id == 'static' && $id == '' && isset($_GET['type']) && isset($_GET['pack'])) {
+        } elseif ($page_id === 'static' && $id == '' && isset($_GET['type']) && isset($_GET['pack'])) {
             $this->content = $this->getStatic(trim($_GET['type']), trim($_GET['pack']));
         } else {
-            $this->content = $this->getError('404');
+            $this->content = $this->getError(Core::HTTP_CODE_404);
         }
     }
 
-    public function getStatic($type, $pack = 'common') {
-        if ($type == 'css') {
-            header("Content-Type: text/css");
-        } elseif ($type == 'js') {
-            header("Content-Type: text/javascript");
+    /**
+     * @param string $type
+     * @param string $pack
+     */
+    public function getStatic(string $type, string $pack = 'common'): void
+    {
+        if ($type === 'css') {
+            header('Content-Type: text/css');
+        } elseif ($type === 'js') {
+            header('Content-Type: text/javascript');
         } else {
-            header("Content-Type: text/plain");
+            header('Content-Type: text/plain');
         }
+
         $sr = new StaticResources();
         echo $sr->getFull($type, $pack);
         exit();
     }
 
-    private function getBitbucket($key = null) {
+    /**
+     * @param string|null $key
+     */
+    private function getBitbucket(string $key = null): void
+    {
         if (isset($_POST) && !empty($_POST)) {
-            Logging::addHistory('sys', "Запрос на деплой", $_POST);
+            Logging::addHistory('sys', 'Запрос на деплой', $_POST);
             $req = json_decode($_POST['payload']);
 
             $sp = new MSysProperties($this->db);
-            $config = $sp->getSettingsByBranchId(9);
+            $config = $sp->getSettingsByBranchId(self::SETTINGS_BRANCH_DEPLOY);
 
-            if ($key && $key == $config['git_key']) {
+            if ($key && $key === $config['git_key']) {
                 $config['location'] = _DIR_ROOT . '/';
 
                 $bb = new DeployBitbucket($config);
@@ -71,11 +86,11 @@ class Page extends PageCommon {
                         $sp->updateByName('git_hash', $req->commits[0]->raw_node);
                     }
 
-                    Logging::addHistory('sys', "Результаты деплоя", implode("\n", $res));
+                    Logging::addHistory('sys', 'Результаты деплоя', implode("\n", $res));
 
-                    $mail_attrs = array(
-                        'files_list' => implode("<br>", $res),
-                    );
+                    $mail_attrs = [
+                        'files_list' => implode('<br>', $res),
+                    ];
                     Mailing::sendLetterCommon($config['git_report_email'], 2, $mail_attrs);
                 }
                 echo 'ok';
@@ -88,13 +103,14 @@ class Page extends PageCommon {
         }
     }
 
-    private function getRepoConfig() {
-        $sp = new MSysProperties($this->db);
-        return $sp->getSettingsByBranchId(9);
-    }
-
-    public static function getInstance($db, $mod) {
+    /**
+     * @param MyDB $db
+     * @param string $mod
+     *
+     * @return Core
+     */
+    public static function getInstance(MyDB $db, $mod)
+    {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
-
 }

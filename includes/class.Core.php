@@ -1,12 +1,14 @@
 <?php
 
 /**
- * Description of classCore
- *
- * @author Andrey_Pns
+ * Core
  */
 abstract class Core
 {
+    public const HTTP_CODE_301 = 301;
+    public const HTTP_CODE_403 = 403;
+    public const HTTP_CODE_404 = 404;
+    public const HTTP_CODE_503 = 503;
 
     private static $hInstances = []; // хэш экземпляров классов
     public $content = '';
@@ -141,10 +143,9 @@ abstract class Core
     }
 
     /**
-     *
      * @param string $text
      */
-    public function addTitle($text)
+    public function addTitle($text): void
     {
         $this->_title[] = $text;
         krsort($this->_title);
@@ -155,7 +156,7 @@ abstract class Core
      *
      * @param string $text
      */
-    public function addKeywords($text)
+    public function addKeywords($text): void
     {
         $this->_keywords[] = $text;
         krsort($this->_keywords);
@@ -166,7 +167,7 @@ abstract class Core
      *
      * @param string $text
      */
-    public function addDescription($text)
+    public function addDescription($text): void
     {
         $this->_description[] = trim($text);
         krsort($this->_description);
@@ -178,14 +179,12 @@ abstract class Core
      *
      * @param string $key
      * @param string $value
-     *
-     * @return bool
      */
-    public function addOGMeta($key, $value)
+    public function addOGMeta(string $key, string $value): void
     {
         $allowTags = ['app_id', 'title', 'type', 'locale', 'url', 'image', 'site_name', 'description', 'updated_time'];
         if (!in_array($key, $allowTags, true)) {
-            return false;
+            return;
         }
         $this->addCustomMeta('og:' . $key, $value);
     }
@@ -195,23 +194,23 @@ abstract class Core
      *
      * @param string $key
      * @param string $value
-     *
-     * @return boolean
      */
-    public function addCustomMeta($key, $value)
+    public function addCustomMeta($key, $value): void
     {
         $val = trim(html_entity_decode(strip_tags($value)));
         if (empty($val)) {
-            return false;
+            return;
         }
+
         $this->metaTagsCustom[$key] = $val;
     }
 
     /**
      * Получение набора кастомных мета-тегов
+     *
      * @return array
      */
-    public function getCustomMetas()
+    public function getCustomMetas(): array
     {
         ksort($this->metaTagsCustom);
         return $this->metaTagsCustom;
@@ -267,7 +266,12 @@ abstract class Core
         return $out;
     }
 
-    private function getSuggestions404Yandex($req)
+    /**
+     * @param string $req
+     *
+     * @return array
+     */
+    private function getSuggestions404Yandex(string $req): array
     {
         $out = [];
         if (strpos($req, '.css') === false && strpos($req, '.js') === false && strpos($req, '.png') === false && strpos(
@@ -276,8 +280,8 @@ abstract class Core
             ) === false && strpos($req, '.xml') === false) {
             $ys = new YandexSearcher();
             $ys->enableLogging($this->db);
-            $searchstring = trim(implode(' ', explode('/', $req)));
-            $variants = $ys->search("$searchstring host:culttourism.ru");
+            $searchString = trim(implode(' ', explode('/', $req)));
+            $variants = $ys->search("$searchString host:culttourism.ru");
             if (!empty($variants['results'])) {
                 $i = 0;
                 foreach ($variants['results'] as $variant) {
@@ -285,7 +289,7 @@ abstract class Core
                         'url' => $variant['url'],
                         'title' => trim(str_replace('| Культурный туризм', '', $variant['title'])),
                     ];
-                    if ($i++ == 3) {
+                    if ($i++ === 3) {
                         break;
                     }
                 }
@@ -309,9 +313,9 @@ abstract class Core
         $this->getError('503');
     }
 
-    public function getError($err_code = '404', $err_data = null)
+    public function getError(int $err_code = self::HTTP_CODE_404, $err_data = null)
     {
-        if ($err_code != '301') {
+        if ($err_code !== self::HTTP_CODE_301) {
             $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
             $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
             $this->globalsettings['main_rss'] = '';
@@ -322,13 +326,13 @@ abstract class Core
             $this->smarty->assign('debug_info', '');
         }
         switch ($err_code) {
-            case '301': {
-                header("HTTP/1.1 301 Moved Permanently");
+            case self::HTTP_CODE_301: {
+                header('HTTP/1.1 301 Moved Permanently');
                 header("Location: $err_data");
                 exit();
             }
                 break;
-            case '403': {
+            case self::HTTP_CODE_403: {
                 Logging::write($err_code, $err_data);
 
                 header('Content-Type: text/html; charset=utf-8');
@@ -341,11 +345,11 @@ abstract class Core
                 $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html');
             }
                 break;
-            case '404': {
+            case self::HTTP_CODE_404: {
                 Logging::write($err_code, $err_data);
 
                 header('Content-Type: text/html; charset=utf-8');
-                header("HTTP/1.0 404 Not Found");
+                header('HTTP/1.0 404 Not Found');
 
                 $suggestions = [];
                 //$suggestions = $this->getSuggestions404Local($_SERVER['REQUEST_URI']);
@@ -362,7 +366,7 @@ abstract class Core
                 $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html');
             }
                 break;
-            case '503': {
+            case self::HTTP_CODE_503: {
                 header('Content-Type: text/html; charset=utf-8');
                 header('HTTP/1.1 503 Service Temporarily Unavailable');
                 header('Status: 503 Service Temporarily Unavailable');
@@ -374,7 +378,7 @@ abstract class Core
             }
                 break;
         }
-        if ($this->module_id == 'api') {
+        if ($this->module_id === 'api') {
             $this->smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
         } elseif ($this->isAjax) {
             echo $this->content;

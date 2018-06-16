@@ -3,9 +3,6 @@
 use app\cache\Cache;
 
 /**
- * Description of class MSysProperties
- *
- * @author Андрей
  */
 class MSysProperties extends Model
 {
@@ -29,23 +26,34 @@ class MSysProperties extends Model
         $this->cache = Cache::i('sysprops');
     }
 
-    public function getSettingsByBranchId($rsid)
+    /**
+     * @param int $id
+     *
+     * @return array
+     */
+    public function getSettingsByBranchId(int $id): array
     {
         $this->_db->sql = "SELECT sp_name, sp_value FROM $this->_table_name WHERE sp_rs_id = :rsid";
-
         $this->_db->execute(
             [
-                ':rsid' => intval($rsid),
+                ':rsid' => $id,
             ]
         );
+
         $config = [];
         while ($row = $this->_db->fetch()) {
             $config[$row['sp_name']] = $row['sp_value'];
         }
+
         return $config;
     }
 
-    public function getPublic($refresh = false)
+    /**
+     * @param bool $refresh
+     *
+     * @return array
+     */
+    public function getPublic(bool $refresh = false): array
     {
         $config = $this->cache->get('public');
         if (empty($config) || $refresh) {
@@ -64,7 +72,11 @@ class MSysProperties extends Model
         return $config;
     }
 
-    public function updateByName($name, $value)
+    /**
+     * @param string $name
+     * @param        $value
+     */
+    public function updateByName(string $name, $value): void
     {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET sp_value = :value
@@ -76,10 +88,16 @@ class MSysProperties extends Model
                 ':value' => $value,
             ]
         );
+
         $this->cache->remove('public');
     }
 
-    public function getByName($name)
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    public function getByName(string $name): string
     {
         $this->_db->sql = "SELECT sp_value
                             FROM $this->_table_name
@@ -89,7 +107,6 @@ class MSysProperties extends Model
                 ':name' => $name,
             ]
         );
-        return $this->_db->fetchCol();
+        return (string) $this->_db->fetchCol();
     }
-
 }
