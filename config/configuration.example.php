@@ -10,6 +10,9 @@ define('_INI_DELIMITER', ':');                  // use ';' for Windows and ':' f
 define('_DELIMITER_PATH', '/');
 define('_URL_ROOT', 'cult.local');
 
+// Sentry configuration
+define('SENTRY_DSN', 'https://key1:key2@sentry.io/key3');
+
 /* MySQL settings */
 define('DB_HOSTNAME', 'localhost');
 define('DB_USERNAME', 'user');
