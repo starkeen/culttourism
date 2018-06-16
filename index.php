@@ -13,7 +13,6 @@ if (_ER_REPORT) {
 
 include _DIR_ROOT . '/vendor/autoload.php';
 
-// TODO Вынести DSN в конфиг
 $sentryClient = new Raven_Client(SENTRY_DSN);
 $sentryClient->install();
 
