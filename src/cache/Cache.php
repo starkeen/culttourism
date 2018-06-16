@@ -66,7 +66,7 @@ class Cache
      *
      * @param string $key
      *
-     * @return mixed
+     * @return array|string|null
      */
     public function get($key)
     {
