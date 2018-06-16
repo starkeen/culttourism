@@ -37,7 +37,7 @@ if ($_SERVER['HTTP_HOST'] != _URL_ROOT) {
 if ($request_uri_arr[1] == '' && !empty($request_uri_arr[2])) {
     unset($request_uri_arr[1]);
     $canonical = implode('/', $request_uri_arr);
-    header("HTTP/1.1 301 Moved Permanently");
+    header('HTTP/1.1 301 Moved Permanently');
     header("Location: $canonical");
     exit();
 }
@@ -53,11 +53,17 @@ $id2 = isset($id) ? urlencode($id2) : null;
 
 $smarty = new mySmarty($module_id);
 $db = FactoryDB::db();
-if (file_exists(_DIR_MODULES . "/$module_id/$module_id.php")) {
-    include(_DIR_MODULES . "/$module_id/$module_id.php");
-} else {
-    include(_DIR_INCLUDES . '/class.Page.php');
+
+$sp = new MSysProperties($db);
+$releaseKey = $sp->getByName('git_hash');
+$sentryClient->setRelease($releaseKey);
+
+$includeModulePath = _DIR_INCLUDES . '/class.Page.php';
+$customModulePath = sprintf('%s/%s/%s.php', _DIR_MODULES, $module_id, $module_id);
+if (file_exists($customModulePath)) {
+    $includeModulePath = $customModulePath;
 }
+include($includeModulePath);
 
 $page = Page::getInstance($db, array($module_id, $page_id, $id, $id2));
 $smarty->assign('page', $page);
@@ -65,7 +71,7 @@ $smarty->assign('page', $page);
 header('X-Powered-By: html');
 header('Content-Type: text/html; charset=utf-8');
 
-if (_CACHE_DAYS != 0 && !$page->isAjax) {
+if (_CACHE_DAYS !== 0 && !$page->isAjax) {
     header('Expires: ' . $page->expiredate);
     header('Last-Modified: ' . $page->lastedit);
     header('Cache-Control: public, max-age=' . _CACHE_DAYS * 3600);
@@ -86,8 +92,8 @@ if (_CACHE_DAYS != 0 && !$page->isAjax) {
     }
 } elseif ($page->lastedit_timestamp > 0 && !$page->isAjax) {
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp) . ' GMT');
-    header("Cache-control: public");
-    header("Pragma: cache");
+    header('Cache-control: public');
+    header('Pragma: cache');
     header('Expires: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp + 60 * 60 * 24 * 7) . ' GMT');
     $headers = getallheaders();
     if (isset($headers['If-Modified-Since'])) {
@@ -98,8 +104,8 @@ if (_CACHE_DAYS != 0 && !$page->isAjax) {
         }
     }
 } else {
-    header("Cache-Control: no-store, no-cache, must-revalidate");
-    header("Expires: " . date("r"));
+    header('Cache-Control: no-store, no-cache, must-revalidate');
+    header('Expires: ' . date('r'));
     $page->lastedit = null;
 }
 $smarty->caching = false;

@@ -18,6 +18,9 @@ $smarty = new mySmarty();
 $sp = new MSysProperties($db);
 $cr = new MCron($db);
 
+$releaseKey = $sp->getByName('git_hash');
+$sentryClient->setRelease($releaseKey);
+
 $global_cron_email = $sp->getByName('mail_report_cron');
 
 //-- если больше двух часов работает скрипт - зарубить
