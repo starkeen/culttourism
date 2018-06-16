@@ -3,6 +3,7 @@
 use app\cache\Cache;
 
 /**
+ * Модель таблицы системных настроек
  */
 class MSysProperties extends Model
 {

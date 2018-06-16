@@ -4,17 +4,12 @@ DirectoryIndex index.php index.html
 php_value expose_php Off
 php_flag expose_php Off
 
-AddType application/vnd.ms-fontobject .eot
-AddType font/ttf .ttf
-AddType font/otf .otf
-AddType application/x-font-woff .woff
-
 
 RewriteEngine On
 RewriteCond %{REQUEST_URI} ^/[^.]+[^/]$
 RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1/ [R=301,L]
-RewriteCond %{REQUEST_FILENAME} !-f 
-RewriteCond %{REQUEST_FILENAME} !-d 
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . index.php [L,QSA]
-AddDefaultCharset utf-8
+php_value default_charset utf-8
 AddType 'text/html; charset=utf-8' .html .htm .shtml

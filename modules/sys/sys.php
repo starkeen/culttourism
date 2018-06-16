@@ -109,7 +109,7 @@ class Page extends PageCommon
      *
      * @return Core
      */
-    public static function getInstance(MyDB $db, $mod)
+    public static function getInstance(MyDB $db, $mod): self
     {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }

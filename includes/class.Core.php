@@ -30,10 +30,10 @@ abstract class Core
     public $isCounters = 0;
     public $isAjax = false;
     public $module_id = _INDEXPAGE_URI;
-    public $md_id = null; //id of module in database
+    public $md_id; //id of module in database
     public $page_id = '';
-    private $id_id = null;
-    protected $db = null;
+    private $id_id;
+    protected $db;
     public $basepath = '';
     public $globalsettings = [
         'default_pagetitle' => '',
