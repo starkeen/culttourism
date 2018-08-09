@@ -5,7 +5,7 @@ class MSearchLog extends Model
     protected $_table_pk = 'sl_id';
     protected $_table_order = 'sl_date';
     protected $_table_active = 'sl_id';
-    private $_record_id = null;
+    private $_record_id;
 
     public function __construct($db)
     {
@@ -44,7 +44,7 @@ class MSearchLog extends Model
      *
      * @param array $data
      */
-    public function setAnswer($data)
+    public function setAnswer($data): void
     {
         $this->updateByPk($this->_record_id, $data);
     }
@@ -56,7 +56,7 @@ class MSearchLog extends Model
      *
      * @return string|null
      */
-    public function searchByHash($doc)
+    public function searchByHash(string $doc): ?string
     {
         $this->_db->sql = "SELECT * FROM $this->_table_name WHERE sl_query_hash = :hash";
         $this->_db->execute(
@@ -74,7 +74,7 @@ class MSearchLog extends Model
      *
      * @param string $doc
      */
-    public function updateHashData($doc)
+    public function updateHashData(string $doc): void
     {
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 sl_requests_count = sl_requests_count + 1,
@@ -93,7 +93,7 @@ class MSearchLog extends Model
      * @param string $query
      * @return string
      */
-    public static function getQueryHash($query)
+    public static function getQueryHash(string $query): string
     {
         $lower = mb_strtolower($query);
         $symbols = preg_replace('|s+|', '', $lower);

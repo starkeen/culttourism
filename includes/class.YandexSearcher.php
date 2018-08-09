@@ -105,7 +105,7 @@ class YandexSearcher
      *
      * @param int $page
      */
-    public function setPage(int $page)
+    public function setPage(int $page): void
     {
         $this->meta['page'] = $page;
     }
@@ -115,7 +115,7 @@ class YandexSearcher
      *
      * @param int $max
      */
-    public function setPagesMax(int $max)
+    public function setPagesMax(int $max): void
     {
         $this->meta['pages'] = $max;
     }
@@ -125,7 +125,7 @@ class YandexSearcher
      *
      * @param \app\db\MyDB $db
      */
-    public function enableLogging($db)
+    public function enableLogging($db): void
     {
         $this->logger = new MSearchLog($db);
         $this->loggingEnabled = true;
@@ -134,11 +134,11 @@ class YandexSearcher
     /**
      * Добавление тегов strong в подсветку
      *
-     * @param type $node
+     * @param mixed $node
      *
-     * @return type
+     * @return string
      */
-    private function highlight($node)
+    private function highlight($node): string
     {
         $stripped = preg_replace('/<\/?(title|passage)[^>]*>/', '', $node->asXML());
         return str_replace('</hlword>', '</strong>', preg_replace('/<hlword[^>]*>/', '<strong>', $stripped));
@@ -147,11 +147,11 @@ class YandexSearcher
     /**
      * Очистка строки XML от некоторых тегов
      *
-     * @param type $node
+     * @param mixed $node
      *
-     * @return type
+     * @return string
      */
-    private function clean($node)
+    private function clean($node): string
     {
         $stripped = preg_replace('/<\/?(title|passage)[^>]*>/', '', $node->asXML());
         return str_replace('</hlword>', '', preg_replace('/<hlword[^>]*>/', '', $stripped));
@@ -164,9 +164,9 @@ class YandexSearcher
      *
      * @return string
      */
-    protected function buildQuery($request)
+    protected function buildQuery($request): string
     {
-        $query = html_entity_decode($request, ENT_QUOTES, "utf-8");
+        $query = html_entity_decode($request, ENT_QUOTES, 'utf-8');
         $doc = <<<DOC
 <?xml version="1.0" encoding="utf-8"?>
 <request>
@@ -179,6 +179,7 @@ class YandexSearcher
         </groupings>
 </request>
 DOC;
+
         return $doc;
     }
 
@@ -189,7 +190,7 @@ DOC;
      *
      * @return array
      */
-    protected function parseResponse($response)
+    protected function parseResponse($response): array
     {
         $results = [];
         $xmlDoc = new SimpleXMLElement($response);
@@ -220,7 +221,7 @@ DOC;
         } else {
             $err_attr = $this->meta['error']->attributes();
             $this->meta['error_code'] = (int) $err_attr['code'];
-            $this->meta['error_text'] = "Ошибка: " . $this->meta['error'];
+            $this->meta['error_text'] = 'Ошибка: ' . $this->meta['error'];
         }
         return $results;
     }
@@ -233,7 +234,7 @@ DOC;
      * @return string - ответ сервера Яндекса
      * @throws RuntimeException
      */
-    protected function getRequest($data)
+    protected function getRequest(string $data): string
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -253,7 +254,6 @@ DOC;
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        //curl_setopt($ch, CURLOPT_INTERFACE, '176.57.209.90'); // 188.225.12.25
         $response = curl_exec($ch);
         $errno = curl_errno($ch);
         if ($errno) {
@@ -264,5 +264,4 @@ DOC;
 
         return $response;
     }
-
 }
