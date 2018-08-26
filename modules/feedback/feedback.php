@@ -80,6 +80,7 @@ class Page extends PageCommon
             'error' => null,
             'success' => null,
             'fname' => null,
+            'fsurname' => null,
             'ftext' => null,
             'fmail' => null,
         ];
@@ -89,6 +90,7 @@ class Page extends PageCommon
         $referer = !empty($_SESSION['feedback_referer']) ? $_SESSION['feedback_referer'] : null;
         if (isset($_POST) && !empty($_POST)) {
             $data['fname'] = cut_trash_text($_POST['fname']);
+            $data['fsurname'] = $_POST['fsurname'] ?? null;
             $data['fmail'] = cut_trash_text($_POST['fmail']);
             $data['ftext'] = cut_trash_text($_POST['ftext']);
             $fcapt = $_POST['fcapt'];
@@ -98,6 +100,12 @@ class Page extends PageCommon
                 $data['error'] = 'fcapt';
             }
             if ($data['fname'] === 'Сотруднк') {
+                $data['error'] = 'fcapt';
+            }
+            if ($data['fsurname'] === null) { // скрытое поле не было отправлено вообще
+                $data['error'] = 'fcapt';
+            }
+            if ($data['fsurname'] !== '') { // скрытое поле было отправлено непустым
                 $data['error'] = 'fcapt';
             }
             if (strpos($data['ftext'], 'drive.google.com') !== false) {
@@ -147,11 +155,18 @@ class Page extends PageCommon
         }
     }
 
-    private function getCommonForm($data)
+    /**
+     * @param array $data
+     *
+     * @return string
+     * @throws SmartyException
+     */
+    private function getCommonForm(array $data): string
     {
         foreach ($data as $k => $v) {
             $this->smarty->assign($k, $v);
         }
+
         return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/feedpage.sm.html');
     }
 
