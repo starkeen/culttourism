@@ -22,14 +22,7 @@ foreach ($blogEntries as $entry) {
     $xmlItem->addChild('link', $entry['br_link']);
     $xmlItem->addChild('title', $entry['br_title']);
 
-    $content = sprintf('<header><h1>%s</h1></header>%s', $entry['br_title'], PHP_EOL . $entry['br_text_absolute']);
-    if ($entry['br_picture'] !== '') {
-        $content .= PHP_EOL . sprintf(
-                '<figure><img src="%s" /><figcaption>%s</figcaption></figure>',
-                $entry['br_picture'],
-                $entry['br_title']
-            );
-    }
+    $content = $entry['br_text_absolute'];
     $itemTurboContent = $xmlItem->addChild('turbo:content', sprintf('<![CDATA[%s]]>', $content), 'http://turbo.yandex.ru');
 }
 
