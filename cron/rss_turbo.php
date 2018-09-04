@@ -1,6 +1,6 @@
 <?php
 
-$fileName = sprintf('%s/feed/%s', _DIR_DATA, 'turbo.xml');
+$fileName = sprintf('%s/feed/%s', _DIR_DATA, 'turbo-blog.xml');
 
 $xml = new SimpleXMLElement('<rss></rss>');
 $xml->addAttribute('xmlns:yandex', 'http://news.yandex.ru');
