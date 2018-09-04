@@ -9,6 +9,10 @@ $xml->addAttribute('xmlns:turbo', 'http://turbo.yandex.ru');
 $xml->addAttribute('version', '2.0');
 
 $xmlChannel = $xml->addChild('channel');
+$xmlChannel->addChild('title', 'Культурный туризм: блог');
+$xmlChannel->addChild('link', _SITE_URL);
+$xmlChannel->addChild('description', 'Блог проекта Культурный туризм');
+$xmlChannel->addChild('language', 'ru');
 
 $blogModel = new MBlogEntries($db);
 $blogEntries = $blogModel->getLastActive(5);
