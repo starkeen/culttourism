@@ -15,11 +15,12 @@ $xmlChannel->addChild('description', 'Блог проекта Культурны
 $xmlChannel->addChild('language', 'ru');
 
 $blogModel = new MBlogEntries($db);
-$blogEntries = $blogModel->getLastActive(5);
+$blogEntries = $blogModel->getLastActive(10);
 foreach ($blogEntries as $entry) {
     $xmlItem = $xmlChannel->addChild('item');
     $xmlItem->addAttribute('turbo', 'true');
-    $itemLink = $xmlItem->addChild('link', $entry['br_link']);
+    $xmlItem->addChild('link', $entry['br_link']);
+    $xmlItem->addChild('title', $entry['br_title']);
 
     $content = sprintf('<header><h1>%s</h1></header>%s', $entry['br_title'], PHP_EOL . $entry['br_text_absolute']);
     if ($entry['br_picture'] !== '') {
