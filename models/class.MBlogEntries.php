@@ -1,14 +1,15 @@
 <?php
 
-class MBlogEntries extends Model {
-
+class MBlogEntries extends Model
+{
     protected $_table_pk = 'br_id';
     protected $_table_order = 'br_date';
     protected $_table_active = 'br_active';
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->_table_name = $db->getTableName('blogentries');
-        $this->_table_fields = array(
+        $this->_table_fields = [
             'br_date',
             'br_title',
             'br_url',
@@ -16,17 +17,20 @@ class MBlogEntries extends Model {
             'br_picture',
             'br_us_id',
             'br_active',
-        );
+        ];
         parent::__construct($db);
         $this->_addRelatedTable('users');
     }
 
     /**
      * Последние несколько записей из блога
+     *
      * @param int $qnt
+     *
      * @return array
      */
-    public function getLastActive($qnt = 10) {
+    public function getLastActive($qnt = 10)
+    {
         $this->_db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text, bg.br_date,
                                 REPLACE(bg.br_text, '=\"/', CONCAT('=\"', :site_url1)) AS br_text_absolute,
                                 'Роберт' AS us_name, 'abuse@culttourism.ru' AS us_email,
@@ -42,20 +46,24 @@ class MBlogEntries extends Model {
                                 AND br_date < NOW()
                             ORDER BY bg.br_date DESC
                             LIMIT :limit";
-        $this->_db->execute(array(
-            ':site_url1' => _SITE_URL,
-            ':site_url2' => _SITE_URL,
-            ':site_url3' => _SITE_URL,
-            ':limit' => $qnt,
-        ));
+        $this->_db->execute(
+            [
+                ':site_url1' => _SITE_URL,
+                ':site_url2' => _SITE_URL,
+                ':site_url3' => _SITE_URL,
+                ':limit' => $qnt,
+            ]
+        );
+
         return $this->_db->fetchAll();
     }
 
-    public function getLastWithTS($limit) {
-        $out = array(
-            'blogentries' => array(),
+    public function getLastWithTS($limit)
+    {
+        $out = [
+            'blogentries' => [],
             'max_ts' => 0,
-        );
+        ];
         $this->_db->sql = "SELECT bg.*, us.us_name,
                                 UNIX_TIMESTAMP(bg.br_date) AS last_update,
                                 DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month,
@@ -67,12 +75,14 @@ class MBlogEntries extends Model {
                              WHERE bg.br_date < NOW()
                              ORDER BY bg.br_date DESC
                              LIMIT :limit";
-        $this->_db->execute(array(
-            ':limit' => intval($limit),
-        ));
+        $this->_db->execute(
+            [
+                ':limit' => intval($limit),
+            ]
+        );
         $patern = "/(.*?)<\/p>/i";
         while ($row = $this->_db->fetch()) {
-            $matches = array();
+            $matches = [];
             preg_match_all($patern, $row['br_text'], $matches);
             if (isset($matches[0][0])) {
                 $row['br_text'] = strip_tags($matches[0][0], '<p><a>');
@@ -88,7 +98,8 @@ class MBlogEntries extends Model {
     /**
      * Заменяет все абсолютные ссылки относительными
      */
-    public function repairLinksAbsRel() {
+    public function repairLinksAbsRel()
+    {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET br_text = REPLACE(br_text, '=\"http://" . _URL_ROOT . "/', '=\"/')";
         $this->_db->exec();
@@ -101,26 +112,32 @@ class MBlogEntries extends Model {
     /**
      * По всем записям проставляет главную картинку (ссылку)
      */
-    public function detectPictures() {
+    public function detectPictures()
+    {
         $this->_db->sql = "SELECT bg.*
                             FROM $this->_table_name bg
                              WHERE bg.br_picture = ''
                              ORDER BY bg.br_date DESC
                              LIMIT :limit";
-        $this->_db->execute(array(
-            ':limit' => 20,
-        ));
+        $this->_db->execute(
+            [
+                ':limit' => 20,
+            ]
+        );
         $items = $this->_db->fetchAll();
         foreach ($items as $item) {
-            $matches = array();
+            $matches = [];
             preg_match('/< *img[^>]*src *= *["\']?([^"\']*)/i', $item['br_text'], $matches);
             $url = !empty($matches[1]) ? $matches[1] : '';
             if (substr($url, 0, 1) == '/') {
                 $url = "https://" . _URL_ROOT . $url;
             }
-            $this->updateByPk($item['br_id'], array(
-                'br_picture' => $url,
-            ));
+            $this->updateByPk(
+                $item['br_id'],
+                [
+                    'br_picture' => $url,
+                ]
+            );
         }
     }
 
