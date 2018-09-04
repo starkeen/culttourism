@@ -35,7 +35,8 @@ class MBlogEntries extends Model {
                                 IF(bg.br_url != '',
                                     CONCAT(:site_url2, 'blog/', DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'),
                                     CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/%d'),'.html')
-                                ) as br_link
+                                ) as br_link,
+                                REPLACE(bg.br_picture, '=\"/', CONCAT('=\"', :site_url3)) AS br_picture
                             FROM $this->_table_name AS bg
                             WHERE br_active = 1
                                 AND br_date < NOW()
@@ -44,6 +45,7 @@ class MBlogEntries extends Model {
         $this->_db->execute(array(
             ':site_url1' => _SITE_URL,
             ':site_url2' => _SITE_URL,
+            ':site_url3' => _SITE_URL,
             ':limit' => $qnt,
         ));
         return $this->_db->fetchAll();
