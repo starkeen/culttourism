@@ -26,7 +26,7 @@ foreach ($entries as $entry) {
     if ($entry['photo_src'] !== '') {
         $absolutePhotoUrl = $entry['photo_src'];
         if (strpos($absolutePhotoUrl, '/') === 0) {
-            $absolutePhotoUrl = _SITE_URL . ltrim($absolutePhotoUrl, '/'));
+            $absolutePhotoUrl = _SITE_URL . ltrim($absolutePhotoUrl, '/');
         }
         $content = '<figure><img src="' . $absolutePhotoUrl . '"></figure>' . $content;
     }
