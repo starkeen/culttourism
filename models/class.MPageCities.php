@@ -182,7 +182,7 @@ class MPageCities extends Model
         $this->_db->sql = "
             SELECT t.*,
               CONCAT(url.url, '/') AS city_url,
-              REPLACE(t.pc_text, '=\"/', CONCAT('=\"', :site_url1)) AS text_absolute,
+              REPLACE(t.pc_text, '=\"/', CONCAT('=\"', :site_url1)) AS text_absolute
             FROM {$this->_table_name} t
               LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = t.pc_url_id
             WHERE {$this->_table_active} = 1
