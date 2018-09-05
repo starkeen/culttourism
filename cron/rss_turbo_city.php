@@ -14,12 +14,12 @@ $xmlChannel->addChild('link', _SITE_URL);
 $xmlChannel->addChild('description', 'Культурный туризм');
 $xmlChannel->addChild('language', 'ru');
 
-$blogModel = new MPageCities($db);
-$entries = $blogModel->getActive();
+$cityModel = new MPageCities($db);
+$entries = $cityModel->getActive();
 foreach ($entries as $entry) {
     $xmlItem = $xmlChannel->addChild('item');
     $xmlItem->addAttribute('turbo', 'true');
-    $xmlItem->addChild('link', _SITE_URL . ltrim('/', $entry['city_url']));
+    $xmlItem->addChild('link', _SITE_URL . ltrim($entry['city_url'], '/'));
     $xmlItem->addChild('title', 'Достопримечательности '. $entry['pc_inwheretext']);
 
     $content = $entry['text_absolute'];
