@@ -1,14 +1,15 @@
 <?php
 
-class MPhotos extends Model {
-
+class MPhotos extends Model
+{
     protected $_table_pk = 'ph_id';
     protected $_table_order = 'ph_order';
     protected $_table_active = 'ph_active';
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->_table_name = $db->getTableName('photos');
-        $this->_table_fields = array(
+        $this->_table_fields = [
             'ph_link',
             'ph_title',
             'ph_author',
@@ -22,7 +23,7 @@ class MPhotos extends Model {
             'ph_date_add',
             'ph_order',
             'ph_active',
-        );
+        ];
         parent::__construct($db);
         $this->_addRelatedTable('pagecity');
         $this->_addRelatedTable('pagepoints');
@@ -33,7 +34,8 @@ class MPhotos extends Model {
      * Список городов с одной (автоматической) фоткой
      * @return array
      */
-    public function getPopularCitiesWithOnePhoto() {
+    public function getPopularCitiesWithOnePhoto()
+    {
         $this->_db->sql = "SELECT pc.*, ws.ws_weight, ws.ws_weight_min, ws.ws_weight_max
                             FROM {$this->_tables_related['pagecity']} pc
                                 LEFT JOIN {$this->_tables_related['wordstat']} ws
@@ -41,31 +43,35 @@ class MPhotos extends Model {
                             WHERE pc_count_photos = 1
                             ORDER BY ws.ws_weight_min DESC, pc_rank DESC, pc_id
                             LIMIT :limit";
-        $this->_db->execute(array(
-            ':limit' => (int) 20,
-        ));
+        $this->_db->execute(
+            [
+                ':limit' => 20,
+            ]
+        );
         return $this->_db->fetchAll();
     }
 
     /**
      * Все фотографии региона
      */
-    public function getItemsByRegion($pcid) {
-        $filter = array();
+    public function getItemsByRegion($pcid)
+    {
+        $filter = [];
         $filter['where'][] = 'ph_pc_id = ' . (int) $pcid;
         return $this->getItemsByFilter($filter);
     }
 
     /**
-     * 
+     *
      * @param array $filter
+     *
      * @return array
      */
-    public function getItemsByFilter($filter) {
+    public function getItemsByFilter($filter)
+    {
         $filter['join'][] = 'LEFT JOIN ' . $this->_tables_related['pagecity'] . ' pc ON pc.pc_id = t.ph_pc_id';
         $filter['join'][] = 'LEFT JOIN ' . $this->_tables_related['pagepoints'] . ' pt ON pt.pt_id = t.ph_pt_id';
         $filter['order'] = 'ph_date_add DESC';
         return parent::getItemsByFilter($filter);
     }
-
 }

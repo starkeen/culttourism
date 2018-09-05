@@ -20,9 +20,16 @@ foreach ($entries as $entry) {
     $xmlItem = $xmlChannel->addChild('item');
     $xmlItem->addAttribute('turbo', 'true');
     $xmlItem->addChild('link', _SITE_URL . ltrim($entry['city_url'], '/'));
-    $xmlItem->addChild('title', 'Достопримечательности '. $entry['pc_inwheretext']);
+    $xmlItem->addChild('title', 'Достопримечательности ' . $entry['pc_inwheretext']);
 
     $content = $entry['text_absolute'];
+    if ($entry['photo_src'] !== '') {
+        $absolutePhotoUrl = $entry['photo_src'];
+        if (strpos($absolutePhotoUrl, '/') === 0) {
+            $absolutePhotoUrl = _SITE_URL . ltrim($absolutePhotoUrl, '/'));
+        }
+        $content = '<figure><img src="' . $absolutePhotoUrl . '"></figure>' . $content;
+    }
     $itemTurboContent = $xmlItem->addChild('turbo:content', sprintf('<![CDATA[%s', $content), 'http://turbo.yandex.ru');
 }
 

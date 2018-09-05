@@ -180,11 +180,12 @@ class MPageCities extends Model
     public function getActive(): array
     {
         $this->_db->sql = "
-            SELECT t.*,
+            SELECT t.*, ph.ph_src AS photo_src,
               CONCAT(url.url, '/') AS city_url,
               REPLACE(t.pc_text, '=\"/', CONCAT('=\"', :site_url1)) AS text_absolute
             FROM {$this->_table_name} t
               LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = t.pc_url_id
+              LEFT JOIN {$this->_tables_related['photos']} ph ON ph.ph_id = t.pc_coverphoto_id
             WHERE {$this->_table_active} = 1
               AND LENGTH(pc_text) > 10
             ORDER BY {$this->_table_order} ASC
