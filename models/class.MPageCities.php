@@ -186,6 +186,7 @@ class MPageCities extends Model
             FROM {$this->_table_name} t
               LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = t.pc_url_id
             WHERE {$this->_table_active} = 1
+              AND pc_text != ''
             ORDER BY {$this->_table_order} ASC
         ";
         $this->_db->execute(
