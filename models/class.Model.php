@@ -1,23 +1,26 @@
 <?php
 
-abstract class Model {
+abstract class Model
+{
 
     protected $_db = null;
     protected $_table_name = ''; //таблица с данными
-    protected $_table_fields = array(); //поля, доступные для редактирования
+    protected $_table_fields = []; //поля, доступные для редактирования
     protected $_table_pk = 'id'; //первичный ключ
     protected $_table_order = 'order'; //поле сортировки
     protected $_table_active = 'active'; //поле активности
-    protected $_tables_related = array();
+    protected $_tables_related = [];
     protected $_files_dir = 'files'; //директория для привязанных файлов
     protected $_pager; //листалка для многостраничной выборки
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->_db = $db;
         $this->_pager = new SQLPager();
     }
 
-    public function getAll() {
+    public function getAll()
+    {
         $this->_db->sql = "SELECT * FROM $this->_table_name\n";
         if ($this->_table_order) {
             $this->_db->sql .= "ORDER BY $this->_table_order ASC\n";
@@ -26,7 +29,8 @@ abstract class Model {
         return $this->_db->fetchAll();
     }
 
-    public function getActive() {
+    public function getActive()
+    {
         $this->_db->sql = "SELECT * FROM $this->_table_name\n";
         if ($this->_table_active) {
             $this->_db->sql .= "WHERE $this->_table_active = 1\n";
@@ -35,28 +39,31 @@ abstract class Model {
             $this->_db->sql .= "ORDER BY $this->_table_order ASC\n";
         }
         $this->_db->exec();
+
         return $this->_db->fetchAll();
     }
 
     /**
-     * 
+     *
      * @param array $filter
+     *
      * @return array
      */
-    public function getItemsByFilter($filter) {
-        $out = array(
+    public function getItemsByFilter($filter)
+    {
+        $out = [
             'fields' => '*',
-            'join' => array(),
-            'where' => array(),
-            'having' => array(),
+            'join' => [],
+            'where' => [],
+            'having' => [],
             'limit' => 20,
             'offset' => 0,
             'order' => "$this->_table_order ASC",
-            'groupby' => array(),
-            'binds' => array(),
-            'items' => array(),
+            'groupby' => [],
+            'binds' => [],
+            'items' => [],
             'total' => 0,
-        );
+        ];
 
         foreach ($filter as $k => $f) {
             if (isset($out[$k])) {
@@ -89,24 +96,29 @@ abstract class Model {
         return $out;
     }
 
-    public function getPager($show_selector = false, $show_total = false) {
+    public function getPager($show_selector = false, $show_total = false)
+    {
         return $this->_pager->getHTML($show_selector, $show_total);
     }
 
-    public function getItemByPk($id) {
+    public function getItemByPk($id)
+    {
         $this->_db->sql = "SELECT * FROM $this->_table_name WHERE $this->_table_pk = :id";
 
-        $this->_db->execute(array(
-            ':id' => intval($id),
-        ));
+        $this->_db->execute(
+            [
+                ':id' => intval($id),
+            ]
+        );
         return $this->_db->fetch();
     }
 
-    public function updateByPk($id, $values = array(), $files = array()) {
-        $new_fields_places = array();
-        $new_fields_values = array(
+    public function updateByPk($id, $values = [], $files = [])
+    {
+        $new_fields_places = [];
+        $new_fields_values = [
             ':primary_key' => intval($id),
-        );
+        ];
         foreach ($values as $k => $v) {
             if (array_search($k, $this->_table_fields) !== false) {
                 $new_fields_places[] = "$k = :$k";
@@ -136,9 +148,10 @@ abstract class Model {
         }
     }
 
-    public function insert($values = array(), $files = array()) {
-        $new_fields_places = array();
-        $new_fields_values = array();
+    public function insert($values = [], $files = [])
+    {
+        $new_fields_places = [];
+        $new_fields_values = [];
         foreach ($values as $k => $v) {
             if (array_search($k, $this->_table_fields) !== false) {
                 $new_fields_places[] = "$k = :$k";
@@ -172,7 +185,8 @@ abstract class Model {
      * Соличество строк в таблице
      * @return integer
      */
-    public function getCount() {
+    public function getCount()
+    {
         $this->_db->sql = "SELECT COUNT(1) AS cnt FROM $this->_table_name";
         $this->_db->exec();
         return $this->_db->fetchCol();
@@ -180,42 +194,51 @@ abstract class Model {
 
     /**
      * Удалить строку по ID
+     *
      * @param type $id
+     *
      * @return type
      */
-    public function deleteByPk($id) {
+    public function deleteByPk($id)
+    {
         $this->_db->sql = "DELETE FROM $this->_table_name WHERE $this->_table_pk = :id";
 
-        return $this->_db->execute(array(
-                    ':id' => $id,
-        ));
+        return $this->_db->execute(
+            [
+                ':id' => $id,
+            ]
+        );
     }
 
-    public function truncate() {
+    public function truncate()
+    {
         $this->_db->sql = "TRUNCATE TABLE $this->_table_name";
         return $this->_db->exec();
     }
 
-    public function optimize() {
+    public function optimize()
+    {
         $this->_db->sql = "OPTIMIZE TABLE $this->_table_name";
         return $this->_db->exec();
     }
 
-    public function saveFile($id, $file_field, $file) {
+    public function saveFile($id, $file_field, $file)
+    {
         if (!empty($file) && $file['error'] == 0) {
             $filename = md5_file($file['tmp_name']) . '.' . Helper::getExt($file['type']);
             if (!file_exists($this->_files_dir)) {
                 mkdir($this->_files_dir);
             }
             move_uploaded_file($file['tmp_name'], $this->_files_dir . "/$filename");
-            $this->updateByPk($id, array("$file_field" => $filename));
+            $this->updateByPk($id, ["$file_field" => $filename]);
         }
     }
 
-    public function getDefault() {
-        $out = array(
+    public function getDefault()
+    {
+        $out = [
             $this->_table_pk => 'новый',
-        );
+        ];
         foreach ($this->_table_fields as $fld) {
             $out[$fld] = null;
         }
@@ -224,22 +247,26 @@ abstract class Model {
         return $out;
     }
 
-    public function escape($txt) {
+    public function escape($txt)
+    {
         return $this->_db->getEscapedString(trim($txt));
     }
 
-    protected function _addRelatedTable($tablename) {
+    protected function _addRelatedTable($tablename)
+    {
         $tablename = trim($tablename);
         if ($tablename != '') {
             $this->_tables_related[$tablename] = $this->_db->getTableName($tablename);
         }
     }
 
-    public function now() {
+    public function now()
+    {
         return date('Y-m-d H:i:s');
     }
 
-    public function getUserId() {
+    public function getUserId()
+    {
         return isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 1;
     }
 

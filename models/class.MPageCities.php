@@ -1,14 +1,15 @@
 <?php
 
-class MPageCities extends Model {
-
+class MPageCities extends Model
+{
     protected $_table_pk = 'pc_id';
     protected $_table_order = 'pc_order';
     protected $_table_active = 'pc_active';
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->_table_name = $db->getTableName('pagecity');
-        $this->_table_fields = array(
+        $this->_table_fields = [
             'pc_title',
             'pc_title_unique',
             'pc_text',
@@ -42,7 +43,7 @@ class MPageCities extends Model {
             'pc_add_user',
             'pc_order',
             'pc_active',
-        );
+        ];
         parent::__construct($db);
         $this->_addRelatedTable('region_url');
         $this->_addRelatedTable('pagepoints');
@@ -52,10 +53,13 @@ class MPageCities extends Model {
 
     /**
      * Получение страницы по ее урлу
+     *
      * @param string $url
+     *
      * @return array
      */
-    public function getCityByUrl($url) {
+    public function getCityByUrl(string $url): array
+    {
         $this->_db->sql = "SELECT *,
                                 UNIX_TIMESTAMP(pc.pc_lastup_date) AS last_update,
                                 CONCAT(uc.url, '/') AS url_canonical
@@ -64,14 +68,16 @@ class MPageCities extends Model {
                                     LEFT JOIN {$this->_tables_related['region_url']} uc ON uc.uid = pc.pc_url_id
                             WHERE url.url = :xurl";
 
-        $this->_db->execute(array(
-            ':xurl' => trim($url),
-        ));
+        $this->_db->execute(
+            [
+                ':xurl' => trim($url),
+            ]
+        );
         $out = $this->_db->fetch();
 
-        $out['region_in'] = array();
-        $out['region_near'] = array();
-        $out['metas'] = array();
+        $out['region_in'] = [];
+        $out['region_near'] = [];
+        $out['metas'] = [];
 
         //----------------------  в н у т р и  ------------------------
         if (!empty($out['pc_region_id']) && empty($out['pc_city_id'])) {
@@ -83,11 +89,17 @@ class MPageCities extends Model {
                                     AND pc.pc_city_id != 0
                                 ORDER BY pc.pc_rank DESC, pc.pc_title";
 
-            $this->_db->execute(array(
-                ':pc_region_id' => $out['pc_region_id'],
-            ));
+            $this->_db->execute(
+                [
+                    ':pc_region_id' => $out['pc_region_id'],
+                ]
+            );
             while ($subcity = $this->_db->fetch()) {
-                $out['region_in'][] = array('title' => $subcity['pc_title'], 'url' => $subcity['url'], 'where' => $subcity['pc_inwheretext']);
+                $out['region_in'][] = [
+                    'title' => $subcity['pc_title'],
+                    'url' => $subcity['url'],
+                    'where' => $subcity['pc_inwheretext'],
+                ];
                 if ($subcity['last_update'] > $out['last_update']) {
                     $out['last_update'] = $subcity['last_update'];
                 }
@@ -109,17 +121,19 @@ class MPageCities extends Model {
                                 LIMIT 10";
             //$db->showSQL();
 
-            $this->_db->execute(array(
-                ':pc_title' => $out['pc_title'],
-                ':pc_latitude' => $out['pc_latitude'],
-                ':pc_longitude' => $out['pc_longitude'],
-            ));
+            $this->_db->execute(
+                [
+                    ':pc_title' => $out['pc_title'],
+                    ':pc_latitude' => $out['pc_latitude'],
+                    ':pc_longitude' => $out['pc_longitude'],
+                ]
+            );
             while ($subcity = $this->_db->fetch()) {
-                $out['region_near'][] = array(
+                $out['region_near'][] = [
                     'title' => $subcity['pc_title'],
                     'url' => $subcity['url'],
                     'where' => $subcity['pc_inwheretext'],
-                );
+                ];
                 if ($subcity['last_update'] > $out['last_update']) {
                     $out['last_update'] = $subcity['last_update'];
                 }
@@ -137,10 +151,13 @@ class MPageCities extends Model {
 
     /**
      * Получение страницы региона по $id
+     *
      * @param integer $id
+     *
      * @return array
      */
-    public function getItemByPk($id) {
+    public function getItemByPk(int $id): array
+    {
         $this->_db->sql = "SELECT t.*,
                                 UNIX_TIMESTAMP(t.pc_lastup_date) AS last_update,
                                 CONCAT(url.url, '/') AS url
@@ -148,18 +165,47 @@ class MPageCities extends Model {
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = t.pc_url_id
                             WHERE $this->_table_pk = :cid";
 
-        $this->_db->execute(array(
-            ':cid' => intval($id),
-        ));
+        $this->_db->execute(
+            [
+                ':cid' => $id,
+            ]
+        );
+
         return $this->_db->fetch();
     }
 
     /**
-     * Выбрать городав том же регионе
-     * @param integer $cid
      * @return array
      */
-    public function getCitiesSomeRegion($cid) {
+    public function getActive(): array
+    {
+        $this->_db->sql = "
+            SELECT t.*,
+              CONCAT(url.url, '/') AS city_url,
+              REPLACE(t.pc_text, '=\"/', CONCAT('=\"', :site_url1)) AS text_absolute,
+            FROM {$this->_table_name} t
+              LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = t.pc_url_id
+            WHERE {$this->_table_active} = 1
+            ORDER BY {$this->_table_order} ASC
+        ";
+        $this->_db->execute(
+            [
+                ':site_url1' => _SITE_URL,
+            ]
+        );
+
+        return $this->_db->fetchAll();
+    }
+
+    /**
+     * Выбрать города в том же регионе
+     *
+     * @param int $cid
+     *
+     * @return array
+     */
+    public function getCitiesSomeRegion(int $cid): array
+    {
         $this->_db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude,
                                 CONCAT(ru.url, '/') AS url
                             FROM $this->_table_name pc
@@ -168,38 +214,50 @@ class MPageCities extends Model {
                             WHERE pc.pc_id = :cid
                                 AND pc2.pc_city_id != 0";
 
-        $this->_db->execute(array(
-            ':cid' => $cid,
-        ));
+        $this->_db->execute(
+            [
+                ':cid' => $cid,
+            ]
+        );
+
         return $this->_db->fetchAll();
     }
 
     /**
      * Выбрать города в той же стране
-     * @param integet $country_id
+     *
+     * @param int $country_id
+     *
      * @return array
      */
-    public function getCitiesSomeCountry($country_id) {
+    public function getCitiesSomeCountry(int $country_id): array
+    {
         $this->_db->sql = "SELECT pc2.pc_id, pc2.pc_title, pc2.pc_latitude, pc2.pc_longitude, CONCAT(ru.url, '/') AS url
                         FROM $this->_table_name pc2
                             LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc2.pc_url_id
                         WHERE pc2.pc_country_id = :pc_country_id
                             AND pc2.pc_city_id != 0";
 
-        $this->_db->execute(array(
-            ':pc_country_id' => $country_id,
-        ));
+        $this->_db->execute(
+            [
+                ':pc_country_id' => $country_id,
+            ]
+        );
+
         return $this->_db->fetchAll();
     }
 
     /**
      * Обновить данные по странице региона
-     * @param integer $id
+     *
+     * @param int $id
      * @param array $values
      * @param array $files
-     * @return integer
+     *
+     * @return int
      */
-    public function updateByPk($id, $values = array(), $files = array()) {
+    public function updateByPk($id, $values = [], $files = [])
+    {
         if (isset($values['pc_latitude'])) {
             $values['pc_latitude'] = floatval(str_replace(',', '.', trim($values['pc_latitude'])));
             if ($values['pc_latitude'] == 0) {
@@ -218,11 +276,14 @@ class MPageCities extends Model {
 
     /**
      * Добавить новый регион
+     *
      * @param array $values
      * @param array $files
-     * @return integer
+     *
+     * @return int
      */
-    public function insert($values = array(), $files = array()) {
+    public function insert($values = [], $files = [])
+    {
         if (isset($values['pc_latitude'])) {
             $values['pc_latitude'] = floatval(str_replace(',', '.', trim($values['pc_latitude'])));
             if ($values['pc_latitude'] == 0) {
@@ -243,49 +304,63 @@ class MPageCities extends Model {
         $values['pc_lastup_date'] = $this->now();
         $id = parent::insert($values, $files);
 
-        $parent_variants = $this->searchPagesByFilter(array(
-            'pc_region_id' => $values['pc_region_id'],
-            'pc_country_id' => $values['pc_country_id'],
-            'pc_city_id' => 0,
-        ));
+        $parent_variants = $this->searchPagesByFilter(
+            [
+                'pc_region_id' => $values['pc_region_id'],
+                'pc_country_id' => $values['pc_country_id'],
+                'pc_city_id' => 0,
+            ]
+        );
         $parent = $parent_variants[0] ?? ['url' => ''];
         $ru = new MRegionUrl($this->_db);
-        $url_id = $ru->insert(array(
-            'url' => $parent['url'] . '/' . strtolower(str_replace(' ', '_', $values['pc_title_english'])),
-            'citypage' => $id,
-        ));
-        $this->updateByPk($id, array(
-            'pc_url_id' => $url_id,
-        ));
+        $url_id = $ru->insert(
+            [
+                'url' => $parent['url'] . '/' . strtolower(str_replace(' ', '_', $values['pc_title_english'])),
+                'citypage' => $id,
+            ]
+        );
+        $this->updateByPk(
+            $id,
+            [
+                'pc_url_id' => $url_id,
+            ]
+        );
 
         return $id;
     }
 
     /**
      * Подбираем страницы по жестким параметрам
+     *
      * @param array $filter
+     *
      * @return array
      */
-    public function searchPagesByFilter($filter = array()) {
+    public function searchPagesByFilter(array $filter = []): array
+    {
         $this->_db->sql = "SELECT *
                             FROM $this->_table_name pc
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
                             WHERE pc.pc_active = 1\n";
-        $binds = array();
+        $binds = [];
         foreach ($filter as $k => $v) {
             $this->_db->sql .= "AND $k = :$k\n";
             $binds[':' . $k] = $v;
         }
         $this->_db->execute($binds);
+
         return $this->_db->fetchAll();
     }
 
     /**
      * Ищет подходящие страницы городов
+     *
      * @param string $query
+     *
      * @return array
      */
-    public function getSuggestion($query) {
+    public function getSuggestion(string $query): array
+    {
         $this->_db->sql = "SELECT pc_id, pc_title_unique AS pc_title, url
                             FROM $this->_table_name pc
                                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
@@ -293,17 +368,21 @@ class MPageCities extends Model {
                                 AND pc.pc_active = 1
                             GROUP BY pc.pc_title_unique";
 
-        $this->_db->execute(array(
-            ':name1' => '%' . trim($query) . '%',
-            ':name2' => '%' . trim(Helper::getQwerty($query)) . '%',
-        ));
+        $this->_db->execute(
+            [
+                ':name1' => '%' . trim($query) . '%',
+                ':name2' => '%' . trim(Helper::getQwerty($query)) . '%',
+            ]
+        );
+
         return $this->_db->fetchAll();
     }
 
     /**
      * Заменяет все абсолютные ссылки относительными
      */
-    public function repairLinksAbsRel() {
+    public function repairLinksAbsRel(): void
+    {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET pc_text = REPLACE(pc_text, '=\"http://" . _URL_ROOT . "/', '=\"/')";
         $this->_db->exec();
@@ -315,22 +394,27 @@ class MPageCities extends Model {
 
     /**
      * Крошки обновляем по странице региона
-     * @param integer $id
+     *
+     * @param int $id
      * @param string $path
      */
-    public function updatePagepath($id, $path) {
+    public function updatePagepath(int $id, string $path): void
+    {
         $this->_db->sql = "UPDATE $this->_table_name SET pc_pagepath = :path
                             WHERE pc_id = :id AND pc_pagepath IS NULL";
-        $this->_db->execute(array(
-            ':id' => $id,
-            ':path' => $path,
-        ));
+        $this->_db->execute(
+            [
+                ':id' => $id,
+                ':path' => $path,
+            ]
+        );
     }
 
     /**
      * Обновление статистики по городам и регионам
      */
-    public function updateStat() {
+    public function updateStat(): void
+    {
         $this->_db->sql = "UPDATE $this->_table_name pc
                             LEFT JOIN (SELECT pt.pt_citypage_id AS pc, COUNT(1) cnt
                                         FROM {$this->_tables_related['pagepoints']} pt
@@ -349,7 +433,11 @@ class MPageCities extends Model {
         $this->_db->exec();
     }
 
-    public function updateStatPhotos() {
+    /**
+     *
+     */
+    public function updateStatPhotos(): void
+    {
         $this->_db->sql = "UPDATE $this->_table_name pc
                             LEFT JOIN (SELECT ph.ph_pc_id AS pc, COUNT(1) cnt
                                         FROM {$this->_tables_related['photos']} ph
@@ -359,25 +447,35 @@ class MPageCities extends Model {
         $this->_db->exec();
     }
 
-    public function getCityPagesWithoutPhotos($limit = 5) {
+    /**
+     * @param int $limit
+     *
+     * @return array
+     */
+    public function getCityPagesWithoutPhotos(int $limit = 5): array
+    {
         $this->_db->sql = "SELECT *
                             FROM $this->_table_name pc
                             WHERE pc_coverphoto_id = 0
                             ORDER BY pc_rank DESC, pc_id
                             LIMIT :limit";
-        $this->_db->execute(array(
-            ':limit' => (int) $limit,
-        ));
+        $this->_db->execute(
+            [
+                ':limit' => $limit,
+            ]
+        );
+
         return $this->_db->fetchAll();
     }
 
     /**
-     * 
-     * @param integer $id
-     * @return integer
+     *
+     * @param int $id
+     *
+     * @return int
      */
-    public function deleteByPk($id) {
-        return $this->updateByPk($id, array('pc_active' => 0,));
+    public function deleteByPk($id)
+    {
+        return $this->updateByPk($id, ['pc_active' => 0,]);
     }
-
 }
