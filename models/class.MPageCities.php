@@ -156,7 +156,7 @@ class MPageCities extends Model
      *
      * @return array
      */
-    public function getItemByPk($id): array
+    public function getItemByPk($id): ?array
     {
         $this->_db->sql = "SELECT t.*,
                                 UNIX_TIMESTAMP(t.pc_lastup_date) AS last_update,

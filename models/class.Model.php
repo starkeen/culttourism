@@ -1,9 +1,14 @@
 <?php
 
+use app\db\MyDB;
+use app\exceptions\MyPDOException;
+
 abstract class Model
 {
-
-    protected $_db = null;
+    /**
+     * @var MyDB
+     */
+    protected $_db;
     protected $_table_name = ''; //таблица с данными
     protected $_table_fields = []; //поля, доступные для редактирования
     protected $_table_pk = 'id'; //первичный ключ
@@ -13,13 +18,20 @@ abstract class Model
     protected $_files_dir = 'files'; //директория для привязанных файлов
     protected $_pager; //листалка для многостраничной выборки
 
-    public function __construct($db)
+    /**
+     * @param MyDB $db
+     */
+    public function __construct(MyDB $db)
     {
         $this->_db = $db;
         $this->_pager = new SQLPager();
     }
 
-    public function getAll()
+    /**
+     * @return array
+     * @throws MyPDOException
+     */
+    public function getAll(): array
     {
         $this->_db->sql = "SELECT * FROM $this->_table_name\n";
         if ($this->_table_order) {

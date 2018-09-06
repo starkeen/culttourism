@@ -220,8 +220,9 @@ class MyPDO implements IDB
 
         try {
             $this->time = microtime(true) - $this->startTimestamp;
-            $out = $this->_stm->fetch();
+            $out = $this->_stm->fetch(PDO::FETCH_ASSOC);
             if (!$out) {
+                $out = null;
                 $this->_stm->closeCursor();
             }
         } catch (PDOException $e) {
