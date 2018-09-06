@@ -1,15 +1,16 @@
 <?php
 
-class UnirefValues extends Model {
-
+class UnirefValues extends Model
+{
     protected $_table_pk = 'uv_id';
     protected $_table_order = 'uv_order';
     protected $_table_active = 'uv_active';
     private $_key_id = 0;
 
-    public function __construct($db, $key_id) {
+    public function __construct($db, $key_id)
+    {
         $this->_table_name = $db->getTableName('uniref_values');
-        $this->_table_fields = array(
+        $this->_table_fields = [
             'uv_uk_id',
             'uv_pid',
             'uv_title',
@@ -23,14 +24,15 @@ class UnirefValues extends Model {
             'uv_photo',
             'uv_order',
             'uv_active',
-        );
+        ];
         $this->_key_id = intval($key_id);
         $this->_files_dir = _DIR_DATA . '/uniref/' . intval($key_id) . '/full';
         parent::__construct($db);
     }
 
-    public function getAll() {
-        $out = array();
+    public function getAll(): array
+    {
+        $out = [];
         $this->_db->sql = "SELECT * FROM $this->_table_name
                             WHERE uv_uk_id = '$this->_key_id'
                                 AND uv_pid = 0
@@ -38,7 +40,7 @@ class UnirefValues extends Model {
         $this->_db->exec();
         while ($row = $this->_db->fetch()) {
             $out[$row['uv_id']] = $row;
-            $out[$row['uv_id']]['subs'] = array();
+            $out[$row['uv_id']]['subs'] = [];
         }
         $this->_db->sql = "SELECT * FROM $this->_table_name
                             WHERE uv_uk_id = '$this->_key_id'
@@ -51,7 +53,8 @@ class UnirefValues extends Model {
         return $out;
     }
 
-    public function getActive() {
+    public function getActive()
+    {
         $this->_db->sql = "SELECT * FROM $this->_table_name
                             WHERE uv_uk_id = '$this->_key_id'
                                 AND $this->_table_active = 1
@@ -60,8 +63,9 @@ class UnirefValues extends Model {
         return $this->_db->fetchAll();
     }
 
-    public function getActiveTree() {
-        $out = array();
+    public function getActiveTree()
+    {
+        $out = [];
         $this->_db->sql = "SELECT * FROM $this->_table_name
                             WHERE `uv_uk_id` = '$this->_key_id'
                                 AND $this->_table_active = 1
@@ -69,7 +73,7 @@ class UnirefValues extends Model {
                                 AND `uv_pid` > 0
                            ORDER BY $this->_table_order ASC, `uv_title` ASC";
         $this->_db->exec();
-        $child = array();
+        $child = [];
         while ($row = $this->_db->fetch()) {
             $child[$row['uv_pid']][] = $row;
         }
@@ -86,7 +90,8 @@ class UnirefValues extends Model {
         return $out;
     }
 
-    public function doResort() {
+    public function doResort()
+    {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET uv_order = (SELECT @a:= @a + 10 FROM (SELECT @a:= 0) s)
                             WHERE uv_uk_id = '$this->_key_id'
@@ -94,11 +99,12 @@ class UnirefValues extends Model {
         return $this->_db->exec();
     }
 
-    public function deletePicture($id) {
+    public function deletePicture($id)
+    {
         $item = $this->getItemByPk($id);
         $file = $this->_files_dir . "/{$item['uv_picture']}";
         if (file_exists($file)) {
-            return $this->updateByPk($id, array('uv_picture' => ''));
+            return $this->updateByPk($id, ['uv_picture' => '']);
             /*
               if (unlink($file)) {
               //
@@ -111,11 +117,12 @@ class UnirefValues extends Model {
         }
     }
 
-    public function deletePhoto($id) {
+    public function deletePhoto($id)
+    {
         $item = $this->getItemByPk($id);
         $file = $this->_files_dir . "/{$item['uv_photo']}";
         if (file_exists($file)) {
-            return $this->updateByPk($id, array('uv_photo' => ''));
+            return $this->updateByPk($id, ['uv_photo' => '']);
             /*
               if (unlink($file)) {
               //
@@ -127,7 +134,4 @@ class UnirefValues extends Model {
             return false;
         }
     }
-
 }
-
-?>

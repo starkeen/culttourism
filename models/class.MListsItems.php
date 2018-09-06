@@ -1,20 +1,22 @@
 <?php
 
-class MListsItems extends Model {
+class MListsItems extends Model
+{
 
     protected $_table_pk = 'li_id';
     protected $_table_order = 'li_order';
     protected $_table_active = 'li_active';
     private $_list_id = 0;
 
-    public function __construct($db, $lid = 0) {
+    public function __construct($db, $lid = 0)
+    {
         $this->_table_name = $db->getTableName('lists_items');
-        $this->_table_fields = array(
+        $this->_table_fields = [
             'li_ls_id',
             'li_pt_id',
             'li_order',
             'li_active',
-        );
+        ];
         $this->_list_id = intval($lid);
         parent::__construct($db);
         $this->_addRelatedTable('lists');
@@ -24,12 +26,16 @@ class MListsItems extends Model {
         $this->_addRelatedTable('ref_pointtypes');
     }
 
-    public function setField($field, $pt_id, $val) {
+    public function setField($field, $pt_id, $val)
+    {
         if (in_array($field, $this->_table_fields)) {
             $row = $this->getRowForPointId($pt_id);
-            $this->updateByPk($row['li_id'], array(
-                $field => $val,
-            ));
+            $this->updateByPk(
+                $row['li_id'],
+                [
+                    $field => $val,
+                ]
+            );
             $nrow = $this->getItemByPk($row['li_id']);
             $newval = $nrow[$field];
         } else {
@@ -40,36 +46,47 @@ class MListsItems extends Model {
 
     /**
      * Находим в этом списке объект и получаем айди его записи в таблице
+     *
      * @param int $point_id
+     *
      * @return int
      */
-    public function getRowForPointId($point_id) {
+    public function getRowForPointId($point_id)
+    {
         $this->_db->sql = "SELECT li_id FROM $this->_table_name WHERE li_ls_id = '$this->_list_id' AND li_pt_id = :ptid";
-        $this->_db->execute(array(
-            ':ptid' => $point_id,
-        ));
+        $this->_db->execute(
+            [
+                ':ptid' => $point_id,
+            ]
+        );
         return $this->_db->fetch();
     }
 
     /**
      * Списки, где участвует эта точка
+     *
      * @param integer $point_id
+     *
      * @return array
      */
-    public function getListsForPointId($point_id) {
+    public function getListsForPointId($point_id)
+    {
         $this->_db->sql = "SELECT *
                             FROM $this->_table_name li
                                 LEFT JOIN {$this->_tables_related['lists']} ls ON ls.ls_id = li.li_ls_id
                             WHERE li_pt_id = :ptid
                                 AND ls.ls_active = 1
                                 AND li.li_active = 1";
-        $this->_db->execute(array(
-            ':ptid' => $point_id,
-        ));
+        $this->_db->execute(
+            [
+                ':ptid' => $point_id,
+            ]
+        );
         return $this->_db->fetchAll();
     }
 
-    public function getSuggestion($name) {
+    public function getSuggestion($name)
+    {
         $this->_db->sql = "SELECT *
                             FROM {$this->_tables_related['pagepoints']} pt
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
@@ -77,13 +94,16 @@ class MListsItems extends Model {
                                 AND pt.pt_active = 1
                                 AND pt.pt_id NOT IN (SELECT li_pt_id FROM $this->_table_name WHERE li_ls_id = '$this->_list_id')
                             ORDER BY pt.pt_name";
-        $this->_db->execute(array(
-            ':name' => '%' . $name . '%',
-        ));
+        $this->_db->execute(
+            [
+                ':name' => '%' . $name . '%',
+            ]
+        );
         return $this->_db->fetchAll();
     }
 
-    public function getAll() {
+    public function getAll(): array
+    {
         $this->_db->sql = "SELECT li.*, pt.*, pc.*, rt.*,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
                                 CHAR_LENGTH(TRIM(pt.pt_description)) AS len_descr,
@@ -101,7 +121,8 @@ class MListsItems extends Model {
         return $this->_db->fetchAll();
     }
 
-    public function getActive() {
+    public function getActive()
+    {
         $this->_db->sql = "SELECT li.*, pt.*, pc.*,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,
                                 CONCAT(ru.url, '/') AS url_region,
@@ -119,7 +140,8 @@ class MListsItems extends Model {
         return $this->_db->fetchAll();
     }
 
-    public function getPointsInList($list_id) {
+    public function getPointsInList($list_id)
+    {
         $this->_db->sql = "SELECT pp.*,
                                 0 AS obj_selected,
                                 CONCAT(:url_root1, ru.url, '/') AS cityurl,
@@ -138,16 +160,19 @@ class MListsItems extends Model {
                             ORDER BY pt.tr_order DESC, pp.pt_rank
                             LIMIT 300";
 
-        $this->_db->execute(array(
-            ':list_id' => $list_id,
-            ':url_root1' => _URL_ROOT,
-            ':url_root2' => _URL_ROOT,
-        ));
+        $this->_db->execute(
+            [
+                ':list_id' => $list_id,
+                ':url_root1' => _URL_ROOT,
+                ':url_root2' => _URL_ROOT,
+            ]
+        );
         return $this->_db->fetchAll();
     }
 
-    public function deleteByPk($id) {
-        return $this->updateByPk($id, array($this->_table_active => 0));
+    public function deleteByPk($id)
+    {
+        return $this->updateByPk($id, [$this->_table_active => 0]);
     }
 
 }
