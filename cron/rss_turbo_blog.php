@@ -23,7 +23,7 @@ foreach ($blogEntries as $entry) {
     $xmlItem->addChild('title', $entry['br_title']);
 
     $content = $entry['br_text_absolute'];
-    $itemTurboContent = $xmlItem->addChild('turbo:content', sprintf('<![CDATA[%s]]>', $content), 'http://turbo.yandex.ru');
+    $itemTurboContent = $xmlItem->addChild('turbo:content', sprintf('<![CDATA[%s', $content), 'http://turbo.yandex.ru');
 }
 
 file_put_contents($fileName, $xml->asXML());
