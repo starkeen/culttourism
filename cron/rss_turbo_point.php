@@ -30,6 +30,7 @@ foreach ($entries as $entry) {
         }
         $content = '<figure><img src="' . $absolutePhotoUrl . '"></figure>' . $content;
     }
+    $content .= '<p>контактная информация</p>';
     $itemTurboContent = $xmlItem->addChild('turbo:content', sprintf('<![CDATA[%s', $content), 'http://turbo.yandex.ru');
 }
 
