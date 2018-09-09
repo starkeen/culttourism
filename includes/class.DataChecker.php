@@ -131,27 +131,43 @@ class DataChecker
 
         $points = $ptModel->getPointsWithPhones($count);
         foreach ($points as $i => $pt) {
+            $logItem = [];
+            $pointId = (int)$pt['pt_id'];
             $phoneString = $pt['pt_phone'];
             $phoneItems = explode(',', $phoneString);
 
-            $phonesModel->deleteByPoint((int)$pt['pt_id']);
+            $phonesModel->deleteByPoint($pointId);
             foreach ($phoneItems as $phoneItem) {
                 $phoneItem = trim($phoneItem);
                 $phonesModel->insert(
                     [
                         'phone_raw' => $phoneItem,
-                        'id_point' => (int)$pt['pt_id'],
+                        'id_point' => $pointId,
                         'id_city' => (int)$pt['pc_id'],
                     ]
                 );
+            }
+
+            // исправление формата телефонов
+            $newPhones = trim($phoneString);
+            if ($newPhones !== $phoneString) {
+                $ptModel->updateByPk($pointId, [
+                    'pt_phone' => $newPhones,
+                ]);
+                $logItem = [
+                    'pt_id' => $pointId,
+                    'old_phone' => $phoneString,
+                    'new_phone' => $newPhones,
+                ];
             }
 
             $dataChecker->markChecked(
                 $this->entity_type,
                 $pt['pt_id'],
                 $this->entity_field,
-                ''
+                print_r($logItem, true)
             );
+            $log[] = $logItem;
         }
 
         return $log;
