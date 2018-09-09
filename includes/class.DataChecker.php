@@ -140,7 +140,7 @@ class DataChecker
                     [
                         'phone_raw' => $phoneItem,
                         'id_point' => (int)$pt['pt_id'],
-                        'id_city' => (int)$pt['pt_citypage_id'],
+                        'id_city' => (int)$pt['pc_id'],
                     ]
                 );
             }
