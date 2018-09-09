@@ -58,7 +58,7 @@ class MPhones extends Model
                             LEFT JOIN {$this->_tables_related['city_data']} city_data ON city_data.cd_pc_id = t.id_city AND city_data.cd_cf_id = 2
                             SET t.code_country = NULL,
                                 t.code_city = city_data.cd_value,
-                                t.reversed = SUBSTRING(TRIM(REPLACE(REPLACE(REPLACE(REVERSE(t.phone_raw), '-', ''), '(', ''), ')', '')) FROM 0 FOR 5),
+                                t.reversed = SUBSTRING(TRIM(REPLACE(REPLACE(REPLACE(REPLACE(REVERSE(t.phone_raw), '-', ''), '(', ''), ')', ''), ' ', '')) FROM 1 FOR 5),
                                 t.date_check = NOW()
                            WHERE t.date_check IS NULL";
         $this->_db->exec();
