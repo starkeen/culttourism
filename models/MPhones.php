@@ -25,7 +25,11 @@ class MPhones extends Model
             'id_point',
             'id_city',
         ];
+
         parent::__construct($db);
+
+        $this->_addRelatedTable('pagecity');
+        $this->_addRelatedTable('city_data');
     }
 
     /**
@@ -40,6 +44,27 @@ class MPhones extends Model
         $this->_db->execute(
             [
                 ':pointId' => $pointId,
+            ]
+        );
+    }
+
+    /**
+     * @throws MyPDOException
+     */
+    public function process(): void
+    {
+        $this->_db->sql = "UPDATE $this->_table_name AS t
+                            LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = t.id_city
+                            LEFT JOIN {$this->_tables_related['city_data']} city_data ON city_data.cd_pc_id = t.id_city AND cd.cd_cf_id = 2
+                            SET t.code_country = NULL,
+                                t.code_city = city_data.cd_value,
+                                t.reversed = SUBSTRING(TRIM(REPLACE(REPLACE(REPLACE(REVERSE(t.phone_raw), '-', ''), '(', ''), ')', '')) FROM 0 FOR 5),
+                                t.date_check = NOW()
+                           WHERE t.date_check IS NULL
+                           LIMIT :limit";
+        $this->_db->execute(
+            [
+                ':limit' => 100,
             ]
         );
     }

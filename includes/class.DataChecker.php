@@ -147,6 +147,7 @@ class DataChecker
                     ]
                 );
             }
+            $phonesModel->process();
 
             // исправление формата телефонов
             $newPhones = trim($phoneString);
