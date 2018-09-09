@@ -19,7 +19,9 @@ $entries = $pointModel->getActiveSights(1000);
 foreach ($entries as $entry) {
     $xmlItem = $xmlChannel->addChild('item');
     $xmlItem->addAttribute('turbo', 'true');
-    $xmlItem->addChild('link', _SITE_URL . ltrim($entry['city_url'], '/') . $entry['pt_slugline'] . '.html');
+
+    $cityUrl = _SITE_URL . ltrim($entry['city_url'], '/');
+    $xmlItem->addChild('link', $cityUrl . $entry['pt_slugline'] . '.html');
     $xmlItem->addChild('title', $entry['pt_name']);
 
     $content = htmlspecialchars($entry['text_absolute']);
@@ -30,7 +32,23 @@ foreach ($entries as $entry) {
         }
         $content = '<figure><img src="' . $absolutePhotoUrl . '"></figure>' . $content;
     }
-    $content .= '<p>контактная информация</p>';
+    $contactsBlock = '';
+    foreach (['pt_adress', 'pt_phone', 'pt_worktime', 'pt_website'] as $contactType) {
+        if (trim($entry[$contactType]) !== '') {
+            $contactValue = $entry[$contactType];
+            if ($contactType === 'pt_website') {
+                $contactValue = sprintf('<a href="%s">%s</a>', $contactValue, $contactValue);
+            }
+            $contactsBlock .= '<li>' . $contactValue . '</li>';
+        }
+    }
+    if ($contactsBlock !== '') {
+        $content .= '<p>контактная информация:';
+        $content .= '<ul>' . $contactsBlock . '</ul>';
+        $content .= '</p>';
+    }
+    $content .= sprintf('<p><a href="%s">%s</a></p>', $cityUrl, 'Достопримечательности ' . $entry['pc_inwheretext']);
+
     $itemTurboContent = $xmlItem->addChild('turbo:content', sprintf('<![CDATA[%s', $content), 'http://turbo.yandex.ru');
 }
 

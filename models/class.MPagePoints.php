@@ -55,6 +55,7 @@ class MPagePoints extends Model
      * @param bool    $show_all
      *
      * @return array
+     * @throws MyPDOException
      */
     public function getPointsByCity($city_id, $show_all = false)
     {
@@ -133,6 +134,13 @@ class MPagePoints extends Model
         return $out;
     }
 
+    /**
+     * @param $bounds
+     * @param int $selected_object_id
+     *
+     * @return array
+     * @throws MyPDOException
+     */
     public function getPointsByBounds($bounds, $selected_object_id = 0)
     {
         $this->_db->sql = "SELECT pp.*,
@@ -166,6 +174,12 @@ class MPagePoints extends Model
         return $this->_db->fetchAll();
     }
 
+    /**
+     * @param int $limit
+     *
+     * @return array
+     * @throws MyPDOException
+     */
     public function getUnslug($limit = 10)
     {
         $this->_db->sql = "SELECT pt_id, pt_name, pc_title, pc_title_english, tr_sight
@@ -179,6 +193,12 @@ class MPagePoints extends Model
         return $this->_db->fetchAll();
     }
 
+    /**
+     * @param $slugline
+     *
+     * @return array
+     * @throws MyPDOException
+     */
     public function searchSlugline($slugline)
     {
         $this->_db->sql = "SELECT *,
@@ -200,6 +220,13 @@ class MPagePoints extends Model
         return $this->_db->fetchAll();
     }
 
+    /**
+     * @param $name
+     * @param bool $like
+     *
+     * @return array
+     * @throws MyPDOException
+     */
     public function searchByName($name, $like = false)
     {
         $this->_db->sql = "SELECT *
@@ -214,6 +241,11 @@ class MPagePoints extends Model
         return $this->_db->fetchAll();
     }
 
+    /**
+     * @param $id
+     *
+     * @throws MyPDOException
+     */
     public function createSluglineById($id)
     {
         $point = $this->getItemByPk($id);
@@ -244,6 +276,10 @@ class MPagePoints extends Model
         $this->updateByPk($point['pt_id'], ['pt_slugline' => $name_url]);
     }
 
+    /**
+     * @return array
+     * @throws MyPDOException
+     */
     public function checkSluglines()
     {
         $out = [
@@ -271,6 +307,12 @@ class MPagePoints extends Model
         return $out;
     }
 
+    /**
+     * @param $id
+     *
+     * @return mixed|null
+     * @throws MyPDOException
+     */
     public function getItemByPk($id)
     {
         $this->_db->sql = "SELECT *,
@@ -291,6 +333,12 @@ class MPagePoints extends Model
         return $this->_db->fetch();
     }
 
+    /**
+     * @param $cid
+     *
+     * @return array
+     * @throws MyPDOException
+     */
     public function getGeoPointsByCityId($cid)
     {
         $this->_db->sql = "SELECT pp.*,
@@ -464,6 +512,7 @@ class MPagePoints extends Model
     {
         $this->_db->sql = "
             SELECT t.*,
+              pc.pc_inwheretext,
               ph.ph_src AS photo_src,
               CONCAT(url.url, '/') AS city_url,
               REPLACE(t.pt_description, '=\"/', CONCAT('=\"', :site_url1)) AS text_absolute
