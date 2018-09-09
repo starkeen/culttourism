@@ -167,7 +167,9 @@ class DataChecker
                 $this->entity_field,
                 print_r($logItem, true)
             );
-            $log[] = $logItem;
+            if ($logItem !== []) {
+                $log[] = $logItem;
+            }
         }
 
         return $log;
