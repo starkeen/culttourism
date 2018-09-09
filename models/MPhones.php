@@ -55,17 +55,12 @@ class MPhones extends Model
     {
         $this->_db->sql = "UPDATE $this->_table_name AS t
                             LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = t.id_city
-                            LEFT JOIN {$this->_tables_related['city_data']} city_data ON city_data.cd_pc_id = t.id_city AND cd.cd_cf_id = 2
+                            LEFT JOIN {$this->_tables_related['city_data']} city_data ON city_data.cd_pc_id = t.id_city AND city_data.cd_cf_id = 2
                             SET t.code_country = NULL,
                                 t.code_city = city_data.cd_value,
                                 t.reversed = SUBSTRING(TRIM(REPLACE(REPLACE(REPLACE(REVERSE(t.phone_raw), '-', ''), '(', ''), ')', '')) FROM 0 FOR 5),
                                 t.date_check = NOW()
-                           WHERE t.date_check IS NULL
-                           LIMIT :limit";
-        $this->_db->execute(
-            [
-                ':limit' => 100,
-            ]
-        );
+                           WHERE t.date_check IS NULL";
+        $this->_db->exec();
     }
 }
