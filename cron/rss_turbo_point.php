@@ -22,7 +22,7 @@ foreach ($entries as $entry) {
     $xmlItem->addChild('link', _SITE_URL . ltrim($entry['city_url'], '/') . '/' . $entry['pt_slugline'] . '.html');
     $xmlItem->addChild('title', $entry['pt_name']);
 
-    $content = $entry['text_absolute'];
+    $content = htmlspecialchars($entry['text_absolute']);
     if ($entry['photo_src'] !== '') {
         $absolutePhotoUrl = $entry['photo_src'];
         if (strpos($absolutePhotoUrl, '/') === 0) {
