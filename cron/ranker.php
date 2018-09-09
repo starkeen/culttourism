@@ -23,4 +23,3 @@ $db->exec();
 
 $db->sql = "UPDATE $dbc pc SET pc.pc_rank = 100*pc.pc_cnt_shows/(DATEDIFF(now(),pc.pc_add_date)+1)";
 $db->exec();
-?>

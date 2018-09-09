@@ -536,6 +536,34 @@ class MPagePoints extends Model
     }
 
     /**
+     * @param int $limit
+     *
+     * @return array
+     * @throws MyPDOException
+     */
+    public function getPointsWithPhones(int $limit): array
+    {
+        $this->_db->sql = "SELECT pt.pt_id, pt.pt_name, pt.pt_phone,
+                                pc.pc_title, pc.pc_id
+                            FROM $this->_table_name pt
+                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
+                                LEFT JOIN {$this->_tables_related['data_check']} dc ON dc.dc_item_id = pt.pt_id
+                                    AND dc.dc_type = 'pagepoints'
+                                    AND dc.dc_field = 'pt_phone'
+                            WHERE pt.pt_active = 1
+                                AND pt.pt_phone != ''
+                            ORDER BY dc.dc_date, pt.pt_is_best DESC, pt.pt_rank DESC
+                            LIMIT :limit";
+        $this->_db->execute(
+            [
+                ':limit' => $limit,
+            ]
+        );
+
+        return $this->_db->fetchAll();
+    }
+
+    /**
      * Исправляет форматы данных
      */
     public function repairData(): void

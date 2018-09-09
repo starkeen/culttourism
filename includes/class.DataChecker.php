@@ -1,5 +1,8 @@
 <?php
 
+use app\exceptions\MyPDOException;
+use models\MPhones;
+
 /**
  * Класс для проверки и исправления данных
  */
@@ -102,6 +105,52 @@ class DataChecker
                     'default: ' . $addrVariant['delta_meters']
                 );
             }
+        }
+
+        return $log;
+    }
+
+
+    /**
+     * @param int $count
+     *
+     * @return array
+     * @throws MyPDOException
+     */
+    public function repairPointsPhones(int $count = 10): array
+    {
+        $log = [];
+
+        $this->entity_type = MDataCheck::ENTITY_POINTS;
+        $this->entity_id = 'pc_id';
+        $this->entity_field = 'pt_phone';
+
+        $dataChecker = new MDataCheck($this->db);
+        $ptModel = new MPagePoints($this->db);
+        $phonesModel = new MPhones($this->db);
+
+        $points = $ptModel->getPointsWithPhones($count);
+        foreach ($points as $i => $pt) {
+            $phoneString = $pt['pt_phone'];
+            $phoneItems = explode(',', $phoneString);
+
+            foreach ($phoneItems as $phoneItem) {
+                $phoneItem = trim($phoneItem);
+                $phonesModel->insert(
+                    [
+                        'phone_raw' => $phoneItem,
+                        'id_point' => (int)$pt['pt_id'],
+                        'id_city' => (int)$pt['pt_citypage_id'],
+                    ]
+                );
+            }
+
+            $dataChecker->markChecked(
+                $this->entity_type,
+                $pt['pt_id'],
+                $this->entity_field,
+                ''
+            );
         }
 
         return $log;
@@ -336,7 +385,7 @@ class DataChecker
     }
 
     /**
-     * @param int  $limit
+     * @param int $limit
      * @param bool $active
      * @param bool $unchecked
      *
@@ -414,9 +463,9 @@ class DataChecker
     /**
      * @param string $type
      * @param string $field
-     * @param int    $ageDays
+     * @param int $ageDays
      */
-    public function resetOldData(string $type, string $field, int $ageDays)
+    public function resetOldData(string $type, string $field, int $ageDays): void
     {
         $checkerTable = $this->db->getTableName('data_check');
         $this->db->sql = "DELETE FROM $checkerTable

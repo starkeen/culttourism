@@ -15,6 +15,7 @@
         "guzzlehttp/guzzle"   : "^6.2",
         "iamsalnikov/mdash"   : "^3.5",
         "ext-pdo"             : "*",
+        "ext-curl"            : "*",
         "ext-SimpleXML"       : "*"
     },
     "require-dev" : {

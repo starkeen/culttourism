@@ -31,9 +31,6 @@ foreach ($sourses as $sourse) {
     ));
 }
 
-$ns->optimize();
-$ni->optimize();
-
 function rss_to_array($tag, $array, $url) {
     $doc = new DOMdocument();
     $rss_array = array();
