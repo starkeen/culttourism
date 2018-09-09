@@ -41,6 +41,7 @@ class MPagePoints extends Model
         parent::__construct($db);
         $this->_addRelatedTable('pagecity');
         $this->_addRelatedTable('region_url');
+        $this->_addRelatedTable('photos');
         $this->_addRelatedTable('lists');
         $this->_addRelatedTable('lists_items');
         $this->_addRelatedTable('data_check');
