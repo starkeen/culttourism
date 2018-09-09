@@ -134,6 +134,7 @@ class DataChecker
             $phoneString = $pt['pt_phone'];
             $phoneItems = explode(',', $phoneString);
 
+            $phonesModel->deleteByPoint((int)$pt['pt_id']);
             foreach ($phoneItems as $phoneItem) {
                 $phoneItem = trim($phoneItem);
                 $phonesModel->insert(

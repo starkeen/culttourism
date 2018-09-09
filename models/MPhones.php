@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace models;
 
 use app\db\MyDB;
+use app\exceptions\MyPDOException;
 use Model;
-use MPagePoints;
 
 class MPhones extends Model
 {
@@ -26,5 +26,21 @@ class MPhones extends Model
             'id_city',
         ];
         parent::__construct($db);
+    }
+
+    /**
+     * @param int $pointId
+     *
+     * @throws MyPDOException
+     */
+    public function deleteByPoint(int $pointId): void
+    {
+        $this->_db->sql = "DELETE FROM $this->_table_name WHERE id_point = :pointId";
+
+        $this->_db->execute(
+            [
+                ':pointId' => $pointId,
+            ]
+        );
     }
 }
