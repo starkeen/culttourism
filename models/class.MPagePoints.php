@@ -519,8 +519,10 @@ class MPagePoints extends Model
             FROM {$this->_table_name} t
               LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = t.pt_citypage_id
                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
+              LEFT JOIN {$this->_tables_related['ref_pointtypes']} types ON types.tp_id = t.pt_type_id
               LEFT JOIN {$this->_tables_related['photos']} ph ON ph.ph_id = t.pt_photo_id
             WHERE {$this->_table_active} = 1
+              AND types.tr_sight = 1
               AND LENGTH(pt_description) > 10
             ORDER BY t.pt_rank DESC, {$this->_table_order} ASC
             LIMIT :limit
@@ -572,6 +574,7 @@ class MPagePoints extends Model
                                 pt_phone = REPLACE(pt_phone, ';', ',')
                             WHERE pt_phone LIKE '%;%'";
         $this->_db->exec();
+
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 pt_phone = REPLACE(pt_phone, ' ,', ',')
                             WHERE pt_phone LIKE '% ,%'";
@@ -583,9 +586,9 @@ class MPagePoints extends Model
      *
      * @param int $id
      *
-     * @return boolean
+     * @return bool
      */
-    public function deleteByPk($id)
+    public function deleteByPk($id): bool
     {
         return $this->updateByPk($id, [$this->_table_active => 0]);
     }
@@ -593,7 +596,7 @@ class MPagePoints extends Model
     /**
      * Заменяет все абсолютные ссылки относительными
      */
-    public function repairLinksAbsRel()
+    public function repairLinksAbsRel(): void
     {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET pt_description = REPLACE(pt_description, '=\"http://" . _URL_ROOT . "/', '=\"/')";
@@ -611,7 +614,7 @@ class MPagePoints extends Model
      *
      * @return int
      */
-    public function getPointType($name)
+    public function getPointType($name): int
     {
         $rpt = new MRefPointtypes($this->_db);
         $types_markers = $rpt->getMarkers();
@@ -631,8 +634,9 @@ class MPagePoints extends Model
      * @param string $query
      *
      * @return array
+     * @throws MyPDOException
      */
-    public function getSuggestion($query)
+    public function getSuggestion($query): array
     {
         $this->_db->sql = "SELECT pt_id, pt_name, pc_id, pc_title_unique AS pc_title, url
                             FROM $this->_table_name pt
