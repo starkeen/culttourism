@@ -2,7 +2,7 @@
 
 $fileName = sprintf('%s/feed/%s', _DIR_DATA, 'turbo-blog.xml');
 
-$xml = new SimpleXMLElement('<rss></rss>');
+$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><rss></rss>');
 $xml->addAttribute('xmlns:yandex', 'http://news.yandex.ru');
 $xml->addAttribute('xmlns:media', 'http://search.yahoo.com/mrss/');
 $xml->addAttribute('xmlns:turbo', 'http://turbo.yandex.ru');

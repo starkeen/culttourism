@@ -1,5 +1,7 @@
 <?php
 
+use app\exceptions\MyPDOException;
+
 class MPagePoints extends Model
 {
     protected $_table_pk = 'pt_id';
@@ -453,9 +455,40 @@ class MPagePoints extends Model
     }
 
     /**
+     * @param int $limit
+     * @return array
+     * @throws MyPDOException
+     */
+    public function getActiveSights(int $limit): array
+    {
+        $this->_db->sql = "
+            SELECT t.*,
+              ph.ph_src AS photo_src,
+              CONCAT(url.url, '/') AS city_url,
+              REPLACE(t.pt_description, '=\"/', CONCAT('=\"', :site_url1)) AS text_absolute
+            FROM {$this->_table_name} t
+              LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = t.pt_citypage_id
+                LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
+              LEFT JOIN {$this->_tables_related['photos']} ph ON ph.ph_id = t.pt_photo_id
+            WHERE {$this->_table_active} = 1
+              AND LENGTH(pt_description) > 10
+            ORDER BY t.pt_rank DESC, {$this->_table_order} ASC
+            LIMIT :limit
+        ";
+        $this->_db->execute(
+            [
+                ':limit' => $limit,
+                ':site_url1' => _SITE_URL,
+            ]
+        );
+
+        return $this->_db->fetchAll();
+    }
+
+    /**
      * Исправляет форматы данных
      */
-    public function repairData()
+    public function repairData(): void
     {
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 pt_phone = REPLACE(pt_phone, ';', ',')

@@ -1,5 +1,7 @@
 <?php
 
+use app\exceptions\MyPDOException;
+
 class MPageCities extends Model
 {
     protected $_table_pk = 'pc_id';
@@ -176,6 +178,7 @@ class MPageCities extends Model
 
     /**
      * @return array
+     * @throws MyPDOException
      */
     public function getActive(): array
     {
