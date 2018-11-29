@@ -524,7 +524,7 @@ class MPagePoints extends Model
             WHERE {$this->_table_active} = 1
               AND types.tr_sight = 1
               AND LENGTH(pt_description) > 10
-            ORDER BY t.pt_rank DESC, {$this->_table_order} ASC
+            ORDER BY t.pt_rank DESC, RAND(), {$this->_table_order} ASC
             LIMIT :limit
         ";
         $this->_db->execute(
