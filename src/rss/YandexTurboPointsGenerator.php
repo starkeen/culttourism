@@ -63,7 +63,7 @@ class YandexTurboPointsGenerator
             }
             $contactsBlock = '';
             foreach (['pt_adress', 'pt_phone', 'pt_worktime', 'pt_website'] as $contactType) {
-                if (trim($entry[$contactType]) !== '') {
+                if ($entry[$contactType] !== null && trim($entry[$contactType]) !== '') {
                     $contactValue = $entry[$contactType];
                     if ($contactType === 'pt_website') {
                         $contactValue = sprintf('<a href="%s">%s</a>', $contactValue, $contactValue);
