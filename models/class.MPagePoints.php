@@ -471,13 +471,13 @@ class MPagePoints extends Model
     public function insert($values = [], $files = [])
     {
         if (isset($values['pt_latitude'])) {
-            $values['pt_latitude'] = floatval(str_replace(',', '.', trim($values['pt_latitude'])));
+            $values['pt_latitude'] = (float) str_replace(',', '.', trim($values['pt_latitude']));
             if ($values['pt_latitude'] == 0) {
                 unset($values['pt_latitude']);
             }
         }
         if (isset($values['pt_longitude'])) {
-            $values['pt_longitude'] = floatval(str_replace(',', '.', trim($values['pt_longitude'])));
+            $values['pt_longitude'] = (float) str_replace(',', '.', trim($values['pt_longitude']));
             if ($values['pt_longitude'] == 0) {
                 unset($values['pt_longitude']);
             }
@@ -512,6 +512,8 @@ class MPagePoints extends Model
      */
     public function getActiveSights(PointCriteria $criteria): array
     {
+        $criteria->addOrder($this->_table_order);
+        $orderString = $criteria->getOrderString();
         $this->_db->sql = "
             SELECT t.*,
               pc.pc_inwheretext,
@@ -526,12 +528,14 @@ class MPagePoints extends Model
             WHERE {$this->_table_active} = 1
               AND types.tr_sight = 1
               AND LENGTH(pt_description) > 10
-            ORDER BY t.pt_rank DESC, RAND(), {$this->_table_order} ASC
+            ORDER BY {$orderString}
             LIMIT :limit
+            OFFSET :offset
         ";
         $this->_db->execute(
             [
                 ':limit' => $criteria->getLimit(),
+                ':offset' => $criteria->getOffset(),
                 ':site_url1' => _SITE_URL,
             ]
         );

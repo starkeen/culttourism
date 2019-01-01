@@ -9,12 +9,12 @@ class PointCriteria
     /**
      * @var int
      */
-    private $limit;
+    private $limit = 1;
 
     /**
      * @var int
      */
-    private $offset;
+    private $offset = 0;
 
     /**
      * @var string[]
