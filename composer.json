@@ -16,7 +16,8 @@
         "iamsalnikov/mdash"   : "^3.5",
         "ext-pdo"             : "*",
         "ext-curl"            : "*",
-        "ext-SimpleXML"       : "*"
+        "ext-SimpleXML"       : "*",
+        "ext-json"            : "*"
     },
     "require-dev" : {
         "phpunit/phpunit" : "^6.1"

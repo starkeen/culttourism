@@ -1,7 +1,9 @@
 <?php
 
+use app\api\YandexWebmasterAPI;
 use app\model\criteria\PointCriteria;
 use app\rss\YandexTurboPointsGenerator;
+use GuzzleHttp\Client;
 
 $pointModel = new MPagePoints($db);
 $generator = new YandexTurboPointsGenerator($pointModel);
@@ -21,3 +23,7 @@ $dailyCriteria->addWhere('RIGHT(CAST(pt_id AS CHAR), 2) = ' . sprintf('%02d', $d
 $xml = $generator->getXML($dailyCriteria);
 $fileName = sprintf('%s/feed/turbo-point-d%02d.xml', _DIR_DATA, $dayToday);
 file_put_contents($fileName, $xml->asXML());
+
+$guzzle = new Client();
+$apiClient = new YandexWebmasterAPI($guzzle);
+$apiClient->uploadRSS($fileName);
