@@ -512,8 +512,12 @@ class MPagePoints extends Model
      */
     public function getActiveSights(PointCriteria $criteria): array
     {
+        $criteria->addWhere('types.tr_sight = 1');
         $criteria->addOrder($this->_table_order);
+
         $orderString = $criteria->getOrderString();
+        $whereString = $criteria->getWhereString();
+
         $this->_db->sql = "
             SELECT t.*,
               pc.pc_inwheretext,
@@ -526,8 +530,7 @@ class MPagePoints extends Model
               LEFT JOIN {$this->_tables_related['ref_pointtypes']} types ON types.tp_id = t.pt_type_id
               LEFT JOIN {$this->_tables_related['photos']} ph ON ph.ph_id = t.pt_photo_id
             WHERE {$this->_table_active} = 1
-              AND types.tr_sight = 1
-              AND LENGTH(pt_description) > 10
+              AND {$whereString}
             ORDER BY {$orderString}
             LIMIT :limit
             OFFSET :offset

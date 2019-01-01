@@ -12,6 +12,11 @@ class PointCriteria
     public const ORDER_DESC = 'DESC';
 
     /**
+     * @var string[]
+     */
+    private $where = [];
+
+    /**
      * @var int
      */
     private $limit = 1;
@@ -96,5 +101,37 @@ class PointCriteria
             throw new RuntimeException('Неправильное направление сортировки');
         }
         $this->orderBy[$field] = $direction;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getWhere(): array
+    {
+        return $this->where;
+    }
+
+    /**
+     * @param string[] $where
+     */
+    public function setWhere(array $where): void
+    {
+        $this->where = $where;
+    }
+
+    /**
+     * @param string $condition
+     */
+    public function addWhere(string $condition): void
+    {
+        $this->where[] = $condition;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWhereString(): string
+    {
+        return implode(' AND ', $this->where);
     }
 }

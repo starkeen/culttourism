@@ -10,6 +10,7 @@ $pointModel = new MPagePoints($db);
 $generator = new YandexTurboPointsGenerator($pointModel);
 
 $criteria = new PointCriteria();
+$criteria->addWhere('LENGTH(pt_description) > 10');
 $criteria->setLimit(1000);
 $criteria->addOrder('pt_rank', PointCriteria::ORDER_DESC);
 
