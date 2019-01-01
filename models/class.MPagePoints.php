@@ -1,6 +1,7 @@
 <?php
 
 use app\exceptions\MyPDOException;
+use app\model\criteria\PointCriteria;
 
 class MPagePoints extends Model
 {
@@ -504,11 +505,12 @@ class MPagePoints extends Model
     }
 
     /**
-     * @param int $limit
+     * @param PointCriteria $criteria
+     *
      * @return array
      * @throws MyPDOException
      */
-    public function getActiveSights(int $limit): array
+    public function getActiveSights(PointCriteria $criteria): array
     {
         $this->_db->sql = "
             SELECT t.*,
@@ -529,7 +531,7 @@ class MPagePoints extends Model
         ";
         $this->_db->execute(
             [
-                ':limit' => $limit,
+                ':limit' => $criteria->getLimit(),
                 ':site_url1' => _SITE_URL,
             ]
         );
