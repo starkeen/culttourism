@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace app\model\criteria;
 
+use RuntimeException;
+
 class PointCriteria
 {
+    public const ORDER_ASC = 'ASC';
+    public const ORDER_DESC = 'DESC';
+
     /**
      * @var int
      */
@@ -85,8 +90,11 @@ class PointCriteria
      * @param string $field
      * @param string $direction
      */
-    public function addOrder(string $field, string $direction = 'ASC'): void
+    public function addOrder(string $field, string $direction = self::ORDER_ASC): void
     {
+        if (!in_array($direction, [self::ORDER_ASC, self::ORDER_DESC], true)) {
+            throw new RuntimeException('Неправильное направление сортировки');
+        }
         $this->orderBy[$field] = $direction;
     }
 }

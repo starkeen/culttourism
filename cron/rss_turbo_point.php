@@ -11,6 +11,7 @@ $generator = new YandexTurboPointsGenerator($pointModel);
 
 $criteria = new PointCriteria();
 $criteria->setLimit(1000);
+$criteria->addOrder('pt_rank', PointCriteria::ORDER_DESC);
 
 $xml = $generator->getXML($criteria);
 
