@@ -8,11 +8,12 @@ use GuzzleHttp\Client;
 $pointModel = new MPagePoints($db);
 $generator = new YandexTurboPointsGenerator($pointModel);
 
-$criteria = new PointCriteria();
-$criteria->addWhere('LENGTH(pt_description) > 10');
-$criteria->setLimit(1000);
-$criteria->addOrder('pt_rank', PointCriteria::ORDER_DESC);
+$baseCriteria = new PointCriteria();
+$baseCriteria->addWhere('LENGTH(pt_description) > 10');
+$baseCriteria->addOrder('pt_rank', PointCriteria::ORDER_DESC);
 
+$criteria = clone $baseCriteria;
+$criteria->setLimit(1000);
 $xml = $generator->getXML($criteria);
 $fileName = sprintf('%s/feed/%s', _DIR_DATA, 'turbo-point.xml');
 file_put_contents($fileName, $xml->asXML());
