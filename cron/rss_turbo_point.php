@@ -17,11 +17,11 @@ $xml = $generator->getXML($criteria);
 $fileName = sprintf('%s/feed/%s', _DIR_DATA, 'turbo-point.xml');
 file_put_contents($fileName, $xml->asXML());
 
-$dayToday = date('d');
+$chunkNumber = date('d') % 10;
 $dailyCriteria = clone $criteria;
-$dailyCriteria->addWhere('RIGHT(CAST(pt_id AS CHAR), 2) = ' . sprintf('%02d', $dayToday - 1));
+$dailyCriteria->addWhere('RIGHT(CAST(pt_id AS CHAR), 1) = ' . $chunkNumber;
 $xml = $generator->getXML($dailyCriteria);
-$fileName = sprintf('%s/feed/turbo-point-d%02d.xml', _DIR_DATA, $dayToday);
+$fileName = sprintf('%s/feed/turbo-point-d%02d.xml', _DIR_DATA, $chunkNumber);
 file_put_contents($fileName, $xml->asXML());
 
 $guzzle = new Client();
