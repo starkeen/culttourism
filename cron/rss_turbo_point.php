@@ -19,7 +19,7 @@ file_put_contents($fileName, $xml->asXML());
 
 $chunkNumber = date('d') % 10;
 $dailyCriteria = clone $criteria;
-$dailyCriteria->addWhere('RIGHT(CAST(pt_id AS CHAR), 1) = ' . $chunkNumber;
+$dailyCriteria->addWhere('RIGHT(CAST(pt_id AS CHAR), 1) = ' . $chunkNumber);
 $xml = $generator->getXML($dailyCriteria);
 $fileName = sprintf('%s/feed/turbo-point-d%02d.xml', _DIR_DATA, $chunkNumber);
 file_put_contents($fileName, $xml->asXML());
