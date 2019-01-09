@@ -2,6 +2,7 @@
 
 $checker = new DataChecker($db);
 $checker->resetOldData('pagepoints', 'pt_latitude', 2 * 30);
+$checker->resetOldData('pagepoints', 'pt_adress', 2 * 30);
 
 $pc = new MPageCities($db);
 $pt = new MPagePoints($db);
