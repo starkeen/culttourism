@@ -11,7 +11,7 @@ class RSSAddUTMTest extends TestCase
     /** @var IRSSGenerator */
     private $generator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->generator = $this->getMockBuilder(IRSSGenerator::class)->getMock();
         $this->generator->method('process')

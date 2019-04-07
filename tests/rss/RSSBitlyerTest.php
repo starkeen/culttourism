@@ -5,6 +5,7 @@ namespace tests\rss;
 use app\includes\Bitly;
 use app\rss\IRSSGenerator;
 use app\rss\RSSBitlyer;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 
@@ -13,10 +14,10 @@ class RSSBitlyerTest extends TestCase
     /** @var IRSSGenerator */
     private $generator;
 
-    /** @var Bitly|PHPUnit_Framework_MockObject_MockObject */
+    /** @var Bitly|MockObject */
     private $bitly;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->generator = $this->getMockBuilder(IRSSGenerator::class)
                                 ->getMock();

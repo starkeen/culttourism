@@ -2,22 +2,23 @@
 
 use app\includes\Bitly;
 use GuzzleHttp\Client;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
 class BitlyTest extends TestCase
 {
-    /** @var Client|PHPUnit_Framework_MockObject_MockObject */
+    /** @var Client|MockObject */
     private $guzzleClient;
-    /** @var ResponseInterface|PHPUnit_Framework_MockObject_MockObject */
+    /** @var ResponseInterface|MockObject */
     private $guzzleResponse;
-    /** @var StreamInterface|PHPUnit_Framework_MockObject_MockObject */
+    /** @var StreamInterface|MockObject */
     private $guzzleResponseBody;
-    /** @var MCurlCache|PHPUnit_Framework_MockObject_MockObject */
+    /** @var MCurlCache|MockObject */
     private $curlCache;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->guzzleClient = $this->getMockBuilder(Client::class)
                                    ->setMethods(['get'])
