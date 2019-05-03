@@ -1,6 +1,7 @@
 <?php
 
 use app\db\FactoryDB;
+use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  * Description of classMailing
@@ -9,31 +10,31 @@ use app\db\FactoryDB;
  */
 class Mailing
 {
-    public function __construct()
-    {
-        //
-    }
-
-    private static function sendOnly($letter)
+    /**
+     * @param array $letter
+     *
+     * @throws \PHPMailer\PHPMailer\Exception
+     */
+    private static function sendOnly(array $letter): void
     {
         $mailer = new PHPMailer();
-        $mailer->IsSMTP();
-        $mailer->ContentType = "text/html";
-        $mailer->Mailer = "smtp";
+        $mailer->isSMTP();
+        $mailer->isHTML();
         $mailer->SMTPAuth = true;
-        $mailer->CharSet = "utf-8";
+        $mailer->CharSet = 'utf-8';
         $mailer->setLanguage('ru');
-        $mailer->From = _MAIL_FROMADDR;
-        $mailer->FromName = _MAIL_FROMNAME;
+        $mailer->setFrom(_MAIL_FROMADDR, _MAIL_FROMNAME);
         $mailer->Host = _MAIL_HOST;
+        $mailer->SMTPSecure = 'ssl';
+        $mailer->Port = 465;
         $mailer->Username = _MAIL_USER;                  // SMTP username
         $mailer->Password = _MAIL_PASS;                  // SMTP password
         $mailer->Subject = $letter['ml_theme'];
         $mailer->Body = $letter['ml_text'];
-        if ($letter['ml_customheader'] != '') {
+        if ($letter['ml_customheader'] !== '') {
             $mailer->AddCustomHeader($letter['ml_customheader']);
-            $listid = trim(str_replace('X-Mailru-Msgtype:', '', $letter['ml_customheader']));
-            $mailer->AddCustomHeader("List-id: <list-$listid.culttourism.ru>");
+            $listId = trim(str_replace('X-Mailru-Msgtype:', '', $letter['ml_customheader']));
+            $mailer->AddCustomHeader("List-id: <list-$listId.culttourism.ru>");
         }
         $mailer->AddAddress($letter['ml_adr_to']);
         $mailer->Send();
@@ -95,12 +96,19 @@ class Mailing
         return self::sendImmediately($db, $to, $letter['mt_content'], $letter['mt_theme'], $letter['mt_custom_header']);
     }
 
+    /**
+     * @param $to
+     * @param $type
+     * @param $details
+     *
+     * @return PDOStatement
+     */
     public static function sendLetterCommon($to, $type, $details)
     {
         $db = FactoryDB::db();
         $attrs = [];
         $attrs['SITE_LINK'] = _SITE_URL;
-        $attrs['USER_IP'] = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'cron';
+        $attrs['USER_IP'] = $_SERVER['REMOTE_ADDR'] ?? 'cron';
         $attrs['NOW'] = date('d.m.Y H:i:s');
         foreach ($details as $key => $val) {
             $attrs[strtoupper($key)] = $val;
