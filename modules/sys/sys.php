@@ -17,13 +17,13 @@ class Page extends PageCommon
         parent::__construct($db, self::MODULE_KEY, $page_id);
 
         if ($page_id == '' && $id == '' && empty($_GET)) {
-            $this->content = $this->getError(Core::HTTP_CODE_301, '');
+            $this->getError(Core::HTTP_CODE_301, '');
         } elseif ($page_id === 'bitbucket' && $id == '' && isset($_GET['key'])) {
-            $this->content = $this->getBitbucket(trim($_GET['key']));
+            $this->getBitbucket(trim($_GET['key']));
         } elseif ($page_id === 'static' && $id == '' && isset($_GET['type']) && isset($_GET['pack'])) {
-            $this->content = $this->getStatic(trim($_GET['type']), trim($_GET['pack']));
+            $this->getStatic(trim($_GET['type']), trim($_GET['pack']));
         } else {
-            $this->content = $this->getError(Core::HTTP_CODE_404);
+            $this->getError(Core::HTTP_CODE_404);
         }
     }
 

@@ -21,7 +21,10 @@ class Page extends PageCommon
         }
     }
 
-    private function getAdd()
+    /**
+     * Обработка формы добавления точки
+     */
+    private function getAdd(): void
     {
         $cp = new MCandidatePoints($this->db);
         if (!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] == null) {
@@ -31,6 +34,9 @@ class Page extends PageCommon
             $httpClient = new Client();
             $reCaptcha = new ReCaptcha($httpClient);
             $spamStatusOK = $reCaptcha->check($_POST['g-recaptcha-response'] ?? null);
+
+            $loggedSender = $_SESSION['user_id'] ?? null;
+            $isAdminSender = $loggedSender !== null && (int) $loggedSender !== 0;
 
             $cp->add(
                 [
@@ -49,8 +55,8 @@ class Page extends PageCommon
                 ]
             );
 
-            if ($spamStatusOK === true) {
-                $mail_attrs = [
+            if ($spamStatusOK === true && $isAdminSender !== true) {
+                $mailAttrs = [
                     'user_name' => $_POST['name'],
                     'user_mail' => $_POST['email'],
                     'add_city' => $_POST['region'],
@@ -63,7 +69,7 @@ class Page extends PageCommon
                     'referer' => $_SESSION['feedback_referer']
                 ];
 
-                Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 5, $mail_attrs);
+                Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 5, $mailAttrs);
                 unset($_SESSION['feedback_referer'], $_SESSION['captcha_keystring']);
             }
 
@@ -74,7 +80,7 @@ class Page extends PageCommon
         }
     }
 
-    private function getCommon()
+    private function getCommon(): void
     {
         $data = [
             'error' => null,
