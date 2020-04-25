@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace app\sys;
 
+use app\db\FactoryDB;
+use MLogActions;
+use MLogErrors;
+
 class Logging
 {
     public static function write($type, $text = null): bool
