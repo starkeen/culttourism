@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\sys;
 
+use Logging;
 use stdClass;
 
 class DeployBitbucket
@@ -24,7 +25,7 @@ class DeployBitbucket
      *
      * @return array
      */
-    public function deploy($req)
+    public function deploy($req): array
     {
         $this->repoPath = $req->canon_url
             . $this->config['git_url']
@@ -36,10 +37,11 @@ class DeployBitbucket
             // check if the branch is known at this step
             if (!empty($commit->branch) || !empty($commit->branches)) {
                 // if commit was on the branch we're watching, deploy changes
-                if ($commit->branch == $this->config['git_branch'] || (!empty($commit->branches) && array_search(
-                            $this->config['git_branch'],
-                            $commit->branches
-                        ) !== false)) {
+                if (
+                    $commit->branch === $this->config['git_branch']
+                    ||
+                    (!empty($commit->branches) && in_array($this->config['git_branch'], $commit->branches, true))
+                ) {
                     // get a list of files
                     foreach ($commit->files as $file) {
                         if ($file->type === 'modified' || $file->type === 'added') {
@@ -70,10 +72,13 @@ class DeployBitbucket
         $filePath = $this->repoPath . $filename;
         $fileLocation = $this->config['location'] . $filename;
 
+        Logging::addHistory('sys', 'fetch contents for ' . $filePath);
         $contents = $this->getFileContents($filePath);
+        Logging::addHistory('sys', 'fetched contents is: ' . $contents);
 
         if ($contents === 'Not Found') {
             // try one more time, BitBucket gets weirdo sometimes
+            Logging::addHistory('sys', 'retry fetch file contents');
             $contents = $this->getFileContents($filePath);
         }
         if ($contents !== 'Not Found' && $contents !== '') {
@@ -83,8 +88,10 @@ class DeployBitbucket
             }
             file_put_contents($fileLocation, $contents);
             $out = "Synchronized $filename";
+            Logging::addHistory('sys', $out);
         } else {
             $out = "Could not get file contents for $filename: [$contents]";
+            Logging::addHistory('sys', $out);
         }
 
         return $out;
@@ -112,15 +119,15 @@ class DeployBitbucket
     }
 
     /**
-     * @param string $dirpath
+     * @param string $dirPath
      *
      * @return string|null
      */
-    private function delDir($dirpath): ?string
+    private function delDir($dirPath): ?string
     {
-        if (!glob($dirpath . '/*')) {
-            if (rmdir($dirpath)) {
-                return $dirpath;
+        if (!glob($dirPath . '/*')) {
+            if (rmdir($dirPath)) {
+                return $dirPath;
             }
         }
         return null;
@@ -170,7 +177,7 @@ class DeployBitbucket
      *
      * @return string
      */
-    private function sendToSentry($version = 'master')
+    private function sendToSentry($version = 'master'): string
     {
         $data = ['version' => $version];
         $url = 'https://sentry.io/api/hooks/release/builtin/114324/bfd5c7f4281799d21a588cc8a5927c3f0be4dc886896561c9c8833bc82d5b385/';

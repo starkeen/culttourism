@@ -4,7 +4,7 @@ use app\db\FactoryDB;
 
 class Logging
 {
-    public static function write($type, $text = null)
+    public static function write($type, $text = null): bool
     {
         $db = FactoryDB::db();
         $le = new MLogErrors($db);
@@ -15,16 +15,23 @@ class Logging
                     'le_date' => $le->now(),
                     'le_url' => $_SERVER['REQUEST_URI'],
                     'le_ip' => $_SERVER['REMOTE_ADDR'],
-                    'le_browser' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null,
+                    'le_browser' => $_SERVER['HTTP_USER_AGENT'] ?? null,
                     'le_script' => $_SERVER['SCRIPT_FILENAME'],
-                    'le_referer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'undefined',
+                    'le_referer' => $_SERVER['HTTP_REFERER'] ?? 'undefined',
                 ]
             );
         }
         return true;
     }
 
-    public static function addHistory($module, $action, $data = [])
+    /**
+     * @param string $module
+     * @param string $action
+     * @param array $data
+     *
+     * @return bool
+     */
+    public static function addHistory(string $module, string $action, array $data = []): bool
     {
         $db = FactoryDB::db();
         $la = new MLogActions($db);
@@ -39,7 +46,14 @@ class Logging
         return true;
     }
 
-    public static function addDebug($module_id, $time, $url = '')
+    /**
+     * @param string $module_id
+     * @param $time
+     * @param string $url
+     *
+     * @return bool
+     */
+    public static function addDebug(string $module_id, $time, string $url = '')
     {
         $db = FactoryDB::db();
         $dbld = $db->getTableName('log_debug');
