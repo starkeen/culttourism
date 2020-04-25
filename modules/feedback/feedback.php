@@ -14,7 +14,7 @@ class Page extends PageCommon
         if ((string) $page_id === '') {
             $this->getCommon();
         } elseif ($page_id === 'getcapt') {
-            $this->setCaptchaKeyString();
+            $this->showCaptcha();
         } elseif ($page_id === 'newpoint') {
             $this->getAdd();
         } else {
@@ -188,7 +188,7 @@ class Page extends PageCommon
     /**
      * @return string
      */
-    private function getAddingForm()
+    private function getAddingForm(): string
     {
         $this->addTitle('Добавить объект (музей, гостиницу, кафе и др.)');
         $this->smarty->assign('recaptcha_key', ReCaptcha::KEY);
@@ -203,10 +203,11 @@ class Page extends PageCommon
         return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addsuccess.sm.html');
     }
 
-    private function setCaptchaKeyString(): void
+    private function showCaptcha(): void
     {
         $captcha = new MyKCaptcha();
         $_SESSION[MyKCaptcha::SESSION_KEY] = $captcha->getKeyString();
+        $captcha->captcha();
         exit();
     }
 
