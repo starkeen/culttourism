@@ -1,20 +1,22 @@
 <?php
 
-/**
- *
- * @author Андрей
- */
+declare(strict_types=1);
+
+namespace app\sys;
+
+use stdClass;
+
 class DeployBitbucket
 {
-    private $_config;
-    private $_repo_path;
+    private $config;
+    private $repoPath;
 
     /**
      * @param array $config
      */
     public function __construct(array $config)
     {
-        $this->_config = $config;
+        $this->config = $config;
     }
 
     /**
@@ -24,18 +26,18 @@ class DeployBitbucket
      */
     public function deploy($req)
     {
-        $this->_repo_path = $req->canon_url
-            . $this->_config['git_url']
+        $this->repoPath = $req->canon_url
+            . $this->config['git_url']
             . $req->repository->absolute_url . 'raw/'
-            . $this->_config['git_branch'] . '/';
+            . $this->config['git_branch'] . '/';
         $log = [];
 
         foreach ($req->commits as $commit) {
             // check if the branch is known at this step
             if (!empty($commit->branch) || !empty($commit->branches)) {
                 // if commit was on the branch we're watching, deploy changes
-                if ($commit->branch == $this->_config['git_branch'] || (!empty($commit->branches) && array_search(
-                            $this->_config['git_branch'],
+                if ($commit->branch == $this->config['git_branch'] || (!empty($commit->branches) && array_search(
+                            $this->config['git_branch'],
                             $commit->branches
                         ) !== false)) {
                     // get a list of files
@@ -65,8 +67,8 @@ class DeployBitbucket
     private function addFile($filename): ?string
     {
         $out = null;
-        $filePath = $this->_repo_path . $filename;
-        $fileLocation = $this->_config['location'] . $filename;
+        $filePath = $this->repoPath . $filename;
+        $fileLocation = $this->config['location'] . $filename;
 
         $contents = $this->getFileContents($filePath);
 
@@ -96,8 +98,8 @@ class DeployBitbucket
     private function delFile($filename): string
     {
         $out = [];
-        if (unlink($this->_config['location'] . $filename)) {
-            $delDir = $this->delDir(dirname($this->_config['location'] . $filename));
+        if (unlink($this->config['location'] . $filename)) {
+            $delDir = $this->delDir(dirname($this->config['location'] . $filename));
             if ($delDir) {
                 $out[] = "Removed dir $delDir";
             }
@@ -143,7 +145,7 @@ class DeployBitbucket
             'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36'
         );
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->_config['git_user'] . ':' . $this->_config['git_passwd']);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->config['git_user'] . ':' . $this->config['git_passwd']);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
@@ -170,7 +172,7 @@ class DeployBitbucket
      */
     private function sendToSentry($version = 'master')
     {
-        $data = ["version" => $version];
+        $data = ['version' => $version];
         $url = 'https://sentry.io/api/hooks/release/builtin/114324/bfd5c7f4281799d21a588cc8a5927c3f0be4dc886896561c9c8833bc82d5b385/';
 
         $ch = curl_init();

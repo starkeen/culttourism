@@ -1,6 +1,7 @@
 <?php
 
 use app\db\MyDB;
+use app\sys\DeployBitbucket;
 
 /**
  * Модуль служебных и системных процессов
@@ -12,7 +13,7 @@ class Page extends PageCommon
 
     public function __construct($db, $mod)
     {
-        list($module_id, $page_id, $id) = $mod;
+        [$module_id, $page_id, $id] = $mod;
 
         parent::__construct($db, self::MODULE_KEY, $page_id);
 
