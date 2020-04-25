@@ -1,5 +1,7 @@
 <?php
 
+use app\checker\DataChecker;
+
 $checker = new DataChecker($db);
 $checker->resetOldData('pagepoints', 'pt_latitude', 2 * 30);
 
