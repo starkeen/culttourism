@@ -43,13 +43,13 @@ abstract class Core
         'stat_text' => '',
     ];
     public $user = ['userid' => null];
-    public $custom_css = null;
+    public $custom_css;
     public $robots_indexing = 'index,follow';
-    public $lastedit = null;
+    public $lastedit;
     public $lastedit_timestamp = 0;
-    public $expiredate = null;
-    public $smarty = null;
-    protected $auth = null;
+    public $expiredate;
+    public $smarty;
+    protected $auth;
 
     protected function __construct($db, $mod)
     {
@@ -67,7 +67,7 @@ abstract class Core
 
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(
                 $_SERVER['HTTP_X_REQUESTED_WITH']
-            ) == 'xmlhttprequest') {
+            ) === 'xmlhttprequest') {
             $this->isAjax = true;
         }
 

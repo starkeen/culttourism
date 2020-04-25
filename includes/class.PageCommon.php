@@ -16,12 +16,12 @@ class PageCommon extends Core
     /**
      * @var string
      */
-    protected $mainfile_css;
+    public $mainfile_css;
 
     /**
      * @var string
      */
-    protected $mainfile_js;
+    public $mainfile_js;
 
     public function __construct($db, $mod_id) {
         parent::__construct($db, $mod_id);
