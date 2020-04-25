@@ -2,15 +2,15 @@
 
 class Page extends PageCommon
 {
-    const DESCRIPTION_TRESHOLD = 200;
+    private const DESCRIPTION_THRESHOLD = 200;
 
-    const REDIR_SUFFIXES = [
+    private const REDIRECT_SUFFIXES = [
         'undefined',
         'com.google.android.googlequicksearchbox',
         'android-app%3A',
     ];
 
-    const BOT_MARKERS =  [
+    private const BOT_MARKERS =  [
         'YandexMetrika',
         'Googlebot',
         'YandexBot',
@@ -31,8 +31,6 @@ class Page extends PageCommon
     public function __construct($db, $mod)
     {
         parent::__construct($db, $mod[0]); //встроеные модули
-        //if ($mod[1]!=null) $this->getSubContent($this->md_id, $mod[1]);
-        //$this->navibar = $this->getNavigation($this->md_id, $mod[1]);
         if (!$this->content) {
             $this->content = $this->getPageByURL($mod);
         }
@@ -42,14 +40,14 @@ class Page extends PageCommon
     }
 
     /**
-     * @param array $aurl
+     * @param string[] $urlArray
      *
      * @return bool|string|void
      */
-    public function getPageByURL($aurl)
+    public function getPageByURL($urlArray)
     {
         $url = '';
-        foreach ($aurl as $w) {
+        foreach ($urlArray as $w) {
             if ($w != '') {
                 $url .= '/' . $w;
             }
@@ -61,16 +59,16 @@ class Page extends PageCommon
             $url_parts_array = !empty($url) ? explode('/', $url) : [];
             $urlParts = array_pop($url_parts_array);
             if ($urlParts === 'map.html') {
-                return $this->getPageMap($url);
+                $this->showPageMap($url);
             } elseif ($urlParts === 'index.html') {
                 return $this->getPageCity($url);
-            } elseif (in_array($urlParts, self::REDIR_SUFFIXES)) {
+            } elseif (in_array($urlParts, self::REDIRECT_SUFFIXES, true)) {
                 $url = substr($url, 0, stripos($url, $urlParts));
-                header("HTTP/1.1 301 Moved Permanently");
-                header("Location: " . $url);
+                header('HTTP/1.1 301 Moved Permanently');
+                header('Location: ' . $url);
                 exit();
             } elseif (preg_match('/object([0-9]+)\.html/i', $urlParts, $regs)) {
-                return $this->getPageObject((int) $regs[1]);
+                $this->showPageObject((int) $regs[1]);
             } elseif (preg_match('/([a-z0-9_-]+)\.html/i', $urlParts, $regs)) {
                 return $this->getPageObjectBySlug($regs[1]);
             } else {
@@ -89,7 +87,7 @@ class Page extends PageCommon
     private function getPageObjectBySlug($slugLine)
     {
         if (!$slugLine) {
-            return false;
+            return '';
         }
 
         $pts = new MPagePoints($this->db);
@@ -97,13 +95,13 @@ class Page extends PageCommon
         $li = new MListsItems($this->db);
 
         $objects = $pts->searchSlugline($slugLine);
-        $object = isset($objects[0]) ? $objects[0] : false;
+        $object = $objects[0] ?? false;
         if (!$object) {
             return false;
         }
         $this->canonical = $object['url_canonical'];
         if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != $this->canonical) {
-            header("HTTP/1.1 301 Moved Permanently");
+            header('HTTP/1.1 301 Moved Permanently');
             header("Location: $this->canonical ");
             exit();
         }
@@ -111,13 +109,13 @@ class Page extends PageCommon
         $city = $pcs->getItemByPk($object['pt_citypage_id']);
 
         $shortDescr = strip_tags($object['pt_description']);
-        $short = mb_strlen($shortDescr) >= self::DESCRIPTION_TRESHOLD ? mb_substr(
+        $short = mb_strlen($shortDescr) >= self::DESCRIPTION_THRESHOLD ? mb_substr(
             $shortDescr,
             0,
             mb_strpos(
                 $shortDescr,
                 ' ',
-                self::DESCRIPTION_TRESHOLD
+                self::DESCRIPTION_THRESHOLD
             ),
             'utf-8'
         ) : $shortDescr;
@@ -140,7 +138,6 @@ class Page extends PageCommon
                     'lon' => $object['pt_longitude'] + $object['sw_ne_delta']
                 ],
             ];
-            //$object['gps_deg'] = 0;
         }
 
 
@@ -202,7 +199,7 @@ class Page extends PageCommon
         if ($object['pt_photo_id'] != 0) {
             $ph = new MPhotos($this->db);
             $photo = $ph->getItemByPk($object['pt_photo_id']);
-            $objImage = substr($photo['ph_src'], 0, 1) == '/' ? rtrim(
+            $objImage = strpos($photo['ph_src'], '/') === 0 ? rtrim(
                     _SITE_URL,
                     '/'
                 ) . $photo['ph_src'] : $photo['ph_src'];
@@ -236,10 +233,8 @@ class Page extends PageCommon
     /**
      * @param int $pid
      * @param string $p_url
-     *
-     * @return bool
      */
-    public function getSubContent($pid, $p_url)
+    public function getSubContent($pid, $p_url): void
     {
         $dbm = $this->db->getTableName('modules');
         $this->db->sql = "SELECT md_url, md_title, md_keywords, md_description, md_pagecontent
@@ -255,7 +250,6 @@ class Page extends PageCommon
                 $this->addDescription($row['md_description']);
                 $this->addKeywords($row['md_keywords']);
                 $this->addTitle($row['md_title']);
-                return true;
             }
         }
         $this->processError(Core::HTTP_CODE_404);
@@ -278,7 +272,7 @@ class Page extends PageCommon
         if ($res) {
             while ($row = $this->db->fetch($res)) {
                 $navi = ['url' => $row['md_url'], 'title' => $row['md_title'], 'active' => false];
-                if ($row['md_url'] == $sub_url) {
+                if ($row['md_url'] === $sub_url) {
                     $navi['active'] = true;
                 }
                 $navi_items[] = $navi;
@@ -296,19 +290,19 @@ class Page extends PageCommon
     /**
      * @param string $url
      *
-     * @return string|void
+     * @return string
      */
-    private function getPageCity($url)
+    private function getPageCity($url): string
     {
-        $url_parts = explode('/', $url);
+        $urlParts = explode('/', $url);
         $urlFiltered = array_map(
-            function ($uItem) {
+            static function ($uItem) {
                 return trim(str_replace('+', ' ', $uItem));
             },
-            $url_parts
+            $urlParts
         );
         $urlFiltered = '/' . implode('/', array_filter($urlFiltered));
-        $lastPart = array_pop($url_parts);
+        $lastPart = array_pop($urlParts);
         if ($lastPart === 'index.html') {
             header('HTTP/1.1 301 Moved Permanently');
             header('Location: ' . str_replace('index.html', '', $url));
@@ -375,7 +369,7 @@ class Page extends PageCommon
             if ($row['pc_coverphoto_id']) {
                 $ph = new MPhotos($this->db);
                 $photo = $ph->getItemByPk($row['pc_coverphoto_id']);
-                $cityImage = substr($photo['ph_src'], 0, 1) == '/' ? rtrim(
+                $cityImage = strpos($photo['ph_src'], '/') === 0 ? rtrim(
                         _SITE_URL,
                         '/'
                     ) . $photo['ph_src'] : $photo['ph_src'];
@@ -407,7 +401,7 @@ class Page extends PageCommon
     /**
      * @param int $id
      */
-    private function getPageObject($id)
+    private function showPageObject($id): void
     {
         if (!$id) {
             $this->processError(Core::HTTP_CODE_404);
@@ -416,7 +410,7 @@ class Page extends PageCommon
         $pts = new MPagePoints($this->db);
         $object = $pts->getItemByPk($id);
 
-        if (!$object || $object['pt_active'] == 0) {
+        if (!$object || (int) $object['pt_active'] === 0) {
             $this->processError(Core::HTTP_CODE_404);
         }
 
@@ -445,7 +439,7 @@ class Page extends PageCommon
     /**
      * @param string $url
      */
-    private function getPageMap($url)
+    private function showPageMap($url): void
     {
         $pc = new MPageCities($this->db);
         $city = $pc->getCityByUrl(str_replace('/map.html', '', $url));
@@ -459,7 +453,7 @@ class Page extends PageCommon
      *
      * @return Core
      */
-    public static function getInstance($db, $mod = null)
+    public static function getInstance($db, $mod = null): Core
     {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
