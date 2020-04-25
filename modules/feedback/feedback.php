@@ -205,7 +205,6 @@ class Page extends PageCommon
 
     private function setCaptchaKeyString(): void
     {
-        session_start();
         $captcha = new MyKCaptcha();
         $_SESSION[MyKCaptcha::SESSION_KEY] = $captcha->getKeyString();
         exit();
