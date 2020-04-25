@@ -65,20 +65,24 @@ class DeployBitbucket
     private function addFile($filename): ?string
     {
         $out = null;
-        $contents = $this->getFileContents($this->_repo_path . $filename);
+        $filePath = $this->_repo_path . $filename;
+        $fileLocation = $this->_config['location'] . $filename;
+
+        $contents = $this->getFileContents($filePath);
+
         if ($contents === 'Not Found') {
             // try one more time, BitBucket gets weirdo sometimes
-            $contents = $this->getFileContents($this->_repo_path . $filename);
+            $contents = $this->getFileContents($filePath);
         }
         if ($contents !== 'Not Found' && $contents !== '') {
-            if (!is_dir(dirname($this->_config['location'] . $filename))) {
+            if (!is_dir(dirname($fileLocation))) {
                 // attempt to create the directory structure first
-                mkdir(dirname($this->_config['location'] . $filename), 0755, true);
+                mkdir(dirname($fileLocation), 0755, true);
             }
-            file_put_contents($this->_config['location'] . $filename, $contents);
+            file_put_contents($fileLocation, $contents);
             $out = "Synchronized $filename";
         } else {
-            $out = "Could not get file contents for $filename";
+            $out = "Could not get file contents for $filename: [$contents]";
         }
 
         return $out;
