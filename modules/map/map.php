@@ -37,7 +37,7 @@ class Page extends PageCommon
             $this->isAjax = true;
             $this->getYMapsMLList((int) $_GET['lid']);
         } elseif ($page_id === 'gpx' && isset($_GET['cid']) && (int) $_GET['cid']) {
-            $this->content = $this->getCityPointsGPX((int) $_GET['cid']);
+            $this->showCityPointsGPX((int) $_GET['cid']);
         } //==========================  E X I T  ================================
         else {
             $this->processError(Core::HTTP_CODE_404);
@@ -83,10 +83,10 @@ class Page extends PageCommon
             if ($pt['pt_longitude'] < $bounds['min_lon']) {
                 $bounds['min_lon'] = $pt['pt_longitude'];
             }
-            $bounds['min_lat'] = $bounds['min_lat'] - $bounds['delta_lat'];
-            $bounds['max_lat'] = $bounds['max_lat'] + $bounds['delta_lat'];
-            $bounds['min_lon'] = $bounds['min_lon'] - $bounds['delta_lon'];
-            $bounds['max_lon'] = $bounds['max_lon'] + $bounds['delta_lon'];
+            $bounds['min_lat'] -= $bounds['delta_lat'];
+            $bounds['max_lat'] += $bounds['delta_lat'];
+            $bounds['min_lon'] -= $bounds['delta_lon'];
+            $bounds['max_lon'] += $bounds['delta_lon'];
         }
 
         $this->smarty->assign('ptypes', $ptypes);
@@ -214,14 +214,14 @@ class Page extends PageCommon
         $this->smarty->assign('bounds', $bounds);
         $this->smarty->assign('points', $points);
 
-        header("Content-type: application/xml");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Expires: " . date("r"));
+        header('Content-type: application/xml');
+        header('Cache-Control: no-store, no-cache, must-revalidate');
+        header('Expires: ' . date('r'));
         echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
         exit();
     }
 
-    private function getCityPointsGPX($cid): void
+    private function showCityPointsGPX($cid): void
     {
         if (!$cid) {
             $this->processError(Core::HTTP_CODE_404);

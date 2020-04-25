@@ -4,10 +4,24 @@
  * Class of common elements of modules
  */
 
-class PageCommon extends Core {
-
-    public $navibar = '';
+class PageCommon extends Core
+{
     public $ymaps_ver = 1;
+
+    /**
+     * @var string
+     */
+    protected $key_yandexmaps;
+
+    /**
+     * @var string
+     */
+    protected $mainfile_css;
+
+    /**
+     * @var string
+     */
+    protected $mainfile_js;
 
     public function __construct($db, $mod_id) {
         parent::__construct($db, $mod_id);
@@ -29,29 +43,35 @@ class PageCommon extends Core {
         }
     }
 
-    public function checkEdit() {
+    /**
+     * @return bool|null
+     */
+    public function checkEdit(): ?bool
+    {
         //проверяет возможность редактирования
-        if (isset($_SESSION['user_id']) && intval($_SESSION['user_id']) != 0) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
+        return isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0;
     }
 
-    public function getUserId() {
-        if (isset($_SESSION['user_id']) && intval($_SESSION['user_id']) != 0) {
-            return intval($_SESSION['user_id']);
-        } else {
-            return FALSE;
+    /**
+     * @return int|null
+     */
+    public function getUserId(): ?int
+    {
+        if (isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0) {
+            return (int) $_SESSION['user_id'];
         }
+
+        return null;
     }
 
+    /**
+     * @return int|string
+     */
     public function getUserHash() {
-        if (isset($_SESSION['user_id']) && intval($_SESSION['user_id']) != 0) {
-            return intval($_SESSION['user_id']);
-        } else {
-            return session_id();
+        if (isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0) {
+            return (int) $_SESSION['user_id'];
         }
-    }
 
+        return session_id();
+    }
 }

@@ -317,9 +317,7 @@ abstract class Core
 
     /**
      * @param int $errorHttpCode
-     * @param null $errorData
-     *
-     * @throws SmartyException
+     * @param mixed|null $errorData
      */
     public function processError(int $errorHttpCode = self::HTTP_CODE_404, $errorData = null): void
     {
