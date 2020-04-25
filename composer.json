@@ -1,5 +1,6 @@
 {
     "name"        : "starkeen/culttourism",
+    "license": "MIT",
     "authors"     : [
         {
             "name"  : "culttourism",
