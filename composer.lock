@@ -5,6 +5,7 @@
         "This file is @generated automatically"
     ],
     "content-hash": "8bd49126c6551ec99535355d4a5af8af",
+
     "packages": [
         {
             "name": "ezyang/htmlpurifier",
