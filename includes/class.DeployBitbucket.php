@@ -127,9 +127,9 @@ class DeployBitbucket
     /**
      * @param string $url
      *
-     * @return mixed
+     * @return string
      */
-    private function getFileContents($url)
+    private function getFileContents($url): string
     {
         // create a new cURL resource
         $ch = curl_init();
