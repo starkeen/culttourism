@@ -1,6 +1,8 @@
 <?php
 
-use app\db\FactoryDB;
+declare(strict_types=1);
+
+namespace app\sys;
 
 class Logging
 {
