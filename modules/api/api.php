@@ -38,7 +38,7 @@ class Page extends PageCommon {
         }
         //==========================  E X I T  ================================
         else {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 

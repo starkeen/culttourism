@@ -6,7 +6,7 @@ class Page extends PageCommon
 {
     public function __construct($db, $mod)
     {
-        list($module_id, $page_id, $id) = $mod;
+        [$module_id, $page_id, $id] = $mod;
         parent::__construct($db, 'map', $page_id);
         $id = urldecode($id);
         if (strpos($id, '?') !== false) {
@@ -23,29 +23,28 @@ class Page extends PageCommon
             $this->addOGMeta('type', 'website');
 
             $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/map/map.sm.html');
-            return true;
         } //====================  M A P   E N T R Y  ============================
-        elseif ($page_id == 'common') {
+        elseif ($page_id === 'common') {
             $this->auth->setService('map');
             $this->isAjax = true;
             $this->getYMapsMLCommon($_GET);
-        } elseif ($page_id == 'city' && isset($_GET['cid']) && intval($_GET['cid']) > 0) {
+        } elseif ($page_id === 'city' && isset($_GET['cid']) && (int) $_GET['cid'] > 0) {
             $this->auth->setService('map');
             $this->isAjax = true;
-            $this->getYMapsMLRegion(intval($_GET['cid']));
-        } elseif ($page_id == 'list' && isset($_GET['lid']) && intval($_GET['lid']) > 0) {
+            $this->getYMapsMLRegion((int) $_GET['cid']);
+        } elseif ($page_id === 'list' && isset($_GET['lid']) && (int) $_GET['lid'] > 0) {
             $this->auth->setService('map');
             $this->isAjax = true;
-            $this->getYMapsMLList(intval($_GET['lid']));
-        } elseif ($page_id == 'gpx' && isset($_GET['cid']) && intval($_GET['cid'])) {
-            $this->content = $this->getCityPointsGPX(intval($_GET['cid']));
+            $this->getYMapsMLList((int) $_GET['lid']);
+        } elseif ($page_id === 'gpx' && isset($_GET['cid']) && (int) $_GET['cid']) {
+            $this->content = $this->getCityPointsGPX((int) $_GET['cid']);
         } //==========================  E X I T  ================================
         else {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 
-    private function getYMapsMLList($list_id)
+    private function getYMapsMLList($list_id): void
     {
         $bounds = [
             'max_lat' => 0,
@@ -94,17 +93,17 @@ class Page extends PageCommon
         $this->smarty->assign('bounds', $bounds);
         $this->smarty->assign('points', $points);
 
-        header("Content-type: application/xml");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Expires: " . date("r"));
+        header('Content-type: application/xml');
+        header('Cache-Control: no-store, no-cache, must-revalidate');
+        header('Expires: ' . date('r'));
         echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
         exit();
     }
 
-    private function getYMapsMLRegion($cid)
+    private function getYMapsMLRegion($cid): void
     {
         if (!$cid) {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
 
         $pt = new MPagePoints($this->db);
@@ -222,17 +221,17 @@ class Page extends PageCommon
         exit();
     }
 
-    private function getCityPointsGPX($cid)
+    private function getCityPointsGPX($cid): void
     {
         if (!$cid) {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
         $pt = new MPagePoints($this->db);
         $pts = $pt->getPointsByCity($cid);
 
         $this->smarty->assign('points', $pts['points']);
 
-        header("Content-type: application/xml");
+        header('Content-type: application/xml');
         echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
         exit();
     }

@@ -58,7 +58,7 @@ abstract class Core
         $this->smarty = new mySmarty();
         if (!$this->db->link) {
             $this->module_id = $mod;
-            $this->getError('503', $this->smarty);
+            $this->processError(self::HTTP_CODE_503, $this->smarty);
         }
         $mod_id = $mod;
         $page_id = null;
@@ -83,7 +83,7 @@ abstract class Core
         }
 
         if (!empty($this->globalsettings['site_active']) && $this->globalsettings['site_active'] === 'Off') {
-            $this->getError('503');
+            $this->processError(self::HTTP_CODE_503);
         }
 
         $md = new MModules($this->db);
@@ -105,7 +105,7 @@ abstract class Core
 
         if (!empty($row)) {
             if ($row['md_redirect'] !== null) {
-                $this->getError('301', $row['md_redirect']);
+                $this->processError(self::HTTP_CODE_301, $row['md_redirect']);
             }
             $this->url = $row['md_url'];
             $this->title = $this->globalsettings['default_pagetitle'] ?? '';
@@ -312,12 +312,18 @@ abstract class Core
         if (ob_get_length()) {
             ob_end_clean();
         }
-        $this->getError('503');
+        $this->processError(self::HTTP_CODE_503);
     }
 
-    public function getError(int $err_code = self::HTTP_CODE_404, $err_data = null)
+    /**
+     * @param int $errorHttpCode
+     * @param null $errorData
+     *
+     * @throws SmartyException
+     */
+    public function processError(int $errorHttpCode = self::HTTP_CODE_404, $errorData = null): void
     {
-        if ($err_code !== self::HTTP_CODE_301) {
+        if ($errorHttpCode !== self::HTTP_CODE_301) {
             $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
             $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
             $this->globalsettings['main_rss'] = '';
@@ -327,15 +333,15 @@ abstract class Core
             $this->smarty->assign('page', $this);
             $this->smarty->assign('debug_info', '');
         }
-        switch ($err_code) {
+        switch ($errorHttpCode) {
             case self::HTTP_CODE_301: {
                 header('HTTP/1.1 301 Moved Permanently');
-                header("Location: $err_data");
+                header("Location: $errorData");
                 exit();
             }
                 break;
             case self::HTTP_CODE_403: {
-                Logging::write($err_code, $err_data);
+                Logging::writeError($errorHttpCode);
 
                 header('Content-Type: text/html; charset=utf-8');
                 header('HTTP/1.1 403 Forbidden');
@@ -348,7 +354,7 @@ abstract class Core
             }
                 break;
             case self::HTTP_CODE_404: {
-                Logging::write($err_code, $err_data);
+                Logging::writeError($errorHttpCode);
 
                 header('Content-Type: text/html; charset=utf-8');
                 header('HTTP/1.0 404 Not Found');
@@ -390,14 +396,14 @@ abstract class Core
         exit();
     }
 
-    protected function checkRedirect($url)
+    protected function checkRedirect(string $url): void
     {
-        $redir = new MRedirects($this->db);
-        $redirects = $redir->getActive();
+        $redirectModel = new MRedirects($this->db);
+        $redirects = $redirectModel->getActive();
         foreach ($redirects as $redirect) {
-            $redir = preg_filter($redirect['rd_from'], $redirect['rd_to'], $url);
-            if ($redir) {
-                $this->getError(301, $redir);
+            $redirectUrl = preg_filter($redirect['rd_from'], $redirect['rd_to'], $url);
+            if ($redirectUrl !== null) {
+                $this->processError(self::HTTP_CODE_301, $redirectUrl);
             }
         }
     }

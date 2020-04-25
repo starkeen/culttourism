@@ -21,13 +21,13 @@ class Page extends PageCommon {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             $this->content = $this->deleteBlogEntry(intval($_GET['bid']));
         } elseif ($page_id == 'blog') {
-            $this->getError(301, '/blog/');
+            $this->processError(Core::HTTP_CODE_301, '/blog/');
         } elseif ($id2 != '') {
             $this->content = $this->getOneEntry($id2, $page_id, $id); //одна запись
         } elseif ($page_id != '') {
             $this->content = $this->getCalendar($page_id, $id); //календарь
         } else {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 
@@ -81,10 +81,10 @@ class Page extends PageCommon {
         } elseif ($bid = $this->checkURL($id)) {
             $entry = $this->getEntryByID($bid);
         } else {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
         if (empty($entry['br_title'])) {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
         $this->addTitle($entry['br_title']);
         $this->addDescription($entry['br_title']);
@@ -286,7 +286,7 @@ class Page extends PageCommon {
                         'br_url' => $_POST['nurl'],
             ));
         } else {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 

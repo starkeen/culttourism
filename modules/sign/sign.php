@@ -3,7 +3,7 @@
 class Page extends PageCommon {
 
     public function __construct($db, $mod) {
-        list($module_id, $page_id, $id) = $mod;
+        [$module_id, $page_id, $id] = $mod;
         parent::__construct($db, 'sign');
         $this->id = $id;
         if ($page_id == 'in') {
@@ -17,7 +17,7 @@ class Page extends PageCommon {
         } elseif ($page_id == 'form') {
             $this->content = $this->getFormLogin();
         } else {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 
@@ -52,15 +52,16 @@ class Page extends PageCommon {
         }
     }
 
-    private function doCheck($key) {
+    private function doCheck($key): void
+    {
         if (isset($_SERVER['HTTP_REFERER']) && !isset($_SESSION['user_referer'])) {
             $_SESSION['user_referer'] = $_SERVER['HTTP_REFERER'];
         }
         if (!$key) {
-            $this->getError('301', 'sign/in/');
+            $this->processError(Core::HTTP_CODE_301, 'sign/in/');
         }
         if (!isset($_POST) || empty($_POST)) {
-            $this->getError('301', 'sign/in/');
+            $this->processError(Core::HTTP_CODE_301, 'sign/in/');
         }
 
         $email = trim($_POST['email']);
@@ -69,11 +70,13 @@ class Page extends PageCommon {
         if ($this->auth->checkMailPassword($email, $passw)) {
             if (isset($_SESSION['user_referer'])) {
                 header('Location: ' . $_SESSION['user_referer']);
+                exit();
             } else {
                 header('Location: ' . _SITE_URL);
+                exit();
             }
         } else {
-            $this->getError('301', 'sign/in/');
+            $this->processError(Core::HTTP_CODE_301, 'sign/in/');
         }
     }
 

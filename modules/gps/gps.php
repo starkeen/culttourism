@@ -63,7 +63,7 @@ class Page extends PageCommon {
 
                 $hash = $this->getUserHash();
                 $db->sql = "INSERT INTO $dbse (se_citypage_id, se_points, se_type, se_userhash, se_date) VALUES ";
-                $sql_pnts = '';
+                $sql_pnts = [];
                 foreach ($list_points as $pnt_id) {
                     $sql_pnts[] = "('$city_id', '$pnt_id', '$export_type', '$hash', now())";
                 }
@@ -76,22 +76,22 @@ class Page extends PageCommon {
                 $file_content = '';
                 if ($export_type == 'gpx') {
                     $file_content = $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
-                    header("Content-type: application/gpx+xml");
+                    header('Content-type: application/gpx+xml');
                     header("Content-Disposition: attachment; filename=culttourism_GPX_{$region['pc_title_translit']}.gpx");
                 } elseif ($export_type == 'kml') {
                     $file_content = $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/KML.export.sm.xml');
-                    header("Content-type: application/vnd.google-earth.kml+xml");
+                    header('Content-type: application/vnd.google-earth.kml+xml');
                     header("Content-Disposition: attachment; filename=culttourism_KML_{$region['pc_title_translit']}.kml");
                 }
                 echo $file_content;
                 exit();
             } else {
-                $this->getError('301', '../');
+                $this->processError(Core::HTTP_CODE_301, '../');
             }
         }
         //==========================  E X I T  ================================
         else {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 

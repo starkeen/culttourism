@@ -19,13 +19,13 @@ class Page extends PageCommon
         parent::__construct($db, self::MODULE_KEY, $page_id);
 
         if ($page_id == '' && $id == '' && empty($_GET)) {
-            $this->getError(Core::HTTP_CODE_301, '');
+            $this->processError(Core::HTTP_CODE_301, '/');
         } elseif ($page_id === 'bitbucket' && $id == '' && isset($_GET['key'])) {
             $this->getBitbucket(trim($_GET['key']));
         } elseif ($page_id === 'static' && $id == '' && isset($_GET['type']) && isset($_GET['pack'])) {
             $this->getStatic(trim($_GET['type']), trim($_GET['pack']));
         } else {
-            $this->getError(Core::HTTP_CODE_404);
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 
@@ -98,10 +98,10 @@ class Page extends PageCommon
                 echo 'ok';
                 exit();
             } else {
-                $this->content = $this->getError('404');
+                $this->processError(Core::HTTP_CODE_404);
             }
         } else {
-            $this->content = $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 

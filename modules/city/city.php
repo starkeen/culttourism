@@ -10,19 +10,19 @@ class Page extends PageCommon
         parent::__construct($db, 'city', $page_id);
 
         if ($page_id[1] == '') {
-            return $this->pageCity();
-        } elseif ($page_id[1] == 'add') {
-            return $this->addCity();
-        } elseif ($page_id[1] == 'detail') {
-            return $this->detailCity();
-        } elseif ($page_id[1] == 'meta') {
-            return $this->metaCity();
-        } elseif ($page_id[1] == 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
+            $this->pageCity();
+        } elseif ($page_id[1] === 'add') {
+            $this->addCity();
+        } elseif ($page_id[1] === 'detail') {
+            $this->detailCity();
+        } elseif ($page_id[1] === 'meta') {
+            $this->metaCity();
+        } elseif ($page_id[1] === 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
             $this->isAjax = true;
-            return $this->getBlockWeather($_GET['lat'], $_GET['lon']);
+            $this->getBlockWeather($_GET['lat'], $_GET['lon']);
         } else {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 
@@ -140,7 +140,7 @@ class Page extends PageCommon
     }
 
     //****************************************  ТАБЛИЦА МЕТА  ******************
-    private function metaCity()
+    private function metaCity(): void
     {
         $dbcd = $this->db->getTableName('city_data');
         $dbcf = $this->db->getTableName('city_fields');
@@ -149,14 +149,14 @@ class Page extends PageCommon
 
         if (isset($_POST['act'])) {
             if (!$this->checkEdit()) {
-                return $this->getError('403');
+                $this->processError(Core::HTTP_CODE_403);
             }
             $uid = $this->getUserId();
             switch ($_POST['act']) {
                 case 'add':
-                    $cf_id = intval($_POST['cf']);
+                    $cf_id = (int) $_POST['cf'];
                     $value = trim($_POST['val']);
-                    $city_id = intval($_POST['cpid']);
+                    $city_id = (int) $_POST['cpid'];
                     $this->db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
                     $this->db->execute(
                         [
@@ -191,8 +191,8 @@ class Page extends PageCommon
                     echo $row['cf_title'];
                     break;
                 case 'del':
-                    $cf_id = intval($_POST['cf']);
-                    $city_id = intval($_POST['cpid']);
+                    $cf_id = (int) $_POST['cf'];
+                    $city_id = (int) $_POST['cpid'];
                     $this->db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
                     $this->db->execute(
                         [
@@ -209,8 +209,8 @@ class Page extends PageCommon
                     echo 'ok';
                     break;
                 case 'edit':
-                    $cf_id = intval($_POST['cf']);
-                    $city_id = intval($_POST['cpid']);
+                    $cf_id = (int) $_POST['cf'];
+                    $city_id = (int) $_POST['cpid'];
                     $value = trim($_POST['val']);
                     if ($value != '') {
                         $this->db->sql = "UPDATE $dbcd SET cd_value = :cd_value WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
@@ -241,7 +241,7 @@ class Page extends PageCommon
                                 ORDER BY cf_order";
             $this->db->execute(
                 [
-                    ':pc_id' => intval($_GET['id'])
+                    ':pc_id' => (int) $_GET['id']
                 ]
             );
             $metas = $this->db->fetchAll();
@@ -257,14 +257,14 @@ class Page extends PageCommon
     private function detailCity()
     {
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
         if (!isset($_GET['city_id'])) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
-        $city_id = intval($_GET['city_id']);
+        $city_id = (int) $_GET['city_id'];
         if (!$city_id) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
 
         $ph = new MPhotos($this->db);

@@ -18,7 +18,7 @@ class Page extends PageCommon
         } elseif ($page_id === 'newpoint') {
             $this->getAdd();
         } else {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 

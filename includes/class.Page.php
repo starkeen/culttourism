@@ -37,7 +37,7 @@ class Page extends PageCommon
             $this->content = $this->getPageByURL($mod);
         }
         if (!$this->content) {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 
@@ -246,7 +246,7 @@ class Page extends PageCommon
                             FROM $dbm WHERE md_active = '1' AND md_pid = '$pid'";
         $res = $this->db->exec();
         if (!$res) {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
         while ($row = $this->db->fetch($res)) {
             if ($row['md_url'] === $p_url) {
@@ -258,7 +258,7 @@ class Page extends PageCommon
                 return true;
             }
         }
-        $this->getError('404');
+        $this->processError(Core::HTTP_CODE_404);
     }
 
     /**
@@ -400,7 +400,7 @@ class Page extends PageCommon
                 return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.show.sm.html');
             }
         } else {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 
@@ -410,14 +410,14 @@ class Page extends PageCommon
     private function getPageObject($id)
     {
         if (!$id) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
 
         $pts = new MPagePoints($this->db);
         $object = $pts->getItemByPk($id);
 
         if (!$object || $object['pt_active'] == 0) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
 
         // фиксируем статистику старых адресов точек

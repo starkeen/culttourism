@@ -23,12 +23,12 @@ class MRedirects extends Model
 
     public function getActive()
     {
-        $redirs = $this->cache->get('active');
-        if (empty($redirs)) {
-            $redirs = parent::getActive();
-            $this->cache->put('active', $redirs);
+        $redirects = $this->cache->get('active');
+        if (empty($redirects)) {
+            $redirects = parent::getActive();
+            $this->cache->put('active', $redirects);
         }
-        return $redirs;
+        return $redirects;
     }
 
 }

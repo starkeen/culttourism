@@ -52,7 +52,7 @@ class Page extends PageCommon {
             $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/list/list.sm.html');
             return true;
         } else {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 

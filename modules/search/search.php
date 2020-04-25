@@ -6,11 +6,11 @@ class Page extends PageCommon {
         list($module_id, $page_id, $id) = $mod;
         parent::__construct($db, 'search');
         if ($id) {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
-        if ($page_id == 'suggest' && isset($_GET['query'])) {
+        if ($page_id === 'suggest' && isset($_GET['query'])) {
             $this->getSuggests();
-        } elseif ($page_id == 'suggest-object' && isset($_GET['query'])) {
+        } elseif ($page_id === 'suggest-object' && isset($_GET['query'])) {
             $this->getObjectSuggests();
         }
         $this->content = $this->getSearchYandex($this->db);

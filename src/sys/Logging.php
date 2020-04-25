@@ -5,19 +5,25 @@ declare(strict_types=1);
 namespace app\sys;
 
 use app\db\FactoryDB;
+use Core;
 use MLogActions;
 use MLogErrors;
 
 class Logging
 {
-    public static function write($type, $text = null): bool
+    /**
+     * @param int $type
+     *
+     * @return bool
+     */
+    public static function writeError(int $type): bool
     {
         $db = FactoryDB::db();
         $le = new MLogErrors($db);
-        if ($type !== '301' && !strpos($_SERVER['REQUEST_URI'], 'precomposed')) {
+        if ((int) $type !== Core::HTTP_CODE_301 && !strpos($_SERVER['REQUEST_URI'], 'precomposed')) {
             $le->insert(
                 [
-                    'le_type' => $type,
+                    'le_type' => (string) $type,
                     'le_date' => $le->now(),
                     'le_url' => $_SERVER['REQUEST_URI'],
                     'le_ip' => $_SERVER['REMOTE_ADDR'],

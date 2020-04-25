@@ -46,8 +46,8 @@ class MDataCheck extends Model {
 
     /**
      * Удалить связку из истории проверок
-     * @param type $entity
-     * @param type $id
+     * @param string $entity
+     * @param int $id
      */
     public function deleteChecked($entity, $id) {
         $this->_db->sql = "DELETE FROM $this->_table_name 

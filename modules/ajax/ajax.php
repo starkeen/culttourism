@@ -5,7 +5,7 @@ class Page extends PageCommon {
     private $mDataCheck;
 
     public function __construct($db, $mod) {
-        list($module_id, $page_id, $id) = $mod;
+        [$module_id, $page_id, $id] = $mod;
         parent::__construct($db, 'ajax');
         $this->smarty->caching = false;
         $id = urldecode($id);
@@ -58,17 +58,17 @@ class Page extends PageCommon {
         } elseif ($page_id == 'pointtype') {
             if ($id == 'getform') {
                 $this->content = $this->getChangeTypeForm();
-            } elseif ($id == 'savetype' && isset($_POST['pid']) && intval($_POST['pid'])) {
+            } elseif ($id === 'savetype' && isset($_POST['pid']) && intval($_POST['pid'])) {
                 $this->content = $this->setPointType(intval($_POST['pid']));
             }
-        } elseif ($page_id == 'page') {
-            if ($id == 'gps') {
+        } elseif ($page_id === 'page') {
+            if ($id === 'gps') {
                 $this->content = $this->getTextPage(31);
             } else {
-                $this->getError('404');
+                $this->processError(Core::HTTP_CODE_404);
             }
         } else {
-            $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 
@@ -86,16 +86,16 @@ class Page extends PageCommon {
 //-------------------------------------------------------------- POINTS ----------
     private function savePointContacts($cid) {
         if (!$cid) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
         $pp = new MPagePoints($this->db);
 
-        $nid = intval($_POST['cid']);
+        $nid = (int) $_POST['cid'];
         if ($cid != $nid) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
         $out = $pp->updateByPk($cid, array(
             'pt_lastup_user' => $this->getUserId(),
@@ -114,34 +114,36 @@ class Page extends PageCommon {
         }
     }
 
-    private function setFormPointAddr($pid) {
+    private function setFormPointAddr($pid): bool
+    {
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
         $p = new MPagePoints($this->db);
         $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $pid);
         return $p->updateByPk($pid, array('pt_adress' => $_POST['addr']));
     }
 
-    private function setFormPointBest($pid) {
+    private function setFormPointBest($pid): bool
+    {
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
-        $state = cut_trash_int(!empty($_POST['nstate']) && $_POST['nstate'] == "checked");
+        $state = cut_trash_int(!empty($_POST['nstate']) && $_POST['nstate'] === 'checked');
         $p = new MPagePoints($this->db);
         return $p->updateByPk($pid, array('pt_is_best' => $state));
     }
 
     private function setFormPointGPS($pid) {
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
 
         $p = new MPagePoints($this->db);
         $state = $p->updateByPk($pid, array(
             'pt_latitude' => $_POST['pt_lat'],
             'pt_longitude' => $_POST['pt_lon'],
-            'pt_latlon_zoom' => intval($_POST['pt_zoom']),
+            'pt_latlon_zoom' => (int) $_POST['pt_zoom'],
         ));
 
         if ($state) {
@@ -191,16 +193,16 @@ class Page extends PageCommon {
 
     private function getChangeTypeForm() {
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
         $point_id = cut_trash_int($_GET['pid']);
         if (!$point_id) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
         $p = new MPagePoints($this->db);
         $pts = new MRefPointtypes($this->db);
 
-        $point = $p->getItemByPk(intval($_GET['pid']));
+        $point = $p->getItemByPk((int) $_GET['pid']);
         $types = $pts->getActive();
         foreach ($types as $i => $type) {
             $types[$i]['current'] = ($type['tp_id'] == $point['pt_type_id']) ? 1 : 0;
@@ -213,12 +215,12 @@ class Page extends PageCommon {
 
     private function setPointType($pid) {
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
-        $ppid = intval($_POST['pid']);
-        $type = intval($_POST['ntype']);
+        $ppid = (int) $_POST['pid'];
+        $type = (int) $_POST['ntype'];
         if ($pid != $ppid || !$type) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
 
         $p = new MPagePoints($this->db);
@@ -244,20 +246,20 @@ class Page extends PageCommon {
             $this->smarty->assign('city_title', $city_title);
             return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.sm.html');
         } else {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
     }
 
     private function deletePoint($pid) {
         if (!$pid) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
-        $ppid = intval($_POST['pid']);
+        $ppid = (int) $_POST['pid'];
         if ($pid != $ppid) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
         $pp = new MPagePoints($this->db);
         $state = $pp->deleteByPk($ppid);
@@ -268,24 +270,25 @@ class Page extends PageCommon {
         }
     }
 
-    private function savePointNew($cid) {
+    private function savePointNew($cid): int
+    {
         if (!$cid) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
         $pts = new MPagePoints($this->db);
         $add_item = array(
             'pt_name' => trim($_POST['nname']) != '' ? trim($_POST['nname']) : '[не указано]',
             'pt_description' => trim($_POST['ndesc']),
-            'pt_citypage_id' => intval($_POST['cid']),
+            'pt_citypage_id' => (int) $_POST['cid'],
             'pt_website' => trim($_POST['nweb']),
             'pt_email' => trim($_POST['nmail']),
             'pt_worktime' => trim($_POST['nwork']),
             'pt_adress' => trim($_POST['naddr']),
             'pt_phone' => trim($_POST['nphone']),
-            'pt_is_best' => intval(!empty($_POST['nbest']) && $_POST['nbest'] == "checked"),
+            'pt_is_best' => (int) (!empty($_POST['nbest']) && $_POST['nbest'] === 'checked'),
             'pt_rank' => 0,
         );
         if ($_POST['nlat'] != '' && $_POST['nlon'] != '') {
@@ -297,14 +300,14 @@ class Page extends PageCommon {
 
     private function savePointTitle($id) {
         if (!$id) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
-        $nid = intval($_POST['id']);
+        $nid = (int) $_POST['id'];
         if ($id != $nid) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
         $pp = new MPagePoints($this->db);
         $state = $pp->updateByPk($nid, array(
@@ -316,20 +319,20 @@ class Page extends PageCommon {
             $point = $pp->getItemByPk($nid);
             return $point['pt_name'];
         } else {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 
     private function savePointDescr($id) {
         if (!$id) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
-        $nid = intval($_POST['id']);
+        $nid = (int) $_POST['id'];
         if ($id != $nid) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
         $pp = new MPagePoints($this->db);
         $state = $pp->updateByPk($nid, array(
@@ -341,13 +344,13 @@ class Page extends PageCommon {
             $point = $pp->getItemByPk($nid);
             return $point['pt_description'];
         } else {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 
     private function getPoint($id) {
         if (!$id) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
 
         $pts = new MPagePoints($this->db);
@@ -374,12 +377,12 @@ class Page extends PageCommon {
 
     private function getPointBySlugline($slugline) {
         if (!$slugline) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
 
         $pts = new MPagePoints($this->db);
         $objects = $pts->searchSlugline($slugline);
-        $object = isset($objects[0]) ? $objects[0] : false;
+        $object = $objects[0] ?? false;
         if (!$object) {
             return false;
         }
@@ -399,9 +402,10 @@ class Page extends PageCommon {
     }
 
 //-------------------------------------------------------------- CITY ----------
-    private function setFormCityGPS($cid) {
+    private function setFormCityGPS($cid): ?bool
+    {
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
         $pc = new MPageCities($this->db);
         $state = $pc->updateByPk($cid, array(
@@ -439,14 +443,14 @@ class Page extends PageCommon {
 
     private function saveCityTitle($id) {
         if (!$id) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
-        $nid = intval($_POST['id']);
+        $nid = (int) $_POST['id'];
         if ($id != $nid) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
         $pc = new MPageCities($this->db);
         $state = $pc->updateByPk($nid, array(
@@ -457,20 +461,20 @@ class Page extends PageCommon {
             $city = $pc->getItemByPk($nid);
             return $city['pc_title'];
         } else {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 
     private function saveCityDescr($id) {
         if (!$id) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
-        $nid = intval($_POST['id']);
+        $nid = (int) $_POST['id'];
         if ($id != $nid) {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
         if (!$this->checkEdit()) {
-            return $this->getError('403');
+            $this->processError(Core::HTTP_CODE_403);
         }
 
         $pc = new MPageCities($this->db);
@@ -482,7 +486,7 @@ class Page extends PageCommon {
             $city = $pc->getItemByPk($nid);
             return $city['pc_text'];
         } else {
-            return $this->getError('404');
+            $this->processError(Core::HTTP_CODE_404);
         }
     }
 
