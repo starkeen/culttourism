@@ -1,7 +1,6 @@
 <?php
 
 use app\db\MyDB;
-use app\exceptions\MyPDOException;
 
 abstract class Model
 {
@@ -29,7 +28,6 @@ abstract class Model
 
     /**
      * @return array
-     * @throws MyPDOException
      */
     public function getAll(): array
     {

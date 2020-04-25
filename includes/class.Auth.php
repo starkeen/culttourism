@@ -1,7 +1,6 @@
 <?php
 
 use app\db\MyDB;
-use app\exceptions\MyPDOException;
 
 class Auth
 {
@@ -38,7 +37,6 @@ class Auth
 
     /**
      * @param string $service
-     * @throws MyPDOException
      */
     public function setService($service = 'web')
     {
@@ -55,7 +53,6 @@ class Auth
 
     /**
      * @return string
-     * @throws MyPDOException
      */
     public function getKey()
     {
@@ -72,7 +69,6 @@ class Auth
 
     /**
      * @param string $service
-     * @throws MyPDOException
      */
     public function checkSession($service = 'web')
     {
@@ -162,7 +158,6 @@ class Auth
      * @param $password
      *
      * @return bool
-     * @throws MyPDOException
      */
     public function checkMailPassword($email, $password)
     {
@@ -210,7 +205,6 @@ class Auth
      * @param $password
      *
      * @return bool
-     * @throws MyPDOException
      */
     public function checkPassword($login, $password)
     {
@@ -261,7 +255,6 @@ class Auth
      * @param $key
      *
      * @return bool
-     * @throws MyPDOException
      */
     public function checkKey($key): bool
     {
@@ -300,7 +293,6 @@ class Auth
 
     /**
      * @param $key
-     * @throws MyPDOException
      */
     public function refreshKey($key)
     {
@@ -319,9 +311,9 @@ class Auth
     }
 
     /**
-     * @throws MyPDOException
+     * Удаляет ключ авторизации
      */
-    public function deleteKey()
+    public function deleteKey(): void
     {
         $dba = $this->db->getTableName('authorizations');
         $this->db->sql = "DELETE FROM $dba WHERE au_key = :key";

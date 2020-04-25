@@ -1,6 +1,5 @@
 <?php
 
-use app\exceptions\MyPDOException;
 use app\model\criteria\PointCriteria;
 
 class MPagePoints extends Model
@@ -56,9 +55,8 @@ class MPagePoints extends Model
      * @param bool    $show_all
      *
      * @return array
-     * @throws MyPDOException
      */
-    public function getPointsByCity($city_id, $show_all = false)
+    public function getPointsByCity($city_id, $show_all = false): array
     {
         $out = [
             'points' => [],
@@ -140,7 +138,6 @@ class MPagePoints extends Model
      * @param int $selected_object_id
      *
      * @return array
-     * @throws MyPDOException
      */
     public function getPointsByBounds($bounds, $selected_object_id = 0)
     {
@@ -179,7 +176,6 @@ class MPagePoints extends Model
      * @param int $limit
      *
      * @return array
-     * @throws MyPDOException
      */
     public function getUnslug($limit = 10)
     {
@@ -198,7 +194,6 @@ class MPagePoints extends Model
      * @param $slugline
      *
      * @return array
-     * @throws MyPDOException
      */
     public function searchSlugline($slugline)
     {
@@ -226,7 +221,6 @@ class MPagePoints extends Model
      * @param bool $like
      *
      * @return array
-     * @throws MyPDOException
      */
     public function searchByName($name, $like = false)
     {
@@ -244,8 +238,6 @@ class MPagePoints extends Model
 
     /**
      * @param $id
-     *
-     * @throws MyPDOException
      */
     public function createSluglineById($id)
     {
@@ -279,7 +271,6 @@ class MPagePoints extends Model
 
     /**
      * @return array
-     * @throws MyPDOException
      */
     public function checkSluglines()
     {
@@ -312,7 +303,6 @@ class MPagePoints extends Model
      * @param $id
      *
      * @return mixed|null
-     * @throws MyPDOException
      */
     public function getItemByPk($id)
     {
@@ -338,7 +328,6 @@ class MPagePoints extends Model
      * @param $cid
      *
      * @return array
-     * @throws MyPDOException
      */
     public function getGeoPointsByCityId($cid)
     {
@@ -508,7 +497,6 @@ class MPagePoints extends Model
      * @param PointCriteria $criteria
      *
      * @return array
-     * @throws MyPDOException
      */
     public function getActiveSights(PointCriteria $criteria): array
     {
@@ -550,7 +538,6 @@ class MPagePoints extends Model
      * @param int $limit
      *
      * @return array
-     * @throws MyPDOException
      */
     public function getPointsWithPhones(int $limit): array
     {
@@ -643,7 +630,6 @@ class MPagePoints extends Model
      * @param string $query
      *
      * @return array
-     * @throws MyPDOException
      */
     public function getSuggestion($query): array
     {

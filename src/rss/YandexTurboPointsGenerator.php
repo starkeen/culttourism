@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace app\rss;
 
-use app\exceptions\MyPDOException;
 use app\model\criteria\PointCriteria;
 use MPagePoints;
 use SimpleXMLElement;
@@ -28,7 +27,6 @@ class YandexTurboPointsGenerator
      * @param PointCriteria $criteria
      *
      * @return SimpleXMLElement
-     * @throws MyPDOException
      */
     public function getXML(PointCriteria $criteria): SimpleXMLElement
     {

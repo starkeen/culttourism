@@ -2,7 +2,6 @@
 
 namespace app\db;
 
-use app\exceptions\MyPDOException;
 use Exception;
 use PDO;
 use PDOException;

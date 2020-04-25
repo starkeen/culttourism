@@ -1,6 +1,8 @@
 <?php
 
-namespace app\exceptions;
+declare(strict_types=1);
+
+namespace app\db;
 
 use Exception;
 

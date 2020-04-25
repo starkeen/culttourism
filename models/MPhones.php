@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace models;
 
 use app\db\MyDB;
-use app\exceptions\MyPDOException;
 use Model;
 
 class MPhones extends Model
@@ -34,8 +33,6 @@ class MPhones extends Model
 
     /**
      * @param int $pointId
-     *
-     * @throws MyPDOException
      */
     public function deleteByPoint(int $pointId): void
     {
@@ -49,7 +46,6 @@ class MPhones extends Model
     }
 
     /**
-     * @throws MyPDOException
      */
     public function process(): void
     {
