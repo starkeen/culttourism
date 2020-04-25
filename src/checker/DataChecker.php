@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace app\checker;
 
 use app\db\MyDB;
+use app\api\DadataAPI;
 use Curl;
-use DadataAPI;
 use EMTypograph;
 use Helper;
 use MBlogEntries;
@@ -225,7 +225,7 @@ class DataChecker
         $points = $p->getPointsWithoutCoordinates($count);
         foreach ($points as $i => $pt) {
             $addr = preg_replace('/(\d{3})(\s{1})(\d{3})/', '$1$3', $pt['pt_adress']);
-            $response = $api->check(DadataAPI::ADDRESS, $addr);
+            $response = $api->check(DadataAPI::TYPE_ADDRESS, $addr);
             $result = $response[0];
             $coordinates = '';
             if ((int) $result['qc'] === 0 && (int) $result['qc_geo'] === 0 && (float) $result['geo_lat'] !== 0 && (float) $result['geo_lon'] !== 0) {
@@ -305,7 +305,7 @@ class DataChecker
         $items = $this->getCheckingPortion($count, 'cp_active', true);
         foreach ($items as $item) {
             $addr = preg_replace('/(\d{3})(\s{1})(\d{3})/', '$1$3', $item[$this->entityField]);
-            $response = $api->check(DadataAPI::ADDRESS, $addr);
+            $response = $api->check(DadataAPI::TYPE_ADDRESS, $addr);
             $result = $response[0]['result'];
             if ($response[0]['quality_parse'] == 0) {
                 $dotted = str_replace(array_keys($this->dotting), array_values($this->dotting), $response[0]['result']);

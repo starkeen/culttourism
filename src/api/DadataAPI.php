@@ -14,19 +14,23 @@ class DadataAPI
 {
     public const TYPE_ADDRESS = 'address';
     public const TYPE_PHONE = 'phone';
-    public const TYPE_BALANCE = 'balance';
 
     private const KEY_DIRECT = 'direct';
 
     private const BASE_URL = 'https://dadata.ru/api/v2/clean/';
 
     /**
-     * @var string
+     * @var MSysProperties
+     */
+    private $sysProperties;
+
+    /**
+     * @var string|null
      */
     private $keyToken;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $keySecret;
 
@@ -44,7 +48,7 @@ class DadataAPI
                 'unparsed_parts',
             ],
         ],
-        self::PHONE => [
+        self::TYPE_PHONE => [
             self::KEY_DIRECT => [
                 'source',
                 'phone',
@@ -63,10 +67,26 @@ class DadataAPI
      */
     public function __construct(MyDB $db)
     {
-        $sp = new MSysProperties($db);
-        $this->keyToken = $sp->getByName('app_dadata_token');
-        $this->keySecret = $sp->getByName('app_dadata_secret');
+        $this->sysProperties = new MSysProperties($db);
         $this->curl = new Curl($db);
+    }
+
+    private function getToken(): string
+    {
+        if ($this->keyToken === null) {
+            $this->keyToken = $this->keyToken = $this->sysProperties->getByName('app_dadata_token');
+        }
+
+        return $this->keyToken;
+    }
+
+    private function getSecret(): string
+    {
+        if ($this->keySecret === null) {
+            $this->keySecret = $this->sysProperties->getByName('app_dadata_secret');
+        }
+
+        return $this->keySecret;
     }
 
     /**
@@ -92,8 +112,8 @@ class DadataAPI
     public function getBalance(): float
     {
         $this->curl->addHeader('Content-Type', 'application/json');
-        $this->curl->addHeader('Authorization', 'Token ' . $this->keyToken);
-        $this->curl->addHeader('X-Secret', $this->keySecret);
+        $this->curl->addHeader('Authorization', 'Token ' . $this->getToken());
+        $this->curl->addHeader('X-Secret', $this->getSecret());
         $this->curl->config(CURLOPT_SSL_VERIFYPEER, false);
 
         $this->curl->setTTL(0);
@@ -110,13 +130,13 @@ class DadataAPI
      *
      * @return array|stdClass
      */
-    protected function request($type, $context)
+    private function request($type, $context)
     {
         $json = json_encode($context);
 
         $this->curl->addHeader('Content-Type', 'application/json');
-        $this->curl->addHeader('Authorization', 'Token ' . $this->keyToken);
-        $this->curl->addHeader('X-Secret', $this->keySecret);
+        $this->curl->addHeader('Authorization', 'Token ' . $this->getToken());
+        $this->curl->addHeader('X-Secret', $this->getSecret());
         $this->curl->config(CURLOPT_SSL_VERIFYPEER, false);
         $out = $this->curl->post(self::BASE_URL . $type, $json);
 
@@ -125,11 +145,11 @@ class DadataAPI
 
     /**
      * @param string $type
-     * @param        $response
+     * @param mixed $response
      *
      * @return array
      */
-    protected function mapResponse($type, $response): array
+    private function mapResponse(string $type, $response): array
     {
         $out = [];
         foreach ((array) $response as $r) {
