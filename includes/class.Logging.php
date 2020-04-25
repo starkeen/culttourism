@@ -53,7 +53,7 @@ class Logging
      *
      * @return bool
      */
-    public static function addDebug(string $module_id, $time, string $url = '')
+    public static function addDebug(string $module_id, $time, string $url = ''): bool
     {
         $db = FactoryDB::db();
         $dbld = $db->getTableName('log_debug');

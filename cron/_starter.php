@@ -60,7 +60,7 @@ foreach ($scripts as $job) {
         Logging::addHistory(
             'cron',
             "Отработала задача №$script_id  ({$job['cr_title']}), время $exectime с.",
-            $content
+            [$content]
         );
     }
 }
