@@ -15,6 +15,7 @@
         "sentry/sentry"       : "^1.5",
         "guzzlehttp/guzzle"   : "^6.5",
         "iamsalnikov/mdash"   : "^3.5",
+        "ganlvtech/kcaptcha"  : "^1.0",
         "ext-pdo"             : "*",
         "ext-curl"            : "*",
         "ext-SimpleXML"       : "*",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "125676ce14e80ef29a10864d3603b6e0",
+    "content-hash": "b0d8f9876ec398f66d73bae7f2613d63",
     "packages": [
         {
             "name": "ezyang/htmlpurifier",
@@ -52,6 +52,39 @@
                 "html"
             ],
             "time": "2019-10-28T03:44:26+00:00"
+        },
+        {
+            "name": "ganlvtech/kcaptcha",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ganlvtech/kcaptcha.git",
+                "reference": "42f6d73a1122ee90a25b3ba8915e59a8283e520d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ganlvtech/kcaptcha/zipball/42f6d73a1122ee90a25b3ba8915e59a8283e520d",
+                "reference": "42f6d73a1122ee90a25b3ba8915e59a8283e520d",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "KCAPTCHA\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ganlv",
+                    "email": "ganlvtech@qq.com"
+                }
+            ],
+            "description": "KCAPTCHA for composer",
+            "time": "2018-02-14T06:20:49+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

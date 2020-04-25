@@ -1,19 +1,20 @@
 <?php
 
 use app\includes\ReCaptcha;
+use app\utils\MyKCaptcha;
 use GuzzleHttp\Client;
 
 class Page extends PageCommon
 {
     public function __construct($db, $mod)
     {
-        list($module_id, $page_id, $id) = $mod;
+        [$module_id, $page_id, $id] = $mod;
         parent::__construct($db, 'feedback', $page_id);
 
         if ((string) $page_id === '') {
             $this->getCommon();
         } elseif ($page_id === 'getcapt') {
-            $this->getCaptcha();
+            $this->setCaptchaKeyString();
         } elseif ($page_id === 'newpoint') {
             $this->getAdd();
         } else {
@@ -70,7 +71,7 @@ class Page extends PageCommon
                 ];
 
                 Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 5, $mailAttrs);
-                unset($_SESSION['feedback_referer'], $_SESSION['captcha_keystring']);
+                unset($_SESSION['feedback_referer'], $_SESSION[MyKCaptcha::SESSION_KEY]);
             }
 
             $this->content = $this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']);
@@ -102,7 +103,7 @@ class Page extends PageCommon
             $fcapt = $_POST['fcapt'];
             $ftextcheck = cut_trash_text($_POST['ftextcheck']);
 
-            if (isset($_SESSION['captcha_keystring']) && $fcapt != $_SESSION['captcha_keystring']) {
+            if (isset($_SESSION[MyKCaptcha::SESSION_KEY]) && $fcapt != $_SESSION[MyKCaptcha::SESSION_KEY]) {
                 $data['error'] = 'fcapt';
             }
             if ($data['fname'] === 'Сотруднк') {
@@ -148,14 +149,14 @@ class Page extends PageCommon
                 ];
                 Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 4, $mail_attrs);
                 unset($_POST);
-                unset($_SESSION['captcha_keystring']);
-                unset($_SESSION['feedback_referer']);
+                unset($_SESSION[MyKCaptcha::SESSION_KEY]);
+                unset($_SESSION[MyKCaptcha::SESSION_KEY]);
                 $this->content = $this->getCommonSuccess($data);
             } else {
                 $this->content = $this->getCommonForm($data);
             }
 
-            unset($_SESSION['captcha_keystring']);
+            unset($_SESSION[MyKCaptcha::SESSION_KEY]);
         } else {
             $this->content = $this->getCommonForm($data);
         }
@@ -202,11 +203,10 @@ class Page extends PageCommon
         return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addsuccess.sm.html');
     }
 
-    private function getCaptcha()
+    private function setCaptchaKeyString(): void
     {
-        include(_DIR_ADDONS . '/kcaptcha/kcaptcha.php');
-        $captcha = new KCAPTCHA();
-        $_SESSION['captcha_keystring'] = $captcha->getKeyString();
+        $captcha = new MyKCaptcha();
+        $_SESSION[MyKCaptcha::SESSION_KEY] = $captcha->getKeyString();
         exit();
     }
 
