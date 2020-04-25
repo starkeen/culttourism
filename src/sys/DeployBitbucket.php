@@ -29,7 +29,7 @@ class DeployBitbucket
     {
         $this->repoPath = $req->canon_url
             . $this->config['git_url']
-            . $req->repository->absolute_url . 'raw/'
+            . $req->repository->absolute_url . 'src/'
             . $this->config['git_branch'] . '/';
         $log = [];
 
