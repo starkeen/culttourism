@@ -205,12 +205,13 @@ class Page extends PageCommon
 
     private function setCaptchaKeyString(): void
     {
+        session_start();
         $captcha = new MyKCaptcha();
         $_SESSION[MyKCaptcha::SESSION_KEY] = $captcha->getKeyString();
         exit();
     }
 
-    public static function getInstance($db, $mod = null)
+    public static function getInstance($db, $mod = null): Core
     {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
