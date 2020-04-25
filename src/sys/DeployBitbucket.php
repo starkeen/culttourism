@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace app\sys;
 
-use Logging;
 use stdClass;
 
 class DeployBitbucket

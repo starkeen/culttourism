@@ -1,5 +1,7 @@
 <?php
 
+use app\sys\Logging;
+
 /**
  * Core
  */

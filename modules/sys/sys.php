@@ -2,6 +2,7 @@
 
 use app\db\MyDB;
 use app\sys\DeployBitbucket;
+use app\sys\Logging;
 
 /**
  * Модуль служебных и системных процессов

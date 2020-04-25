@@ -11,14 +11,14 @@
  * в Забайкальском крае следует выполнить ручное переключение на часовой пояс “Russian Time Zone 7” вместо автоматически установленного часового пояса RTZ 8 (Russian Time Zone 8).
  */
 
+use app\db\MyDB;
+
 error_reporting(E_ALL);
 
 header('Content-Type: text/html; charset=utf-8');
 include(realpath(dirname(__FILE__) . '/../config/configuration.php'));
 
-include(_DIR_ROOT . '/includes/class.myDB.php');
 include(_DIR_ROOT . '/includes/class.mySmarty.php');
-include(_DIR_ROOT . '/includes/class.Logging.php');
 include(_DIR_ROOT . '/includes/debug.php');
 
 include(_DIR_INCLUDES . '/class.Helper.php');
