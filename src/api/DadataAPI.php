@@ -1,19 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
+namespace app\api;
+
 use app\db\MyDB;
+use Curl;
+use InvalidArgumentException;
+use MSysProperties;
+use stdClass;
 
 class DadataAPI
 {
-    public const ADDRESS = 'address';
-    public const PHONE = 'phone';
-    public const BALANCE = 'balance';
+    public const TYPE_ADDRESS = 'address';
+    public const TYPE_PHONE = 'phone';
+    public const TYPE_BALANCE = 'balance';
 
-    protected $url = 'https://dadata.ru/api/v2/clean/';
-    protected $keyToken;
-    protected $keySecret;
-    protected $fields = [
-        self::ADDRESS => [
-            'direct' => [
+    private const KEY_DIRECT = 'direct';
+
+    private const BASE_URL = 'https://dadata.ru/api/v2/clean/';
+
+    /**
+     * @var string
+     */
+    private $keyToken;
+
+    /**
+     * @var string
+     */
+    private $keySecret;
+
+    private const FIELDS = [
+        self::TYPE_ADDRESS => [
+            self::KEY_DIRECT => [
                 'source',
                 'result',
                 'geo_lat',
@@ -26,13 +45,17 @@ class DadataAPI
             ],
         ],
         self::PHONE => [
-            'direct' => [
+            self::KEY_DIRECT => [
                 'source',
                 'phone',
             ],
         ],
     ];
-    protected $curl;
+
+    /**
+     * @var Curl
+     */
+    private $curl;
 
     /**
      *
@@ -51,12 +74,11 @@ class DadataAPI
      * @param $data
      *
      * @return array
-     * @throws RuntimeException
      */
     public function check($type, $data): array
     {
-        if (!array_key_exists($type, $this->fields)) {
-            throw new RuntimeException('Unsupported checking type');
+        if (!array_key_exists($type, self::FIELDS)) {
+            throw new InvalidArgumentException('Unsupported checking type');
         }
         $context = is_array($data) ? $data : [$data];
         $response = $this->request($type, $context);
@@ -96,7 +118,7 @@ class DadataAPI
         $this->curl->addHeader('Authorization', 'Token ' . $this->keyToken);
         $this->curl->addHeader('X-Secret', $this->keySecret);
         $this->curl->config(CURLOPT_SSL_VERIFYPEER, false);
-        $out = $this->curl->post($this->url . $type, $json);
+        $out = $this->curl->post(self::BASE_URL . $type, $json);
 
         return json_decode($out);
     }
@@ -112,7 +134,7 @@ class DadataAPI
         $out = [];
         foreach ((array) $response as $r) {
             $item = [];
-            foreach ((array) $this->fields[$type]['direct'] as $field) {
+            foreach (self::FIELDS[$type][self::KEY_DIRECT] ?? [] as $field) {
                 $item[$field] = $r->$field;
             }
             $item['quality_parse'] = $r->qc;
@@ -121,5 +143,4 @@ class DadataAPI
 
         return $out;
     }
-
 }
