@@ -76,7 +76,7 @@ class YandexTurboPointsGenerator
             }
             $content .= sprintf('<p><a href="%s">%s</a></p>', $cityUrl, 'Достопримечательности ' . $entry['pc_inwheretext']);
 
-            $xmlItem->addChild('turbo:content', sprintf('<![CDATA[%s', $content), 'http://turbo.yandex.ru');
+            $xmlItem->addChild('turbo:content', sprintf('<![CDATA[%s]]>', $content), 'http://turbo.yandex.ru');
         }
 
         return $xml;
