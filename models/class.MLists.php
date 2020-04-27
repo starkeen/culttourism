@@ -58,7 +58,7 @@ class MLists extends Model
         return $this->_db->fetchAll();
     }
 
-    public function getActive()
+    public function getActive(): array
     {
         $this->_db->sql = "SELECT ls.*,
                                 UNIX_TIMESTAMP(ls.ls_update_date) AS last_update,

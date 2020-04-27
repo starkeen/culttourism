@@ -121,7 +121,7 @@ class MListsItems extends Model
         return $this->_db->fetchAll();
     }
 
-    public function getActive()
+    public function getActive(): array
     {
         $this->_db->sql = "SELECT li.*, pt.*, pc.*,
                                 UNIX_TIMESTAMP(pt.pt_lastup_date) AS last_update,

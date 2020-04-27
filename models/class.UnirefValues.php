@@ -53,7 +53,7 @@ class UnirefValues extends Model
         return $out;
     }
 
-    public function getActive()
+    public function getActive(): array
     {
         $this->_db->sql = "SELECT * FROM $this->_table_name
                             WHERE uv_uk_id = '$this->_key_id'

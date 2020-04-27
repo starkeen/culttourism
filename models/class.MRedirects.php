@@ -21,7 +21,7 @@ class MRedirects extends Model
         $this->cache = Cache::i('redirects');
     }
 
-    public function getActive()
+    public function getActive(): array
     {
         $redirects = $this->cache->get('active');
         if (empty($redirects)) {
