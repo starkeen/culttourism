@@ -1,18 +1,14 @@
 <?php
 
 use app\cache\Cache;
+use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct($db, $mod)
+    public function __construct(MyDB $db, $mod)
     {
         [$module_id, $page_id, $id] = $mod;
         parent::__construct($db, 'map', $page_id);
-        $id = urldecode($id);
-        if (strpos($id, '?') !== false) {
-            $id = substr($id, 0, strpos($id, '?'));
-        }
-        $this->id = $id;
 
         $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $module_id) : $this->globalsettings['res_js_' . $module_id];
 
@@ -57,7 +53,7 @@ class Page extends PageCommon
             'delta_lon' => 0.3,
         ];
 
-        $ptypes = $this->getRefPointTypes();
+        $pointTypes = $this->getRefPointTypes();
 
         $li = new MListsItems($this->db);
         $points = $li->getPointsInList($list_id);
@@ -89,13 +85,11 @@ class Page extends PageCommon
             $bounds['max_lon'] += $bounds['delta_lon'];
         }
 
-        $this->smarty->assign('ptypes', $ptypes);
+        $this->smarty->assign('ptypes', $pointTypes);
         $this->smarty->assign('bounds', $bounds);
         $this->smarty->assign('points', $points);
 
-        header('Content-type: application/xml');
-        header('Cache-Control: no-store, no-cache, must-revalidate');
-        header('Expires: ' . date('r'));
+        $this->sendYMLHeaders();
         echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
         exit();
     }
@@ -109,7 +103,7 @@ class Page extends PageCommon
         $pt = new MPagePoints($this->db);
         $pc = new MPageCities($this->db);
 
-        $ptypes = $this->getRefPointTypes();
+        $pointTypes = $this->getRefPointTypes();
 
         $this_city = $pc->getItemByPk($cid);
         $points = $pt->getGeoPointsByCityId($cid);
@@ -126,25 +120,23 @@ class Page extends PageCommon
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
         }
 
-        if ($this_city['pc_region_id'] == 0) {
+        if ((int) $this_city['pc_region_id'] === 0) {
             $city = array_merge($city, $pc->getCitiesSomeCountry($this_city['pc_country_id']));
         }
 
-        $this->smarty->assign('ptypes', $ptypes);
+        $this->smarty->assign('ptypes', $pointTypes);
         $this->smarty->assign('points', $points);
         $this->smarty->assign('city', $city);
 
-        header("Content-type: application/xml");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Expires: " . date("r"));
-
+        $this->sendYMLHeaders();
         echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML1.sm.xml');
         exit();
     }
 
-    private function getYMapsMLCommon($get)
+    private function getYMapsMLCommon($get): void
     {
-        $ptypes = $this->getRefPointTypes();
+        $pointTypes = $this->getRefPointTypes();
+
         $bounds = [
             'max_lat' => 55.9864578247,
             'max_lon' => 37.9002265930,
@@ -160,38 +152,26 @@ class Page extends PageCommon
             //---------- по координатам центра (раздельно)
             $bounds['center_lat'] = cut_trash_float($get['clt']);
             $bounds['center_lon'] = cut_trash_float($get['cln']);
-            $bounds['max_lat'] = $bounds['center_lat'] + $bounds['delta_lat'];
-            $bounds['max_lon'] = $bounds['center_lon'] + $bounds['delta_lon'];
-            $bounds['min_lat'] = $bounds['center_lat'] - $bounds['delta_lat'];
-            $bounds['min_lon'] = $bounds['center_lon'] - $bounds['delta_lon'];
+            $bounds = $this->calculateMaxMinBounds($bounds);
         } elseif (isset($get['center']) && !isset($get['clt']) && !isset($get['cln']) && !isset($get['llt']) && !isset($get['lln']) && !isset($get['rlt']) && !isset($get['rln'])) {
             //---------- по координатам центра (в одном)
             $center = explode(',', $get['center']);
             $bounds['center_lat'] = cut_trash_float($center[1]);
             $bounds['center_lon'] = cut_trash_float($center[0]);
-            $bounds['max_lat'] = $bounds['center_lat'] + $bounds['delta_lat'];
-            $bounds['max_lon'] = $bounds['center_lon'] + $bounds['delta_lon'];
-            $bounds['min_lat'] = $bounds['center_lat'] - $bounds['delta_lat'];
-            $bounds['min_lon'] = $bounds['center_lon'] - $bounds['delta_lon'];
+            $bounds = $this->calculateMaxMinBounds($bounds);
         } elseif (!isset($get['center']) && isset($get['llt']) && isset($get['lln']) && isset($get['rlt']) && isset($get['rln']) && !isset($get['clt']) && !isset($get['cln'])) {
             //---------- по координатам левого и правого угла
             $bounds['max_lat'] = cut_trash_float($get['rlt']);
             $bounds['max_lon'] = cut_trash_float($get['rln']);
             $bounds['min_lat'] = cut_trash_float($get['llt']);
             $bounds['min_lon'] = cut_trash_float($get['lln']);
-            $bounds['delta_lat'] = $bounds['max_lat'] - $bounds['min_lat'];
-            $bounds['delta_lon'] = $bounds['max_lon'] - $bounds['min_lon'];
-            $bounds['center_lat'] = $bounds['min_lat'] + $bounds['delta_lat'];
-            $bounds['center_lon'] = $bounds['min_lon'] + $bounds['delta_lon'];
+            $bounds = $this->calculateCenterBounds($bounds);
         } else {
             //---------- по умолчанию берем Москву
-            $bounds['delta_lat'] = $bounds['max_lat'] - $bounds['min_lat'];
-            $bounds['delta_lon'] = $bounds['max_lon'] - $bounds['min_lon'];
-            $bounds['center_lat'] = $bounds['min_lat'] + $bounds['delta_lat'];
-            $bounds['center_lon'] = $bounds['min_lon'] + $bounds['delta_lon'];
+            $bounds = $this->calculateCenterBounds($bounds);
         }
-        if (isset($get['oid']) && intval($get['oid']) > 0) {
-            $selected_object_id = intval($get['oid']);
+        if (isset($get['oid']) && (int) $get['oid'] > 0) {
+            $selected_object_id = (int) $get['oid'];
         } else {
             $selected_object_id = 0;
         }
@@ -210,13 +190,11 @@ class Page extends PageCommon
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
         }
 
-        $this->smarty->assign('ptypes', $ptypes);
+        $this->smarty->assign('ptypes', $pointTypes);
         $this->smarty->assign('bounds', $bounds);
         $this->smarty->assign('points', $points);
 
-        header('Content-type: application/xml');
-        header('Cache-Control: no-store, no-cache, must-revalidate');
-        header('Expires: ' . date('r'));
+        $this->sendYMLHeaders();
         echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
         exit();
     }
@@ -236,21 +214,50 @@ class Page extends PageCommon
         exit();
     }
 
-    private function getRefPointTypes()
+    /**
+     * @return array
+     */
+    private function getRefPointTypes(): array
     {
         $cache = Cache::i('refs');
-        $ptypes = $cache->get('point_types');
-        if (empty($ptypes)) {
+        $types = $cache->get('point_types');
+        if (empty($types)) {
             $ref = new MRefPointtypes($this->db);
-            $ptypes = $ref->getActive();
-            $cache->put('point_types', $ptypes);
+            $types = $ref->getActive();
+            $cache->put('point_types', $types);
         }
-        return $ptypes;
+        return $types;
     }
 
-    public static function getInstance($db, $mod)
+    private function calculateCenterBounds(array $bounds): array
+    {
+        $bounds['delta_lat'] = $bounds['max_lat'] - $bounds['min_lat'];
+        $bounds['delta_lon'] = $bounds['max_lon'] - $bounds['min_lon'];
+        $bounds['center_lat'] = $bounds['min_lat'] + $bounds['delta_lat'];
+        $bounds['center_lon'] = $bounds['min_lon'] + $bounds['delta_lon'];
+
+        return $bounds;
+    }
+
+    private function calculateMaxMinBounds(array $bounds): array
+    {
+        $bounds['max_lat'] = $bounds['center_lat'] + $bounds['delta_lat'];
+        $bounds['max_lon'] = $bounds['center_lon'] + $bounds['delta_lon'];
+        $bounds['min_lat'] = $bounds['center_lat'] - $bounds['delta_lat'];
+        $bounds['min_lon'] = $bounds['center_lon'] - $bounds['delta_lon'];
+
+        return $bounds;
+    }
+
+    private function sendYMLHeaders(): void
+    {
+        header('Content-type: application/xml');
+        header('Cache-Control: no-store, no-cache, must-revalidate');
+        header('Expires: ' . date('r'));
+    }
+
+    public static function getInstance($db, $mod): Core
     {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
-
 }

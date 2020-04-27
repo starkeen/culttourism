@@ -39,7 +39,7 @@ abstract class Model
         return $this->_db->fetchAll();
     }
 
-    public function getActive()
+    public function getActive(): array
     {
         $this->_db->sql = "SELECT * FROM $this->_table_name\n";
         if ($this->_table_active) {

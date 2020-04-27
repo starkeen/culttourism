@@ -249,7 +249,7 @@ class MyPDO implements IDB
      * @return array
      * @throws MyPDOException
      */
-    public function fetchAll($res = null)
+    public function fetchAll($res = null): array
     {
         $this->time = microtime(true) - $this->startTimestamp;
         try {
