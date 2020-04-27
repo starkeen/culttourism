@@ -64,26 +64,32 @@
             <text>&lt;div style="max-width:400px;*width:400px;"&gt;&lt;strong&gt;$[name]&lt;/strong&gt;&lt;div&gt;$[description]&lt;/div&gt;&lt;/div&gt;</text>
         </Template>
         <Template xmlns:gml="http://www.opengis.net/gml" gml:id="balloonTemplate">
-            <text><![CDATA[
-                    <div style="font-size:12px;max-width:250px;">
-                        <div style="color:#4585C3;font-weight:bold"><a class="objlink" id="object_id_$[metaDataProperty.AnyMetaData.pid]" href="http://$[metaDataProperty.AnyMetaData.objurl]">$[name]</a></div>
-                        <div>$[description]</div>
-                        <div class="point_dataext">адрес: $[metaDataProperty.AnyMetaData.address]</div>
-                    </div>]]>
+            <text>
+                <div style="font-size:12px;max-width:250px;">
+                    <div style="color:#4585C3;font-weight:bold">
+                        <a class="objlink" id="object_id_$[metaDataProperty.AnyMetaData.pid]" href="http://$[metaDataProperty.AnyMetaData.objurl]">$[name]</a>
+                    </div>
+                    <div>$[description]</div>
+                    <div class="point_dataext">адрес: $[metaDataProperty.AnyMetaData.address]</div>
+                </div>
             </text>
         </Template>
         <Template xmlns:gml="http://www.opengis.net/gml" gml:id="balloonTemplateCity">
-            <text><![CDATA[
-                    <div style="font-size:12px;max-width:250px;">
-                        <div style="color:#4585C3;font-weight:bold"><a href="$[metaDataProperty.AnyMetaData.url]">$[name]</a></div>
-                    </div>]]>
+            <text>
+                <div style="font-size:12px;max-width:250px;">
+                    <div style="color:#4585C3;font-weight:bold;">
+                        <a href="$[metaDataProperty.AnyMetaData.url]">$[name]</a>
+                    </div>
+                </div>
             </text>
         </Template>
         <Template xmlns:gml="http://www.opengis.net/gml" gml:id="balloonTemplateObject">
-            <text><![CDATA[
-                    <div style="font-size:12px;max-width:250px;">
-                        <div style="color:#4585C3;font-weight:bold"><a href="https://culttourism.ru$[metaDataProperty.AnyMetaData.objuri]">$[name]</a></div>
-                    </div>]]>
+            <text>
+                <div style="font-size:12px;max-width:250px;">
+                    <div style="color:#4585C3;font-weight:bold">
+                        <a href="https://culttourism.ru$[metaDataProperty.AnyMetaData.objuri]">$[name]</a>
+                    </div>
+                </div>
             </text>
         </Template>
     </Representation>

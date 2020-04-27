@@ -179,12 +179,12 @@ class Page extends PageCommon
         $pt = new MPagePoints($this->db);
         $points = $pt->getPointsByBounds($bounds, $selected_object_id);
 
-        foreach ($points as $i => $pt) {
+        foreach ($points as $i => $ptItem) {
             $points[$i]['pt_description'] = strip_tags($points[$i]['pt_description']);
             $points[$i]['pt_description'] = html_entity_decode($points[$i]['pt_description'], ENT_QUOTES, 'UTF-8');
-            $short_end = @mb_strpos($points[$i]['pt_description'], ' ', 50, 'utf-8');
+            $shortEnd = @mb_strpos($points[$i]['pt_description'], ' ', 50, 'utf-8');
             $points[$i]['pt_short'] = trim(
-                mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'),
+                mb_substr($points[$i]['pt_description'], 0, $shortEnd, 'utf-8'),
                 "\x00..\x1F,.-"
             );
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
