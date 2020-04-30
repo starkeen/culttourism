@@ -74,7 +74,7 @@ class DataChecker
             if ($answer === null) {
                 break;
             }
-            $data = json_decode($answer, false, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode($answer);
             if (empty($data->response->GeoObjectCollection)) {
                 break;
             }
