@@ -34,7 +34,7 @@ class Curl
      *
      * @return string
      */
-    public function get($url)
+    public function get($url): ?string
     {
         $text = $this->cc->get($url);
         if ($text === null) {
@@ -42,6 +42,9 @@ class Curl
             curl_setopt($this->curl, CURLOPT_REFERER, $url);
             curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->getHeaders());
             $text = curl_exec($this->curl);
+            if ($text === false) {
+                return null;
+            }
             if ($this->encoding !== self::INTERNAL_ENCODING) {
                 $s = str_replace('С?', 'fgr43443443', $text);
                 $s = str_replace('Â€', 'â‚¬', $s);
@@ -50,6 +53,7 @@ class Curl
             }
             $this->cc->put($url, $text, $this->ttl);
         }
+
         return $text;
     }
 

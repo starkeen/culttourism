@@ -17,7 +17,8 @@ class MCurlCache extends Model {
         parent::__construct($db);
     }
 
-    public function get($url) {
+    public function get($url): ?string
+    {
         $this->_db->sql = "SELECT * FROM $this->_table_name WHERE cc_url = :url";
 
         $this->_db->execute(array(
