@@ -12,7 +12,7 @@ $bg = new MBlogEntries($db);
 $ca = new MCandidatePoints($db);
 
 $log = [];
-$log[] = $checker->repairPointsAddrs(30);
+$log[] = $checker->repairPointsAddresses(30);
 $log[] = $checker->repairPointsCoordinates(30);
 $log[] = $checker->repairPointsPhones(50);
 $log[] = $checker->repairCandidates(50);

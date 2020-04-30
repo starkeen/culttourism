@@ -47,9 +47,9 @@ class DataChecker
     /**
      * @param int $count
      *
-     * @return array
+     * @return array[]
      */
-    public function repairPointsAddrs($count = 100): array
+    public function repairPointsAddresses($count = 100): array
     {
         $this->entityType = MDataCheck::ENTITY_POINTS;
         $this->entityId = 'pt_id';
@@ -65,13 +65,16 @@ class DataChecker
 
         $points = $p->getPointsWithoutAddrs($count);
         $log = [];
-        foreach ($points as $i => $pt) {
+        foreach ($points as $pt) {
             $request = 'https://geocode-maps.yandex.ru/1.x/?format=json'
                 . '&geocode=' . $pt['pt_longitude'] . ',' . $pt['pt_latitude']
                 . '&ll=37.618920,55.756994'
                 . '&kind=house&results=1';
             $answer = $curl->get($request);
-            $data = json_decode($answer);
+            if ($answer === null) {
+                break;
+            }
+            $data = json_decode($answer, false, 512, JSON_THROW_ON_ERROR);
             if (empty($data->response->GeoObjectCollection)) {
                 break;
             }
