@@ -25,7 +25,6 @@ data/file/
 data/files/
 data/logs/
 data/store/
-
 templates/sys/
-
+.env
 docker/mariadb/data
