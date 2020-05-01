@@ -3,6 +3,7 @@ COMPOSER = COMPOSER_ALLOW_XDEBUG=1 COMPOSER_DISABLE_XDEBUG_WARN=1 $(PHP) -d allo
 SHELL = /bin/bash
 DOCKER_COMPOSE="docker-compose"
 DOCKER_COMPOSE_FILE="docker-compose.yml"
+DOMAIN = `cat config/DOMAIN`
 
 vendor:
 	$(COMPOSER) -- install -o
@@ -11,6 +12,7 @@ clean-vendor:
 	rm -fr vendor
 
 .env:
+	echo "DOMAIN=$(DOMAIN)" > .env
 	echo "COMPOSE_FILE=$(DOCKER_COMPOSE_FILE)" >> .env
 
 _dev-env-docker: .env
@@ -18,6 +20,7 @@ _dev-env-docker: .env
 
 dev-env-prepare: _dev-env-docker
 	rm -f templates_c/*
+	rm -f templates_cache/*
 
 up: dev-env-prepare
 	$(DOCKER_COMPOSE) up -d
