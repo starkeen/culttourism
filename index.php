@@ -1,6 +1,7 @@
 <?php
 
 use app\db\FactoryDB;
+use app\sys\TemplateEngine;
 
 session_start();
 include('config/configuration.php');
@@ -16,7 +17,7 @@ include _DIR_ROOT . '/vendor/autoload.php';
 $sentryClient = new Raven_Client(SENTRY_DSN);
 $sentryClient->install();
 
-if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == "") && false) {
+if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == '') && false) {
     //Redirect all to HTTPS
     header('HTTP/1.1 301 Moved Permanently');
     header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
@@ -28,7 +29,7 @@ if (strpos($server_request_uri, '?')) {
     $server_request_uri = mb_substr($server_request_uri, 0, strpos($server_request_uri, '?'), 'utf-8');
 }
 $request_uri_arr = explode('/', $server_request_uri);
-if ($_SERVER['HTTP_HOST'] != _URL_ROOT) {
+if ($_SERVER['HTTP_HOST'] !== _URL_ROOT) {
     $request_suburi_arr = explode('/', _URL_ROOT);
     if (isset($request_suburi_arr[1]) && isset($request_uri_arr[1]) && $request_suburi_arr[1] == $request_uri_arr[1]) {
         array_shift($request_uri_arr);
@@ -43,7 +44,7 @@ if ($request_uri_arr[1] == '' && !empty($request_uri_arr[2])) {
 }
 @list($host_id, $module_id, $page_id, $id, $id2) = array_values($request_uri_arr);
 
-$module_id = (isset($module_id) && strlen($module_id) != 0) ? urldecode($module_id) : _INDEXPAGE_URI;
+$module_id = (isset($module_id) && strlen($module_id) !== 0) ? urldecode($module_id) : _INDEXPAGE_URI;
 if ($module_id === 'index') {
     $module_id = _INDEXPAGE_URI;
 }
@@ -51,7 +52,7 @@ $page_id = isset($page_id) ? urlencode($page_id) : null;
 $id = isset($id) ? urlencode($id) : null;
 $id2 = isset($id) ? urlencode($id2) : null;
 
-$smarty = new mySmarty($module_id);
+$smarty = new TemplateEngine();
 $db = FactoryDB::db();
 
 $sp = new MSysProperties($db);

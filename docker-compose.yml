@@ -7,13 +7,20 @@ services:
         ports:
             - 80:80
         volumes:
-            - ./public:/var/www/html:z
-            - ./var/logs/httpd:/var/log/httpd:z
-            - ./var/logs/php:/var/log/php
+            - ./:/var/www/html:z
+            - ./var/logs/httpd:/var/log/apache2:z
+            - ./var/logs/php:/var/log/php:z
             - ./docker/php/httpd.conf:/usr/local/apache2/conf/httpd.conf:z
             - ./docker/php/php.ini:/usr/local/etc/php/php.ini
         environment:
             DIRECTORY_ROOT: ${DIRECTORY_ROOT}
+            MYSQL_HOST: mariadb
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USER}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            PATH_VAR: ${PATH_VAR}
+            PATH_CACHE: ${PATH_CACHE}
+            PATH_COMPILED_TEMPLATES: ${PATH_COMPILED_TEMPLATES}
         depends_on:
             - mariadb
 

@@ -1,8 +1,15 @@
 <?php
 
-class mySmarty extends Smarty {
+declare(strict_types=1);
 
-    public function __construct($module = null) {
+namespace app\sys;
+
+use Smarty;
+
+class TemplateEngine extends Smarty
+{
+    public function __construct()
+    {
         parent::__construct();
         $this->setTemplateDir(_DIR_TEMPLATES . '/');
         $this->setCompileDir(_DIR_ROOT . '/templates_c/');
@@ -12,19 +19,20 @@ class mySmarty extends Smarty {
         $this->cache_lifetime = 3600;
         $this->compile_check = true;
 
-        $this->debugging = FALSE;
+        $this->debugging = false;
     }
 
-    public function cleanCompiled() {
+    public function cleanCompiled(): void
+    {
         foreach (glob($this->compile_dir . "*.php") as $filename) {
             unlink(realpath($filename));
         }
     }
 
-    public function cleanCache() {
+    public function cleanCache(): void
+    {
         foreach (glob($this->cache_dir . "*.php") as $filename) {
             unlink(realpath($filename));
         }
     }
-
 }

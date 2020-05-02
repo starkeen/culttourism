@@ -1,6 +1,7 @@
 <?php
 
 use app\sys\Logging;
+use app\sys\TemplateEngine;
 
 /**
  * Core
@@ -55,7 +56,7 @@ abstract class Core
     {
         set_exception_handler([$this, 'errorsExceptionsHandler']);
         $this->db = $db;
-        $this->smarty = new mySmarty();
+        $this->smarty = new TemplateEngine();
         if (!$this->db->link) {
             $this->module_id = $mod;
             $this->processError(self::HTTP_CODE_503, $this->smarty);
@@ -326,8 +327,8 @@ abstract class Core
             $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
             $this->globalsettings['main_rss'] = '';
             $this->basepath = _URL_ROOT;
-            $this->mainfile_css = basename($_css_files[0]);
-            $this->mainfile_js = basename($_js_files[0]);
+            $this->mainfile_css = basename($_css_files[0] ?? '/');
+            $this->mainfile_js = basename($_js_files[0] ?? '/');
             $this->smarty->assign('page', $this);
             $this->smarty->assign('debug_info', '');
         }

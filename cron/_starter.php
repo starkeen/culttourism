@@ -2,6 +2,7 @@
 
 use app\db\FactoryDB;
 use app\sys\Logging;
+use app\sys\TemplateEngine;
 
 error_reporting(E_ALL & ~E_DEPRECATED);
 ini_set('display_errors', false);
@@ -15,7 +16,7 @@ $sentryClient = new Raven_Client(SENTRY_DSN);
 $sentryClient->install();
 
 $db = FactoryDB::db();
-$smarty = new mySmarty();
+$smarty = new TemplateEngine();
 $sp = new MSysProperties($db);
 $cr = new MCron($db);
 

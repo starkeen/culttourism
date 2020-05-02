@@ -1,6 +1,7 @@
 <?php
 
 use app\db\FactoryDB;
+use app\sys\TemplateEngine;
 
 error_reporting(E_ALL);
 ini_set('display_errors', 'Off');
@@ -63,7 +64,7 @@ if ($isAdmin) {
     $adm_menu_items[] = array('link' => 'settings.php', 'title' => 'Настройки сайта', 'ico' => 'ico.a_refs.gif');
 }
 
-$smarty = new mySmarty();
+$smarty = new TemplateEngine();
 
 $smarty->assign('adm_menu', $adm_menu_items);
 if (isset($_SESSION['user_name'])) {
