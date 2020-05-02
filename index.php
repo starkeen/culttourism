@@ -4,6 +4,7 @@ use app\db\FactoryDB;
 use app\sys\TemplateEngine;
 
 session_start();
+include __DIR__ . '/vendor/autoload.php';
 include('config/configuration.php');
 error_reporting(E_ALL & ~E_DEPRECATED);
 if (_ER_REPORT) {
@@ -11,8 +12,6 @@ if (_ER_REPORT) {
 } else {
     ini_set('display_errors', false);
 }
-
-include _DIR_ROOT . '/vendor/autoload.php';
 
 $sentryClient = new Raven_Client(SENTRY_DSN);
 $sentryClient->install();
