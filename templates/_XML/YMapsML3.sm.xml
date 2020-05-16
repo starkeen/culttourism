@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ym:ymaps xmlns:ym="http://maps.yandex.ru/ymaps/1.x">
-    <Representation xmlns="http://maps.yandex.ru/representation/1.x">
+<ym:ymaps xmlns:ym="https://maps.yandex.ru/ymaps/1.x">
+    <Representation xmlns="https://maps.yandex.ru/representation/1.x">
         <View>
             <mapType>MAP</mapType>
             <boundedBy xmlns="http://www.opengis.net/gml">
@@ -24,7 +24,7 @@
             <iconStyle>
                 <size x="55" y="55"/>
                 <offset x="-27" y="-55"/>
-                <href>http://api.yandex.ru/images/maps/ymapsml/examples/icon_hotel.png</href>
+                <href>https://api.yandex.ru/images/maps/ymapsml/examples/icon_hotel.png</href>
             </iconStyle>
             <balloonContentStyle>
                 <template>#balloonTemplate</template>
@@ -56,7 +56,6 @@
                 <template>#balloonTemplateObject</template>
             </balloonContentStyle>
         </Style>
-        
         <Template xmlns:gml="http://www.opengis.net/gml" gml:id="placemark">
             <text>&lt;img src="http://api-maps.yandex.ru/i/0.4/micro/pm$[metaDataProperty.AnyMetaData.icon]s.png" width="28" height="29"/&gt;&lt;font style="font-weight:bold;position:relative;z-index:4;top:-29px;display:block;width:22px;text-align:center" color="$[metaDataProperty.AnyMetaData.color]"&gt;$[metaDataProperty.AnyMetaData.number]&lt;/font&gt;</text>
         </Template>
@@ -93,7 +92,6 @@
             </text>
         </Template>
     </Representation>
-    
     <Attribution>
         <Source id="culttourism">
             <author>
@@ -102,9 +100,7 @@
             </author>
         </Source>
     </Attribution>
-    
     <ym:GeoObjectCollection xmlns="http://www.opengis.net/gml">
-        
         <featureMembers>
             {foreach from=$points item=point}
             <ym:GeoObject id="pt{$point.pt_id}">
@@ -132,9 +128,8 @@
                 {/if}
             </ym:GeoObject>
             {/foreach}
-
         </featureMembers>
-        
+
         <gml:name xmlns:gml="http://www.opengis.net/gml">Достопримечательности России</gml:name>
         <ym:style>#commonStyle</ym:style>
     </ym:GeoObjectCollection>

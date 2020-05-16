@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ym:ymaps xmlns:ym="http://maps.yandex.ru/ymaps/1.x">
-    <Representation xmlns="http://maps.yandex.ru/representation/1.x">
+<ym:ymaps xmlns:ym="https://maps.yandex.ru/ymaps/1.x">
+    <Representation xmlns="https://maps.yandex.ru/representation/1.x">
         <View>
             <boundedBy xmlns="http://www.opengis.net/gml">
                 <Envelope>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ymaps:ymaps xmlns:ymaps="http://maps.yandex.ru/ymaps/1.x"
-             xmlns:repr="http://maps.yandex.ru/representation/1.x"
+<ymaps:ymaps xmlns:ymaps="https://maps.yandex.ru/ymaps/1.x"
+             xmlns:repr="https://maps.yandex.ru/representation/1.x"
              xmlns:gml="http://www.opengis.net/gml"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://maps.yandex.ru/schemas/ymaps/1.x/ymaps.xsd">
@@ -9,7 +9,7 @@
             <repr:iconStyle>
                 <repr:size x="57" y="55"/>
                 <repr:offset x="-25" y="-55"/>
-                <repr:href>http://api.yandex.ru/images/maps/ymapsml/examples/icon_hotel.png</repr:href>
+                <repr:href>https://api.yandex.ru/images/maps/ymapsml/examples/icon_hotel.png</repr:href>
             </repr:iconStyle>
             <repr:balloonContentStyle>
                 <repr:template>#balloonTemplate</repr:template>
