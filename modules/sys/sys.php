@@ -3,6 +3,7 @@
 use app\db\MyDB;
 use app\sys\DeployBitbucket;
 use app\sys\Logging;
+use GuzzleHttp\Client;
 
 /**
  * Модуль служебных и системных процессов
@@ -63,7 +64,7 @@ class Page extends PageCommon
             if ($key && $key === $config['git_key']) {
                 $config['location'] = _DIR_ROOT . '/';
 
-                $bb = new DeployBitbucket($config);
+                $bb = $this->getBitbucketDeployHelper($config);
                 $res = $bb->deploy($req);
 
                 if (!empty($res)) {
@@ -103,6 +104,18 @@ class Page extends PageCommon
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
+    }
+
+    /**
+     * @param array $config
+     *
+     * @return DeployBitbucket
+     */
+    private function getBitbucketDeployHelper(array $config): DeployBitbucket
+    {
+        $guzzle = new Client();
+
+        return new DeployBitbucket($guzzle, $config);
     }
 
     /**

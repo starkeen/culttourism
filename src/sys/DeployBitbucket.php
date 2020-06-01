@@ -4,18 +4,25 @@ declare(strict_types=1);
 
 namespace app\sys;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\RequestOptions;
 use stdClass;
 
 class DeployBitbucket
 {
+    private $guzzleClient;
+
     private $config;
     private $repoPath;
 
     /**
+     * @param Client $guzzleClient
      * @param array $config
      */
-    public function __construct(array $config)
+    public function __construct(Client $guzzleClient, array $config)
     {
+        $this->guzzleClient = $guzzleClient;
         $this->config = $config;
     }
 
@@ -80,7 +87,7 @@ class DeployBitbucket
             Logging::addHistory('sys', 'retry fetch file contents');
             $contents = $this->getFileContents($filePath);
         }
-        if ($contents !== 'Not Found' && $contents !== '') {
+        if ($contents !== 'Not Found' && $contents !== '' && $contents !== null) {
             if (!is_dir(dirname($fileLocation))) {
                 // attempt to create the directory structure first
                 mkdir(dirname($fileLocation), 0755, true);
@@ -135,38 +142,27 @@ class DeployBitbucket
     /**
      * @param string $url
      *
-     * @return string
+     * @return string|null
      */
-    private function getFileContents($url): string
+    private function getFileContents($url): ?string
     {
-        // create a new cURL resource
-        $ch = curl_init();
-        // set URL and other appropriate options
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt(
-            $ch,
-            CURLOPT_USERAGENT,
-            'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36'
-        );
-        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_USERPWD, $this->config['git_user'] . ':' . $this->config['git_passwd']);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        $requestOptions = [
+            RequestOptions::AUTH => [
+                $this->config['git_user'],
+                $this->config['git_passwd'],
+            ],
+        ];
 
-        // grab URL
-        $data = curl_exec($ch);
-
-        if ($data === false) {
-            $error = curl_error($ch);
-            Logging::addHistory('sys', "Ошибка curl:  [$error] from URL [$url]");
+        $content = null;
+        try {
+            $response = $this->guzzleClient->get($url, $requestOptions);
+            $content = $response->getBody()->getContents();
+        } catch (RequestException $exception) {
+            $error = $exception->getResponse()->getBody()->getContents();
+            Logging::addHistory('sys', "Ошибка guzzle:  [$error] from URL [$url]");
         }
 
-        // close cURL resource, and free up system resources
-        curl_close($ch);
-
-        return $data;
+        return $content;
     }
 
     /**
