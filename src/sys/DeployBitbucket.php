@@ -11,9 +11,21 @@ use stdClass;
 
 class DeployBitbucket
 {
+    private const SENTRY_DSN = 'https://sentry.io/api/hooks/release/builtin/114324/bfd5c7f4281799d21a588cc8a5927c3f0be4dc886896561c9c8833bc82d5b385/';
+
+    /**
+     * @var Client
+     */
     private $guzzleClient;
 
+    /**
+     * @var array
+     */
     private $config;
+
+    /**
+     * @var string
+     */
     private $repoPath;
 
     /**
@@ -170,29 +182,29 @@ class DeployBitbucket
      *
      * @param string $version
      *
-     * @return string
+     * @return string|null
      */
-    private function sendToSentry($version = 'master'): string
+    private function sendToSentry($version = 'master'): ?string
     {
-        $data = ['version' => $version];
-        $url = 'https://sentry.io/api/hooks/release/builtin/114324/bfd5c7f4281799d21a588cc8a5927c3f0be4dc886896561c9c8833bc82d5b385/';
+        $requestData = [
+            RequestOptions::HEADERS => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+            RequestOptions::JSON => [
+                'version' => $version,
+            ],
+        ];
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt(
-            $ch,
-            CURLOPT_HTTPHEADER,
-            [
-                'Content-Type: application/json',
-            ]
-        );
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-        $data = curl_exec($ch);
-        curl_close($ch);
-        return $data;
+        $content = null;
+        try {
+            $response = $this->guzzleClient->request('POST', self::SENTRY_DSN, $requestData);
+            $content = $response->getBody()->getContents();
+        } catch (RequestException $exception) {
+            $error = $exception->getResponse()->getBody()->getContents();
+            Logging::addHistory('sys', 'Ошибка отправки данных в Sentry', [$error]);
+        }
+
+        return $content;
     }
 }
