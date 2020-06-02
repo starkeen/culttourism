@@ -6,7 +6,8 @@ $smarty->assign('title', 'Flickr');
 
 $sp = new MSysProperties($db);
 $ph = new MPhotos($db);
-$pc = new MPageCities($db);
+$citiesModel = new MPageCities($db);
+$pointsModel = new MPagePoints($db);
 $apikey = $sp->getByName('app_flikr_key');
 $password = $sp->getByName('app_flikr_secret');
 $api = new FlickrAPI($apikey);
@@ -32,7 +33,9 @@ if (isset($_GET['act'])) {
         $out['geo'] = $geo;
     } elseif ($_GET['act'] === 'save') {
         $pcid = isset($_POST['pcid']) ? (int) $_POST['pcid'] : 0;
+        $ptid = isset($_POST['ptid']) ? (int) $_POST['ptid'] : 0;
         $bindpc = isset($_POST['bindpc']) ? (int) $_POST['bindpc'] : 0;
+        $bindpt = isset($_POST['bindpt']) ? (int) $_POST['bindpt'] : 0;
         try {
             $data = $api->getPhotoInfo($_POST['phid']);
             $sizes = $api->getSizes($_POST['phid']);
@@ -53,20 +56,33 @@ if (isset($_GET['act'])) {
                     'ph_lat' => $location['latitude'],
                     'ph_lon' => $location['longitude'],
                     'ph_pc_id' => $pcid,
+                    'ph_pt_id' => $ptid,
                     'ph_date_add' => $ph->now(),
                     'ph_order' => 10,
                 ]
             );
 
-            if ($id > 0 && $pcid > 0 && $bindpc > 0) {
-                $pc->updateByPk(
-                    $pcid,
-                    [
-                        'pc_coverphoto_id' => $id,
-                        'pc_lastup_date' => $pc->now(),
-                    ]
-                );
-                $pc->updateStatPhotos();
+            if ($id > 0) {
+                if ($pcid > 0 && $bindpc > 0) {
+                    $citiesModel->updateByPk(
+                        $pcid,
+                        [
+                            'pc_coverphoto_id' => $id,
+                            'pc_lastup_date' => $citiesModel->now(),
+                        ]
+                    );
+                    $citiesModel->updateStatPhotos();
+                }
+                if ($ptid > 0 && $bindpt > 0) {
+                    $pointsModel->updateByPk(
+                        $ptid,
+                        [
+                            'pt_photo_id' => $id,
+                            'pt_lastup_date' => $pointsModel->now(),
+                        ]
+                    );
+                    $citiesModel->updateStatPhotos();
+                }
             }
 
             $out['state'] = $id > 0;

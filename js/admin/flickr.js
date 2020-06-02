@@ -37,19 +37,24 @@ $(document).ready(function () {
         $("#flickr-import-console").text("");
     });
 
-    $("#flickr-import-save-clean").click(function () {
+    $("#flickr-import-save-city-clean").click(function () {
         $("#flickr-import-city").val("");
         $("#flickr-import-city-id").val(0);
-        $("#flickr-import-photo-id").val(0);
-        $("#flickr-import-console").text("");
+    });
+
+    $("#flickr-import-save-object-clean").click(function () {
+        $("#flickr-import-object").val("");
+        $("#flickr-import-object-id").val(0);
     });
 
     $("#flickr-import-save").on("click", function () {
         $("#flickr-import-console").text("");
         $.post("flickr.php?act=save", {
             pcid: $("#flickr-import-city-id").val(),
+            ptid: $("#flickr-import-object-id").val(),
             phid: $("#flickr-import-photo-id").val(),
-            bindpc: $("#flickr-import-city-bind").attr("checked") ? 1 : 0
+            bindpc: $("#flickr-import-city-bind").attr("checked") ? 1 : 0,
+            bindpt: $("#flickr-import-object-bind").attr("checked") ? 1 : 0
         }, function (response) {
             if (response.state) {
                 $("#flickr-import-console").append("сохранено");
@@ -83,6 +88,30 @@ $(document).ready(function () {
         width: 400,
         onSelect: function (suggestion) {
             $("#flickr-import-city-id").val(suggestion.data);
+            $("#flickr-import-object").val("");
+            $("#flickr-import-object-id").val("0");
+        }
+    });
+    $("#flickr-import-object").autocomplete({
+        serviceUrl: "/search/suggest-object/",
+        minChars: 3,
+        paramName: "query",
+        width: 400,
+        transformResult: function (response) {
+            var pc = $("#flickr-import-city-id").val();
+            var resultSuggestions = [];
+            $.map(response.suggestions, function (dataItem) {
+                if (pc === "0" || dataItem.city_id.toString() === pc.toString()) {
+                    resultSuggestions.push({
+                        value: "[" + dataItem.city_title + "] " + dataItem.value,
+                        data: dataItem.data
+                    });
+                }
+            });
+            return resultSuggestions;
+        },
+        onSelect: function (suggestion) {
+            $("#flickr-import-object-id").val(suggestion.data);
         }
     });
 });

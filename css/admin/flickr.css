@@ -6,7 +6,7 @@
     width: 300px;
 }
 #flickr-import-console {
-    min-height: 135px;
+    min-height: 150px;
     margin:5px;
 }
 #flickr-import-preview {
@@ -15,4 +15,13 @@
     left: 400px;
 }
 #flickr-import-add {
+}
+
+.flickr-import-suggest {
+    width: 300px;
+}
+
+#flickr-search {
+    position: relative;
+    margin: 5px;
 }

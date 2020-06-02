@@ -3,23 +3,27 @@
 /**
  * Класс для работы с API flickr.com
  */
-class FlickrAPI {
-
-    const URL = 'https://api.flickr.com/services/rest/';
+class FlickrAPI
+{
+    private const URL = 'https://api.flickr.com/services/rest/';
 
     protected $token;
 
-    public function __construct($token) {
+    public function __construct($token)
+    {
         $this->token = $token;
     }
 
     /**
      * Информация о фотографии
+     *
      * @param int $id
+     *
      * @return array
      */
-    public function getPhotoInfo($id) {
-        $licenses = array(
+    public function getPhotoInfo($id): ?array
+    {
+        $licenses = [
             0 => 'All Rights Reserved',
             1 => 'Attribution-NonCommercial-ShareAlike License',
             2 => 'Attribution-NonCommercial License',
@@ -29,20 +33,20 @@ class FlickrAPI {
             6 => 'Attribution-NoDerivs License',
             7 => 'No known copyright restrictions',
             8 => 'United States Government Work',
-        );
-        $requestData = array(
+        ];
+        $requestData = [
             'api_key' => $this->token,
             'format' => 'json',
             'nojsoncallback' => '1',
             'method' => 'flickr.photos.getInfo',
             'photo_id' => $id,
-        );
+        ];
         $url = self::URL . '?' . http_build_query($requestData);
         try {
             $data = $this->request($url);
             $out = json_decode($data, true);
             $out['photo']['license_text'] = isset($licenses[$out['photo']['license']]) ?
-                    $licenses[$out['photo']['license']] : 'undefined license';
+                $licenses[$out['photo']['license']] : 'undefined license';
             return $out;
         } catch (Exception $e) {
             //
@@ -51,17 +55,20 @@ class FlickrAPI {
 
     /**
      * Доступные размеры картинки
+     *
      * @param int $id
+     *
      * @return array
      */
-    public function getSizes($id) {
-        $requestData = array(
+    public function getSizes($id): ?array
+    {
+        $requestData = [
             'api_key' => $this->token,
             'format' => 'json',
             'nojsoncallback' => '1',
             'method' => 'flickr.photos.getSizes',
             'photo_id' => $id,
-        );
+        ];
         $url = self::URL . '?' . http_build_query($requestData);
         try {
             $data = $this->request($url);
@@ -71,14 +78,20 @@ class FlickrAPI {
         }
     }
 
-    public function getLocation($id) {
-        $requestData = array(
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function getLocation($id)
+    {
+        $requestData = [
             'api_key' => $this->token,
             'format' => 'json',
             'nojsoncallback' => '1',
             'method' => 'flickr.photos.geo.getLocation',
             'photo_id' => $id,
-        );
+        ];
         $url = self::URL . '?' . http_build_query($requestData);
         try {
             $data = $this->request($url);
@@ -88,11 +101,16 @@ class FlickrAPI {
         }
     }
 
-    private function request($url) {
+    private function request($url)
+    {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36');
+        curl_setopt(
+            $ch,
+            CURLOPT_USERAGENT,
+            'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36'
+        );
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_URL, $url);
 
@@ -106,5 +124,4 @@ class FlickrAPI {
 
         return $text;
     }
-
 }

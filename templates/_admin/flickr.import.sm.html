@@ -9,22 +9,43 @@
     <div id="flickr-import-preview"></div>
 
     <div id="flickr-import-add" class="m_hide">
-        <input type="text" id="flickr-import-city" value="" placeholder="регион" />
+        <input type="text" class="flickr-import-suggest" id="flickr-import-city" value="" placeholder="регион" />
         <input type="hidden" id="flickr-import-photo-id" value="0" />
         <input type="hidden" id="flickr-import-city-id" value="0" />
-        <input type="button" id="flickr-import-save-clean" value="X" />
-        <br /><br />
+        <input type="button" id="flickr-import-save-city-clean" value="X" />
         <label>
-            <input type="checkbox" id="flickr-import-city-bind" checked="checked" />
+            <input type="checkbox" id="flickr-import-city-bind" />
             привязать к странице региона
         </label>
+        <br />
+        <input type="text" class="flickr-import-suggest" id="flickr-import-object" value="" placeholder="объект" />
+        <input type="hidden" id="flickr-import-object-id" value="0" />
+        <input type="button" id="flickr-import-save-object-clean" value="X" />
+        <label>
+            <input type="checkbox" id="flickr-import-object-bind" />
+            привязать к странице объекта
+        </label>
+
+        <br /><br />
         <input type="button" id="flickr-import-save" value="Сохранить" />
     </div>
 
 </div>
 
+<hr />
+
 <div id="flickr-suggestions">
     <ul></ul>
+</div>
+
+<div id="flickr-search">
+    Перейти к карте для объекта
+    <br />
+    <input type="text" class="flickr-import-suggest" id="flickr-search-points-suggest" value="" placeholder="объект" />
+    <input type="hidden" name="point_id" value="0" />
+    <input type="button" id="flickr-search-points-clean" value="X" />
+    <br />
+    <input type="button" id="flickr-search-points-go" value="Перейти" />
 </div>
 
 
