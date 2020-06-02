@@ -157,7 +157,7 @@ $(document).ready(function () {
     $("#flickr-search-points-go").on("click", function () {
         let latitude = $("#flickr-search-points-latitude").val();
         let longitude = $("#flickr-search-points-longitude").val();
-        let url = 'https://www.flickr.com/map/?fLat=' + latitude + '&fLon=' + longitude + '&zl=13&everyone_nearby=1';
+        let url = 'https://www.flickr.com/map/?fLat=' + latitude + '&fLon=' + longitude + '&zl=16&everyone_nearby=1';
         let win = window.open(url, '_blank');
         if (win) {
             win.focus();
