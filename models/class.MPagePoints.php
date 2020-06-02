@@ -633,7 +633,7 @@ class MPagePoints extends Model
      */
     public function getSuggestion($query): array
     {
-        $this->_db->sql = "SELECT pt_id, pt_name, pc_id, pc_title_unique AS pc_title, url
+        $this->_db->sql = "SELECT pt_id, pt_name, pt_latitude, pt_longitude, pc_id, pc_title_unique AS pc_title, url
                             FROM $this->_table_name pt
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
                                     LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id

@@ -91,6 +91,11 @@ if (isset($_GET['act'])) {
         }
     } elseif ($_GET['act'] === 'suggestions') {
         $out['data'] = $ph->getPopularCitiesWithOnePhoto();
+    } elseif ($_GET['act'] === 'object_suggestions') {
+        $out['data'] = $ph->getPopularCitiesWithOnePhoto();
+    } elseif ($_GET['act'] === 'object_data') {
+        $objectId = (int) $_GET['id'];
+        $out['data'] = $pointsModel->getItemByPk($objectId);
     }
 
     header('Content-Type: application/json');

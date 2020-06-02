@@ -77,8 +77,80 @@ $(document).ready(function () {
             });
         });
     });
-
     $("#flickr-suggestions").dblclick();
+
+    $("#flickr-objects-suggestions").on("dblclick", function () {
+        $.get("flickr.php?act=object_suggestions", function (response) {
+            $("#flickr-objects-suggestions ul").empty();
+            $.each(response.data, function (index, value) {
+                $("#flickr-objects-suggestions ul")
+                        .append("<li>" + value.pt_name + "</li>");
+            });
+        });
+    });
+    $("#flickr-objects-suggestions").dblclick();
+
+
+    $("#flickr-search-city-clean").on("click", function () {
+        $("#flickr-search-city-suggest").val("");
+        $("#flickr-search-city-id").val("0");
+        $("#flickr-search-points-clean").click();
+    });
+    $("#flickr-search-points-clean").on("click", function () {
+        $("#flickr-search-points-suggest").val("");
+        $("#flickr-search-points-id").val("0");
+        $("#flickr-search-points-latitude").val("0");
+        $("#flickr-search-points-longitude").val("0");
+        $("#flickr-search-points-go").prop("disabled", true);
+    });
+    $("#flickr-search-city-suggest").autocomplete({
+        serviceUrl: "/search/suggest/",
+        minChars: 2,
+        paramName: "query",
+        width: 400,
+        onSelect: function (suggestion) {
+            $("#flickr-search-city-id").val(suggestion.data);
+            $("#flickr-search-points-clean").click();
+        }
+    });
+    $("#flickr-search-points-suggest").autocomplete({
+        serviceUrl: "/search/suggest-object/",
+        minChars: 3,
+        paramName: "query",
+        width: 400,
+        transformResult: function (response) {
+            let pc = $("#flickr-search-city-id").val();
+            let resultSuggestions = [];
+            $.map(response.suggestions, function (dataItem) {
+                if (pc === "0" || dataItem.city_id.toString() === pc.toString()) {
+                    resultSuggestions.push({
+                        value: "[" + dataItem.city_title + "] " + dataItem.value,
+                        data: dataItem.data,
+                        latitude: dataItem.latitude,
+                        longitude: dataItem.longitude
+                    });
+                }
+            });
+            return resultSuggestions;
+        },
+        onSelect: function (suggestion) {
+            $("#flickr-search-points-id").val(suggestion.data);
+            $("#flickr-search-points-latitude").val(suggestion.latitude);
+            $("#flickr-search-points-longitude").val(suggestion.longitude);
+            $("#flickr-search-points-go").prop("disabled", false);
+        }
+    });
+    $("#flickr-search-points-go").on("click", function () {
+        let latitude = $("#flickr-search-points-latitude").val();
+        let longitude = $("#flickr-search-points-longitude").val();
+        let url = 'https://www.flickr.com/map/?fLat=' + latitude + '&fLon=' + longitude + '&zl=13&everyone_nearby=1';
+        let win = window.open(url, '_blank');
+        if (win) {
+            win.focus();
+        } else {
+            alert('Please allow popups for this website');
+        }
+    });
 
 
     $("#flickr-import-city").autocomplete({

@@ -37,15 +37,24 @@
 <div id="flickr-suggestions">
     <ul></ul>
 </div>
+<div id="flickr-objects-suggestions">
+    <ul></ul>
+</div>
 
 <div id="flickr-search">
     Перейти к карте для объекта
     <br />
+    <input type="text" class="flickr-import-suggest" id="flickr-search-city-suggest" value="" placeholder="регион" />
+    <input type="hidden" id="flickr-search-city-id" value="0" />
+    <input type="button" id="flickr-search-city-clean" value="X" />
+    <br />
     <input type="text" class="flickr-import-suggest" id="flickr-search-points-suggest" value="" placeholder="объект" />
-    <input type="hidden" name="point_id" value="0" />
+    <input type="hidden" id="flickr-search-points-id" value="0" />
     <input type="button" id="flickr-search-points-clean" value="X" />
     <br />
-    <input type="button" id="flickr-search-points-go" value="Перейти" />
+    <input type="hidden" id="flickr-search-points-latitude" />
+    <input type="hidden" id="flickr-search-points-longitude" />
+    <input type="button" id="flickr-search-points-go" value="Перейти" disabled="disabled" />
 </div>
 
 

@@ -3,7 +3,7 @@
 class Page extends PageCommon {
 
     public function __construct($db, $mod) {
-        list($module_id, $page_id, $id) = $mod;
+        [$module_id, $page_id, $id] = $mod;
         parent::__construct($db, 'search');
         if ($id) {
             $this->processError(Core::HTTP_CODE_404);
@@ -41,19 +41,25 @@ class Page extends PageCommon {
     /**
      * Саджест объектов
      */
-    private function getObjectSuggests() {
-        $out = array('query' => '', 'suggestions' => array());
+    private function getObjectSuggests()
+    {
+        $out = [
+            'query' => '',
+            'suggestions' => [],
+        ];
         $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
         $pt = new MPagePoints($this->db);
         $variants = $pt->getSuggestion($out['query']);
 
         foreach ($variants as $row) {
-            $out['suggestions'][] = array(
-                'value' => "{$row['pt_name']}",
+            $out['suggestions'][] = [
+                'value' => $row['pt_name'],
                 'data' => $row['pt_id'],
                 'city_id' => $row['pc_id'],
                 'city_title' => $row['pc_title'],
-            );
+                'latitude' => $row['pt_latitude'],
+                'longitude' => $row['pt_longitude'],
+            ];
         }
 
         header('Content-type: application/json');
