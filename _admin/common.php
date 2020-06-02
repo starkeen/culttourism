@@ -8,9 +8,8 @@ ini_set('display_errors', 'Off');
 ini_set('memory_limit', '512M');
 session_start();
 
-/* Общие функции и опции */
-require_once('../config/configuration.php');
-include _DIR_ROOT . '/vendor/autoload.php';
+include dirname(__DIR__) . '/vendor/autoload.php';
+include dirname(__DIR__) . '/config/configuration.php';
 
 // TODO Вынести DSN в конфиг
 $sentryClient = new Raven_Client(SENTRY_DSN);

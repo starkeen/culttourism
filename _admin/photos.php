@@ -13,7 +13,7 @@ if (isset($_GET['act'])) {
         case 'upload':
             if (!empty($_FILES)) {
                 $file = $_FILES['photo'];
-                if ($file['error'] == 0) {
+                if ((int) $file['error'] === 0) {
                     $fileName = md5_file($file['tmp_name']);
                     $fileExt = Helper::getExt($file['type']);
                     $fileName .= '.' . $fileExt;
@@ -31,39 +31,47 @@ if (isset($_GET['act'])) {
                     try {
                         if (move_uploaded_file($file['tmp_name'], $filePath)) {
                             $size = getimagesize($filePath);
-                            $imgWidth = $size[0];
-                            $imgHeight = $size[1];
-                            $pcid = intval($_POST['pcid']);
-                            $ptid = intval($_POST['ptid']);
-                            $id = $ph->insert(array(
-                                'ph_title' => $_POST['title'],
-                                'ph_author' => $_POST['author'],
-                                'ph_link' => $_POST['link'],
-                                'ph_src' => $fileSrc,
-                                'ph_width' => $imgWidth,
-                                'ph_height' => $imgHeight,
-                                'ph_lat' => 0,
-                                'ph_lon' => 0,
-                                'ph_pc_id' => $pcid,
-                                'ph_date_add' => $ph->now(),
-                                'ph_order' => 20,
-                            ));
-                            
+                            [$imgWidth, $imgHeight] = $size;
+                            $pcid = (int) $_POST['pcid'];
+                            $ptid = (int) $_POST['ptid'];
+                            $id = $ph->insert(
+                                [
+                                    'ph_title' => $_POST['title'],
+                                    'ph_author' => $_POST['author'],
+                                    'ph_link' => $_POST['link'],
+                                    'ph_src' => $fileSrc,
+                                    'ph_width' => $imgWidth,
+                                    'ph_height' => $imgHeight,
+                                    'ph_lat' => 0,
+                                    'ph_lon' => 0,
+                                    'ph_pc_id' => $pcid,
+                                    'ph_pt_id' => $ptid,
+                                    'ph_date_add' => $ph->now(),
+                                    'ph_order' => 20,
+                                ]
+                            );
+
                             if ($id > 0) {
-                                $addpc = intval($_POST['pcid_add']);
-                                $addpt = intval($_POST['ptid_add']);
-                                
+                                $addpc = (int) $_POST['pcid_add'];
+                                $addpt = (int) $_POST['ptid_add'];
+
                                 if ($pcid > 0 && $addpc === 1) {
-                                    $pc->updateByPk($pcid, array(
-                                        'pc_coverphoto_id' => $id,
-                                        'pc_lastup_date' => $pc->now(),
-                                    ));
+                                    $pc->updateByPk(
+                                        $pcid,
+                                        [
+                                            'pc_coverphoto_id' => $id,
+                                            'pc_lastup_date' => $pc->now(),
+                                        ]
+                                    );
                                 }
                                 if ($ptid > 0 && $addpt === 1) {
-                                    $pt->updateByPk($ptid, array(
-                                        'pt_photo_id' => $id,
-                                        'pt_lastup_date' => $pt->now(),
-                                    ));
+                                    $pt->updateByPk(
+                                        $ptid,
+                                        [
+                                            'pt_photo_id' => $id,
+                                            'pt_lastup_date' => $pt->now(),
+                                        ]
+                                    );
                                 }
                             }
                         }
@@ -78,27 +86,36 @@ if (isset($_GET['act'])) {
     header('Location: photos.php');
     exit;
 } elseif (!empty($_GET['id'])) {
-    $id = intval($_GET['id']);
+    $id = (int) $_GET['id'];
     $referer = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'photos.php';
 
     if (isset($_POST) && !empty($_POST)) {
         $pcid = (int) $_POST['region_id'];
         $ptid = (int) $_POST['object_id'];
-        $ph->updateByPk($id, array(
-            'ph_pc_id' => $pcid,
-            'ph_pt_id' => $ptid,
-        ));
+        $ph->updateByPk(
+            $id,
+            [
+                'ph_pc_id' => $pcid,
+                'ph_pt_id' => $ptid,
+            ]
+        );
         if (!empty($_POST['bind_region'])) {
-            $pc->updateByPk($pcid, array(
-                'pc_coverphoto_id' => $id,
-                'pc_lastup_date' => $pc->now(),
-            ));
+            $pc->updateByPk(
+                $pcid,
+                [
+                    'pc_coverphoto_id' => $id,
+                    'pc_lastup_date' => $pc->now(),
+                ]
+            );
         }
         if (!empty($_POST['bind_object'])) {
-            $pt->updateByPk($ptid, array(
-                'pt_photo_id' => $id,
-                'pt_lastup_date' => $pt->now(),
-            ));
+            $pt->updateByPk(
+                $ptid,
+                [
+                    'pt_photo_id' => $id,
+                    'pt_lastup_date' => $pt->now(),
+                ]
+            );
         }
         if (!empty($_POST['referer'])) {
             $referer = $_POST['referer'];
@@ -109,10 +126,10 @@ if (isset($_GET['act'])) {
     }
 
     $photo = $ph->getItemByPk($id);
-    $photo['binds'] = array(
+    $photo['binds'] = [
         'pc' => null,
         'pt' => null,
-    );
+    ];
     if ($photo['ph_pc_id']) {
         $region = $pc->getItemByPk($photo['ph_pc_id']);
         $photo['binds']['pc'] = $region['pc_title'];
@@ -126,7 +143,7 @@ if (isset($_GET['act'])) {
     $smarty->assign('referer', $referer);
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/photos.item.sm.html'));
 } else {
-    $get = array(
+    $get = [
         'fid' => isset($_GET['fid']) ? trim($_GET['fid']) : null,
         'ftitle' => isset($_GET['ftitle']) ? trim($_GET['ftitle']) : null,
         'fregion' => isset($_GET['fregion']) ? trim($_GET['fregion']) : null,
@@ -135,8 +152,8 @@ if (isset($_GET['act'])) {
         'fobjectid' => isset($_GET['fobjectid']) ? trim($_GET['fobjectid']) : null,
         'fauthor' => isset($_GET['fauthor']) ? trim($_GET['fauthor']) : null,
         'flink' => isset($_GET['flink']) ? trim($_GET['flink']) : null,
-    );
-    $filter = array();
+    ];
+    $filter = [];
     if (!empty($get['fid'])) {
         $filter['where'][] = 'ph_id = :id';
         $filter['binds'][':id'] = (int) $get['fid'];
