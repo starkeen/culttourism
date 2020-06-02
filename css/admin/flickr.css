@@ -25,3 +25,8 @@
     position: relative;
     margin: 5px;
 }
+
+.flickr-objects-suggestion {
+    cursor: pointer;
+    color: #0e506e;
+}

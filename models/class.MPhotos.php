@@ -34,7 +34,7 @@ class MPhotos extends Model
      * Список городов с одной (автоматической) фоткой
      * @return array
      */
-    public function getPopularCitiesWithOnePhoto()
+    public function getPopularCitiesWithOnePhoto(): array
     {
         $this->_db->sql = "SELECT pc.*, ws.ws_weight, ws.ws_weight_min, ws.ws_weight_max
                             FROM {$this->_tables_related['pagecity']} pc
@@ -52,12 +52,35 @@ class MPhotos extends Model
     }
 
     /**
-     * Все фотографии региона
+     * Список популярных точек без фотографий
+     * @return array
      */
-    public function getItemsByRegion($pcid)
+    public function getPopularObjectsWithoutPhoto(): array
+    {
+        $this->_db->sql = "SELECT pt.*
+                            FROM {$this->_tables_related['pagepoints']} pt
+                            WHERE pt_photo_id = 0
+                            ORDER BY pt_rank DESC
+                            LIMIT :limit";
+        $this->_db->execute(
+            [
+                ':limit' => 20,
+            ]
+        );
+        return $this->_db->fetchAll();
+    }
+
+    /**
+     * Все фотографии региона
+     *
+     * @param int $pcid
+     *
+     * @return array
+     */
+    public function getItemsByRegion(int $pcid): array
     {
         $filter = [];
-        $filter['where'][] = 'ph_pc_id = ' . (int) $pcid;
+        $filter['where'][] = 'ph_pc_id = ' . $pcid;
         return $this->getItemsByFilter($filter);
     }
 
@@ -67,7 +90,7 @@ class MPhotos extends Model
      *
      * @return array
      */
-    public function getItemsByFilter($filter)
+    public function getItemsByFilter($filter): array
     {
         $filter['join'][] = 'LEFT JOIN ' . $this->_tables_related['pagecity'] . ' pc ON pc.pc_id = t.ph_pc_id';
         $filter['join'][] = 'LEFT JOIN ' . $this->_tables_related['pagepoints'] . ' pt ON pt.pt_id = t.ph_pt_id';

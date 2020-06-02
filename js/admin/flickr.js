@@ -79,16 +79,30 @@ $(document).ready(function () {
     });
     $("#flickr-suggestions").dblclick();
 
-    $("#flickr-objects-suggestions").on("dblclick", function () {
+    $("#flickr-objects-suggestions-refresh").on("click", function () {
         $.get("flickr.php?act=object_suggestions", function (response) {
             $("#flickr-objects-suggestions ul").empty();
             $.each(response.data, function (index, value) {
-                $("#flickr-objects-suggestions ul")
-                        .append("<li>" + value.pt_name + "</li>");
+                let $element = $('<li>');
+                $element.addClass("flickr-objects-suggestion");
+                $element.text(value.pt_name);
+                $element.data("id", value.pt_id);
+                $element.data("latitude", value.pt_latitude);
+                $element.data("longitude", value.pt_longitude);
+                $("#flickr-objects-suggestions ul").append($element);
             });
         });
     });
-    $("#flickr-objects-suggestions").dblclick();
+    $(".flickr-objects-suggestion").live("click", function (event) {
+        let $item = $(event.target);
+        console.log($item.data("id"));
+        $("#flickr-search-points-suggest").val($item.text());
+        $("#flickr-search-points-id").val($item.data("id"));
+        $("#flickr-search-points-latitude").val($item.data("latitude"));
+        $("#flickr-search-points-longitude").val($item.data("longitude"));
+        $("#flickr-search-points-go").prop("disabled", false);
+    });
+    $("#flickr-objects-suggestions-refresh").click();
 
 
     $("#flickr-search-city-clean").on("click", function () {
