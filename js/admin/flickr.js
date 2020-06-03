@@ -109,6 +109,10 @@ $(document).ready(function () {
         $("#flickr-search-city-suggest").val($item.data("region_name"));
         $("#flickr-search-city-id").val($item.data("region_id"));
 
+        $("#flickr-import-url").val("");
+        $("#flickr-import-photo-id").val("0");
+        $("#flickr-import-console").text("");
+        $("#flickr-import-preview").text("");
         $("#flickr-import-object").val($item.data("name"));
         $("#flickr-import-object-id").val($item.data("id"));
         $("#flickr-import-city").val($item.data("region_name"));
