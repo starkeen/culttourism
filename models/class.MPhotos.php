@@ -57,10 +57,11 @@ class MPhotos extends Model
      */
     public function getPopularObjectsWithoutPhoto(): array
     {
-        $this->_db->sql = "SELECT pt.*
+        $this->_db->sql = "SELECT pt.*, pc.pc_id, pc.pc_title_unique
                             FROM {$this->_tables_related['pagepoints']} pt
-                            WHERE pt_photo_id = 0
-                            ORDER BY pt_rank DESC
+                            LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
+                            WHERE pt.pt_photo_id = 0
+                            ORDER BY pt.pt_rank DESC
                             LIMIT :limit";
         $this->_db->execute(
             [

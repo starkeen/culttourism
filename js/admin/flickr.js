@@ -85,8 +85,11 @@ $(document).ready(function () {
             $.each(response.data, function (index, value) {
                 let $element = $('<li>');
                 $element.addClass("flickr-objects-suggestion");
-                $element.text(value.pt_name);
+                $element.text("[" + value.pc_title_unique + "] " + value.pt_name);
                 $element.data("id", value.pt_id);
+                $element.data("region_id", value.pc_id);
+                $element.data("region_name", value.pc_title_unique);
+                $element.data("name", value.pt_name);
                 $element.data("latitude", value.pt_latitude);
                 $element.data("longitude", value.pt_longitude);
                 $("#flickr-objects-suggestions ul").append($element);
@@ -96,11 +99,20 @@ $(document).ready(function () {
     $(".flickr-objects-suggestion").live("click", function (event) {
         let $item = $(event.target);
         console.log($item.data("id"));
-        $("#flickr-search-points-suggest").val($item.text());
+        $("#flickr-search-points-suggest").val($item.data("name"));
+
         $("#flickr-search-points-id").val($item.data("id"));
         $("#flickr-search-points-latitude").val($item.data("latitude"));
         $("#flickr-search-points-longitude").val($item.data("longitude"));
         $("#flickr-search-points-go").prop("disabled", false);
+
+        $("#flickr-search-city-suggest").val($item.data("region_name"));
+        $("#flickr-search-city-id").val($item.data("region_id"));
+
+        $("#flickr-import-object").val($item.data("name"));
+        $("#flickr-import-object-id").val($item.data("id"));
+        $("#flickr-import-city").val($item.data("region_name"));
+        $("#flickr-import-city-id").val($item.data("region_id"));
     });
     $("#flickr-objects-suggestions-refresh").click();
 
