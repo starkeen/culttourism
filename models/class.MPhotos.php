@@ -61,6 +61,8 @@ class MPhotos extends Model
                             FROM {$this->_tables_related['pagepoints']} pt
                             LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
                             WHERE pt.pt_photo_id = 0
+                            AND pt.pt_latitude != 0 AND pt.pt_longitude != 0
+                            AND pt.pt_latitude IS NOT NULL AND pt.pt_longitude IS NOT NULL
                             ORDER BY pt.pt_rank DESC
                             LIMIT :limit";
         $this->_db->execute(
