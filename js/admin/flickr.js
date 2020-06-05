@@ -85,7 +85,7 @@ $(document).ready(function () {
             $.each(response.data, function (index, value) {
                 let $element = $('<li>');
                 $element.addClass("flickr-objects-suggestion");
-                $element.text("[" + value.pc_title_unique + "] " + value.pt_name);
+                $element.text(value.pt_rank + " [" + value.pc_title_unique + "] " + value.pt_name);
                 $element.data("id", value.pt_id);
                 $element.data("region_id", value.pc_id);
                 $element.data("region_name", value.pc_title_unique);
