@@ -1,6 +1,7 @@
 <?php
 
 use app\db\FactoryDB;
+use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
 
 error_reporting(E_ALL);
@@ -11,11 +12,7 @@ session_start();
 include dirname(__DIR__) . '/vendor/autoload.php';
 include dirname(__DIR__) . '/config/configuration.php';
 
-Sentry\init(
-    [
-        'dsn' => SENTRY_DSN,
-    ]
-);
+SentryLogger::init();
 
 if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == '')) {
     header("HTTP/1.1 301 Moved Permanently");

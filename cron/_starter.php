@@ -2,9 +2,8 @@
 
 use app\db\FactoryDB;
 use app\sys\Logging;
+use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
-use Sentry\Severity;
-use Sentry\State\Scope;
 
 error_reporting(E_ALL & ~E_DEPRECATED);
 ini_set('display_errors', false);
@@ -13,11 +12,7 @@ header('Content-Type: text/html; charset=utf-8');
 include(dirname(__DIR__) . '/config/configuration.php');
 include _DIR_ROOT . '/vendor/autoload.php';
 
-Sentry\init(
-    [
-        'dsn' => SENTRY_DSN,
-    ]
-);
+SentryLogger::init();
 
 $db = FactoryDB::db();
 $smarty = new TemplateEngine();
@@ -25,11 +20,7 @@ $sp = new MSysProperties($db);
 $cr = new MCron($db);
 
 $releaseKey = $sp->getByName('git_hash');
-Sentry\configureScope(
-    static function (Scope $scope): void {
-        $scope->setLevel(Severity::error());
-    }
-);
+SentryLogger::setRelease($releaseKey);
 
 $global_cron_email = $sp->getByName('mail_report_cron');
 

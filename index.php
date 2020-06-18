@@ -1,6 +1,7 @@
 <?php
 
 use app\db\FactoryDB;
+use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
 
 session_start();
@@ -13,11 +14,7 @@ if (_ER_REPORT) {
     ini_set('display_errors', false);
 }
 
-Sentry\init(
-    [
-        'dsn' => SENTRY_DSN,
-    ]
-);
+SentryLogger::init();
 
 if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == '') && false) {
     //Redirect all to HTTPS
