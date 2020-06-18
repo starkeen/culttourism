@@ -12,7 +12,7 @@
         "smarty/smarty"       : "^3.1",
         "phpmailer/phpmailer" : "^6.0",
         "ezyang/htmlpurifier" : "^4.7",
-        "sentry/sentry"       : "^1.5",
+        "sentry/sdk"          : "^2.1",
         "guzzlehttp/guzzle"   : "^6.5",
         "iamsalnikov/mdash"   : "^3.5",
         "ganlvtech/kcaptcha"  : "^1.0",

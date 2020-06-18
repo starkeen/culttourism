@@ -3,6 +3,8 @@
 use app\db\FactoryDB;
 use app\sys\Logging;
 use app\sys\TemplateEngine;
+use Sentry\Severity;
+use Sentry\State\Scope;
 
 error_reporting(E_ALL & ~E_DEPRECATED);
 ini_set('display_errors', false);
@@ -11,9 +13,11 @@ header('Content-Type: text/html; charset=utf-8');
 include(dirname(__DIR__) . '/config/configuration.php');
 include _DIR_ROOT . '/vendor/autoload.php';
 
-// TODO Вынести DSN в конфиг
-$sentryClient = new Raven_Client(SENTRY_DSN);
-$sentryClient->install();
+Sentry\init(
+    [
+        'dsn' => SENTRY_DSN,
+    ]
+);
 
 $db = FactoryDB::db();
 $smarty = new TemplateEngine();
@@ -21,7 +25,11 @@ $sp = new MSysProperties($db);
 $cr = new MCron($db);
 
 $releaseKey = $sp->getByName('git_hash');
-$sentryClient->setRelease($releaseKey);
+Sentry\configureScope(
+    static function (Scope $scope): void {
+        $scope->setLevel(Severity::error());
+    }
+);
 
 $global_cron_email = $sp->getByName('mail_report_cron');
 
@@ -51,17 +59,17 @@ foreach ($scripts as $job) {
     include(_DIR_ROOT . "/cron/$script");
     $content = ob_get_contents();
     ob_end_clean();
-    $exectime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах
-    if (strlen($content) != 0) {
-        $content .= "<hr>время: $exectime c.";
+    $execTime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах
+    if (strlen($content) !== 0) {
+        $content .= "<hr>время: $execTime c.";
         Mailing::sendDirect($global_cron_email, 'Cron on ' . _URL_ROOT, $content, 'X-Mailru-Msgtype:cronreport');
     }
-    $cr->markWorkFinish($script_id, $content, $exectime);
+    $cr->markWorkFinish($script_id, $content, $execTime);
 
-    if (!in_array($script_id, $nologging_ids, true) && $exectime >= 0.01) {
+    if ($execTime >= 0.01 && !in_array($script_id, $nologging_ids, true)) {
         Logging::addHistory(
             'cron',
-            "Отработала задача №$script_id  ({$job['cr_title']}), время $exectime с.",
+            "Отработала задача №$script_id  ({$job['cr_title']}), время $execTime с.",
             [$content]
         );
     }
