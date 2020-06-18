@@ -12,6 +12,7 @@ use stdClass;
 class DeployBitbucket
 {
     private const SENTRY_DSN = 'https://sentry.io/api/hooks/release/builtin/114324/bfd5c7f4281799d21a588cc8a5927c3f0be4dc886896561c9c8833bc82d5b385/';
+    private const BITBUCKET_AUTH = 'https://bitbucket.org/site/oauth2/access_token';
 
     /**
      * @var Client
@@ -27,6 +28,8 @@ class DeployBitbucket
      * @var string
      */
     private $repoPath;
+
+    private $accessToken;
 
     /**
      * @param Client $guzzleClient
@@ -158,10 +161,11 @@ class DeployBitbucket
      */
     private function getFileContents($url): ?string
     {
+        $token = $this->getAccessToken();
+
         $requestOptions = [
-            RequestOptions::AUTH => [
-                $this->config['git_user'],
-                $this->config['git_passwd'],
+            RequestOptions::HEADERS => [
+                'Authorization' => 'Bearer ' . $token,
             ],
         ];
 
@@ -206,5 +210,35 @@ class DeployBitbucket
         }
 
         return $content;
+    }
+
+    private function getAccessToken(): ?string
+    {
+        if ($this->accessToken === null) {
+            $requestOptions = [
+                RequestOptions::AUTH => [
+                    $this->config['git_app_key'],
+                    $this->config['git_app_secret'],
+                ],
+                RequestOptions::FORM_PARAMS => [
+                    'grant_type' => 'password',
+                    'username' => $this->config['git_user'],
+                    'password' => $this->config['git_passwd'],
+                ],
+            ];
+
+            try {
+                $response = $this->guzzleClient->request('POST', self::BITBUCKET_AUTH, $requestOptions);
+                $content = $response->getBody()->getContents();
+
+                $tokenData = json_decode($content, true);
+                $this->accessToken = $tokenData['access_token'];
+            } catch (RequestException $exception) {
+                $error = $exception->getResponse()->getBody()->getContents();
+                Logging::addHistory('sys', 'Ошибка запроса авторизации', [$error]);
+            }
+        }
+
+        return $this->accessToken;
     }
 }
