@@ -56,6 +56,7 @@ $db = FactoryDB::db();
 
 $sp = new MSysProperties($db);
 $releaseKey = $sp->getByName('git_hash');
+SentryLogger::setRelease($releaseKey);
 
 $includeModulePath = _DIR_INCLUDES . '/class.Page.php';
 $customModulePath = sprintf('%s/%s/%s.php', _DIR_MODULES, $module_id, $module_id);

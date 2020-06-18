@@ -21,6 +21,11 @@ if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS']
 }
 
 $db = FactoryDB::db();
+
+$sp = new MSysProperties($db);
+$releaseKey = $sp->getByName('git_hash');
+SentryLogger::setRelease($releaseKey);
+
 $ticket = new Auth($db);
 $ticket->checkSession('admin');
 
