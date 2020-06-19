@@ -1,7 +1,7 @@
 <?php
 
 use app\db\FactoryDB;
-use app\sys\Logging;
+use app\sys\Logger;
 use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
 
@@ -13,6 +13,8 @@ include(dirname(__DIR__) . '/config/configuration.php');
 include _DIR_ROOT . '/vendor/autoload.php';
 
 SentryLogger::init();
+$sentryLogger = new SentryLogger(SENTRY_DSN);
+$logger = new Logger();
 
 $db = FactoryDB::db();
 $smarty = new TemplateEngine();
@@ -20,7 +22,7 @@ $sp = new MSysProperties($db);
 $cr = new MCron($db);
 
 $releaseKey = $sp->getByName('git_hash');
-SentryLogger::setRelease($releaseKey);
+$sentryLogger->setReleaseKey($releaseKey);
 
 $global_cron_email = $sp->getByName('mail_report_cron');
 
@@ -38,9 +40,15 @@ $nologging_ids = [2,];
 foreach ($scripts as $job) {
     $script = $job['cr_script'];
     $script_id = (int) $job['cr_id'];
+    $logContext = [
+        'id' => $script_id,
+        'title' => $job['cr_title'],
+        'content' => null,
+        'timing' => null,
+    ];
 
     if (!in_array($script_id, $nologging_ids, true)) {
-        Logging::addHistory('cron', "Начала работу задача №$script_id ({$job['cr_title']})");
+        $logger->info('Начало работы задачи crontab', $logContext);
     }
 
     $cr->markWorkStart($script_id);
@@ -58,11 +66,9 @@ foreach ($scripts as $job) {
     $cr->markWorkFinish($script_id, $content, $execTime);
 
     if ($execTime >= 0.01 && !in_array($script_id, $nologging_ids, true)) {
-        Logging::addHistory(
-            'cron',
-            "Отработала задача №$script_id  ({$job['cr_title']}), время $execTime с.",
-            [$content]
-        );
+        $logContext['content'] = $content;
+        $logContext['timing'] = $execTime;
+        $logger->info('Окончание работы задачи crontab', $logContext);
     }
 }
 //echo '<hr>Общее время работы скриптов: ' . substr(microtime(true) - $_timer_start_main, 0, 6) . ' c.';

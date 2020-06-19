@@ -1,8 +1,8 @@
 <?php
 
 use app\sys\Logger;
-use app\sys\Logging;
 use app\sys\TemplateEngine;
+use Psr\Log\LoggerInterface;
 
 /**
  * Core
@@ -63,7 +63,7 @@ abstract class Core
     protected $auth;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     protected $logger;
 

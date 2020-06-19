@@ -14,7 +14,7 @@ if (_ER_REPORT) {
     ini_set('display_errors', false);
 }
 
-SentryLogger::init();
+$sentryLogger = new SentryLogger(SENTRY_DSN);
 
 if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == '') && false) {
     //Redirect all to HTTPS
@@ -56,7 +56,7 @@ $db = FactoryDB::db();
 
 $sp = new MSysProperties($db);
 $releaseKey = $sp->getByName('git_hash');
-SentryLogger::setRelease($releaseKey);
+$sentryLogger->setReleaseKey($releaseKey);
 
 $includeModulePath = _DIR_INCLUDES . '/class.Page.php';
 $customModulePath = sprintf('%s/%s/%s.php', _DIR_MODULES, $module_id, $module_id);
