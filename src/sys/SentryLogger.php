@@ -31,11 +31,6 @@ class SentryLogger
 
         $hub = SentrySdk::init();
         $hub->bindClient($this->client);
-        $hub->configureScope(
-            static function (Scope $scope): void {
-                $scope->setLevel(Severity::error());
-            }
-        );
     }
 
     public function setReleaseKey(string $key): void
