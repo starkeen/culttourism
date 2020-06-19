@@ -43,7 +43,8 @@ if ($request_uri_arr[1] == '' && !empty($request_uri_arr[2])) {
     header("Location: $canonical");
     exit();
 }
-@list($host_id, $module_id, $page_id, $id, $id2) = array_values($request_uri_arr);
+
+[$host_id, $module_id, $page_id, $id, $id2] = array_values($request_uri_arr);
 
 $module_id = (isset($module_id) && strlen($module_id) !== 0) ? urldecode($module_id) : _INDEXPAGE_URI;
 if ($module_id === 'index') {
