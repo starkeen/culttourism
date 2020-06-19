@@ -1,5 +1,6 @@
 <?php
 
+use app\db\MyDB;
 use app\sys\Logger;
 use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
@@ -16,6 +17,12 @@ abstract class Core
     public const HTTP_CODE_503 = 503;
 
     private static $hInstances = []; // хэш экземпляров классов
+
+    /**
+     * @var MyDB
+     */
+    protected $db;
+
     public $content = '';
     public $url = '';
     private $_title = ['Культурный туризм'];
@@ -28,7 +35,7 @@ abstract class Core
     private $metaTagsJSONLD = [
         '@context' => 'http://schema.org',
     ];
-    public $canonical = null;
+    public $canonical;
     public $h1 = '';
     public $counters = '';
     public $isIndex = 0;
@@ -38,7 +45,7 @@ abstract class Core
     public $md_id; //id of module in database
     public $page_id = '';
     private $id_id;
-    protected $db;
+
     public $basepath = '';
 
     public $globalsettings = [
@@ -68,7 +75,7 @@ abstract class Core
      */
     protected $logger;
 
-    protected function __construct($db, $mod)
+    protected function __construct(MyDB $db, $mod)
     {
         set_exception_handler([$this, 'errorsExceptionsHandler']);
         $this->db = $db;
