@@ -20,6 +20,11 @@ class DeployBitbucket
     private $guzzleClient;
 
     /**
+     * @var string
+     */
+    private $releaseDsn;
+
+    /**
      * @var array
      */
     private $config;
@@ -33,11 +38,13 @@ class DeployBitbucket
 
     /**
      * @param Client $guzzleClient
+     * @param string $releaseDsn
      * @param array $config
      */
-    public function __construct(Client $guzzleClient, array $config)
+    public function __construct(Client $guzzleClient, string $releaseDsn, array $config)
     {
         $this->guzzleClient = $guzzleClient;
+        $this->releaseDsn = $releaseDsn;
         $this->config = $config;
     }
 
@@ -202,7 +209,7 @@ class DeployBitbucket
 
         $content = null;
         try {
-            $response = $this->guzzleClient->request('POST', self::SENTRY_DSN, $requestData);
+            $response = $this->guzzleClient->request('POST', $this->releaseDsn, $requestData);
             $content = $response->getBody()->getContents();
         } catch (RequestException $exception) {
             $error = $exception->getResponse()->getBody()->getContents();

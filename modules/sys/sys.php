@@ -115,7 +115,7 @@ class Page extends PageCommon
     {
         $guzzle = new Client();
 
-        return new DeployBitbucket($guzzle, $config);
+        return new DeployBitbucket($guzzle, SENTRY_RELEASE_DSN, $config);
     }
 
     /**

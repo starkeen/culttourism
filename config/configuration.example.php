@@ -12,6 +12,7 @@ define('_URL_ROOT', 'cult.local');
 
 // Sentry configuration
 define('SENTRY_DSN', 'https://key1:key2@sentry.io/key3');
+define('SENTRY_RELEASE_DSN', 'https://sentry.io/api/hooks/release/builtin/key4/key5/');
 
 /* MySQL settings */
 define('DB_HOSTNAME', 'localhost');
