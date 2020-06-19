@@ -122,11 +122,18 @@ class DeployBitbucket
             }
             file_put_contents($fileLocation, $contents);
             $out = "Synchronized $filename";
+            $context = [
+                'filename' => $filename,
+            ];
+            $this->logger->debug('Синхронизирован контент', $context);
         } else {
             $out = "Could not get file contents for $filename: [$contents]";
+            $context = [
+                'filename' => $filename,
+                'contents' => $contents,
+            ];
+            $this->logger->error('Не удалось синхронизировать контент', $context);
         }
-
-        $this->logger->debug($out);
 
         return $out;
     }
