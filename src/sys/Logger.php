@@ -12,6 +12,19 @@ use Psr\Log\LogLevel;
  */
 class Logger implements LoggerInterface
 {
+    /**
+     * @var SentryLogger
+     */
+    private $sentry;
+
+    /**
+     * @param SentryLogger $sentry
+     */
+    public function __construct(SentryLogger $sentry)
+    {
+        $this->sentry = $sentry;
+    }
+
     public function emergency($message, array $context = []): void
     {
         $this->log(LogLevel::EMERGENCY, $message, $context);
@@ -54,6 +67,7 @@ class Logger implements LoggerInterface
 
     public function log($level, $message, array $context = []): void
     {
+        $this->sentry->captureMessage($message, $level);
         Logging::addHistory($level, $message, $context);
     }
 }

@@ -14,7 +14,7 @@ include dirname(__DIR__) . '/vendor/autoload.php';
 include dirname(__DIR__) . '/config/configuration.php';
 
 $sentryLogger = new SentryLogger(SENTRY_DSN);
-$logger = new Logger();
+$logger = new Logger($sentryLogger);
 
 if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == '')) {
     header("HTTP/1.1 301 Moved Permanently");

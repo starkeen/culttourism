@@ -13,7 +13,7 @@ include(dirname(__DIR__) . '/config/configuration.php');
 include _DIR_ROOT . '/vendor/autoload.php';
 
 $sentryLogger = new SentryLogger(SENTRY_DSN);
-$logger = new Logger();
+$logger = new Logger($sentryLogger);
 
 $db = FactoryDB::db();
 $smarty = new TemplateEngine();

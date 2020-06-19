@@ -25,6 +25,7 @@ class SentryLogger
         $this->client = ClientBuilder::create(
             [
                 'dsn' => $dsn,
+                'capture_silenced_errors' => true,
             ]
         )->getClient();
 
@@ -42,5 +43,16 @@ class SentryLogger
         $options = $this->client->getOptions();
 
         $options->setRelease($key);
+    }
+
+    /**
+     * @param string $message
+     * @param Severity|null $level
+     *
+     * @return string|null
+     */
+    public function captureMessage(string $message, ?Severity $level = null): ?string
+    {
+        return SentrySdk::getCurrentHub()->captureMessage($message, $level);
     }
 }

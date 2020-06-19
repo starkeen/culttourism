@@ -1,6 +1,7 @@
 <?php
 
 use app\db\FactoryDB;
+use app\sys\Logger;
 use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
 
@@ -15,6 +16,7 @@ if (_ER_REPORT) {
 }
 
 $sentryLogger = new SentryLogger(SENTRY_DSN);
+$logger = new Logger($sentryLogger);
 
 if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == '') && false) {
     //Redirect all to HTTPS

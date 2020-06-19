@@ -1,6 +1,7 @@
 <?php
 
 use app\sys\Logger;
+use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
 use Psr\Log\LoggerInterface;
 
@@ -73,7 +74,7 @@ abstract class Core
         $this->db = $db;
         $this->smarty = new TemplateEngine();
 
-        $this->logger = new Logger();
+        $this->logger = new Logger(new SentryLogger(SENTRY_DSN));
 
         if (!$this->db->link) {
             $this->module_id = $mod;
