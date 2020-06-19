@@ -44,7 +44,27 @@ if ($request_uri_arr[1] == '' && !empty($request_uri_arr[2])) {
     exit();
 }
 
-[$host_id, $module_id, $page_id, $id, $id2] = array_values($request_uri_arr);
+$requestURIParamsList = array_values($request_uri_arr);
+$host_id = null;
+$module_id = null;
+$page_id = null;
+$id = null;
+$id2 = null;
+if (isset($requestURIParamsList[0])) {
+    $host_id = null;
+}
+if (isset($requestURIParamsList[1])) {
+    $module_id = null;
+}
+if (isset($requestURIParamsList[2])) {
+    $page_id = null;
+}
+if (isset($requestURIParamsList[3])) {
+    $id = null;
+}
+if (isset($requestURIParamsList[4])) {
+    $id2 = null;
+}
 
 $module_id = (isset($module_id) && strlen($module_id) !== 0) ? urldecode($module_id) : _INDEXPAGE_URI;
 if ($module_id === 'index') {
