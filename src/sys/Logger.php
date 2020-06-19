@@ -13,6 +13,16 @@ use Sentry\Severity;
  */
 class Logger implements LoggerInterface
 {
+    private const SENTRY_SEND_LEVELS = [
+        LogLevel::EMERGENCY,
+        LogLevel::ALERT,
+        LogLevel::CRITICAL,
+        LogLevel::ERROR,
+        LogLevel::WARNING,
+        LogLevel::NOTICE,
+        LogLevel::INFO,
+    ];
+
     /**
      * @var SentryLogger
      */
@@ -66,7 +76,20 @@ class Logger implements LoggerInterface
         $this->log(LogLevel::DEBUG, $message, $context);
     }
 
+    /**
+     * @param string $level
+     * @param string $message
+     * @param array $context
+     */
     public function log($level, $message, array $context = []): void
+    {
+        if (in_array($level, self::SENTRY_SEND_LEVELS, true)) {
+            $this->sendSentry($level, $message);
+        }
+        Logging::addHistory($level, $message, $context);
+    }
+
+    private function sendSentry($level, $message):void
     {
         if ($level === LogLevel::NOTICE) {
             $severity = new Severity(LogLevel::WARNING);
@@ -75,6 +98,5 @@ class Logger implements LoggerInterface
         }
 
         $this->sentry->captureMessage($message, $severity);
-        Logging::addHistory($level, $message, $context);
     }
 }

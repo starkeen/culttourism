@@ -47,7 +47,7 @@ foreach ($scripts as $job) {
     ];
 
     if (!in_array($script_id, $nologging_ids, true)) {
-        $logger->info('Начало работы задачи crontab', $logContext);
+        $logger->debug('Начало работы задачи crontab', $logContext);
     }
 
     $cr->markWorkStart($script_id);
@@ -67,7 +67,7 @@ foreach ($scripts as $job) {
     if ($execTime >= 0.01 && !in_array($script_id, $nologging_ids, true)) {
         $logContext['content'] = $content;
         $logContext['timing'] = $execTime;
-        $logger->info('Окончание работы задачи crontab', $logContext);
+        $logger->debug('Окончание работы задачи crontab', $logContext);
     }
 }
 //echo '<hr>Общее время работы скриптов: ' . substr(microtime(true) - $_timer_start_main, 0, 6) . ' c.';
