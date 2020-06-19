@@ -1,15 +1,19 @@
 <?php
 
-class Page extends PageCommon {
-
+class Page extends PageCommon
+{
+    /**
+     * @var MDataCheck
+     */
     private $mDataCheck;
 
-    public function __construct($db, $mod) {
+    public function __construct($db, $mod)
+    {
         [$module_id, $page_id, $id] = $mod;
         parent::__construct($db, 'ajax');
         $this->smarty->caching = false;
         $id = urldecode($id);
-        if (strpos($id, '?') !== FALSE) {
+        if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
         }
         $this->id = $id;
@@ -17,49 +21,49 @@ class Page extends PageCommon {
 
         $this->mDataCheck = new MDataCheck($db);
 
-        if ($page_id == 'point') {
-            if ($id == '' && isset($_GET['id']) && intval($_GET['id'])) {
-                $this->content = $this->getPoint(intval($_GET['id']));
-            } elseif ($id == 's' && isset($_GET['id'])) {
+        if ($page_id === 'point') {
+            if ($id == '' && isset($_GET['id']) && (int) $_GET['id']) {
+                $this->content = $this->getPoint((int) $_GET['id']);
+            } elseif ($id === 's' && isset($_GET['id'])) {
                 $this->content = $this->getPointBySlugline(str_replace('.html', '', $_GET['id']));
-            } elseif ($id == 'savetitle' && isset($_GET['id']) && intval($_GET['id'])) {
-                $this->content = $this->savePointTitle(intval($_GET['id']));
-            } elseif ($id == 'savedescr' && isset($_GET['id']) && intval($_GET['id'])) {
-                $this->content = $this->savePointDescr(intval($_GET['id']));
-            } elseif ($id == 'savecontacts' && isset($_GET['cid']) && intval($_GET['cid'])) {
-                $this->content = $this->savePointContacts(intval($_GET['cid']));
-            } elseif ($id == 'getnewform') {
-                $this->content = $this->getPointNew(intval($_GET['cid']));
-            } elseif ($id == 'savenew') {
-                $this->content = $this->savePointNew(intval($_GET['cid']));
-            } elseif ($id == 'delpoint') {
-                $this->content = $this->deletePoint(intval($_GET['pid']));
-            } elseif ($id == 'getformGPS') {
-                $this->content = $this->getFormPointGPS(intval($_GET['pid']));
-            } elseif ($id == 'saveformGPS') {
-                $this->content = $this->setFormPointGPS(intval($_GET['pid']));
-            } elseif ($id == 'saveAddrGPS') {
-                $this->content = $this->setFormPointAddr(intval($_GET['pid']));
-            } elseif ($id == 'savebest') {
-                $this->content = $this->setFormPointBest(intval($_GET['id']));
+            } elseif ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
+                $this->content = $this->savePointTitle((int) $_GET['id']);
+            } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
+                $this->content = $this->savePointDescr((int) $_GET['id']);
+            } elseif ($id === 'savecontacts' && isset($_GET['cid']) && (int) $_GET['cid']) {
+                $this->content = $this->savePointContacts((int) $_GET['cid']);
+            } elseif ($id === 'getnewform' && isset($_GET['cid'])) {
+                $this->content = $this->getPointNew((int) $_GET['cid']);
+            } elseif ($id === 'savenew' && isset($_GET['cid'])) {
+                $this->content = $this->savePointNew((int) $_GET['cid']);
+            } elseif ($id === 'delpoint' && isset($_GET['pid'])) {
+                $this->content = $this->deletePoint((int) $_GET['pid']);
+            } elseif ($id === 'getformGPS' && isset($_GET['pid'])) {
+                $this->content = $this->getFormPointGPS((int) $_GET['pid']);
+            } elseif ($id === 'saveformGPS' && isset($_GET['pid'])) {
+                $this->content = $this->setFormPointGPS((int) $_GET['pid']);
+            } elseif ($id === 'saveAddrGPS' && isset($_GET['pid'])) {
+                $this->content = $this->setFormPointAddr((int) $_GET['pid']);
+            } elseif ($id === 'savebest') {
+                $this->content = $this->setFormPointBest((int) $_GET['id']);
             }
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
-        } elseif ($page_id == 'city') {
-            if ($id == 'savetitle' && isset($_GET['id']) && intval($_GET['id'])) {
-                $this->content = $this->saveCityTitle(intval($_GET['id']));
-            } elseif ($id == 'savedescr' && isset($_GET['id']) && intval($_GET['id'])) {
-                $this->content = $this->saveCityDescr(intval($_GET['id']));
-            } elseif ($id == 'getformGPS' && isset($_GET['cid']) && intval($_GET['cid'])) {
-                $this->content = $this->getFormCityGPS(intval($_GET['cid']));
-            } elseif ($id == 'saveformGPS') {
-                $this->content = $this->setFormCityGPS(intval($_GET['cid']));
+        } elseif ($page_id === 'city') {
+            if ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
+                $this->content = $this->saveCityTitle((int) $_GET['id']);
+            } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
+                $this->content = $this->saveCityDescr((int) $_GET['id']);
+            } elseif ($id === 'getformGPS' && isset($_GET['cid']) && (int) $_GET['cid']) {
+                $this->content = $this->getFormCityGPS((int) $_GET['cid']);
+            } elseif ($id === 'saveformGPS') {
+                $this->content = $this->setFormCityGPS((int) $_GET['cid']);
             }
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
-        } elseif ($page_id == 'pointtype') {
-            if ($id == 'getform') {
+        } elseif ($page_id === 'pointtype') {
+            if ($id === 'getform') {
                 $this->content = $this->getChangeTypeForm();
-            } elseif ($id === 'savetype' && isset($_POST['pid']) && intval($_POST['pid'])) {
-                $this->content = $this->setPointType(intval($_POST['pid']));
+            } elseif ($id === 'savetype' && isset($_POST['pid']) && (int) $_POST['pid']) {
+                $this->content = $this->setPointType((int) $_POST['pid']);
             }
         } elseif ($page_id === 'page') {
             if ($id === 'gps') {
@@ -72,45 +76,51 @@ class Page extends PageCommon {
         }
     }
 
-    public static function getInstance($db, $mod = null) {
+    public static function getInstance($db, $mod = null)
+    {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
 
 //--------------------------------------------------------- TEXT PAGES ---------
-    private function getTextPage($pg_id) {
+    private function getTextPage($pg_id): string
+    {
         $mds = new MModules($this->db);
         $md = $mds->getItemByPk($pg_id);
         return '<h3>Экспорт данных GPS</h3>' . $md['md_pagecontent'];
     }
 
 //-------------------------------------------------------------- POINTS ----------
-    private function savePointContacts($cid) {
-        if (!$cid) {
+    private function savePointContacts(int $cid): ?bool
+    {
+        if ($cid === 0) {
             $this->processError(Core::HTTP_CODE_404);
         }
         $pp = new MPagePoints($this->db);
 
         $nid = (int) $_POST['cid'];
-        if ($cid != $nid) {
+        if ($cid !== $nid) {
             $this->processError(Core::HTTP_CODE_404);
         }
         if (!$this->checkEdit()) {
             $this->processError(Core::HTTP_CODE_403);
         }
-        $out = $pp->updateByPk($cid, array(
-            'pt_lastup_user' => $this->getUserId(),
-            'pt_lastup_date' => $pp->now(),
-            'pt_website' => $_POST['nwebsite'],
-            'pt_email' => $_POST['nemail'],
-            'pt_phone' => $_POST['nphone'],
-            'pt_worktime' => $_POST['nworktime'],
-            'pt_adress' => $_POST['nadress'],
-        ));
+        $out = $pp->updateByPk(
+            $cid,
+            [
+                'pt_lastup_user' => $this->getUserId(),
+                'pt_lastup_date' => $pp->now(),
+                'pt_website' => $_POST['nwebsite'],
+                'pt_email' => $_POST['nemail'],
+                'pt_phone' => $_POST['nphone'],
+                'pt_worktime' => $_POST['nworktime'],
+                'pt_adress' => $_POST['nadress'],
+            ]
+        );
         if ($out) {
             $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $cid);
-            return TRUE;
+            return true;
         } else {
-            return FALSE;
+            return false;
         }
     }
 
@@ -121,7 +131,7 @@ class Page extends PageCommon {
         }
         $p = new MPagePoints($this->db);
         $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $pid);
-        return $p->updateByPk($pid, array('pt_adress' => $_POST['addr']));
+        return $p->updateByPk($pid, ['pt_adress' => $_POST['addr']]);
     }
 
     private function setFormPointBest($pid): bool
@@ -131,20 +141,24 @@ class Page extends PageCommon {
         }
         $state = cut_trash_int(!empty($_POST['nstate']) && $_POST['nstate'] === 'checked');
         $p = new MPagePoints($this->db);
-        return $p->updateByPk($pid, array('pt_is_best' => $state));
+        return $p->updateByPk($pid, ['pt_is_best' => $state]);
     }
 
-    private function setFormPointGPS($pid) {
+    private function setFormPointGPS($pid)
+    {
         if (!$this->checkEdit()) {
             $this->processError(Core::HTTP_CODE_403);
         }
 
         $p = new MPagePoints($this->db);
-        $state = $p->updateByPk($pid, array(
-            'pt_latitude' => $_POST['pt_lat'],
-            'pt_longitude' => $_POST['pt_lon'],
-            'pt_latlon_zoom' => (int) $_POST['pt_zoom'],
-        ));
+        $state = $p->updateByPk(
+            $pid,
+            [
+                'pt_latitude' => $_POST['pt_lat'],
+                'pt_longitude' => $_POST['pt_lon'],
+                'pt_latlon_zoom' => (int) $_POST['pt_zoom'],
+            ]
+        );
 
         if ($state) {
             $point_lat_short = mb_substr($_POST['pt_lat'], 0, 8);
@@ -165,7 +179,8 @@ class Page extends PageCommon {
         }
     }
 
-    private function getFormPointGPS($pid) {
+    private function getFormPointGPS($pid)
+    {
         $pt = new MPagePoints($this->db);
         $point = $pt->getItemByPk($pid);
         //print_x($point);
@@ -191,7 +206,8 @@ class Page extends PageCommon {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/changelatlon.form.sm.html');
     }
 
-    private function getChangeTypeForm() {
+    private function getChangeTypeForm()
+    {
         if (!$this->checkEdit()) {
             $this->processError(Core::HTTP_CODE_403);
         }
@@ -213,7 +229,8 @@ class Page extends PageCommon {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/changetype.form.sm.html');
     }
 
-    private function setPointType($pid) {
+    private function setPointType($pid)
+    {
         if (!$this->checkEdit()) {
             $this->processError(Core::HTTP_CODE_403);
         }
@@ -226,14 +243,18 @@ class Page extends PageCommon {
         $p = new MPagePoints($this->db);
         $pts = new MRefPointtypes($this->db);
 
-        $state = $p->updateByPk($pid, array(
-            'pt_type_id' => $type,
-        ));
+        $state = $p->updateByPk(
+            $pid,
+            [
+                'pt_type_id' => $type,
+            ]
+        );
         $newtype = $pts->getItemByPk($type);
         return $newtype['tp_icon'];
     }
 
-    private function getPointNew($id) {
+    private function getPointNew($id)
+    {
         if ($this->checkEdit()) {
             $city_title = '';
             if ($id) {
@@ -250,7 +271,8 @@ class Page extends PageCommon {
         }
     }
 
-    private function deletePoint($pid) {
+    private function deletePoint($pid)
+    {
         if (!$pid) {
             $this->processError(Core::HTTP_CODE_404);
         }
@@ -266,7 +288,7 @@ class Page extends PageCommon {
         if ($state) {
             return $ppid;
         } else {
-            return FALSE;
+            return false;
         }
     }
 
@@ -279,7 +301,7 @@ class Page extends PageCommon {
             $this->processError(Core::HTTP_CODE_403);
         }
         $pts = new MPagePoints($this->db);
-        $add_item = array(
+        $add_item = [
             'pt_name' => trim($_POST['nname']) != '' ? trim($_POST['nname']) : '[не указано]',
             'pt_description' => trim($_POST['ndesc']),
             'pt_citypage_id' => (int) $_POST['cid'],
@@ -290,7 +312,7 @@ class Page extends PageCommon {
             'pt_phone' => trim($_POST['nphone']),
             'pt_is_best' => (int) (!empty($_POST['nbest']) && $_POST['nbest'] === 'checked'),
             'pt_rank' => 0,
-        );
+        ];
         if ($_POST['nlat'] != '' && $_POST['nlon'] != '') {
             $add_item['pt_latitude'] = trim($_POST['nlat']);
             $add_item['pt_longitude'] = trim($_POST['nlon']);
@@ -298,7 +320,8 @@ class Page extends PageCommon {
         return $pts->insert($add_item);
     }
 
-    private function savePointTitle($id) {
+    private function savePointTitle($id)
+    {
         if (!$id) {
             $this->processError(Core::HTTP_CODE_404);
         }
@@ -310,10 +333,13 @@ class Page extends PageCommon {
             $this->processError(Core::HTTP_CODE_403);
         }
         $pp = new MPagePoints($this->db);
-        $state = $pp->updateByPk($nid, array(
-            'pt_name' => $_POST['nname'],
-            'pt_lastup_user' => $this->getUserId(),
-        ));
+        $state = $pp->updateByPk(
+            $nid,
+            [
+                'pt_name' => $_POST['nname'],
+                'pt_lastup_user' => $this->getUserId(),
+            ]
+        );
         if ($state) {
             $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $nid);
             $point = $pp->getItemByPk($nid);
@@ -323,7 +349,8 @@ class Page extends PageCommon {
         }
     }
 
-    private function savePointDescr($id) {
+    private function savePointDescr($id)
+    {
         if (!$id) {
             $this->processError(Core::HTTP_CODE_404);
         }
@@ -335,10 +362,13 @@ class Page extends PageCommon {
             $this->processError(Core::HTTP_CODE_403);
         }
         $pp = new MPagePoints($this->db);
-        $state = $pp->updateByPk($nid, array(
-            'pt_description' => $_POST['ndesc'],
-            'pt_lastup_user' => $this->getUserId(),
-        ));
+        $state = $pp->updateByPk(
+            $nid,
+            [
+                'pt_description' => $_POST['ndesc'],
+                'pt_lastup_user' => $this->getUserId(),
+            ]
+        );
         if ($state) {
             $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $nid);
             $point = $pp->getItemByPk($nid);
@@ -348,7 +378,8 @@ class Page extends PageCommon {
         }
     }
 
-    private function getPoint($id) {
+    private function getPoint($id)
+    {
         if (!$id) {
             $this->processError(Core::HTTP_CODE_404);
         }
@@ -375,7 +406,8 @@ class Page extends PageCommon {
         }
     }
 
-    private function getPointBySlugline($slugline) {
+    private function getPointBySlugline($slugline)
+    {
         if (!$slugline) {
             $this->processError(Core::HTTP_CODE_404);
         }
@@ -408,11 +440,14 @@ class Page extends PageCommon {
             $this->processError(Core::HTTP_CODE_403);
         }
         $pc = new MPageCities($this->db);
-        $state = $pc->updateByPk($cid, array(
-            'pc_latitude' => $_POST['pc_lat'],
-            'pc_longitude' => $_POST['pc_lon'],
-            'pc_latlon_zoom' => $_POST['pc_zoom'],
-        ));
+        $state = $pc->updateByPk(
+            $cid,
+            [
+                'pc_latitude' => $_POST['pc_lat'],
+                'pc_longitude' => $_POST['pc_lon'],
+                'pc_latlon_zoom' => $_POST['pc_zoom'],
+            ]
+        );
 
         if ($state) {
             return true;
@@ -421,7 +456,8 @@ class Page extends PageCommon {
         }
     }
 
-    private function getFormCityGPS($cid) {
+    private function getFormCityGPS($cid)
+    {
         $pc = new MPageCities($this->db);
         $city = $pc->getItemByPk($cid);
 
@@ -441,7 +477,8 @@ class Page extends PageCommon {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/citylatlon.form.sm.html');
     }
 
-    private function saveCityTitle($id) {
+    private function saveCityTitle($id)
+    {
         if (!$id) {
             $this->processError(Core::HTTP_CODE_404);
         }
@@ -453,9 +490,12 @@ class Page extends PageCommon {
             $this->processError(Core::HTTP_CODE_403);
         }
         $pc = new MPageCities($this->db);
-        $state = $pc->updateByPk($nid, array(
-            'pc_title' => $_POST['ntitle'],
-        ));
+        $state = $pc->updateByPk(
+            $nid,
+            [
+                'pc_title' => $_POST['ntitle'],
+            ]
+        );
         if ($state) {
             $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_CITIES, $nid);
             $city = $pc->getItemByPk($nid);
@@ -465,7 +505,8 @@ class Page extends PageCommon {
         }
     }
 
-    private function saveCityDescr($id) {
+    private function saveCityDescr($id)
+    {
         if (!$id) {
             $this->processError(Core::HTTP_CODE_404);
         }
@@ -478,9 +519,12 @@ class Page extends PageCommon {
         }
 
         $pc = new MPageCities($this->db);
-        $state = $pc->updateByPk($nid, array(
-            'pc_text' => $_POST['ntext'],
-        ));
+        $state = $pc->updateByPk(
+            $nid,
+            [
+                'pc_text' => $_POST['ntext'],
+            ]
+        );
         if ($state) {
             $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_CITIES, $nid);
             $city = $pc->getItemByPk($nid);
@@ -489,5 +533,4 @@ class Page extends PageCommon {
             $this->processError(Core::HTTP_CODE_404);
         }
     }
-
 }

@@ -1,26 +1,27 @@
 <?php
 
-class Page extends PageCommon {
-
-    public function __construct($db, $mod) {
+class Page extends PageCommon
+{
+    public function __construct($db, $mod)
+    {
         @list($module_id, $page_id, $id, $id2) = $mod;
         parent::__construct($db, 'blog');
         $this->id = $id;
         if ($page_id == '') {
             $this->content = $this->getAllEntries(); //все записи
-        } elseif ($page_id == 'addform') { //форма добавления записи в блог
+        } elseif ($page_id === 'addform') { //форма добавления записи в блог
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             $this->content = $this->getFormBlog();
-        } elseif ($page_id == 'editform' && intval($_GET['brid'])) {
+        } elseif ($page_id === 'editform' && isset($_GET['brid']) && (int) $_GET['brid']) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
-            $this->content = $this->getFormBlog(intval($_GET['brid']));
-        } elseif ($page_id == 'saveform') {
+            $this->content = $this->getFormBlog((int) $_GET['brid']);
+        } elseif ($page_id === 'saveform') {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             $this->content = $this->saveFormBlog();
-        } elseif ($page_id == 'delentry' && intval($_GET['bid'])) {
+        } elseif ($page_id === 'delentry' && (int) $_GET['bid']) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
-            $this->content = $this->deleteBlogEntry(intval($_GET['bid']));
-        } elseif ($page_id == 'blog') {
+            $this->content = $this->deleteBlogEntry((int) $_GET['bid']);
+        } elseif ($page_id === 'blog') {
             $this->processError(Core::HTTP_CODE_301, '/blog/');
         } elseif ($id2 != '') {
             $this->content = $this->getOneEntry($id2, $page_id, $id); //одна запись
@@ -31,7 +32,8 @@ class Page extends PageCommon {
         }
     }
 
-    private function getAllEntries() {
+    private function getAllEntries()
+    {
         $dbb = $this->db->getTableName('blogentries');
         $dbu = $this->db->getTableName('users');
         $show_full_admin = $this->checkEdit();
@@ -52,7 +54,7 @@ class Page extends PageCommon {
                     ORDER BY bg.br_date DESC
                     LIMIT 20";
         $this->db->exec();
-        $entry = array();
+        $entry = [];
         while ($row = $this->db->fetch()) {
             $entry[$row['br_id']] = $row;
             if ($row['last_update'] > $this->lastedit_timestamp) {
@@ -67,14 +69,15 @@ class Page extends PageCommon {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.all.sm.html');
     }
 
-    private function getOneEntry($id, $y = null, $m = null) {
+    private function getOneEntry($id, $y = null, $m = null)
+    {
         $id = urldecode($id);
         $id = substr($id, 0, strpos($id, '.html'));
-        $year = intval($y);
-        $month = intval($m);
-        $idn = intval($id);
+        $year = (int) $y;
+        $month = (int) $m;
+        $idn = (int) $id;
 
-        $entry = NULL;
+        $entry = null;
 
         if ($bid = $this->checkDate($year, $month, $idn)) {
             $entry = $this->getEntryByID($bid);
@@ -105,7 +108,8 @@ class Page extends PageCommon {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.one.sm.html');
     }
 
-    private function getCalendar($y, $m = null) {
+    private function getCalendar($y, $m = null)
+    {
         $year = intval($y);
         $month = intval($m);
         if ($year) {
@@ -120,9 +124,9 @@ class Page extends PageCommon {
         }
         $dbb = $this->db->getTableName('blogentries');
         $dbu = $this->db->getTableName('users');
-        $binds = array(
+        $binds = [
             ':year' => $year,
-        );
+        ];
         $this->db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text, us.us_name,
                         UNIX_TIMESTAMP(bg.br_date) AS last_update,
                         DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month, 
@@ -140,7 +144,7 @@ class Page extends PageCommon {
         $this->db->sql .= "AND br_date < NOW()
                     ORDER BY bg.br_date DESC";
         $this->db->execute($binds);
-        $entry = array();
+        $entry = [];
         while ($row = $this->db->fetch()) {
             $entry[$row['bg_month']][$row['br_id']] = $row;
             if ($row['last_update'] > $this->lastedit_timestamp) {
@@ -160,12 +164,15 @@ class Page extends PageCommon {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.calendar.sm.html');
     }
 
-    private function checkURL($url) {
+    private function checkURL($url)
+    {
         $dbb = $this->db->getTableName('blogentries');
         $this->db->sql = "SELECT br_id FROM $dbb WHERE br_url = :url AND br_active = 1 LIMIT 1";
-        $res = $this->db->execute(array(
-            ':url' => $url,
-        ));
+        $res = $this->db->execute(
+            [
+                ':url' => $url,
+            ]
+        );
         if ($res) {
             $row = $this->db->fetch();
             $bid = intval($row['br_id']);
@@ -174,16 +181,19 @@ class Page extends PageCommon {
             }
             return $bid;
         } else {
-            return FALSE;
+            return false;
         }
     }
 
-    private function checkDate($y, $m, $d) {
+    private function checkDate($y, $m, $d)
+    {
         $dbb = $this->db->getTableName('blogentries');
         $this->db->sql = "SELECT br_id FROM $dbb WHERE DATE_FORMAT(br_date, '%Y-%c-%e') = :date AND br_active = 1 LIMIT 1";
-        $res = $this->db->execute(array(
-            ':date' => "$y-$m-$d",
-        ));
+        $res = $this->db->execute(
+            [
+                ':date' => "$y-$m-$d",
+            ]
+        );
         if ($res) {
             $row = $this->db->fetch();
             $bid = intval($row['br_id']);
@@ -192,11 +202,12 @@ class Page extends PageCommon {
             }
             return $bid;
         } else {
-            return FALSE;
+            return false;
         }
     }
 
-    private function getEntryByID($id) {
+    private function getEntryByID($id)
+    {
         $dbb = $this->db->getTableName('blogentries');
         $dbu = $this->db->getTableName('users');
         $this->db->sql = "SELECT bg.*, us.us_name,
@@ -210,32 +221,36 @@ class Page extends PageCommon {
                         AND br_date < now()
                         AND br_id = :id
                     LIMIT 1";
-        $res = $this->db->execute(array(
-            ':id' => intval($id),
-        ));
+        $res = $this->db->execute(
+            [
+                ':id' => intval($id),
+            ]
+        );
         if (!$res) {
-            return FALSE;
+            return false;
         }
         $out = $this->db->fetch();
         $out['br_canonical'] = '/blog/' . $out['bg_year'] . '/' . $out['bg_month'] . '/' . $out['br_url'] . '.html';
         return $out;
     }
 
-    private function deleteBlogEntry($bid) {
+    private function deleteBlogEntry($bid)
+    {
         if (!$this->checkEdit()) {
-            return FALSE;
+            return false;
         }
         $brid = cut_trash_int($_POST['brid']);
         if (!$brid || !$bid || $brid != $bid) {
-            return FALSE;
+            return false;
         }
         $bg = new MBlogEntries($this->db);
         return $bg->deleteByPk($brid);
     }
 
-    private function getFormBlog($br_id = null) {
+    private function getFormBlog($br_id = null)
+    {
         if (!$this->checkEdit()) {
-            return FALSE;
+            return false;
         }
         if ($br_id) {
             $dbb = $this->db->getTableName('blogentries');
@@ -252,45 +267,56 @@ class Page extends PageCommon {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.sm.html');
         } else {
-            $entry = array(
-                'br_day' => date('d.m.Y'), 'br_time' => date('H:i'),
-                'bg_year' => date('Y'), 'bg_month' => date('m'), 'br_url' => date('d'));
+            $entry = [
+                'br_day' => date('d.m.Y'),
+                'br_time' => date('H:i'),
+                'bg_year' => date('Y'),
+                'bg_month' => date('m'),
+                'br_url' => date('d')
+            ];
             $this->smarty->assign('entry', $entry);
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.sm.html');
         }
     }
 
-    private function saveFormBlog() {
+    private function saveFormBlog()
+    {
         if (!$this->checkEdit()) {
-            return FALSE;
+            return false;
         }
 
         $bg = new MBlogEntries($this->db);
 
         if ($_POST['brid'] == 'add') {
-            return $bg->insert(array(
-                        'br_title' => $_POST['ntitle'],
-                        'br_text' => $_POST['ntext'],
-                        'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
-                        'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
-                        'br_url' => $_POST['nurl'],
-                        'br_us_id' => $this->getUserId(),
-            ));
+            return $bg->insert(
+                [
+                    'br_title' => $_POST['ntitle'],
+                    'br_text' => $_POST['ntext'],
+                    'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
+                    'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
+                    'br_url' => $_POST['nurl'],
+                    'br_us_id' => $this->getUserId(),
+                ]
+            );
         } elseif ($_POST['brid'] > 0) {
-            return $bg->updateByPk(intval($_POST['brid']), array(
-                        'br_title' => $_POST['ntitle'],
-                        'br_text' => $_POST['ntext'],
-                        'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
-                        'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
-                        'br_url' => $_POST['nurl'],
-            ));
+            return $bg->updateByPk(
+                intval($_POST['brid']),
+                [
+                    'br_title' => $_POST['ntitle'],
+                    'br_text' => $_POST['ntext'],
+                    'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
+                    'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
+                    'br_url' => $_POST['nurl'],
+                ]
+            );
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
     }
 
-    public static function getInstance($db, $mod = null) {
+    public static function getInstance($db, $mod = null)
+    {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
 }

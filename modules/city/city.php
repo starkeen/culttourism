@@ -231,7 +231,7 @@ class Page extends PageCommon
                     echo 'ok';
                     break;
             }
-        } else {
+        } elseif (isset($_GET['id'])) {
             $this->db->sql = "SELECT cf_title, cd_value
                                 FROM $dbcd cd
                                     LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
@@ -249,12 +249,14 @@ class Page extends PageCommon
             $this->smarty->assign('metas', $metas);
             header('Content-Type: text/html; charset=utf-8');
             $this->smarty->display(_DIR_TEMPLATES . '/city/meta.sm.html');
+        } else {
+            $this->processError(Core::HTTP_CODE_404);
         }
         exit();
     }
 
     //**************************************** РЕДАКТИРОВАНИЕ ******************
-    private function detailCity()
+    private function detailCity(): void
     {
         if (!$this->checkEdit()) {
             $this->processError(Core::HTTP_CODE_403);
@@ -262,7 +264,7 @@ class Page extends PageCommon
         if (!isset($_GET['city_id'])) {
             $this->processError(Core::HTTP_CODE_404);
         }
-        $city_id = (int) $_GET['city_id'];
+        $city_id = isset($_GET['city_id']) ? (int) $_GET['city_id'] : 0;
         if (!$city_id) {
             $this->processError(Core::HTTP_CODE_404);
         }
@@ -285,18 +287,17 @@ class Page extends PageCommon
                     'pc_announcement' => $_POST['anons'],
                     'pc_latitude' => $_POST['latitude'],
                     'pc_longitude' => $_POST['longitude'],
-                    'pc_osm_id' => intval($_POST['osm_id']),
+                    'pc_osm_id' => (int) $_POST['osm_id'],
                     'pc_inwheretext' => $_POST['inwhere'],
                     'pc_title_synonym' => $_POST['synonym'],
                     'pc_title_english' => $_POST['title_eng'],
                     'pc_title_translit' => $_POST['translit'],
                     'pc_website' => $_POST['web'],
-                    'pc_coverphoto_id' => intval($_POST['photo_id']),
+                    'pc_coverphoto_id' => (int) $_POST['photo_id'],
                     'pc_lastup_user' => $this->getUserId(),
                 ]
             );
             $city = $pc->getItemByPk($city_id);
-            //$aurl = explode('/', $_POST['url']);
 
             header("Location: {$city['url']}");
             exit();
