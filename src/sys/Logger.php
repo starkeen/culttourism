@@ -68,7 +68,13 @@ class Logger implements LoggerInterface
 
     public function log($level, $message, array $context = []): void
     {
-        $this->sentry->captureMessage($message, new Severity($level));
+        if ($level === LogLevel::NOTICE) {
+            $severity = new Severity(LogLevel::WARNING);
+        } else {
+            $severity = new Severity($level);
+        }
+
+        $this->sentry->captureMessage($message, $severity);
         Logging::addHistory($level, $message, $context);
     }
 }
