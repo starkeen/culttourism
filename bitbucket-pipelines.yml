@@ -15,8 +15,3 @@ pipelines:
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           - composer install
           - vendor/bin/phpunit -c tests/phpunit.xml tests/
-
-    - pipe: sentryio/sentry-code-report:0.0.6
-        variables:
-            SENTRY_ORG: 'e3bccedd75864d36ab2a0cf1e0273737'
-            SENTRY_PROJECT_ID: 114324
