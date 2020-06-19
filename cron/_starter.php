@@ -12,7 +12,6 @@ header('Content-Type: text/html; charset=utf-8');
 include(dirname(__DIR__) . '/config/configuration.php');
 include _DIR_ROOT . '/vendor/autoload.php';
 
-SentryLogger::init();
 $sentryLogger = new SentryLogger(SENTRY_DSN);
 $logger = new Logger();
 
