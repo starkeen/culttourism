@@ -19,6 +19,11 @@ class DeployBitbucket
     private $guzzleClient;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @var string
      */
     private $releaseDsn;
