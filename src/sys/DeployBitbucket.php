@@ -106,7 +106,7 @@ class DeployBitbucket
         $filePath = $this->repoPath . $filename;
         $fileLocation = $this->config['location'] . $filename;
 
-        $this->logger->debug('fetch contents for ' . $filePath);
+        $this->logger->debug('fetch contents', ['path' => $filePath]);
         $contents = $this->getFileContents($filePath);
         $this->logger->debug('content fetched', ['content' => $contents]);
 
