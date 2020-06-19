@@ -70,4 +70,3 @@ foreach ($scripts as $job) {
         $logger->debug('Окончание работы задачи crontab', $logContext);
     }
 }
-//echo '<hr>Общее время работы скриптов: ' . substr(microtime(true) - $_timer_start_main, 0, 6) . ' c.';
