@@ -1,5 +1,6 @@
 <?php
 
+use app\sys\Logger;
 use app\sys\Logging;
 use app\sys\TemplateEngine;
 
@@ -38,6 +39,7 @@ abstract class Core
     private $id_id;
     protected $db;
     public $basepath = '';
+
     public $globalsettings = [
         'default_pagetitle' => '',
         'main_rss' => '',
@@ -49,14 +51,30 @@ abstract class Core
     public $lastedit;
     public $lastedit_timestamp = 0;
     public $expiredate;
+
+    /**
+     * @var TemplateEngine
+     */
     public $smarty;
+
+    /**
+     * @var Auth
+     */
     protected $auth;
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
 
     protected function __construct($db, $mod)
     {
         set_exception_handler([$this, 'errorsExceptionsHandler']);
         $this->db = $db;
         $this->smarty = new TemplateEngine();
+
+        $this->logger = new Logger();
+
         if (!$this->db->link) {
             $this->module_id = $mod;
             $this->processError(self::HTTP_CODE_503, $this->smarty);
@@ -66,9 +84,7 @@ abstract class Core
         $id = null;
         $this->basepath = _URL_ROOT;
 
-        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(
-                $_SERVER['HTTP_X_REQUESTED_WITH']
-            ) === 'xmlhttprequest') {
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
             $this->isAjax = true;
         }
 
@@ -224,10 +240,8 @@ abstract class Core
      *
      * @param string $key
      * @param string $value
-     *
-     * @return boolean
      */
-    public function addDataLD($key, $value)
+    public function addDataLD($key, $value): void
     {
         if (is_scalar($value)) {
             $val = trim(html_entity_decode(strip_tags($value)));
@@ -235,19 +249,19 @@ abstract class Core
             $val = array_filter($value);
         }
         if (empty($val)) {
-            return false;
+            return;
         }
         $this->metaTagsJSONLD[$key] = $val;
     }
 
     /**
      * Данные для блока ld+json
-     * @return string
+     * @return array
      */
-    public function getJSONLD()
+    public function getJSONLD(): array
     {
         ksort($this->metaTagsJSONLD);
-        return !empty($this->metaTagsJSONLD['@type']) ? $this->metaTagsJSONLD : null;
+        return !empty($this->metaTagsJSONLD['@type']) ? $this->metaTagsJSONLD : [];
     }
 
     private function getSuggestions404Local($req)
@@ -301,11 +315,11 @@ abstract class Core
         return $out;
     }
 
-    public function errorsExceptionsHandler($e)
+    public function errorsExceptionsHandler($e): void
     {
         $msg = "Error: " . $e->getMessage() . "\n"
             . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
-            . 'URI: ' . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'undefined') . "\n"
+            . 'URI: ' . ($_SERVER['REQUEST_URI'] ?? 'undefined') . "\n"
             . "\n__________________________\n\n\n"
             . 'trace: ' . print_r($e->getTrace(), true) . "\n";
 
@@ -422,11 +436,11 @@ abstract class Core
 
     /**
      * запрещаем клонировать экземпляр класса
-     * @throws Exception
+     * @throws RuntimeException
      */
     protected function __clone()
     {
-        throw new Exception('Can not clone singleton');
+        throw new RuntimeException('Can not clone singleton');
     }
 
     /**
@@ -436,11 +450,12 @@ abstract class Core
      *
      * @return self
      */
-    protected static function getInstanceOf($sClassname, $db, $mod)
+    protected static function getInstanceOf($sClassname, $db, $mod): self
     {
         if (!isset(self::$hInstances[$sClassname])) {
             self::$hInstances[$sClassname] = new $sClassname($db, $mod); // создаем экземпляр
         }
+
         return self::$hInstances[$sClassname];
     }
 }
