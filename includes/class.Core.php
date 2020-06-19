@@ -354,7 +354,10 @@ abstract class Core
             }
                 break;
             case self::HTTP_CODE_403: {
-                Logging::writeError($errorHttpCode);
+                $errorContext = [
+                    'srv' => $_SERVER ?? [],
+                ];
+                $this->logger->notice('Ошибка 403', $errorContext);
 
                 header('Content-Type: text/html; charset=utf-8');
                 header('HTTP/1.1 403 Forbidden');
@@ -367,7 +370,10 @@ abstract class Core
             }
                 break;
             case self::HTTP_CODE_404: {
-                Logging::writeError($errorHttpCode);
+                $errorContext = [
+                    'srv' => $_SERVER ?? [],
+                ];
+                $this->logger->notice('Ошибка 404', $errorContext);
 
                 header('Content-Type: text/html; charset=utf-8');
                 header('HTTP/1.0 404 Not Found');

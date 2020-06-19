@@ -11,7 +11,6 @@ use stdClass;
 
 class DeployBitbucket
 {
-    private const SENTRY_DSN = 'https://sentry.io/api/hooks/release/builtin/114324/bfd5c7f4281799d21a588cc8a5927c3f0be4dc886896561c9c8833bc82d5b385/';
     private const BITBUCKET_AUTH = 'https://bitbucket.org/site/oauth2/access_token';
 
     /**
@@ -38,12 +37,14 @@ class DeployBitbucket
 
     /**
      * @param Client $guzzleClient
+     * @param Logger $logger
      * @param string $releaseDsn
      * @param array $config
      */
-    public function __construct(Client $guzzleClient, string $releaseDsn, array $config)
+    public function __construct(Client $guzzleClient, Logger $logger, string $releaseDsn, array $config)
     {
         $this->guzzleClient = $guzzleClient;
+        $this->logger = $logger;
         $this->releaseDsn = $releaseDsn;
         $this->config = $config;
     }
@@ -100,13 +101,13 @@ class DeployBitbucket
         $filePath = $this->repoPath . $filename;
         $fileLocation = $this->config['location'] . $filename;
 
-        Logging::addHistory('sys', 'fetch contents for ' . $filePath);
+        $this->logger->debug('fetch contents for ' . $filePath);
         $contents = $this->getFileContents($filePath);
-        Logging::addHistory('sys', 'fetched contents is: ' . $contents);
+        $this->logger->debug('content fetched', ['content' => $contents]);
 
         if ($contents === 'Not Found') {
             // try one more time, BitBucket gets weirdo sometimes
-            Logging::addHistory('sys', 'retry fetch file contents');
+            $this->logger->debug('retry fetch file contents');
             $contents = $this->getFileContents($filePath);
         }
         if ($contents !== 'Not Found' && $contents !== '' && $contents !== null) {
@@ -116,11 +117,11 @@ class DeployBitbucket
             }
             file_put_contents($fileLocation, $contents);
             $out = "Synchronized $filename";
-            Logging::addHistory('sys', $out);
         } else {
             $out = "Could not get file contents for $filename: [$contents]";
-            Logging::addHistory('sys', $out);
         }
+
+        $this->logger->debug($out);
 
         return $out;
     }
@@ -182,7 +183,7 @@ class DeployBitbucket
             $content = $response->getBody()->getContents();
         } catch (RequestException $exception) {
             $error = $exception->getResponse()->getBody()->getContents();
-            Logging::addHistory('sys', "Ошибка guzzle:  [$error] from URL [$url]");
+            $this->logger->debug('Ошибка guzzle', [$error, $url]);
         }
 
         return $content;
@@ -213,7 +214,7 @@ class DeployBitbucket
             $content = $response->getBody()->getContents();
         } catch (RequestException $exception) {
             $error = $exception->getResponse()->getBody()->getContents();
-            Logging::addHistory('sys', 'Ошибка отправки данных в Sentry', [$error]);
+            $this->logger->debug('Ошибка отправки данных в Sentry', [$error]);
         }
 
         return $content;
@@ -242,7 +243,7 @@ class DeployBitbucket
                 $this->accessToken = $tokenData['access_token'];
             } catch (RequestException $exception) {
                 $error = $exception->getResponse()->getBody()->getContents();
-                Logging::addHistory('sys', 'Ошибка запроса авторизации', [$error]);
+                $this->logger->debug('Ошибка запроса авторизации', [$error]);
             }
         }
 

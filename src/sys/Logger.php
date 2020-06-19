@@ -54,6 +54,6 @@ class Logger implements LoggerInterface
 
     public function log($level, $message, array $context = []): void
     {
-        // TODO: Implement log() method.
+        Logging::addHistory('default', $message, $context);
     }
 }

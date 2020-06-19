@@ -55,7 +55,7 @@ class Page extends PageCommon
     private function getBitbucket(string $key = null): void
     {
         if (isset($_POST) && !empty($_POST)) {
-            Logging::addHistory('sys', 'Запрос на деплой', $_POST);
+            $this->logger->info('Запрос на деплой', $_POST);
             $req = json_decode($_POST['payload']);
 
             $sp = new MSysProperties($this->db);
@@ -89,7 +89,7 @@ class Page extends PageCommon
                         $sp->updateByName('git_hash', $req->commits[0]->raw_node);
                     }
 
-                    Logging::addHistory('sys', 'Результаты деплоя', $res);
+                    $this->logger->info('Результаты деплоя', $res);
 
                     $mail_attrs = [
                         'files_list' => implode('<br>', $res),
@@ -115,7 +115,7 @@ class Page extends PageCommon
     {
         $guzzle = new Client();
 
-        return new DeployBitbucket($guzzle, SENTRY_RELEASE_DSN, $config);
+        return new DeployBitbucket($guzzle, $this->logger, SENTRY_RELEASE_DSN, $config);
     }
 
     /**
