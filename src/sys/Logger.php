@@ -6,6 +6,7 @@ namespace app\sys;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Sentry\Severity;
 
 /**
  * Универсальный сервис отправки логов в контексте приложения
@@ -67,7 +68,7 @@ class Logger implements LoggerInterface
 
     public function log($level, $message, array $context = []): void
     {
-        $this->sentry->captureMessage($message, $level);
+        $this->sentry->captureMessage($message, new Severity($level));
         Logging::addHistory($level, $message, $context);
     }
 }
