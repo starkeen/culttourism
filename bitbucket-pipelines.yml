@@ -29,10 +29,10 @@ pipelines:
                               SENTRY_PROJECT: 'culttourismru'
                               DEBUG: 'true'
 
-            - step:
-                  name: Sentry code report
-                  script:
-                      -   pipe: sentryio/sentry-code-report:0.0.6
-                          variables:
-                              SENTRY_ORG: 'starkeen'
-                              SENTRY_PROJECT_ID: 114324
+#            - step:
+#                  name: Sentry code report
+#                  script:
+#                      -   pipe: sentryio/sentry-code-report:0.0.6
+#                          variables:
+#                              SENTRY_ORG: 'starkeen'
+#                              SENTRY_PROJECT_ID: 114324
