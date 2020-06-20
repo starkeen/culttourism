@@ -113,7 +113,8 @@ class Page extends PageCommon
         foreach ($points as $i => $pt) {
             $points[$i]['pt_description'] = strip_tags($points[$i]['pt_description']);
             $points[$i]['pt_description'] = html_entity_decode($points[$i]['pt_description'], ENT_QUOTES, 'UTF-8');
-            $short_end = @mb_strpos($pt['pt_description'], ' ', 100, 'utf-8');
+            $descriptionLength = mb_strlen($pt['pt_description']);
+            $short_end = @mb_strpos($pt['pt_description'], ' ', min(100, $descriptionLength), 'utf-8');
             $points[$i]['pt_short'] = trim(
                 mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'),
                 "\x00..\x1F,.-"

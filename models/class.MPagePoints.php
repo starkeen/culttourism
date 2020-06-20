@@ -91,10 +91,11 @@ class MPagePoints extends Model
                 'icon' => $point['tp_icon'],
             ];
 
-            $short_lenght = 300;
             $point['short'] = html_entity_decode(strip_tags($point['pt_description']), ENT_QUOTES, 'utf-8');
-            $short_end = @mb_strpos($point['short'], '.', $short_lenght, 'utf-8');
-            if (mb_strlen($point['short']) >= $short_lenght && $short_end) {
+            $descriptionLength = mb_strlen($point['short']);
+            $shortLength = min(300, $descriptionLength);
+            $short_end = @mb_strpos($point['short'], '.', $shortLength, 'utf-8');
+            if (mb_strlen($point['short']) >= $shortLength && $short_end) {
                 $point['short'] = mb_substr($point['short'], 0, $short_end, 'utf-8') . '&hellip;';
             }
 
