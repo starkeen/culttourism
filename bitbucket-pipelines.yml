@@ -6,21 +6,30 @@
 image: php:7.2.15
 
 pipelines:
-  default:
-    - step:
-        name: Unit tests
-        caches:
-          - composer
-        script:
-          - apt-get update && apt-get install -y unzip
-          - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-          - composer install
-          - vendor/bin/phpunit -c tests/phpunit.xml tests/
+    default:
+        -   step:
+                name: Unit tests
+                caches:
+                    - composer
+                script:
+                    - apt-get update && apt-get install -y unzip
+                    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+                    - composer install
+                    - vendor/bin/phpunit -c tests/phpunit.xml tests/
 
-    - step:
-          name: Sentry code report
-          script:
-              - pipe: sentryio/sentry-code-report:0.0.6
-                variables:
-                    SENTRY_ORG: 'e3bccedd75864d36ab2a0cf1e0273737'
-                    SENTRY_PROJECT_ID: 114324
+#        -   step:
+#                name: Sentry code report
+#                script:
+#                    -   pipe: sentryio/sentry-code-report:0.0.6
+#                        variables:
+#                            SENTRY_ORG: 'starkeen-culttourism'
+#                            SENTRY_PROJECT_ID: 114324
+
+        - step:
+              name: Sentry release notification
+              script:
+                  -   pipe: sentryio/sentry-new-release:0.1.1
+                      variables:
+                          SENTRY_AUTH_TOKEN: $SENTRY_AUTH_TOKEN
+                          SENTRY_ORG: 'starkeen'
+                          SENTRY_PROJECT: 'culttourismru'
