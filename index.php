@@ -51,19 +51,19 @@ $page_id = null;
 $id = null;
 $id2 = null;
 if (isset($requestURIParamsList[0])) {
-    $host_id = null;
+    $host_id = $requestURIParamsList[0];
 }
 if (isset($requestURIParamsList[1])) {
-    $module_id = null;
+    $module_id = $requestURIParamsList[1];
 }
 if (isset($requestURIParamsList[2])) {
-    $page_id = null;
+    $page_id = $requestURIParamsList[2];
 }
 if (isset($requestURIParamsList[3])) {
-    $id = null;
+    $id = $requestURIParamsList[3];
 }
 if (isset($requestURIParamsList[4])) {
-    $id2 = null;
+    $id2 = $requestURIParamsList[4];
 }
 
 $module_id = (isset($module_id) && strlen($module_id) !== 0) ? urldecode($module_id) : _INDEXPAGE_URI;
