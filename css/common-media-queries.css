@@ -147,7 +147,7 @@
         margin-top: 9px;
         font-size: 17px;
     }
-    #yandex_ad {
+    .yandex_ad {
         display:none;
     }
     #yandex_sharer a {
@@ -274,7 +274,7 @@
     .textmarker {
         margin-right: 0;
     }
-    #yandex_ad {
+    .yandex_ad {
         display:none;
     }
     #footer {
@@ -392,7 +392,7 @@
     .city-tree-full li.m_region {
         margin-top: 10px;
     }
-    #yandex_ad {
+    .yandex_ad {
         display:none;
     }
     #footer {
@@ -555,7 +555,7 @@
     #yandex_sharer {
         display:none;
     }
-    #yandex_ad {
+    .yandex_ad {
         display:none;
     }
     #footer {
