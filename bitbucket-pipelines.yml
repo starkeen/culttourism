@@ -33,3 +33,4 @@ pipelines:
                           SENTRY_AUTH_TOKEN: $SENTRY_AUTH_TOKEN
                           SENTRY_ORG: 'starkeen'
                           SENTRY_PROJECT: 'culttourismru'
+                          DEBUG: true
