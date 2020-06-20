@@ -52,7 +52,7 @@ class StaticResources
             $file_production = _DIR_ROOT . '/css/' . self::PREFIX . '-' . $pack . '-' . $file_hash_new . '.min.css';
             if (!file_exists($file_production)) {
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'http://cssminifier.com/raw');
+                curl_setopt($ch, CURLOPT_URL, 'https://cssminifier.com/raw');
                 curl_setopt($ch, CURLOPT_POST, true);
                 curl_setopt($ch, CURLOPT_HEADER, false);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['input' => trim(file_get_contents($file_out))]));
@@ -62,11 +62,7 @@ class StaticResources
                 $minified = curl_exec($ch);
                 curl_close($ch);
                 if ($minified != '') {
-                    $old_files = glob(_DIR_ROOT . '/css/' . self::PREFIX . '-' . $pack . '-*.min.css');
                     file_put_contents($file_production, $minified);
-                    foreach ($old_files as $old) {
-                        // unlink($old);
-                    }
                 }
             }
             unlink($file_out);
