@@ -788,8 +788,6 @@ function initSentry() {
             // Chrome extensions
             /extensions\//i,
             /^chrome:\/\//i,
-            // Relap
-            /https?:\/\/(\w+\.)?relap\.io/,
         ]
     }).install();
 

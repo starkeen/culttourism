@@ -14,3 +14,9 @@
     s.async = true;
     t.parentNode.insertBefore(s, t);
 })(this, this.document, "yandexContextAsyncCallbacks");
+
+/** Контекстная реклама Яндекса - общий блок */
+(yaads = window.yaads || []).push({
+    id: "94073-4",
+    render: "#yandex_context_city"
+});
