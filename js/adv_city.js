@@ -16,7 +16,12 @@
 })(this, this.document, "yandexContextAsyncCallbacks");
 
 /** Контекстная реклама Яндекса - общий блок */
-(yaads = window.yaads || []).push({
-    id: "94073-4",
-    render: "#yandex_context_city"
-});
+let windowScreenWidth = window.screen.width;
+console.log('wsw', windowScreenWidth);
+if (windowScreenWidth > 980) {
+    let yandexContextId = "94073-4";
+    (yaads = window.yaads || []).push({
+        id:     yandexContextId,
+        render: "#yandex_context_city"
+    });
+}
