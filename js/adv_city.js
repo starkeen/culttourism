@@ -16,7 +16,7 @@
 })(this, this.document, "yandexContextAsyncCallbacks");
 
 /** Контекстная реклама Яндекса - общий блок */
-let windowScreenWidth = window.screen.width;
+let windowScreenWidth = document.body.clientWidth;
 console.log('wsw', windowScreenWidth);
 if (windowScreenWidth > 980) {
     let yandexContextId = "94073-4";
