@@ -128,6 +128,11 @@
     margin: 5px;
 }
 
+/*  реклама Яндекса */
+#yandex_context_city {
+    max-height: 250px;
+}
+
 /*------------------------------------- LIST --------------------------*/
 .list-half-left {
     width:49%;
@@ -266,8 +271,8 @@
     margin:5px;
 }
 ymaps h3 {
-    border:0;
-    color: #000;
+    border: 0;
+    color: #041b26;
     padding:0;
     font-size: 12pt;
     background: none;
@@ -387,10 +392,9 @@ textarea.feedinput {
 #city_path {
     text-align: right;
     border-top: 2px solid #141414;
-    background: #292929;
-    color: #fff;
+    color: #ffffff;
     padding: 0 5pt;
-    background: #000;
+    background: #041b26;
     background: -moz-linear-gradient(left,#292929,#fff);
     background: -webkit-gradient(linear, right top, left top, from(#292929), to(#fff));
     background: linear-gradient(top,#292929,#fff);
@@ -457,7 +461,7 @@ textarea.feedinput {
     top:2px;
     left:4px;
     border-collapse:collapse;
-    border-top:1px solid #000;
+    border-top: 1px solid #041b26;
 }
 .citypoints_list tr:nth-child(odd) {
     background-color: #efefef;
@@ -651,7 +655,7 @@ textarea.feedinput {
 .hiddenedit_active {
     border:1px solid #829C8F;
     background-color: #D4FFE9;
-    color:#000;
+    color: #041b26;
     width:100%
 }
 .formhandler {

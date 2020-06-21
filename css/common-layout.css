@@ -34,6 +34,7 @@ abbr, acronym {
 }
 html {
     height: 100%;
+    color: #041b26;
 }
 header, nav, section, article, aside, footer {
     display: block;
@@ -164,7 +165,7 @@ ul.menu_common li {
     height:28px;
     border:none;
     padding-right:30px;
-    color:#000;
+    color: #041b26;
     background:url(/img/header/magnify.png) top right no-repeat;
 }
 #show_auth_form {

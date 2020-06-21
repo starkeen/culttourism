@@ -17,11 +17,10 @@
 
 /** Контекстная реклама Яндекса - общий блок */
 let windowScreenWidth = document.body.clientWidth;
-console.log('wsw', windowScreenWidth);
 if (windowScreenWidth > 980) {
     let yandexContextId = "94073-4";
     (yaads = window.yaads || []).push({
-        id:     yandexContextId,
+        id: yandexContextId,
         render: "#yandex_context_city"
     });
 }
