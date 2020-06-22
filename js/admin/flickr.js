@@ -105,6 +105,7 @@ $(document).ready(function () {
         $("#flickr-search-points-latitude").val($item.data("latitude"));
         $("#flickr-search-points-longitude").val($item.data("longitude"));
         $("#flickr-search-points-go").prop("disabled", false);
+        $("#flickr-search-points-go-yandex").prop("disabled", false);
 
         $("#flickr-search-city-suggest").val($item.data("region_name"));
         $("#flickr-search-city-id").val($item.data("region_id"));
@@ -132,6 +133,7 @@ $(document).ready(function () {
         $("#flickr-search-points-latitude").val("0");
         $("#flickr-search-points-longitude").val("0");
         $("#flickr-search-points-go").prop("disabled", true);
+        $("#flickr-search-points-go-yandex").prop("disabled", true);
     });
     $("#flickr-search-city-suggest").autocomplete({
         serviceUrl: "/search/suggest/",
@@ -168,12 +170,24 @@ $(document).ready(function () {
             $("#flickr-search-points-latitude").val(suggestion.latitude);
             $("#flickr-search-points-longitude").val(suggestion.longitude);
             $("#flickr-search-points-go").prop("disabled", false);
+            $("#flickr-search-points-go-yandex").prop("disabled", false);
         }
     });
     $("#flickr-search-points-go").on("click", function () {
         let latitude = $("#flickr-search-points-latitude").val();
         let longitude = $("#flickr-search-points-longitude").val();
         let url = 'https://www.flickr.com/map/?fLat=' + latitude + '&fLon=' + longitude + '&zl=16&everyone_nearby=1';
+        let win = window.open(url, '_blank');
+        if (win) {
+            win.focus();
+        } else {
+            alert('Please allow popups for this website');
+        }
+    });
+    $("#flickr-search-points-go-yandex").on("click", function () {
+        let regionName = $("#flickr-search-city-suggest").val();
+        let objectName = $("#flickr-search-points-suggest").val();
+        let url = 'https://yandex.ru/images/search?text=' + regionName + ' ' + objectName;
         let win = window.open(url, '_blank');
         if (win) {
             win.focus();
