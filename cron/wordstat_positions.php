@@ -38,8 +38,14 @@ foreach ($cities as $city) {
             ]
         );
     } elseif ((int) $res['error_code'] !== 15) {
-        $msg = sprintf('ERROR %d: %s, query: [%s]', $res['error_code'] ?? -1, $res['error_text'], $query);
-        echo $msg . PHP_EOL;
+        $logger->warning(
+            'Ошибка в скрипте wordstat',
+            [
+                'query' => $query,
+                'error_code' => $res['error_code'],
+                'error_text' => $res['error_text'],
+            ]
+        );
     }
 
     usleep(500000);
