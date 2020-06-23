@@ -48,7 +48,7 @@ class SentryLogger
      *
      * @return string|null
      */
-    public function captureMessage(Severity $level, string $message, array $context): ?string
+    public function captureMessage(Severity $level, string $message, array $context = []): ?string
     {
         $hub = SentrySdk::getCurrentHub();
         $hub->configureScope(
