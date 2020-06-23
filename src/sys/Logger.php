@@ -84,12 +84,12 @@ class Logger implements LoggerInterface
     public function log($level, $message, array $context = []): void
     {
         if (in_array($level, self::SENTRY_SEND_LEVELS, true)) {
-            $this->sendSentry($level, $message);
+            $this->sendSentry($level, $message, $context);
         }
         Logging::addHistory($level, $message, $context);
     }
 
-    private function sendSentry($level, $message):void
+    private function sendSentry($level, $message, array $context = []):void
     {
         if ($level === LogLevel::NOTICE) {
             $severity = new Severity(LogLevel::WARNING);
@@ -97,6 +97,6 @@ class Logger implements LoggerInterface
             $severity = new Severity($level);
         }
 
-        $this->sentry->captureMessage($message, $severity);
+        $this->sentry->captureMessage($severity, $message, $context);
     }
 }

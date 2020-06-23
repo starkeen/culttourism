@@ -9,6 +9,7 @@ use Sentry\ClientInterface;
 use Sentry\SentrySdk;
 use Sentry\Severity;
 use Sentry\State\Scope;
+use Sentry;
 
 class SentryLogger
 {
@@ -41,13 +42,21 @@ class SentryLogger
     }
 
     /**
+     * @param Severity $level
      * @param string $message
-     * @param Severity|null $level
+     * @param array $context
      *
      * @return string|null
      */
-    public function captureMessage(string $message, ?Severity $level = null): ?string
+    public function captureMessage(Severity $level, string $message, array $context): ?string
     {
-        return SentrySdk::getCurrentHub()->captureMessage($message, $level);
+        $hub = SentrySdk::getCurrentHub();
+        $hub->configureScope(
+            static function (Scope $scope) use ($context): void {
+                $scope->setTags($context);
+                $scope->setExtras($context);
+            }
+        );
+        return $hub->captureMessage($message, $level);
     }
 }
