@@ -8,7 +8,6 @@ use InvalidArgumentException;
 use Sentry\ClientBuilder;
 use Sentry\ClientInterface;
 use Sentry\Options;
-use Sentry\SentrySdk;
 use Sentry\Severity;
 use Sentry\State\Hub;
 use Sentry\State\HubInterface;
