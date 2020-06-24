@@ -49,8 +49,8 @@ class SentryLoggerTest extends TestCase
                 []
             ],
             'плоские строки' => [
-                ['a' => 'b', 'c' => null, 'd' => 0, 'e' => 0.1, 'f' => false, 'g' => true],
-                ['a' => 'b', 'c' => null, 'd' => '0', 'e' => '0.1', 'f' => false, 'g' => true],
+                ['a' => 'b', 'c' => null, 'd' => 0, 'e' => 0.1, 'f' => false, 'g' => true, 'z'],
+                ['a' => 'b', 'c' => null, 'd' => '0', 'e' => '0.1', 'f' => false, 'g' => true, 0 => 'z'],
             ],
             'вложенные массивы' => [
                 ['a' => ['b'], 'c' => [null], 'd' => [0], 'e' => [0.1]],
