@@ -75,7 +75,7 @@ abstract class Core
      */
     protected $logger;
 
-    protected function __construct(MyDB $db, $mod)
+    protected function __construct(MyDB $db, string $mod)
     {
         set_exception_handler([$this, 'errorsExceptionsHandler']);
         $this->db = $db;

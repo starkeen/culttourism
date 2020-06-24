@@ -29,22 +29,23 @@ $server_request_uri = urldecode($_SERVER['REQUEST_URI']);
 if (strpos($server_request_uri, '?')) {
     $server_request_uri = mb_substr($server_request_uri, 0, strpos($server_request_uri, '?'), 'utf-8');
 }
-$request_uri_arr = explode('/', $server_request_uri);
+$requestURIArray = explode('/', $server_request_uri);
 if ($_SERVER['HTTP_HOST'] !== _URL_ROOT) {
-    $request_suburi_arr = explode('/', _URL_ROOT);
-    if (isset($request_suburi_arr[1]) && isset($request_uri_arr[1]) && $request_suburi_arr[1] == $request_uri_arr[1]) {
-        array_shift($request_uri_arr);
+    $requestSubURIArray = explode('/', _URL_ROOT);
+    if (isset($requestSubURIArray[1], $requestURIArray[1]) && $requestSubURIArray[1] === $requestURIArray[1]) {
+        array_shift($requestURIArray);
     }
 }
-if ($request_uri_arr[1] == '' && !empty($request_uri_arr[2])) {
-    unset($request_uri_arr[1]);
-    $canonical = implode('/', $request_uri_arr);
+// защита от двойного слеша в начале
+if ($requestURIArray[1] === '' && !empty($requestURIArray[2])) {
+    unset($requestURIArray[1]);
+    $canonical = implode('/', $requestURIArray);
     header('HTTP/1.1 301 Moved Permanently');
     header("Location: $canonical");
     exit();
 }
 
-$requestURIParamsList = array_values($request_uri_arr);
+$requestURIParamsList = array_values($requestURIArray);
 $host_id = null;
 $module_id = null;
 $page_id = null;
@@ -88,7 +89,7 @@ if (file_exists($customModulePath)) {
 }
 include($includeModulePath);
 
-$page = Page::getInstance($db, array($module_id, $page_id, $id, $id2));
+$page = Page::getInstance($db, [$module_id, $page_id, $id, $id2]);
 $smarty->assign('page', $page);
 
 header('X-Powered-By: html');
