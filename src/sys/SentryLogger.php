@@ -7,8 +7,11 @@ namespace app\sys;
 use InvalidArgumentException;
 use Sentry\ClientBuilder;
 use Sentry\ClientInterface;
+use Sentry\Options;
 use Sentry\SentrySdk;
 use Sentry\Severity;
+use Sentry\State\Hub;
+use Sentry\State\HubInterface;
 use Sentry\State\Scope;
 
 class SentryLogger
@@ -19,19 +22,26 @@ class SentryLogger
     private $client;
 
     /**
+     * @var HubInterface
+     */
+    private $hub;
+
+    /**
      * @param string $dsn
      */
     public function __construct(string $dsn)
     {
-        $this->client = ClientBuilder::create(
+        $options = new Options(
             [
                 'dsn' => $dsn,
                 'capture_silenced_errors' => true,
             ]
-        )->getClient();
+        );
+        $clientBuilder = new ClientBuilder($options);
+        $this->client = $clientBuilder->getClient();
 
-        $hub = SentrySdk::init();
-        $hub->bindClient($this->client);
+        $this->hub = new Hub();
+        $this->hub->bindClient($this->client);
     }
 
     public function setReleaseKey(string $key): void
@@ -52,14 +62,14 @@ class SentryLogger
     {
         $plainContext = $this->plainContext($context);
 
-        $hub = SentrySdk::getCurrentHub();
-        $hub->configureScope(
+        $this->hub->configureScope(
             static function (Scope $scope) use ($plainContext): void {
                 $scope->setTags($plainContext);
                 $scope->setExtras($plainContext);
             }
         );
-        return $hub->captureMessage($message, $level);
+
+        return $this->hub->captureMessage($message, $level);
     }
 
     /**
@@ -68,7 +78,7 @@ class SentryLogger
      *
      * @return array
      */
-    private function plainContext(array $context, string $prefix = null): array
+    public function plainContext(array $context, string $prefix = null): array
     {
         $result = [];
         foreach($context as $key => $value) {
@@ -76,14 +86,18 @@ class SentryLogger
             if ($prefix !== null) {
                 $resultKey = $prefix . '_' . $resultKey;
             }
-            if (is_scalar($value)) {
-                $result[] = [$resultKey => $value];
+            if (is_bool($value)) {
+                $result += [$resultKey => $value];
+            } elseif (is_scalar($value)) {
+                $result += [$resultKey => (string) $value];
+            } elseif ($value === null) {
+                $result += [$resultKey => null];
             } elseif (is_array($value)) {
-                $result[] = $this->plainContext($value, $key);
+                $result += $this->plainContext($value, $key);
             } elseif (is_object($value)) {
-                $result[] = $this->plainContext((array) $value, $key);
+                $result += $this->plainContext([$resultKey => json_encode($value)]);
             } else {
-                throw new InvalidArgumentException('Недоступный для сериализации контекст');
+                throw new InvalidArgumentException('Недоступный для сериализации контекст: key=' . $key);
             }
         }
 
