@@ -87,11 +87,11 @@ class SentryLogger
                 $resultKey = $prefix . '_' . $resultKey;
             }
             if (is_bool($value)) {
-                $result += [$resultKey => $value];
+                $result += [$resultKey => $value ? '<true>' : '<false>'];
             } elseif (is_scalar($value)) {
                 $result += [$resultKey => (string) $value];
             } elseif ($value === null) {
-                $result += [$resultKey => null];
+                $result += [$resultKey => '<null>'];
             } elseif (is_array($value)) {
                 $result += $this->plainContext($value, $key);
             } elseif (is_object($value)) {

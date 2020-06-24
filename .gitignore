@@ -12,6 +12,7 @@ ct-*.css
 ct-*.js
 sitemap.xml
 robots.txt
+.phpunit.result.cache
 .env
 /config/configuration.php
 /config/DOMAIN
