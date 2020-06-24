@@ -10,7 +10,6 @@ use Sentry\ClientInterface;
 use Sentry\SentrySdk;
 use Sentry\Severity;
 use Sentry\State\Scope;
-use Sentry;
 
 class SentryLogger
 {
