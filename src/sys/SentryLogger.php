@@ -63,7 +63,6 @@ class SentryLogger
 
         $this->hub->configureScope(
             static function (Scope $scope) use ($plainContext): void {
-                $scope->setTags($plainContext);
                 $scope->setExtras($plainContext);
             }
         );
