@@ -77,16 +77,16 @@ class SentryLogger
                 $resultKey = $prefix . '_' . $resultKey;
             }
             if (is_scalar($value)) {
-                $result[$resultKey] = $value;
+                $result[] = [$resultKey => $value];
             } elseif (is_array($value)) {
-                $result[$resultKey] = $this->plainContext($value, $key);
+                $result[] = $this->plainContext($value, $key);
             } elseif (is_object($value)) {
-                $result[$resultKey] = $this->plainContext((array) $value, $key);
+                $result[] = $this->plainContext((array) $value, $key);
             } else {
                 throw new InvalidArgumentException('Недоступный для сериализации контекст');
             }
         }
 
-        return $result;
+        return array_merge($result);
     }
 }
