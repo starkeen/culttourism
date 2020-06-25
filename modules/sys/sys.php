@@ -89,7 +89,7 @@ class Page extends PageCommon
                         $sp->updateByName('git_hash', $req->commits[0]->raw_node);
                     }
 
-                    $this->logger->info('Результаты деплоя', $res);
+                    $this->logger->info('Результаты деплоя', ['output' => $res]);
 
                     $mail_attrs = [
                         'files_list' => implode('<br>', $res),
