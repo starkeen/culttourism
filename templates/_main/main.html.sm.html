@@ -24,9 +24,6 @@
         {if $page->canonical}
             <link rel="canonical" href="https://culttourism.ru{$page->canonical}"/>
         {/if}
-        <!--[if lt IE 9]>
-        <script src="https://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
-        <![endif]-->
         <script src='https://www.google.com/recaptcha/api.js'></script>
         <script type="text/javascript"
                 src="https://api-maps.yandex.ru/2.1/?apikey=74d288bb-04a5-43b1-bf52-e90eeccd2683&lang=ru_RU&coordorder=longlat"
@@ -34,7 +31,6 @@
         <link rel="stylesheet" href="/css/{$page->mainfile_css}" type="text/css" media="screen, projection, print"/>
         <script type="text/javascript" src="https://yastatic.net/pcode-native/loaders/loader.js" async></script>
         <script type="text/javascript" src="/js/{$page->mainfile_js}" defer="defer"></script>
-        <script type="text/javascript" src="https://cdn.ravenjs.com/3.8.0/raven.min.js" defer="defer"></script>
         {if $page->user.userid}
             <script type="text/javascript" src="/addons/ckeditor/ckeditor.js" defer="defer"></script>
             <script type="text/javascript" src="/addons/ckeditor/adapters/jquery.js" defer="defer"></script>
@@ -46,10 +42,8 @@
         {if !empty($page->getJSONLD())}
             <script type="application/ld+json">
                         {json_encode($page->getJSONLD())}
-
             </script>
         {/if}
-        <script data-ad-client="ca-pub-2391029836221111" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     </head>
     <body>
         {literal}
