@@ -30,6 +30,7 @@
                 src="https://api-maps.yandex.ru/2.1/?apikey=74d288bb-04a5-43b1-bf52-e90eeccd2683&lang=ru_RU&coordorder=longlat"
                 defer="defer"></script>
         <script type="text/javascript" src="https://yastatic.net/pcode-native/loaders/loader.js" defer="defer"></script>
+        <script type="text/javascript" src="/js/{$page->mainfile_js}" defer="defer"></script>
         {if $page->user.userid}
             <script type="text/javascript" src="/addons/ckeditor/ckeditor.js" defer="defer"></script>
             <script type="text/javascript" src="/addons/ckeditor/adapters/jquery.js" defer="defer"></script>
@@ -38,7 +39,6 @@
             <script type="text/javascript" src="/addons/jquery.ui/jquery.ui.datepicker-ru.js" defer="defer"></script>
             <link rel="stylesheet" href="/addons/jquery.ui/ui-lightness/jquery-ui-1.8.2.custom.css" type="text/css"/>
         {/if}
-        <script type="text/javascript" src="/js/{$page->mainfile_js}" defer="defer"></script>
         {if !empty($page->getJSONLD())}
             <script type="application/ld+json">
                         {json_encode($page->getJSONLD())}
