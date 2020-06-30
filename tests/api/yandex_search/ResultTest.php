@@ -15,6 +15,10 @@ class ResultTest extends TestCase
         $result = new Result($xml);
 
         $this->assertFalse($result->isError());
+        $this->assertEquals('abcde', $result->getRequestId());
+        $this->assertIsArray($result->getItems());
+        $this->assertCount(0, $result->getItems());
+        $this->assertEquals(0, $result->getPagesCount());
     }
 
     public function testResultBuilderError(): void
@@ -23,5 +27,8 @@ class ResultTest extends TestCase
         $result = new Result($xml);
 
         $this->assertTrue($result->isError());
+        $this->assertEquals(33, $result->getErrorCode());
+        $this->assertEquals('error-text', $result->getErrorText());
+        $this->assertEquals('abcde', $result->getRequestId());
     }
 }

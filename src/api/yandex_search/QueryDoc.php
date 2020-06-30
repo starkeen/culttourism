@@ -61,4 +61,15 @@ class QueryDoc
     {
         return strlen($this->xml->asXML());
     }
+
+    public function getHash(): string
+    {
+        $data = $this->xml->asXML();
+
+        $lower = mb_strtolower($data);
+        $symbols = preg_replace('|s+|', '', $lower);
+        $trimmed = trim($symbols);
+
+        return sha1($trimmed);
+    }
 }
