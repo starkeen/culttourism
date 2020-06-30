@@ -60,6 +60,8 @@ class YandexSearcher
                         'sl_query' => $request,
                         'sl_request' => $doc,
                         'sl_error_code' => 0,
+                        'sl_answer' => '',
+                        'sl_error_text' => '',
                     ]
                 );
             }

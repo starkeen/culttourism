@@ -19,7 +19,7 @@ class MSearchCache extends Model {
 
     public function add($data) {
         $data['sc_date'] = $this->now();
+        $data['sc_sr_id'] = 0;
         return $this->insert($data);
     }
-
 }

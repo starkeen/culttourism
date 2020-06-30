@@ -1,8 +1,11 @@
 <?php
 
-class Page extends PageCommon {
+use app\api\yandex_search\Factory;
 
-    public function __construct($db, $mod) {
+class Page extends PageCommon
+{
+    public function __construct($db, $mod)
+    {
         [$module_id, $page_id, $id] = $mod;
         parent::__construct($db, 'search');
         if ($id) {
@@ -19,18 +22,22 @@ class Page extends PageCommon {
     /**
      * Саджест регионов
      */
-    private function getSuggests() {
-        $out = array('query' => '', 'suggestions' => array());
+    private function getSuggests(): void
+    {
+        $out = [
+            'query' => '',
+            'suggestions' => [],
+        ];
         $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
         $pc = new MPageCities($this->db);
         $variants = $pc->getSuggestion($out['query']);
 
         foreach ($variants as $row) {
-            $out['suggestions'][] = array(
-                'value' => "{$row['pc_title']}",
+            $out['suggestions'][] = [
+                'value' => (string) ($row['pc_title']),
                 'data' => $row['pc_id'],
                 'url' => $row['url'] . '/',
-            );
+            ];
         }
 
         header('Content-type: application/json');
@@ -41,7 +48,7 @@ class Page extends PageCommon {
     /**
      * Саджест объектов
      */
-    private function getObjectSuggests()
+    private function getObjectSuggests(): void
     {
         $out = [
             'query' => '',
@@ -67,28 +74,39 @@ class Page extends PageCommon {
         exit();
     }
 
-    private function getSearchYandex() {
+    private function getSearchYandex()
+    {
         if (isset($_GET['q'])) {
             $query = htmlentities(cut_trash_string(strip_tags($_GET['q'])), ENT_QUOTES, "UTF-8");
             $sc = new MSearchCache($this->db);
-            $sc->add(array(
-                'sc_session' => $this->getUserHash(),
-                'sc_query' => $query,
-                'sc_sr_id' => null,
-            ));
+            $sc->add(
+                [
+                    'sc_session' => $this->getUserHash(),
+                    'sc_query' => $query,
+                    'sc_sr_id' => null,
+                ]
+            );
 
             $error_text = '';
-            $result = array();
-            $result_meta = array(
+            $result = [];
+            $result_meta = [
                 'query' => $query,
-                'page' => array_key_exists('page', $_GET) ? intval($_GET['page']) : 0,
+                'page' => array_key_exists('page', $_GET) ? (int) $_GET['page'] : 0,
                 'pages_all' => 0,
-            );
+            ];
+
+            $searchKeywords = $query . ' host:culttourism.ru';
+//            $yandexSearcher = Factory::build();
+//            $searchResult = $yandexSearcher->searchPages($searchKeywords, 0);
+//
+//            if ($searchResult->isError()) {
+//                $error_text = $searchResult->getErrorText();
+//            }
 
             $ys = new YandexSearcher();
             $ys->setPage($result_meta['page']);
             $ys->enableLogging($this->db);
-            $res = $ys->search("$query host:culttourism.ru");
+            $res = $ys->search($searchKeywords);
             if ($res['error_text']) {
                 $error_text = trim(str_replace('starkeen', '', $res['error_text']));
             } else {
@@ -100,8 +118,7 @@ class Page extends PageCommon {
                     $result_item['title'] = trim(implode(', ', $title_items));
                     $result_item['title'] = str_replace(' , ', ', ', $result_item['title']);
                     $result_item['descr'] = $result_item['descr_hw'];
-                    unset($result_item['title_hw']);
-                    unset($result_item['descr_hw']);
+                    unset($result_item['title_hw'], $result_item['descr_hw']);
                     $result[] = $result_item;
                 }
                 $result_meta['pages_all'] = $res['pages_cnt'];
@@ -109,7 +126,7 @@ class Page extends PageCommon {
 
             $result_meta['pages'] = 20;
             $result_meta['query'] = ($query);
-            $result_meta['page'] = array_key_exists('page', $_GET) ? intval($_GET['page']) : 0;
+            $result_meta['page'] = array_key_exists('page', $_GET) ? (int) $_GET['page'] : 0;
 
             $this->smarty->assign('search', $query);
             $this->smarty->assign('error', $error_text);
@@ -119,17 +136,19 @@ class Page extends PageCommon {
             $this->smarty->assign('search', '');
             $this->smarty->assign('error', '');
             $this->smarty->assign('result', '');
-            $this->smarty->assign('meta', array());
+            $this->smarty->assign('meta', []);
         }
         return $this->smarty->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
     }
 
-    private function highlight_words($node) {
+    private function highlight_words($node)
+    {
         $stripped = preg_replace('/<\/?(title|passage)[^>]*>/', '', $node->asXML());
         return str_replace('</hlword>', '</strong>', preg_replace('/<hlword[^>]*>/', '<strong>', $stripped));
     }
 
-    private function getSearchInternal() {
+    private function getSearchInternal()
+    {
         if (isset($_GET['q'])) {
             $q = trim($q);
             $q = cut_trash_string($_GET['q']);
@@ -152,17 +171,17 @@ class Page extends PageCommon {
                 $dbu = $this->db->getTableName('region_url');
                 $dbsc = $this->db->getTableName('search_cache');
 
-                $fields = array(
-                    array('field' => 'c.pc_title', 'weight' => 80,),
-                    array('field' => 'c.pc_keywords', 'weight' => 70,),
-                    array('field' => 'c.pc_description', 'weight' => 70,),
-                    array('field' => 'c.pc_text', 'weight' => 10,),
-                    array('field' => 'c.pc_inwheretext', 'weight' => 30,),
-                    array('field' => 'c.pc_title_translit', 'weight' => 30,),
-                    array('field' => 'c.pc_title_english', 'weight' => 50,),
-                    array('field' => 'c.pc_title_synonym', 'weight' => 60,),
-                );
-                $_where = array();
+                $fields = [
+                    ['field' => 'c.pc_title', 'weight' => 80,],
+                    ['field' => 'c.pc_keywords', 'weight' => 70,],
+                    ['field' => 'c.pc_description', 'weight' => 70,],
+                    ['field' => 'c.pc_text', 'weight' => 10,],
+                    ['field' => 'c.pc_inwheretext', 'weight' => 30,],
+                    ['field' => 'c.pc_title_translit', 'weight' => 30,],
+                    ['field' => 'c.pc_title_english', 'weight' => 50,],
+                    ['field' => 'c.pc_title_synonym', 'weight' => 60,],
+                ];
+                $_where = [];
                 foreach ($_query as $word) {
                     foreach ($fields as $field) {
                         $_where[$field['field']][] = "({$field['field']} LIKE '%$word%')";
@@ -170,7 +189,8 @@ class Page extends PageCommon {
                 }
 
                 $this->db->sql = "INSERT INTO $dbsc SET
-                            sc_date = now(), sc_session = '" . $this->getUserHash() . "', sc_query = '$q', sc_sr_id = null";
+                            sc_date = now(), sc_session = '" . $this->getUserHash(
+                    ) . "', sc_query = '$q', sc_sr_id = null";
                 $this->db->exec();
 
                 $this->db->sql = "SELECT c.pc_id, c.pc_title, u.url, c.pc_text, c.pc_rank, 100 AS weight
@@ -189,7 +209,7 @@ class Page extends PageCommon {
                 $this->db->sql .= "\n
                             UNION \n\n";
 
-                $_sql = array();
+                $_sql = [];
                 foreach ($fields as $field) {
                     $where = implode(' OR ', $_where[$field['field']]);
                     $_sql[] = "SELECT c.pc_id, c.pc_title, u.url, c.pc_text, c.pc_rank, {$field['weight']} AS weight
@@ -203,22 +223,34 @@ class Page extends PageCommon {
                 $this->db->sql .= "GROUP BY pc_id, url
                              ORDER BY weight DESC, pc_rank DESC, pc_title";
                 $this->db->exec();
-                $result = array();
+                $result = [];
                 while ($row = $this->db->fetch()) {
-                    $result[$row['pc_id']] = array(
+                    $result[$row['pc_id']] = [
                         'title' => $row['pc_title'],
                         'url' => $row['url'],
-                        'descr' => mb_substr(strip_tags($row['pc_text']), 0, mb_strpos(strip_tags($row['pc_text']), ' ', 250)) . '...'
-                    );
-                    $patterns = array();
-                    $replacements = array();
+                        'descr' => mb_substr(
+                                strip_tags($row['pc_text']),
+                                0,
+                                mb_strpos(strip_tags($row['pc_text']), ' ', 250)
+                            ) . '...'
+                    ];
+                    $patterns = [];
+                    $replacements = [];
                     foreach ($_query as $word) {
                         $word = preg_replace('/[абвг]/iu', '[абвг]', $word);
                         $patterns[] = "#$word#iu";
                         $replacements[] = '<b>$0</b>';
                     }
-                    $result[$row['pc_id']]['title'] = preg_replace($patterns, $replacements, $result[$row['pc_id']]['title']);
-                    $result[$row['pc_id']]['descr'] = preg_replace($patterns, $replacements, $result[$row['pc_id']]['descr']);
+                    $result[$row['pc_id']]['title'] = preg_replace(
+                        $patterns,
+                        $replacements,
+                        $result[$row['pc_id']]['title']
+                    );
+                    $result[$row['pc_id']]['descr'] = preg_replace(
+                        $patterns,
+                        $replacements,
+                        $result[$row['pc_id']]['descr']
+                    );
                 }
                 $this->smarty->assign('result', $result);
             } else {
@@ -232,8 +264,8 @@ class Page extends PageCommon {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
     }
 
-    public static function getInstance($db, $mod = null) {
+    public static function getInstance($db, $mod = null)
+    {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
-
 }

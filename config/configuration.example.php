@@ -30,6 +30,9 @@ define('_MAIL_FROMNAME', 'Культурный туризм');
 define('_MAIL_TO', 'xxxxx@gmail.com');
 define('_FEEDBACK_MAIL', 'xxx@mail.ru');
 
+define('YANDEX_XML_USER', 'user');
+define('YANDEX_XML_KEY', 'absdef');
+
 /*
  * Don't change anything below in this file!
  * You can edit HOSTING.CONF.PHP for change base url, base path
