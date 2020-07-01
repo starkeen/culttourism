@@ -79,14 +79,7 @@ class Page extends PageCommon
         if (isset($_GET['q'])) {
             $query = htmlentities(cut_trash_string(strip_tags($_GET['q'])), ENT_QUOTES, "UTF-8");
 
-            $sc = new MSearchCache($this->db);
-            $sc->add(
-                [
-                    'sc_session' => $this->getUserHash(),
-                    'sc_query' => $query,
-                    'sc_sr_id' => null,
-                ]
-            );
+            $this->log($query);
 
             $errorText = '';
             $result = [];
@@ -97,6 +90,8 @@ class Page extends PageCommon
                 'pages_all' => 0, // всего доступно страниц
                 'total' => 0, // всего найдено документов
                 'resolution' => '', // результаты поиска текстом
+                'text_source' => '', // в случае исправлений: исходный текст
+                'text_result' => '', // в случае исправлений: исправленный текст
             ];
 
             $searchKeywords = $query . ' host:culttourism.ru';
@@ -121,6 +116,12 @@ class Page extends PageCommon
                 $resultMeta['pages_all'] = $searchResult->getPagesCount();
                 $resultMeta['total'] = $searchResult->getDocumentsCount();
                 $resultMeta['resolution'] = str_replace('нашёл', '', $searchResult->getHumanResolution());
+
+                $correctionInfo = $searchResult->getCorrection();
+                if ($correctionInfo !== null) {
+                    $resultMeta['text_source'] = $correctionInfo->getSourceText();
+                    $resultMeta['text_result'] = $correctionInfo->getResultText();
+                }
             } else {
                 $errorText = $searchResult->getErrorText();
             }
@@ -136,6 +137,18 @@ class Page extends PageCommon
             $this->smarty->assign('meta', []);
         }
         return $this->smarty->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
+    }
+
+    private function log(string $query): void
+    {
+        $sc = new MSearchCache($this->db);
+        $sc->add(
+            [
+                'sc_session' => $this->getUserHash(),
+                'sc_query' => $query,
+                'sc_sr_id' => null,
+            ]
+        );
     }
 
     private function getSearchInternal()

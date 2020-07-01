@@ -95,7 +95,10 @@ class Result
      */
     public function getPagesCount(): int
     {
-        return (int) ceil($this->getDocumentsCount() / $this->getDocumentsPerPage());
+        $total = $this->getDocumentsCount();
+        $perPage = $this->getDocumentsPerPage();
+
+        return (int) ceil($total / $perPage);
     }
 
     public function getDocumentsCount(): int
@@ -105,7 +108,23 @@ class Result
 
     public function getDocumentsPerPage(): int
     {
-        return 15;
+        return (int) $this->xml->request->groupings->groupby['groups-on-page'];
+    }
+
+    public function getCorrection(): ?ResultCorrection
+    {
+        $result = null;
+
+        $misspell = $this->xml->response->misspell;
+        $reask = $this->xml->response->reask;
+
+        if ($misspell !== null) {
+            $result = new ResultCorrection((string) $misspell->rule);
+            $result->setSourceText((string) $misspell->{'source-text'});
+            $result->setResultText((string) $misspell->text);
+        }
+
+        return $result;
     }
 
     private function getErrorNode(): ?SimpleXMLElement
