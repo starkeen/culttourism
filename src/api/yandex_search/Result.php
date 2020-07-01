@@ -87,7 +87,7 @@ class Result
 
     public function getHumanResolution(): string
     {
-        return (string) $this->xml->response->{'found-human'};
+        return (string) $this->xml->response->results->grouping->{'found-docs-human'};
     }
 
     /**
@@ -95,12 +95,17 @@ class Result
      */
     public function getPagesCount(): int
     {
-        return (int) $this->xml->response->results->grouping->page['last'];
+        return (int) ceil($this->getDocumentsCount() / $this->getDocumentsPerPage());
     }
 
     public function getDocumentsCount(): int
     {
-        return (int) $this->xml->response->found;
+        return (int) $this->xml->response->results->grouping->{'found-docs'}[0];
+    }
+
+    public function getDocumentsPerPage(): int
+    {
+        return 15;
     }
 
     private function getErrorNode(): ?SimpleXMLElement

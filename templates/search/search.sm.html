@@ -18,13 +18,15 @@
     {/foreach}
 </ul>
 <p>
-    Всего найдено: {$meta.pages_all}
+    Найдено {$meta.resolution}
     <br/>
     {if ($meta.page != 0)}
     <a href="?page={$meta.page - 1}&q={$meta.query}">&#8592; предыдущая</a>
     {/if}
     страница {$meta.page + 1}
-    {if ($meta.pages_all > ($meta.page + 1) * $meta.per_page)}
+    всего страниц: {$meta.pages_all}
+
+    {if ($meta.pages_all > $meta.page + 1)}
     <a href="?page={$meta.page + 1}&q={$meta.query}">следующая &#8594;</a>
     {/if}
 </p>

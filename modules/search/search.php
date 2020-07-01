@@ -96,13 +96,14 @@ class Page extends PageCommon
                 'per_page' => 15, // документов на странице
                 'pages_all' => 0, // всего доступно страниц
                 'total' => 0, // всего найдено документов
+                'resolution' => '', // результаты поиска текстом
             ];
 
             $searchKeywords = $query . ' host:culttourism.ru';
             $yandexSearcher = Factory::build();
             $yandexSearcher->setDocumentsOnPage($resultMeta['per_page']);
 
-            $searchResult = $yandexSearcher->searchPages($searchKeywords, 0);
+            $searchResult = $yandexSearcher->searchPages($searchKeywords, $resultMeta['page']);
 
             if (!$searchResult->isError()) {
                 foreach ($searchResult->getItems() as $resultItem) {
@@ -119,6 +120,7 @@ class Page extends PageCommon
                 }
                 $resultMeta['pages_all'] = $searchResult->getPagesCount();
                 $resultMeta['total'] = $searchResult->getDocumentsCount();
+                $resultMeta['resolution'] = str_replace('нашёл', '', $searchResult->getHumanResolution());
             } else {
                 $errorText = $searchResult->getErrorText();
             }
