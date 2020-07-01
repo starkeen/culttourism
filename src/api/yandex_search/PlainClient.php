@@ -49,6 +49,7 @@ class PlainClient implements HttpClientInterface
                 'Content-Type' => 'text/xml;charset=UTF-8',
                 'Content-length'=> $queryDoc->getLength(),
             ],
+            RequestOptions::FORCE_IP_RESOLVE => 'v4',
             RequestOptions::BODY => $queryDoc->getBody(),
         ];
 
