@@ -21,7 +21,7 @@ class QueryDoc
         $sortBy = $this->xml->addChild('sortby', 'rlv');
         $sortBy->addAttribute('order', 'descending');
         $sortBy->addAttribute('priority', 'no');
-        $this->xml->addChild('maxpassages', '100');
+        $this->xml->addChild('maxpassages', '5');
         $xmlGroup = $this->xml->addChild('groupings');
         $xmlGroupBy = $xmlGroup->addChild('groupby');
         $xmlGroupBy->addAttribute('attr', '');
@@ -45,9 +45,9 @@ class QueryDoc
         return $this;
     }
 
-    public function setMaxPagesCount(int $count): self
+    public function setMaxDocumentsPerPage(int $count): self
     {
-        $this->xml->maxpassages = (string) $count;
+        $this->xml->groupings->groupby['groups-on-page'] = (string) $count;
 
         return $this;
     }

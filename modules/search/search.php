@@ -78,6 +78,7 @@ class Page extends PageCommon
     {
         if (isset($_GET['q'])) {
             $query = htmlentities(cut_trash_string(strip_tags($_GET['q'])), ENT_QUOTES, "UTF-8");
+
             $sc = new MSearchCache($this->db);
             $sc->add(
                 [
@@ -87,51 +88,45 @@ class Page extends PageCommon
                 ]
             );
 
-            $error_text = '';
+            $errorText = '';
             $result = [];
-            $result_meta = [
+            $resultMeta = [
                 'query' => $query,
                 'page' => array_key_exists('page', $_GET) ? (int) $_GET['page'] : 0,
-                'pages_all' => 0,
+                'per_page' => 10, // документов на странице
+                'pages_all' => 0, // всего доступно страниц
+                'total' => 0, // всего найдено документов
             ];
 
             $searchKeywords = $query . ' host:culttourism.ru';
-//            $yandexSearcher = Factory::build();
-//            $searchResult = $yandexSearcher->searchPages($searchKeywords, 0);
-//
-//            if ($searchResult->isError()) {
-//                $error_text = $searchResult->getErrorText();
-//            }
+            $yandexSearcher = Factory::build();
+            $yandexSearcher->setDocumentsOnPage($resultMeta['per_page']);
 
-            $ys = new YandexSearcher();
-            $ys->setPage($result_meta['page']);
-            $ys->enableLogging($this->db);
-            $res = $ys->search($searchKeywords);
-            if ($res['error_text']) {
-                $error_text = trim(str_replace('starkeen', '', $res['error_text']));
-            } else {
-                foreach ($res['results'] as $result_item) {
-                    $title_items = explode($this->globalsettings['title_delimiter'], $result_item['title_hw']);
-                    if (count($title_items) > 1) {
-                        array_pop($title_items);
+            $searchResult = $yandexSearcher->searchPages($searchKeywords, 0);
+
+            if (!$searchResult->isError()) {
+                foreach ($searchResult->getItems() as $resultItem) {
+                    $titleItemElements = explode($this->globalsettings['title_delimiter'], $resultItem->getTitle());
+                    if (count($titleItemElements) > 1) {
+                        array_pop($titleItemElements);
                     }
-                    $result_item['title'] = trim(implode(', ', $title_items));
-                    $result_item['title'] = str_replace(' , ', ', ', $result_item['title']);
-                    $result_item['descr'] = $result_item['descr_hw'];
-                    unset($result_item['title_hw'], $result_item['descr_hw']);
-                    $result[] = $result_item;
+
+                    $result[] = [
+                        'title' => str_replace(' , ', ', ', trim(implode(', ', $titleItemElements))),
+                        'descr' => $resultItem->getDescription(),
+                        'url' => $resultItem->getUrl(),
+                    ];
                 }
-                $result_meta['pages_all'] = $res['pages_cnt'];
+                $resultMeta['pages_all'] = $searchResult->getPagesCount();
+                $resultMeta['total'] = $searchResult->getDocumentsCount();
+            } else {
+                $errorText = $searchResult->getErrorText();
             }
 
-            $result_meta['pages'] = 20;
-            $result_meta['query'] = ($query);
-            $result_meta['page'] = array_key_exists('page', $_GET) ? (int) $_GET['page'] : 0;
-
             $this->smarty->assign('search', $query);
-            $this->smarty->assign('error', $error_text);
+            $this->smarty->assign('error', $errorText);
             $this->smarty->assign('result', $result);
-            $this->smarty->assign('meta', $result_meta);
+            $this->smarty->assign('meta', $resultMeta);
         } else {
             $this->smarty->assign('search', '');
             $this->smarty->assign('error', '');
@@ -139,12 +134,6 @@ class Page extends PageCommon
             $this->smarty->assign('meta', []);
         }
         return $this->smarty->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
-    }
-
-    private function highlight_words($node)
-    {
-        $stripped = preg_replace('/<\/?(title|passage)[^>]*>/', '', $node->asXML());
-        return str_replace('</hlword>', '</strong>', preg_replace('/<hlword[^>]*>/', '<strong>', $stripped));
     }
 
     private function getSearchInternal()

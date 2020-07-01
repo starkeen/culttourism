@@ -38,9 +38,9 @@ class PlainClient implements HttpClientInterface
         $urlParams = [
             'user' => $this->user,
             'key' => $this->key,
-            'l10n' => 'ru',
+            'l10n' => 'ru', // язык уведомлений
             'sortby' => 'rlv',
-            'filter' => 'strict',
+            'filter' => 'strict', // исключаем взрослый контент
         ];
 
         $url = self::SERVICE_URL . '?' . http_build_query($urlParams);

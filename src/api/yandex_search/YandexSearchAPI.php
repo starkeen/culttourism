@@ -11,11 +11,16 @@ class YandexSearchAPI
      */
     private $httpClient;
 
-    private $maxPagesCount = 5;
+    private $maxDocumentsOnPage = 10;
 
     public function __construct(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
+    }
+
+    public function setDocumentsOnPage(int $count): void
+    {
+        $this->maxDocumentsOnPage = $count;
     }
 
     public function searchPages(string $keywords, int $page = 0): Result
@@ -42,7 +47,7 @@ class YandexSearchAPI
         $doc = new QueryDoc();
         $doc->setKeywords($query);
         $doc->setPage($page);
-        $doc->setMaxPagesCount($this->maxPagesCount);
+        $doc->setMaxDocumentsPerPage($this->maxDocumentsOnPage);
 
         return $doc;
     }
