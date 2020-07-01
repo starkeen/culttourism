@@ -115,8 +115,8 @@ class Result
     {
         $result = null;
 
-        $misspell = $this->xml->response->misspell;
-        $reask = $this->xml->response->reask;
+        $misspell = $this->xml->response->misspell ?? null;
+        $reask = $this->xml->response->reask ?? null;
 
         if ($misspell !== null) {
             $result = new ResultCorrection((string) $misspell->rule);
