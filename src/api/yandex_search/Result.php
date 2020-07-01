@@ -74,11 +74,25 @@ class Result
             if ($item->title === null) {
                 continue;
             }
-            $itemDescriptionElement = $item->passages->passage ?? new SimpleXMLElement('<x/>');
+            $itemDescription = '';
+            $itemPassages = $item->passages->passage ?? null;
+            if ($itemPassages !== null) {
+                $itemDescriptionElements = [];
+                foreach ($itemPassages as $passage) {
+                    $itemDescriptionElements[] = $this->clean($passage);
+                }
+                $itemDescription = implode('&hellip; ', $itemDescriptionElements);
+            }
+            $itemDescriptionElement = $item->headline ?? null;
+            if ($itemDescription === '' && $itemDescriptionElement !== null) {
+                $itemDescription = $this->clean($itemDescriptionElement);
+            }
             $resultItem = new ResultItem();
             $resultItem->setTitle($this->highlight($item->title));
-            $resultItem->setDescription($this->clean($itemDescriptionElement));
             $resultItem->setUrl((string) $item->url);
+            $resultItem->setDescription($itemDescription);
+
+
             $result[] = $resultItem;
         }
 
@@ -108,7 +122,7 @@ class Result
 
     public function getDocumentsPerPage(): int
     {
-        return (int) $this->xml->request->groupings->groupby['groups-on-page'];
+        return (int) $this->xml->response->results->grouping['groups-on-page'];
     }
 
     public function getCorrection(): ?ResultCorrection
@@ -154,7 +168,7 @@ class Result
      */
     private function clean(SimpleXMLElement $node): string
     {
-        $stripped = preg_replace('/<\/?(title|passage)[^>]*>/', '', $node->asXML());
+        $stripped = preg_replace('/<\/?(title|passage|headline)[^>]*>/', '', $node->asXML());
         return str_replace('</hlword>', '', preg_replace('/<hlword[^>]*>/', '', $stripped));
     }
 }
