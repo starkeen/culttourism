@@ -93,7 +93,7 @@ class Page extends PageCommon
             $resultMeta = [
                 'query' => $query,
                 'page' => array_key_exists('page', $_GET) ? (int) $_GET['page'] : 0,
-                'per_page' => 10, // документов на странице
+                'per_page' => 15, // документов на странице
                 'pages_all' => 0, // всего доступно страниц
                 'total' => 0, // всего найдено документов
             ];
