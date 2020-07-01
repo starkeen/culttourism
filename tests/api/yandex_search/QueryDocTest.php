@@ -18,8 +18,7 @@ class QueryDocTest extends TestCase
 
         $expected = '<?xml version="1.0" encoding="utf-8"?>
 <request><query>keywords</query><page>123</page><sortby order="descending" priority="no">rlv</sortby><maxpassages>321</maxpassages><groupings><groupby attr="" mode="flat" groups-on-page="0" docs-in-group="1" curcateg="-1"/></groupings></request>' . PHP_EOL;
-        $this->assertEquals($expected, $doc->getString());
+        $this->assertEquals($expected, $doc->getBody());
         $this->assertEquals(285, $doc->getLength());
-        $this->assertEquals('11f8354a2e6603e2163e8c6e0d9be985990f3bd7', $doc->getHash());
     }
 }

@@ -1,13 +1,19 @@
 <?php
 
+use app\db\MyDB;
+
 class MSearchLog extends Model
 {
     protected $_table_pk = 'sl_id';
     protected $_table_order = 'sl_date';
     protected $_table_active = 'sl_id';
-    private $_record_id;
 
-    public function __construct($db)
+    /**
+     * @var int
+     */
+    private $recordId;
+
+    public function __construct(MyDB $db)
     {
         $this->_table_name = $db->getTableName('search_log');
         $this->_table_fields = [
@@ -35,9 +41,13 @@ class MSearchLog extends Model
         $data['sl_date'] = $this->now();
         $data['sl_date_last'] = $this->now();
         $data['sl_query_hash'] = self::getQueryHash($data['sl_request']);
-        $this->_record_id = $this->insert($data);
+        $data['sl_answer'] = $data['sl_answer'] ?? '';
+        $data['sl_error_text'] = $data['sl_error_text'] ?? '';
+        $data['sl_error_code'] = $data['sl_error_code'] ?? 0;
 
-        return $this->_record_id;
+        $this->recordId = $this->insert($data);
+
+        return $this->recordId;
     }
 
     /**
@@ -46,7 +56,7 @@ class MSearchLog extends Model
      */
     public function setAnswer($data): void
     {
-        $this->updateByPk($this->_record_id, $data);
+        $this->updateByPk($this->recordId, $data);
     }
 
     /**

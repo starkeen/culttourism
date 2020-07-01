@@ -52,7 +52,7 @@ class QueryDoc
         return $this;
     }
 
-    public function getString(): string
+    public function getBody(): string
     {
         return $this->xml->asXML();
     }
@@ -62,14 +62,8 @@ class QueryDoc
         return strlen($this->xml->asXML());
     }
 
-    public function getHash(): string
+    public function getKeywords(): string
     {
-        $data = $this->xml->asXML();
-
-        $lower = mb_strtolower($data);
-        $symbols = preg_replace('|s+|', '', $lower);
-        $trimmed = trim($symbols);
-
-        return sha1($trimmed);
+        return (string) $this->xml->query;
     }
 }

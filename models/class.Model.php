@@ -163,7 +163,7 @@ abstract class Model
         $new_fields_places = [];
         $new_fields_values = [];
         foreach ($values as $k => $v) {
-            if (array_search($k, $this->_table_fields) !== false) {
+            if (in_array($k, $this->_table_fields, true)) {
                 $new_fields_places[] = "$k = :$k";
                 $new_fields_values[':' . $k] = trim(preg_replace('/\s+/', ' ', $v));
             }
