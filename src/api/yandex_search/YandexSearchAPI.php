@@ -11,6 +11,9 @@ class YandexSearchAPI
      */
     private $httpClient;
 
+    /**
+     * @var int
+     */
     private $maxDocumentsOnPage = 10;
 
     public function __construct(HttpClientInterface $httpClient)

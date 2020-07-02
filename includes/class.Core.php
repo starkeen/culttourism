@@ -388,8 +388,8 @@ abstract class Core
                 header('HTTP/1.0 404 Not Found');
 
                 $suggestions = [];
-                $suggestions = array_merge($suggestions, $this->getSuggestions404Local($_SERVER['REQUEST_URI']));
-                if (empty($suggestions) && strpos($_SERVER['REQUEST_URI'], 'php') === false) {
+                //$suggestions = array_merge($suggestions, $this->getSuggestions404Local($_SERVER['REQUEST_URI']));
+                if (false && empty($suggestions) && strpos($_SERVER['REQUEST_URI'], 'php') === false) {
                     $searchText = trim(str_replace(['_', '/', '.html',], ' ', $_SERVER['REQUEST_URI']));
                     $suggestions = $this->getSuggestions404Yandex($searchText);
                 }
