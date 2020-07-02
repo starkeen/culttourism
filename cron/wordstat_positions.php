@@ -1,5 +1,7 @@
 <?php
 
+use app\api\yandex_search\Factory;
+
 $limitCitiesPerTime = 10;
 $limitSitesPerAnswer = 90;
 
@@ -12,16 +14,18 @@ if ($currentHour > 7 && $currentHour < 20) {
 
 $cities = $ws->getPortionPosition($limitCitiesPerTime);
 
-$ys = new YandexSearcher();
-$ys->setPagesMax($limitSitesPerAnswer);
+$searcher = Factory::build();
+$searcher->setDocumentsOnPage($limitSitesPerAnswer);
 
 foreach ($cities as $city) {
-    $domains = [0 => null];
+    $domains = [
+        0 => null,
+    ];
     $query = sprintf('%s  достопримечательности', $city['ws_city_title']);
-    $res = $ys->search($query);
-    if (!$res['error_text']) {
-        foreach ((array) $res['results'] as $site) {
-            $domains[] = (string) $site['domain'];
+    $result = $searcher->searchPages($query);
+    if (!$result->isError()) {
+        foreach ($result->getItems() as $site) {
+            $domains[] = $site->getDomain();
         }
         $founded = array_search(_URL_ROOT, $domains, true);
         if ($founded === false) {
@@ -37,13 +41,13 @@ foreach ($cities as $city) {
                 'ws_position_date' => $ws->now(),
             ]
         );
-    } elseif ((int) $res['error_code'] !== 15) {
+    } elseif ($result->getErrorCode() !== 15) {
         $logger->warning(
             'Ошибка в скрипте wordstat',
             [
                 'query' => $query,
-                'error_code' => $res['error_code'],
-                'error_text' => $res['error_text'],
+                'error_code' => $result->getErrorCode(),
+                'error_text' => $result->getErrorText(),
             ]
         );
     }

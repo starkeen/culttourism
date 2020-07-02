@@ -22,6 +22,11 @@ class ResultItem
     private $url;
 
     /**
+     * @var string
+     */
+    private $domain;
+
+    /**
      * @return string
      */
     public function getTitle(): string
@@ -67,5 +72,15 @@ class ResultItem
     public function setUrl(string $url): void
     {
         $this->url = $url;
+    }
+
+    public function getDomain(): string
+    {
+        return $this->domain;
+    }
+
+    public function setDomain(string $domain): void
+    {
+        $this->domain = $domain;
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use app\api\yandex_search\Factory;
 use app\db\MyDB;
 use app\sys\Logger;
 use app\sys\SentryLogger;
@@ -299,27 +300,27 @@ abstract class Core
     private function getSuggestions404Yandex(string $req): array
     {
         $out = [];
-        if (strpos($req, '.css') === false && strpos($req, '.js') === false && strpos($req, '.png') === false && strpos(
-                $req,
-                '.txt'
-            ) === false && strpos($req, '.xml') === false) {
-            $ys = new YandexSearcher();
-            $ys->enableLogging($this->db);
-            $searchString = trim(implode(' ', explode('/', $req)));
-            $variants = $ys->search("$searchString host:culttourism.ru");
-            if (!empty($variants['results'])) {
-                $i = 0;
-                foreach ($variants['results'] as $variant) {
+
+        if (strpos($req, '.css') === false
+            && strpos($req, '.js') === false
+            && strpos($req, '.png') === false
+            && strpos($req, '.txt') === false
+            && strpos($req, '.xml') === false
+        ) {
+            $searcher = Factory::build();
+            $searcher->setDocumentsOnPage(3);
+            $searchString = trim(implode(' ', explode('/', $req))) . ' host:culttourism.ru';
+            $result = $searcher->searchPages($searchString, 0);
+            if (!$result->isError() && !empty($result->getItems())) {
+                foreach ($result->getItems() as $variant) {
                     $out[] = [
-                        'url' => $variant['url'],
-                        'title' => trim(str_replace('| Культурный туризм', '', $variant['title'])),
+                        'url' => $variant->getUrl(),
+                        'title' => trim(str_replace('| Культурный туризм', '', $variant->getTitle())),
                     ];
-                    if ($i++ === 3) {
-                        break;
-                    }
                 }
             }
         }
+
         return $out;
     }
 
@@ -387,10 +388,10 @@ abstract class Core
                 header('HTTP/1.0 404 Not Found');
 
                 $suggestions = [];
-                //$suggestions = $this->getSuggestions404Local($_SERVER['REQUEST_URI']);
-                if (false && empty($suggestions) && !strstr($_SERVER['REQUEST_URI'], 'php')) {
-                    $search_text = trim(str_replace(['_', '/', '.html',], ' ', $_SERVER['REQUEST_URI']));
-                    $suggestions = $this->getSuggestions404Yandex($search_text);
+                $suggestions = array_merge($suggestions, $this->getSuggestions404Local($_SERVER['REQUEST_URI']));
+                if (empty($suggestions) && strpos($_SERVER['REQUEST_URI'], 'php') === false) {
+                    $searchText = trim(str_replace(['_', '/', '.html',], ' ', $_SERVER['REQUEST_URI']));
+                    $suggestions = $this->getSuggestions404Yandex($searchText);
                 }
 
                 $this->title = "$this->title - 404 Not Found - страница не найдена на сервере";

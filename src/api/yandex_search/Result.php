@@ -90,8 +90,8 @@ class Result
             $resultItem = new ResultItem();
             $resultItem->setTitle($this->highlight($item->title));
             $resultItem->setUrl((string) $item->url);
+            $resultItem->setDomain((string) $item->domain);
             $resultItem->setDescription($itemDescription);
-
 
             $result[] = $resultItem;
         }
