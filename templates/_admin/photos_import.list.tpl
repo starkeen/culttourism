@@ -22,6 +22,9 @@
         <input type="button" id="photos-object-go-flickr" value="Смотреть на карте flickr">
         <input type="button" id="photos-object-go-yandex" value="Искать в Яндексе">
         <input type="button" id="photos-object-go-google" value="Искать в Google">
+
+        <br /><br />
+        <input type="button" id="photos-object-search" value="Искать">
     </div>
 </div>
 

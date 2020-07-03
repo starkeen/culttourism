@@ -32,6 +32,8 @@ define('_FEEDBACK_MAIL', 'xxx@mail.ru');
 
 define('YANDEX_XML_USER', 'user');
 define('YANDEX_XML_KEY', 'absdef');
+define('GOOGLE_CUSTOM_SEARCH_KEY', 'absdef');
+define('GOOGLE_CUSTOM_SEARCH_CX', 'absdef');
 
 /*
  * Don't change anything below in this file!

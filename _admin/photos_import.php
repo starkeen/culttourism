@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use app\api\google_search\Factory;
+use app\api\google_search\ResultItem;
+
 require_once('common.php');
 
 $smarty->assign('title', 'Импорт фотографий');
@@ -12,6 +15,18 @@ switch ($act) {
     case 'suggest':
         $ph = new MPhotos($db);
         $out['data'] = $ph->getPopularObjectsWithoutPhoto(30);
+        json($out);
+        break;
+    case 'search':
+        $searcher = Factory::buildImageSearcher();
+        $query = $_GET['q'] ?? '';
+        $result = $searcher->search($query);
+        $out['data'] = array_map(
+            static function (ResultItem $item) {
+                return $item;
+            },
+            $result->getItems()
+        );
         json($out);
         break;
 }

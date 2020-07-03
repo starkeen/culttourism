@@ -46,7 +46,8 @@ $(document).ready(function () {
     $("#photos-object-go-yandex").live("click", function () {
         let regionName = $("#photos-object-detail-region").text();
         let objectName = $("#photos-object-detail-title").text();
-        let url = 'https://yandex.ru/images/search?text=' + regionName + ' ' + objectName;
+        let query = regionName + ' ' + objectName;
+        let url = 'https://yandex.ru/images/search?text=' + query;
         let win = window.open(url, '_blank');
         if (win) {
             win.focus();
@@ -59,12 +60,27 @@ $(document).ready(function () {
     $("#photos-object-go-google").live("click", function () {
         let regionName = $("#photos-object-detail-region").text();
         let objectName = $("#photos-object-detail-title").text();
-        let url = 'https://www.google.com/search?q=' + regionName + ' ' + objectName + '&tbm=isch';
+        let query = regionName + ' ' + objectName;
+        let url = 'https://www.google.com/search?q=' + query + '&tbm=isch';
         let win = window.open(url, '_blank');
         if (win) {
             win.focus();
         } else {
             alert('Please allow popups for this website');
         }
+    });
+
+    // Поиск готовых картинок
+    $("#photos-object-search").live("click", function () {
+        let regionName = $("#photos-object-detail-region").text();
+        let objectName = $("#photos-object-detail-title").text();
+        let query = regionName + ' ' + objectName;
+        $.get(
+            "photos_import.php?act=search",
+            {q: query},
+            function (response) {
+                console.log(response.data);
+            }
+        );
     });
 });
