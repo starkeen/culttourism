@@ -22,7 +22,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 800px;
+    width: 1000px;
     min-height: 200px;
     font-size: 14px;
     display: none;
@@ -32,4 +32,9 @@
 }
 #photos-object-detail-title {
     font-weight: bold;
+}
+
+.photos-object-detail-result-variant {
+    display: inline-block;
+    max-height: 100px;
 }

@@ -26,9 +26,10 @@ class Result
         $items = $responseData->items ?? [];
 
         foreach ($items as $item) {
-            // title
-            //
             $resultItem = new ResultItem();
+            $resultItem->setTitle($item->title);
+            $resultItem->setUrl($item->link);
+
             $result[] = $resultItem;
         }
 

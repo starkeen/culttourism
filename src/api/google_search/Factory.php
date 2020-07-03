@@ -10,16 +10,22 @@ class Factory
 {
     public static function build(): GoogleSearch
     {
-        $guzzleClient = new Client();
-        $plainClient = new PlainClient($guzzleClient, GOOGLE_CUSTOM_SEARCH_KEY, GOOGLE_CUSTOM_SEARCH_CX);
-        $cachedClient = new CachedClient($plainClient);
+        $client = self::getClient();
 
-        return new GoogleSearch($cachedClient);
+        return new GoogleSearch($client);
     }
 
     public static function buildImageSearcher(): GoogleImageSearch
     {
-        $basicSearcher = self::build();
-        return new GoogleImageSearch($basicSearcher);
+        $client = self::getClient();
+
+        return new GoogleImageSearch($client);
+    }
+
+    private static function getClient(): HttpClientInterface
+    {
+        $guzzleClient = new Client();
+        $plainClient = new PlainClient($guzzleClient, GOOGLE_CUSTOM_SEARCH_KEY, GOOGLE_CUSTOM_SEARCH_CX);
+        return new CachedClient($plainClient);
     }
 }

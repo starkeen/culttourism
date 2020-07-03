@@ -76,10 +76,20 @@ $(document).ready(function () {
         let objectName = $("#photos-object-detail-title").text();
         let query = regionName + ' ' + objectName;
         $.get(
-            "photos_import.php?act=search",
-            {q: query},
+            "photos_import.php",
+            {
+                q: query,
+                act: "search"
+            },
             function (response) {
-                console.log(response.data);
+                $("#photos-object-detail-results").empty();
+                $.each(response.data, function (index, value) {
+                    let $element = $('<img>');
+                    $element.addClass("photos-object-detail-result-variant");
+                    $element.attr("src", value.url);
+                    $element.attr("alt", value.title);
+                    $("#photos-object-detail-results").append($element);
+                });
             }
         );
     });

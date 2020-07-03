@@ -18,12 +18,19 @@ switch ($act) {
         json($out);
         break;
     case 'search':
-        $searcher = Factory::buildImageSearcher();
         $query = $_GET['q'] ?? '';
+        $searcher = Factory::buildImageSearcher();
+        $searcher->setDocumentsOnPage(10);
+        $searcher->setImageColorType('color');
+        $searcher->setImageSize('large');
+        $searcher->setImageType('photo');
         $result = $searcher->search($query);
         $out['data'] = array_map(
             static function (ResultItem $item) {
-                return $item;
+                return [
+                    'title' => $item->getTitle(),
+                    'url' => $item->getUrl(),
+                ];
             },
             $result->getItems()
         );

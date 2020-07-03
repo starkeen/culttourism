@@ -31,11 +31,14 @@ class PlainClient implements HttpClientInterface
 
     public function fetchResponse(Request $request): string
     {
-        $urlParams = [
+        $defaultUrlParams = [
             'key' => $this->key,
             'cx' => $this->cx,
             'q' => $request->getQuery(),
+            'num' => $request->getLimit(),
         ];
+
+        $urlParams = array_merge($defaultUrlParams, $request->getOptions());
 
         $url = self::SERVICE_URL . '?' . http_build_query($urlParams);
 

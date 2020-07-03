@@ -23,8 +23,9 @@
         <input type="button" id="photos-object-go-yandex" value="Искать в Яндексе">
         <input type="button" id="photos-object-go-google" value="Искать в Google">
 
-        <br /><br />
+        <br /><br /><br />
         <input type="button" id="photos-object-search" value="Искать">
+        <div id="photos-object-detail-results"></div>
     </div>
 </div>
 
