@@ -19,7 +19,7 @@ if (isset($_GET['id'], $_GET['act'])) {
         'error' => null,
     ];
     switch ($_GET['act']) {
-        case "set_type":
+        case 'set_type':
             $out['state'] = $c->updateByPk(
                 $out['id'],
                 [
@@ -46,20 +46,20 @@ if (isset($_GET['id'], $_GET['act'])) {
             $out['error'] = $result->getErrorText();
             $out['state'] = !$result->isError();
             break;
-        case "citysuggest":
+        case 'citysuggest':
             $pc = new MPageCities($db);
             $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
             $out['suggestions'] = [];
             $variants = $pc->getSuggestion($out['query']);
             foreach ($variants as $variant) {
                 $out['suggestions'][] = [
-                    'value' => "{$variant['pc_title']}",
-                    'pcid' => "{$variant['pc_id']}",
+                    'value' => (string) ($variant['pc_title']),
+                    'pcid' => (string) ($variant['pc_id']),
                     'url' => "{$variant['url']}/",
                 ];
             }
             break;
-        case "set_citypage":
+        case 'set_citypage':
             $out['state'] = $c->updateByPk(
                 $out['id'],
                 [
@@ -68,12 +68,12 @@ if (isset($_GET['id'], $_GET['act'])) {
                 ]
             );
             break;
-        case "get_citypage":
+        case 'get_citypage':
             $pc = new MPageCities($db);
             $out['citypage'] = $pc->getItemByPk((int) $_GET['pc_id']);
             $out['state'] = true;
             break;
-        case "save_candidate":
+        case 'save_candidate':
             $out['state'] = $c->updateByPk(
                 $out['id'],
                 [
@@ -91,7 +91,7 @@ if (isset($_GET['id'], $_GET['act'])) {
             );
             $dc->deleteChecked(MDataCheck::ENTITY_CANDIDATES, $out['id']);
             break;
-        case "set_ignore":
+        case 'set_ignore':
             $out['state'] = $c->updateByPk(
                 $out['id'],
                 [
@@ -100,16 +100,16 @@ if (isset($_GET['id'], $_GET['act'])) {
                 ]
             );
             break;
-        case "move":
+        case 'move':
             $pt = new MPagePoints($db);
             $candidate = $c->getItemByPk($out['id']);
             if (mb_strlen($candidate['cp_title'], 'utf-8') <= 4) {
                 $out['error'][] = 'Слишком короткое название (минимум 4 символа)';
             }
-            if ($candidate['cp_citypage_id'] == 0) {
+            if ((int) $candidate['cp_citypage_id'] === 0) {
                 $out['error'][] = 'Не указана страница назначения';
             }
-            if ($candidate['cp_type_id'] == 0) {
+            if ((int) $candidate['cp_type_id'] === 0) {
                 $out['error'][] = 'Не указан тип';
             }
             if (empty($out['error'])) {
@@ -143,7 +143,7 @@ if (isset($_GET['id'], $_GET['act'])) {
             break;
     }
     $out['data'] = $c->getItemByPk($out['id']);
-    header("Content-type: text/json");
+    header('Content-type: text/json');
     echo json_encode($out);
     exit();
 } elseif (isset($_GET['id']) && !isset($_GET['act'])) {
@@ -179,7 +179,6 @@ if (isset($_GET['id'], $_GET['act'])) {
     asort($ref_pc);
 
     $matrix = $c->getMatrix();
-    //print_x($matrix);
 
     $smarty->assign('filter', $filter);
     $smarty->assign('ref_pt', $pt->getActive());
