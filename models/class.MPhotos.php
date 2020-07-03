@@ -53,9 +53,12 @@ class MPhotos extends Model
 
     /**
      * Список популярных точек без фотографий
-     * @return array
+     *
+     * @param int $count
+     *
+     * @return array[]
      */
-    public function getPopularObjectsWithoutPhoto(): array
+    public function getPopularObjectsWithoutPhoto(int $count = 20): array
     {
         $this->_db->sql = "SELECT pt.*, pc.pc_id, pc.pc_title_unique
                             FROM {$this->_tables_related['pagepoints']} pt
@@ -68,7 +71,7 @@ class MPhotos extends Model
                             LIMIT :limit";
         $this->_db->execute(
             [
-                ':limit' => 20,
+                ':limit' => $count,
             ]
         );
         return $this->_db->fetchAll();
