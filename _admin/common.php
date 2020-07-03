@@ -16,8 +16,8 @@ include dirname(__DIR__) . '/config/configuration.php';
 $sentryLogger = new SentryLogger(SENTRY_DSN);
 $logger = new Logger($sentryLogger);
 
-if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == '')) {
-    header("HTTP/1.1 301 Moved Permanently");
+if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] === '')) {
+    header('HTTP/1.1 301 Moved Permanently');
     header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
     exit();
 }
@@ -42,27 +42,27 @@ if (isset($_SESSION['auth']) && $ticket->checkKey($_SESSION['auth'])) {
     exit();
 }
 
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Cache-Control: no-cache, must-revalidate");
-header("Pragma: no-cache");
-header("Content-type: text/html; charset=utf-8");
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+header('Cache-Control: no-cache, must-revalidate');
+header('Pragma: no-cache');
+header('Content-type: text/html; charset=utf-8');
 
 $isAdmin = false;
 if (isset($_SESSION['user_admin']) && (int) $_SESSION['user_admin'] === 1) {
     $isAdmin = true;
 }
 
-$adm_menu_items[] = array('link' => 'modules.php', 'title' => 'Страницы и модули', 'ico' => 'ico.a_modules.gif');
-$adm_menu_items[] = array('link' => 'points.php', 'title' => 'Точки', 'ico' => 'ico.a_refs.gif');
-$adm_menu_items[] = array('link' => 'parser.php', 'title' => 'Парсер', 'ico' => 'ico.a_refs.gif');
-$adm_menu_items[] = array('link' => 'photos.php', 'title' => 'Фото', 'ico' => 'ico.a_refs.gif');
-$adm_menu_items[] = array('link' => 'addpoints.php', 'title' => 'Заявки', 'ico' => 'ico.a_refs.gif');
-$adm_menu_items[] = array('link' => 'lists.php', 'title' => 'Списки', 'ico' => 'ico.a_refs.gif');
-$adm_menu_items[] = array('link' => 'stat_yandex.php', 'title' => 'Статистика Яндекса', 'ico' => 'ico.a_modules.gif');
+$adm_menu_items[] = ['link' => 'modules.php', 'title' => 'Страницы и модули', 'ico' => 'ico.a_modules.gif'];
+$adm_menu_items[] = ['link' => 'points.php', 'title' => 'Точки', 'ico' => 'ico.a_refs.gif'];
+$adm_menu_items[] = ['link' => 'parser.php', 'title' => 'Парсер', 'ico' => 'ico.a_refs.gif'];
+$adm_menu_items[] = ['link' => 'photos.php', 'title' => 'Фото', 'ico' => 'ico.a_refs.gif'];
+$adm_menu_items[] = ['link' => 'addpoints.php', 'title' => 'Заявки', 'ico' => 'ico.a_refs.gif'];
+$adm_menu_items[] = ['link' => 'lists.php', 'title' => 'Списки', 'ico' => 'ico.a_refs.gif'];
+$adm_menu_items[] = ['link' => 'stat_yandex.php', 'title' => 'Статистика Яндекса', 'ico' => 'ico.a_modules.gif'];
 if ($isAdmin) {
-    $adm_menu_items[] = array('link' => 'users.php', 'title' => 'Пользователи', 'ico' => 'ico.a_users.gif');
-    $adm_menu_items[] = array('link' => 'settings.php', 'title' => 'Настройки сайта', 'ico' => 'ico.a_refs.gif');
+    $adm_menu_items[] = ['link' => 'users.php', 'title' => 'Пользователи', 'ico' => 'ico.a_users.gif'];
+    $adm_menu_items[] = ['link' => 'settings.php', 'title' => 'Настройки сайта', 'ico' => 'ico.a_refs.gif'];
 }
 
 $smarty = new TemplateEngine();

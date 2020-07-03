@@ -18,8 +18,8 @@ if (_ER_REPORT) {
 $sentryLogger = new SentryLogger(SENTRY_DSN);
 $logger = new Logger($sentryLogger);
 
-if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] == '') && false) {
-    //Redirect all to HTTPS
+// редиректим на https
+if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] === '')) {
     header('HTTP/1.1 301 Moved Permanently');
     header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
     exit();
