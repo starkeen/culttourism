@@ -165,7 +165,7 @@ abstract class Model
         foreach ($values as $k => $v) {
             if (in_array($k, $this->_table_fields, true)) {
                 $new_fields_places[] = "$k = :$k";
-                $new_fields_values[':' . $k] = trim(preg_replace('/\s+/', ' ', $v));
+                $new_fields_values[':' . $k] = $v !== null ? trim(preg_replace('/\s+/', ' ', $v)) : null;
             }
         }
         if (!empty($new_fields_places)) {
