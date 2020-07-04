@@ -106,18 +106,18 @@ class ImageStorageService
     private function getTargetDirectoryName(string $fileName): string
     {
         $directoryLevel1 = DIRECTORY_SEPARATOR . $fileName[0];
-        if (!file_exists($this->photosDirectory . $directoryLevel1)) {
-            if (!mkdir($concurrentDirectory = $this->photosDirectory . $directoryLevel1) && !is_dir($concurrentDirectory)) {
+        $concurrentDirectory = $this->photosDirectory . $directoryLevel1;
+        if (!file_exists($concurrentDirectory)) {
+            if (!mkdir($concurrentDirectory, 0600, true)) {
                 throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
-            chmod($this->photosDirectory . $directoryLevel1, 0600);
         }
         $directoryLevel2 = $directoryLevel1 . DIRECTORY_SEPARATOR . $fileName[1];
-        if (!file_exists($this->photosDirectory . $directoryLevel2)) {
-            if (!mkdir($concurrentDirectory = $this->photosDirectory . $directoryLevel2) && !is_dir($concurrentDirectory)) {
+        $concurrentDirectory = $this->photosDirectory . $directoryLevel2;
+        if (!file_exists($concurrentDirectory)) {
+            if (!mkdir($concurrentDirectory, 0600, true)) {
                 throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
-            chmod($this->photosDirectory . $directoryLevel1, 0600);
         }
 
         return $directoryLevel2;
