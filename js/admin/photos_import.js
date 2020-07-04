@@ -35,6 +35,7 @@ $(document).ready(function () {
     // Поиск готовых картинок
     $("#photos-object-search").live("click", function () {
         $("#photos-object-detail-results").empty();
+        $("#photos-object-detail-preview").empty();
         let regionName = $("#photos-object-detail-region").text();
         let objectName = $("#photos-object-detail-title").text();
         let query = regionName + ' ' + objectName;
@@ -132,13 +133,16 @@ $(document).ready(function () {
                 point_id: $("#photos-object-detail-id").val()
             },
             function (response) {
-                console.log(response);
+                if (response.photo_id) {
+                    $("#photos-object-detail-preview").empty();
+                }
             });
     });
 
     // Очистка блока поиска
     $("#photos-object-clear").live("click", function () {
         $("#photos-object-detail-results").empty();
+        $("#photos-object-detail-preview").empty();
         $("#photos-object-detail-region").text("");
         $("#photos-object-detail-title").text("");
         $("#photos-object-detail-id").val("");

@@ -58,7 +58,7 @@ switch ($act) {
         $service = ImageStorageFactory::build();
         $out['photo_id'] = $service->uploadFromUrl($out['image_url'], $out['image_page']);
         $service->bindPhotoToObject($out['photo_id'], $out['point_id']);
-        $pt = $pt = new MPagePoints($db);
+        $pt = new MPagePoints($db);
         $pt->updateByPk(
             $out['point_id'],
             [
