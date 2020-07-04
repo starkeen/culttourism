@@ -69,7 +69,7 @@ class ImageStorageService
 
         $this->deleteTmp($uploadedFileName);
 
-        return $id;
+        return (int) $id;
     }
 
     private function downloadTmp(string $url): string
