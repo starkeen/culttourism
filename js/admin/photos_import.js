@@ -106,7 +106,7 @@ $(document).ready(function () {
     $(".photos-object-detail-result-variant-import").live("click", function (event) {
         let $button = $(event.target);
         let url = $button.data("url");
-        let link = $button.data("url");
+        let link = $button.data("link");
 
         let $imgElement = $('<img>');
         $imgElement.attr("src", url);

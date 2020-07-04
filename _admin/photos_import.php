@@ -57,6 +57,15 @@ switch ($act) {
         $out['image_page'] = $_POST['link'] ?? null;
         $service = ImageStorageFactory::build();
         $out['photo_id'] = $service->uploadFromUrl($out['image_url'], $out['image_page']);
+        $service->bindPhotoToObject($out['photo_id'], $out['point_id']);
+        $pt = $pt = new MPagePoints($db);
+        $pt->updateByPk(
+            $out['point_id'],
+            [
+                'pt_photo_id' => $out['photo_id'],
+                'pt_lastup_date' => $pt->now(),
+            ]
+        );
         json($out);
         break;
 }

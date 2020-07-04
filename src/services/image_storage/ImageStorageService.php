@@ -72,6 +72,16 @@ class ImageStorageService
         return (int) $id;
     }
 
+    public function bindPhotoToObject(int $photoId, int $objectId): void
+    {
+        $this->photosModel->updateByPk(
+            $photoId,
+            [
+                'ph_pt_id' => $objectId,
+            ]
+        );
+    }
+
     private function downloadTmp(string $url): string
     {
         $pathHash = md5($url);
