@@ -26,6 +26,7 @@ robots.txt
 /data/files/
 /data/logs/
 /data/store/
+/data/tmp/
 /templates_c/
 /templates_cache/
 /templates/sys/
