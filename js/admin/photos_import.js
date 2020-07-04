@@ -20,13 +20,17 @@ $(document).ready(function () {
 
     // обработка клика по вариантам из саджеста
     $(".photos-objects-suggestion").live("click", function (event) {
+        $("#photos-object-clear").click();
         let $element = $(event.target);
         $("#photos-object-detail-region").text($element.data("region_name"));
         $("#photos-object-detail-title").text($element.data("name"));
         $("#photos-object-detail-id").val($element.data("id"));
         $("#photos-object-detail-latitude").val($element.data("latitude"));
         $("#photos-object-detail-longitude").val($element.data("longitude"));
+        $("#photos-object-search").show();
+        $("#photos-object-clear").show();
         $("#photos-object-detail").show();
+        $("#photos-object-go-buttons").show();
     });
 
     // переход на карту flickr
@@ -72,6 +76,7 @@ $(document).ready(function () {
 
     // Поиск готовых картинок
     $("#photos-object-search").live("click", function () {
+        $("#photos-object-detail-results").empty();
         let regionName = $("#photos-object-detail-region").text();
         let objectName = $("#photos-object-detail-title").text();
         let query = regionName + ' ' + objectName;
@@ -82,15 +87,29 @@ $(document).ready(function () {
                 act: "search"
             },
             function (response) {
-                $("#photos-object-detail-results").empty();
                 $.each(response.data, function (index, value) {
-                    let $element = $('<img>');
-                    $element.addClass("photos-object-detail-result-variant");
-                    $element.attr("src", value.url);
-                    $element.attr("alt", value.title);
-                    $("#photos-object-detail-results").append($element);
+                    let $blockElement = $('<div>');
+                    let $imgElement = $('<img>');
+                    $blockElement.addClass("photos-object-detail-result-variant");
+                    $imgElement.attr("src", value.url);
+                    $imgElement.attr("alt", value.title);
+                    $blockElement.append($imgElement);
+                    $("#photos-object-detail-results").append($blockElement);
                 });
             }
         );
+    });
+
+    // Очистка блока поиска
+    $("#photos-object-clear").live("click", function () {
+        $("#photos-object-detail-results").empty();
+        $("#photos-object-detail-region").text("");
+        $("#photos-object-detail-title").text("");
+        $("#photos-object-detail-id").val("");
+        $("#photos-object-detail-latitude").val("");
+        $("#photos-object-detail-longitude").val("");
+        $("#photos-object-search").hide();
+        $("#photos-object-clear").hide();
+        $("#photos-object-go-buttons").hide();
     });
 });

@@ -1,13 +1,13 @@
 {
-    "name"        : "starkeen/culttourism",
-    "license"     : "MIT",
-    "authors"     : [
+    "name"       : "starkeen/culttourism",
+    "license"    : "MIT",
+    "authors"    : [
         {
-            "name"  : "culttourism",
-            "email" : "andrey@culttourism.ru"
+            "name" : "culttourism",
+            "email": "andrey@culttourism.ru"
         }
     ],
-    "require"     : {
+    "require"    : {
         "php"                 : ">7.2.0",
         "smarty/smarty"       : "^3.1",
         "phpmailer/phpmailer" : "^6.0",
@@ -17,29 +17,30 @@
         "iamsalnikov/mdash"   : "^3.5",
         "ganlvtech/kcaptcha"  : "^1.0",
         "vlucas/phpdotenv"    : "^4.1",
+        "myclabs/php-enum"    : "^1.7",
         "ext-pdo"             : "*",
         "ext-curl"            : "*",
         "ext-SimpleXML"       : "*",
         "ext-json"            : "*"
     },
-    "require-dev" : {
-        "phpunit/phpunit" : "^8.0"
+    "require-dev": {
+        "phpunit/phpunit": "^8.0"
     },
-    "autoload"    : {
-        "psr-4"                 : {
-            "app\\"   : "src/",
-            "tests\\" : "tests/",
-            ""        : ""
+    "autoload"   : {
+        "psr-4"                : {
+            "app\\"  : "src/",
+            "tests\\": "tests/",
+            ""       : ""
         },
-        "classmap"              : [
+        "classmap"             : [
             "includes/",
             "models/"
         ],
-        "files"                 : [
+        "files"                : [
             "includes/functions.php",
             "includes/debug.php"
         ],
-        "exclude-from-classmap" : [
+        "exclude-from-classmap": [
             "/modules/",
             "/tests/"
         ]

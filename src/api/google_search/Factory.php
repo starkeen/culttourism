@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace app\api\google_search;
 
+use app\db\FactoryDB;
 use GuzzleHttp\Client;
+use MSearchLog;
 
 class Factory
 {
@@ -24,8 +26,11 @@ class Factory
 
     private static function getClient(): HttpClientInterface
     {
+        $db = FactoryDB::db();
+        $searchLogModel = new MSearchLog($db);
         $guzzleClient = new Client();
         $plainClient = new PlainClient($guzzleClient, GOOGLE_CUSTOM_SEARCH_KEY, GOOGLE_CUSTOM_SEARCH_CX);
-        return new CachedClient($plainClient);
+
+        return new CachedClient($plainClient, $searchLogModel);
     }
 }

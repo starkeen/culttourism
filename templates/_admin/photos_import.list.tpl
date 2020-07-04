@@ -19,13 +19,17 @@
         <input type="hidden" id="photos-object-detail-latitude" value="" />
         <input type="hidden" id="photos-object-detail-longitude" value="" />
 
-        <input type="button" id="photos-object-go-flickr" value="Смотреть на карте flickr">
-        <input type="button" id="photos-object-go-yandex" value="Искать в Яндексе">
-        <input type="button" id="photos-object-go-google" value="Искать в Google">
-
         <br /><br /><br />
         <input type="button" id="photos-object-search" value="Искать">
+        <input type="button" id="photos-object-clear" value="Х">
         <div id="photos-object-detail-results"></div>
+
+        <br /><br /><br />
+        <div id="photos-object-go-buttons">
+            <input type="button" id="photos-object-go-flickr" value="Смотреть на карте flickr">
+            <input type="button" id="photos-object-go-yandex" value="Искать в Яндексе">
+            <input type="button" id="photos-object-go-google" value="Искать в Google">
+        </div>
     </div>
 </div>
 

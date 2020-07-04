@@ -19,18 +19,32 @@ switch ($act) {
         break;
     case 'search':
         $query = $_GET['q'] ?? '';
+        $page = $_GET['page'] ?? 0;
         $searcher = Factory::buildImageSearcher();
-        $searcher->setDocumentsOnPage(10);
+        $searcher->setDocumentsOnPage(10); // больше 10 нельзя в бесплатной версии
         $searcher->setImageColorType('color');
         $searcher->setImageSize('large');
         $searcher->setImageType('photo');
-        $result = $searcher->search($query);
+        $result = $searcher->search($query, (int) $page);
         $out['data'] = array_map(
             static function (ResultItem $item) {
-                return [
-                    'title' => $item->getTitle(),
-                    'url' => $item->getUrl(),
-                ];
+                $imageData = $item->getImageData();
+
+                if ($imageData !== null) {
+                    return [
+                        'title' => $item->getTitle(),
+                        'url' => $item->getUrl(),
+                        'domain' => $item->getDomain(),
+                        'type' => $imageData->getImageType(),
+                        'height' => $imageData->getHeight(),
+                        'width' => $imageData->getWidth(),
+                        'size' => round($imageData->getByteSize() / 1024, 1),
+                        'thumbnailUrl' => $imageData->getThumbnailLink(),
+                        'thumbnailHeight' => $imageData->getThumbnailHeight(),
+                        'thumbnailWidth' => $imageData->getThumbnailWidth(),
+                        'context' => $imageData->getContextLink(),
+                    ];
+                }
             },
             $result->getItems()
         );

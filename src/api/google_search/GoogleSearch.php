@@ -26,7 +26,7 @@ class GoogleSearch
         $this->httpClient = $httpClient;
     }
 
-    public function search(string $query): Result
+    public function search(string $query, int $page = 0): Result
     {
         $request = new Request($query);
         $request->setLimit($this->limit);

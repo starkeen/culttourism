@@ -36,5 +36,21 @@
 
 .photos-object-detail-result-variant {
     display: inline-block;
+    height: 120px;
+}
+
+.photos-object-detail-result-variant img {
     max-height: 100px;
+}
+
+#photos-object-search {
+    display: none;
+}
+
+#photos-object-clear {
+    display: none;
+}
+
+#photos-object-go-buttons {
+    display: none;
 }

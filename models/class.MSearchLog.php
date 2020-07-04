@@ -41,7 +41,7 @@ class MSearchLog extends Model
         $data['sl_date'] = $this->now();
         $data['sl_date_last'] = $this->now();
         $data['sl_query_hash'] = self::getQueryHash($data['sl_request']);
-        $data['sl_answer'] = $data['sl_answer'] ?? '';
+        $data['sl_answer'] = $data['sl_answer'] ?? null;
         $data['sl_error_text'] = $data['sl_error_text'] ?? '';
         $data['sl_error_code'] = $data['sl_error_code'] ?? 0;
 
@@ -76,7 +76,7 @@ class MSearchLog extends Model
         );
         $row = $this->_db->fetch();
 
-        return $row['sl_answer'];
+        return $row['sl_answer'] ?? null;
     }
 
     /**

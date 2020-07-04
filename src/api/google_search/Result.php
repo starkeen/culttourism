@@ -29,6 +29,24 @@ class Result
             $resultItem = new ResultItem();
             $resultItem->setTitle($item->title);
             $resultItem->setUrl($item->link);
+            $resultItem->setDomain($item->displayLink);
+            $resultItem->setDescription($item->snippet);
+            if (isset($item->mime)) {
+                $resultItem->setMimeType($item->mime);
+            }
+            if (isset($item->image)) {
+                $imageData = new ResultImage();
+                $imageData->setMimeType($item->mime);
+                $imageData->setHeight($item->image->height);
+                $imageData->setWidth($item->image->width);
+                $imageData->setByteSize($item->image->byteSize);
+                $imageData->setContextLink($item->image->contextLink);
+                $imageData->setThumbnailLink($item->image->thumbnailLink);
+                $imageData->setThumbnailHeight($item->image->thumbnailHeight);
+                $imageData->setThumbnailWidth($item->image->thumbnailWidth);
+
+                $resultItem->setImageData($imageData);
+            }
 
             $result[] = $resultItem;
         }

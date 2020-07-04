@@ -34,11 +34,9 @@ class PlainClient implements HttpClientInterface
         $defaultUrlParams = [
             'key' => $this->key,
             'cx' => $this->cx,
-            'q' => $request->getQuery(),
-            'num' => $request->getLimit(),
         ];
 
-        $urlParams = array_merge($defaultUrlParams, $request->getOptions());
+        $urlParams = array_merge($defaultUrlParams, $request->getData());
 
         $url = self::SERVICE_URL . '?' . http_build_query($urlParams);
 

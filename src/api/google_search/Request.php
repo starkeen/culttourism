@@ -67,4 +67,15 @@ class Request
     {
         $this->options[$name] = $value;
     }
+
+    public function getData(): array
+    {
+        return array_merge(
+            [
+                'q' => $this->getQuery(),
+                'num' => $this->getLimit(),
+            ],
+            $this->options
+        );
+    }
 }
