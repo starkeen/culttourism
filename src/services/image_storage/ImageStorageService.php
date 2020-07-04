@@ -6,6 +6,7 @@ namespace app\services\image_storage;
 
 use app\constant\MimeType;
 use MPhotos;
+use RuntimeException;
 
 class ImageStorageService
 {
@@ -96,12 +97,16 @@ class ImageStorageService
     {
         $directoryLevel1 = DIRECTORY_SEPARATOR . $fileName[0];
         if (!file_exists($this->photosDirectory . $directoryLevel1)) {
-            mkdir($this->photosDirectory . $directoryLevel1);
+            if (!mkdir($concurrentDirectory = $this->photosDirectory . $directoryLevel1) && !is_dir($concurrentDirectory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
             chmod($this->photosDirectory . $directoryLevel1, 0600);
         }
         $directoryLevel2 = $directoryLevel1 . DIRECTORY_SEPARATOR . $fileName[1];
         if (!file_exists($this->photosDirectory . $directoryLevel2)) {
-            mkdir($this->photosDirectory . $directoryLevel2);
+            if (!mkdir($concurrentDirectory = $this->photosDirectory . $directoryLevel2) && !is_dir($concurrentDirectory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
             chmod($this->photosDirectory . $directoryLevel1, 0600);
         }
 
