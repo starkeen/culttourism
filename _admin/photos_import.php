@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use app\api\google_search\Factory;
 use app\api\google_search\ResultItem;
+use app\services\image_storage\ImageStorageFactory;
 
 require_once('common.php');
 
@@ -23,7 +24,7 @@ switch ($act) {
         $searcher = Factory::buildImageSearcher();
         $searcher->setDocumentsOnPage(10); // больше 10 нельзя в бесплатной версии
         $searcher->setImageColorType('color');
-        $searcher->setImageSize('large');
+        $searcher->setImageSize('xlarge');
         $searcher->setImageType('photo');
         $result = $searcher->search($query, (int) $page);
         $out['data'] = array_map(
@@ -35,7 +36,7 @@ switch ($act) {
                         'title' => $item->getTitle(),
                         'url' => $item->getUrl(),
                         'domain' => $item->getDomain(),
-                        'type' => $imageData->getImageType(),
+                        'type' => $imageData->getImageType() ?: 'none',
                         'height' => $imageData->getHeight(),
                         'width' => $imageData->getWidth(),
                         'size' => round($imageData->getByteSize() / 1024, 1),
@@ -48,6 +49,14 @@ switch ($act) {
             },
             $result->getItems()
         );
+        json($out);
+        break;
+    case 'upload':
+        $out['point_id'] = (int) ($_POST['point_id'] ?? 0);
+        $out['image_url'] = $_POST['url'] ?? null;
+        $out['image_page'] = $_POST['link'] ?? null;
+        $service = ImageStorageFactory::build();
+        $out['photo_id'] = $service->uploadFromUrl($out['image_url'], $out['image_page']);
         json($out);
         break;
 }
