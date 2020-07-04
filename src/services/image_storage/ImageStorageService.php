@@ -42,10 +42,10 @@ class ImageStorageService
         $fileName = $fileHash . '.' . $fileExt;
 
         $targetDirectory = $this->getTargetDirectoryName($fileName);
-        $fileSrc = _SITE_URL . 'data/photos' . $targetDirectory . '/' . $fileName;
+        $fileSrc = '/data/photos' . $targetDirectory . '/' . $fileName;
         $filePath = $this->photosDirectory . $targetDirectory . DIRECTORY_SEPARATOR . $fileName;
 
-        move_uploaded_file($uploadedFilePath, $filePath);
+        copy($uploadedFilePath, $filePath);
         $size = getimagesize($filePath);
         [$imgWidth, $imgHeight] = $size;
 
@@ -65,6 +65,8 @@ class ImageStorageService
                 'ph_order' => 20,
             ]
         );
+
+        $this->deleteTmp($uploadedFileName);
 
         return $id;
     }
@@ -95,10 +97,12 @@ class ImageStorageService
         $directoryLevel1 = DIRECTORY_SEPARATOR . $fileName[0];
         if (!file_exists($this->photosDirectory . $directoryLevel1)) {
             mkdir($this->photosDirectory . $directoryLevel1);
+            chmod($this->photosDirectory . $directoryLevel1, 0600);
         }
         $directoryLevel2 = $directoryLevel1 . DIRECTORY_SEPARATOR . $fileName[1];
         if (!file_exists($this->photosDirectory . $directoryLevel2)) {
             mkdir($this->photosDirectory . $directoryLevel2);
+            chmod($this->photosDirectory . $directoryLevel1, 0600);
         }
 
         return $directoryLevel2;
