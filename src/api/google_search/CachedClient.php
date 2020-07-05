@@ -30,16 +30,12 @@ class CachedClient implements HttpClientInterface
         $response = $this->cacheModel->searchByHash($requestData);
 
         if ($response === null) {
-            $this->cacheModel->add(
-                [
-                    'sl_query' => $request->getQuery(),
-                    'sl_request' => $requestData,
-                ]
-            );
             $response = $this->client->fetchResponse($request);
             if (!empty($response)) {
-                $this->cacheModel->setAnswer(
+                $this->cacheModel->add(
                     [
+                        'sl_query' => $request->getQuery(),
+                        'sl_request' => $requestData,
                         'sl_answer' => $response,
                     ]
                 );
