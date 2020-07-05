@@ -30,6 +30,7 @@ $(document).ready(function () {
         $("#photos-object-search").show();
         $("#photos-object-clear").show();
         $("#photos-object-detail").show();
+        $("#photos-object-search").click();
     });
 
     // Поиск готовых картинок
