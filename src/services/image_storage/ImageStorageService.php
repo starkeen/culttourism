@@ -93,7 +93,9 @@ class ImageStorageService
                 'verify_peer_name' => false,
             ],
         ];
-        file_put_contents($resultPath, fopen($url, 'rb', false, $contextOptions));
+        $context = stream_context_create($contextOptions);
+
+        file_put_contents($resultPath, fopen($url, 'rb', false, $context));
 
         return $pathHash;
     }
