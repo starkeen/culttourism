@@ -86,7 +86,14 @@ class ImageStorageService
     {
         $pathHash = md5($url);
         $resultPath = $this->getTemporaryFilePath($pathHash);
-        file_put_contents($resultPath, fopen($url, 'rb'));
+
+        $contextOptions = [
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ],
+        ];
+        file_put_contents($resultPath, fopen($url, 'rb', false, $contextOptions));
 
         return $pathHash;
     }
@@ -108,14 +115,14 @@ class ImageStorageService
         $directoryLevel1 = DIRECTORY_SEPARATOR . $fileName[0];
         $concurrentDirectory = $this->photosDirectory . $directoryLevel1;
         if (!file_exists($concurrentDirectory)) {
-            if (!mkdir($concurrentDirectory, 0600, true)) {
+            if (!mkdir($concurrentDirectory, 0700, true)) {
                 throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
         }
         $directoryLevel2 = $directoryLevel1 . DIRECTORY_SEPARATOR . $fileName[1];
         $concurrentDirectory = $this->photosDirectory . $directoryLevel2;
         if (!file_exists($concurrentDirectory)) {
-            if (!mkdir($concurrentDirectory, 0600, true)) {
+            if (!mkdir($concurrentDirectory, 0700, true)) {
                 throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
         }
