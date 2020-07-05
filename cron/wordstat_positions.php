@@ -2,17 +2,11 @@
 
 use app\api\yandex_search\Factory;
 
-$limitCitiesPerTime = 3;
 $limitDomainsPerAnswer = 90;
 
 $ws = new MWordstat($db);
 
-$currentHour = date('H');
-if ($currentHour > 7 && $currentHour < 20) {
-    //$limitCitiesPerTime = 5;
-}
-
-$cities = $ws->getPortionPosition($limitCitiesPerTime);
+$cities = $ws->getPortionPosition(1);
 
 $searcher = Factory::build();
 $searcher->setDocumentsOnPage($limitDomainsPerAnswer);
@@ -52,6 +46,4 @@ foreach ($cities as $city) {
             ]
         );
     }
-
-    usleep(500000);
 }
