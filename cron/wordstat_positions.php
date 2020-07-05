@@ -46,6 +46,7 @@ foreach ($cities as $city) {
             'Ошибка в скрипте wordstat',
             [
                 'query' => $query,
+                'limit' => $searcher->getCurrentLimit(),
                 'error_code' => $result->getErrorCode(),
                 'error_text' => $result->getErrorText(),
             ]
