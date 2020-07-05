@@ -16,7 +16,7 @@ class Page extends PageCommon
         } elseif ($page_id === 'suggest-object' && isset($_GET['query'])) {
             $this->getObjectSuggests();
         }
-        $this->content = $this->getSearchYandex($this->db);
+        $this->content = $this->getSearchYandex();
     }
 
     /**
@@ -124,6 +124,12 @@ class Page extends PageCommon
                 }
             } else {
                 $errorText = $searchResult->getErrorText();
+                $loggerContext = [
+                    'query' => $searchKeywords,
+                    'error_text' => $searchResult->getErrorText(),
+                    'limit' => $yandexSearcher->getCurrentLimit(),
+                ];
+                $this->logger->warning('Ошибка в поиске', $loggerContext);
             }
 
             $this->smarty->assign('search', $query);

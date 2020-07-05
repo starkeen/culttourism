@@ -42,4 +42,9 @@ class CachedClient implements HttpClientInterface
 
         return $response;
     }
+
+    public function fetchLimitResponse(): string
+    {
+        return $this->httpClient->fetchLimitResponse();
+    }
 }

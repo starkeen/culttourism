@@ -57,4 +57,23 @@ class PlainClient implements HttpClientInterface
 
         return $response->getBody()->getContents();
     }
+
+    public function fetchLimitResponse(): string
+    {
+        $urlParams = [
+            'user' => $this->user,
+            'key' => $this->key,
+            'action' => 'limits-info',
+        ];
+        $url = self::SERVICE_URL . '?' . http_build_query($urlParams);
+        $requestParams = [
+            RequestOptions::HEADERS => [
+                'Content-Type' => 'text/xml;charset=UTF-8',
+            ],
+            RequestOptions::FORCE_IP_RESOLVE => 'v4',
+        ];
+        $response = $this->httpClient->request('GET', $url, $requestParams);
+
+        return $response->getBody()->getContents();
+    }
 }

@@ -36,6 +36,18 @@ class YandexSearchAPI
     }
 
     /**
+     * Лимит запросов на час
+     * @return int
+     */
+    public function getCurrentLimit(): int
+    {
+        $response = $this->httpClient->fetchLimitResponse();
+        $result = new LimitResult($response);
+
+        return $result->getCurrentLimit();
+    }
+
+    /**
      * Построение XML-запроса
      *
      * @param string $keywords - поисковая строка

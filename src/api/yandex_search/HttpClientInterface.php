@@ -9,4 +9,5 @@ use Psr\Http\Message\ResponseInterface;
 interface HttpClientInterface
 {
     public function fetchResponse(QueryDoc $queryDoc): string;
+    public function fetchLimitResponse(): string;
 }
