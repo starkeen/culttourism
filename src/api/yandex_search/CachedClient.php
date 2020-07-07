@@ -24,20 +24,23 @@ class CachedClient implements HttpClientInterface
         $this->cacheModel = $cacheModel;
     }
 
-    public function fetchResponse(QueryDoc $queryDoc): string
+    public function fetchResponse(QueryDoc $queryDoc): Result
     {
-        $response = $this->cacheModel->searchByHash($queryDoc->getBody());
-        if ($response === null) {
+        $responseText = $this->cacheModel->searchByHash($queryDoc->getBody());
+        if ($responseText !== null) {
+            $response = new Result($responseText);
+            $this->cacheModel->updateHashData($queryDoc->getBody());
+        } else {
             $response = $this->httpClient->fetchResponse($queryDoc);
             $this->cacheModel->add(
                 [
                     'sl_query' => $queryDoc->getKeywords(),
                     'sl_request' => $queryDoc->getBody(),
-                    'sl_answer' => $response,
+                    'sl_answer' => $response->getString(),
+                    'sl_error_code' => $response->getErrorCode() ?? 0,
+                    'sl_error_text' => $response->getErrorText(),
                 ]
             );
-        } else {
-            $this->cacheModel->updateHashData($queryDoc->getBody());
         }
 
         return $response;

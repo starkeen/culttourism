@@ -33,7 +33,7 @@ class PlainClient implements HttpClientInterface
         $this->key = $key;
     }
 
-    public function fetchResponse(QueryDoc $queryDoc): string
+    public function fetchResponse(QueryDoc $queryDoc): Result
     {
         $urlParams = [
             'user' => $this->user,
@@ -55,7 +55,9 @@ class PlainClient implements HttpClientInterface
 
         $response = $this->httpClient->request('POST', $url, $requestParams);
 
-        return $response->getBody()->getContents();
+        $content = $response->getBody()->getContents();
+
+        return new Result($content);
     }
 
     public function fetchLimitResponse(): string

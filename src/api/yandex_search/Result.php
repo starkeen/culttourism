@@ -141,6 +141,11 @@ class Result
         return $result;
     }
 
+    public function getString() :string
+    {
+        return $this->xml->asXML();
+    }
+
     private function getErrorNode(): ?SimpleXMLElement
     {
         return $this->xml->response->error ?? null;

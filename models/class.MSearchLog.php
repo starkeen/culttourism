@@ -36,16 +36,20 @@ class MSearchLog extends Model
      *
      * @return int
      */
-    public function add($data): int
+    public function add($data): ?int
     {
         $data['sl_date'] = $this->now();
         $data['sl_date_last'] = $this->now();
         $data['sl_query_hash'] = self::getQueryHash($data['sl_request']);
         $data['sl_answer'] = $data['sl_answer'] ?? null;
-        $data['sl_error_text'] = $data['sl_error_text'] ?? '';
+        $data['sl_error_text'] = $data['sl_error_text'] ?? null;
         $data['sl_error_code'] = $data['sl_error_code'] ?? 0;
 
-        $this->recordId = $this->insert($data);
+        try {
+            $this->recordId = $this->insert($data);
+        } catch (Throwable $exception) {
+            return null;
+        }
 
         return $this->recordId;
     }
@@ -68,7 +72,12 @@ class MSearchLog extends Model
      */
     public function searchByHash(string $doc): ?string
     {
-        $this->_db->sql = "SELECT * FROM $this->_table_name WHERE sl_query_hash = :hash";
+        $this->_db->sql = "
+                SELECT *
+                FROM $this->_table_name
+                WHERE sl_query_hash = :hash
+                AND sl_error_code = 0
+        ";
         $this->_db->execute(
             [
                 ':hash' => self::getQueryHash($doc),

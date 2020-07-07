@@ -30,9 +30,7 @@ class YandexSearchAPI
     {
         $doc = $this->buildQuery($keywords, $page);
 
-        $response = $this->httpClient->fetchResponse($doc);
-
-        return new Result($response);
+        return $this->httpClient->fetchResponse($doc);
     }
 
     /**
