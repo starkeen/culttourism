@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace tests\component\typograph;
 
 use app\component\typograph\Typograph;
-use EMTypograph;
-use PHPUnit\Framework\MockObject\MockObject;
+use EMT\EMTypograph;
 use PHPUnit\Framework\TestCase;
 
 class TypographIntegrationTest extends TestCase

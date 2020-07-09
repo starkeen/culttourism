@@ -14,7 +14,7 @@
         "ezyang/htmlpurifier" : "^4.7",
         "sentry/sdk"          : "^2.1",
         "guzzlehttp/guzzle"   : "^6.5",
-        "iamsalnikov/mdash"   : "^3.5",
+        "fanamurov/mdash"     : "^1.0",
         "ganlvtech/kcaptcha"  : "^1.0",
         "vlucas/phpdotenv"    : "^4.1",
         "myclabs/php-enum"    : "^1.7",
