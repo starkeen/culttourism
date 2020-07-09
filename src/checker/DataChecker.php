@@ -293,9 +293,7 @@ class DataChecker
             $this->entityField = $fld;
             $items = $this->getCheckingPortion($count, 'cp_active');
             foreach ($items as $item) {
-                $cleaned = $this->typograph->typo($item[$this->entityField]);
-                $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
-                $result = ($fld === 'cp_phone') ? str_replace('−', '-', $result) : $result;
+                $result = $this->typograph->typo($item[$this->entityField]);
                 $cp->updateByPk($item[$this->entityId], [$this->entityField => $result]);
                 $dc->markChecked($this->entityType, $item[$this->entityId], $this->entityField, $result);
             }
@@ -331,8 +329,7 @@ class DataChecker
             $result = $response[0]['result'];
             if ((int) $response[0]['quality_parse'] === 0) {
                 $dotted = str_replace(array_keys($this->dotting), array_values($this->dotting), $response[0]['result']);
-                $cleaned = $this->typograph->typo($dotted);
-                $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+                $result = $this->typograph->typo($dotted);
                 $cp->updateByPk($item[$this->entityId], [$this->entityField => $result]);
 
                 if ((int) $item['cp_latitude'] === 0 && (int) $item['cp_longitude'] === 0 && (int) $response[0]['qc_geo'] === 0) {
@@ -367,8 +364,7 @@ class DataChecker
         $this->entityField = 'br_text';
         $items = $this->getCheckingPortion($count, 'br_id');
         foreach ($items as $item) {
-            $cleaned = $this->typograph->typo($item[$this->entityField]);
-            $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+            $result = $this->typograph->typo($item[$this->entityField]);
             $be->updateByPk($item[$this->entityId], [$this->entityField => $result]);
             $dc->markChecked($this->entityType, $item[$this->entityId], $this->entityField, $result);
         }
@@ -394,8 +390,7 @@ class DataChecker
             $this->entityField = $fld;
             $items = $this->getCheckingPortion($count, 'pt_active');
             foreach ($items as $item) {
-                $cleaned = $this->typograph->typo($item[$this->entityField]);
-                $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+                $result = $this->typograph->typo($item[$this->entityField]);
                 $pt->updateByPk($item[$this->entityId], [$this->entityField => $result]);
                 $dc->markChecked($this->entityType, $item[$this->entityId], $this->entityField, $result);
             }
@@ -422,8 +417,7 @@ class DataChecker
             $this->entityField = $fld;
             $items = $this->getCheckingPortion($count, 'pc_active');
             foreach ($items as $item) {
-                $cleaned = $this->typograph->typo($item[$this->entityField]);
-                $result = html_entity_decode($cleaned, ENT_QUOTES, 'UTF-8');
+                $result = $this->typograph->typo($item[$this->entityField]);
                 $pc->updateByPk($item[$this->entityId], [$this->entityField => $result]);
                 $dc->markChecked($this->entityType, $item[$this->entityId], $this->entityField, $result);
             }

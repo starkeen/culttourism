@@ -17,6 +17,7 @@ class Typograph
         'вв.</nobr>ек' => 'век',
         '<nobr>' => '',
         '</nobr>' => '',
+        '−' => '-',
     ];
 
     public function __construct(EMTypograph $baseService)
@@ -63,6 +64,8 @@ class Typograph
      */
     private function postProcessing(string $input): string
     {
-        return str_replace(array_keys(self::TYPICAL_MISTAKES), array_values(self::TYPICAL_MISTAKES), $input);
+        $replaced = str_replace(array_keys(self::TYPICAL_MISTAKES), array_values(self::TYPICAL_MISTAKES), $input);
+
+        return html_entity_decode($replaced, ENT_QUOTES, 'UTF-8');
     }
 }

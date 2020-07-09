@@ -25,7 +25,7 @@ class TypographTest extends TestCase
     {
         $this->baseTypographMock = $this->getMockBuilder(EMTypograph::class)
                                   ->disableOriginalConstructor()
-                                  ->setMethods(['setup', 'apply', 'set_text'])
+                                  ->onlyMethods(['setup', 'apply', 'set_text'])
                                   ->getMock();
 
         $this->service = new Typograph($this->baseTypographMock);
