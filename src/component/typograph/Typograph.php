@@ -46,6 +46,7 @@ class Typograph
                 'Nobr.phone_builder' => 'off',
                 'Nobr.phone_builder_v2' => 'off',
                 'Nobr.spaces_nobr_in_surname_abbr' => 'off',
+                'Etc.split_number_to_triads' => 'off',
             ]
         );
 
