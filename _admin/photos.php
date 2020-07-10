@@ -38,9 +38,9 @@ if (isset($_GET['act'])) {
                             $ptid = (int) $_POST['ptid'];
                             $id = $ph->insert(
                                 [
-                                    'ph_title' => $_POST['title'],
-                                    'ph_author' => $_POST['author'],
-                                    'ph_link' => $_POST['link'],
+                                    'ph_title' => $_POST['title'] ?? null,
+                                    'ph_author' => $_POST['author'] ?? null,
+                                    'ph_link' => $_POST['link'] ?? null,
                                     'ph_src' => $fileSrc,
                                     'ph_weight' => $weight,
                                     'ph_width' => $imgWidth,
