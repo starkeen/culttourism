@@ -48,8 +48,8 @@ if (isset($_GET['act'])) {
                                     'ph_mime' => $mime,
                                     'ph_lat' => null,
                                     'ph_lon' => null,
-                                    'ph_pc_id' => $pcid,
-                                    'ph_pt_id' => $ptid,
+                                    'ph_pc_id' => $pcid ?: null,
+                                    'ph_pt_id' => $ptid ?: null,
                                     'ph_date_add' => $ph->now(),
                                     'ph_order' => 20,
                                 ]
