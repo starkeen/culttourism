@@ -25,12 +25,14 @@ if (isset($_GET['act'])) {
                     if (!file_exists(_DIR_DATA . $fileDir2)) {
                         mkdir(_DIR_DATA . $fileDir2);
                     }
-                    $fileSrc = _SITE_URL . 'data' . $fileDir2 . '/' . $fileName;
+                    $fileSrc = '/data' . $fileDir2 . '/' . $fileName;
                     $filePath = _DIR_DATA . $fileDir2 . '/' . $fileName;
 
                     try {
                         if (move_uploaded_file($file['tmp_name'], $filePath)) {
                             $size = getimagesize($filePath);
+                            $weight = filesize($filePath);
+                            $mime = mime_content_type($filePath);
                             [$imgWidth, $imgHeight] = $size;
                             $pcid = (int) $_POST['pcid'];
                             $ptid = (int) $_POST['ptid'];
@@ -40,10 +42,12 @@ if (isset($_GET['act'])) {
                                     'ph_author' => $_POST['author'],
                                     'ph_link' => $_POST['link'],
                                     'ph_src' => $fileSrc,
+                                    'ph_weight' => $weight,
                                     'ph_width' => $imgWidth,
                                     'ph_height' => $imgHeight,
-                                    'ph_lat' => 0,
-                                    'ph_lon' => 0,
+                                    'ph_mime' => $mime,
+                                    'ph_lat' => null,
+                                    'ph_lon' => null,
                                     'ph_pc_id' => $pcid,
                                     'ph_pt_id' => $ptid,
                                     'ph_date_add' => $ph->now(),

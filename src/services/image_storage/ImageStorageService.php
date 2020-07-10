@@ -49,6 +49,8 @@ class ImageStorageService
         copy($uploadedFilePath, $filePath);
         $size = getimagesize($filePath);
         [$imgWidth, $imgHeight] = $size;
+        $weight = filesize($filePath);
+        $mime = mime_content_type($filePath);
 
         $id = $this->photosModel->insert(
             [
@@ -56,8 +58,10 @@ class ImageStorageService
                 'ph_author' => $author,
                 'ph_link' => $origin,
                 'ph_src' => $fileSrc,
+                'ph_weight' => $weight,
                 'ph_width' => $imgWidth,
                 'ph_height' => $imgHeight,
+                'ph_mime' => $mime,
                 'ph_lat' => null,
                 'ph_lon' => null,
                 'ph_pc_id' => null,
