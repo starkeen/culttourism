@@ -69,7 +69,7 @@ class MPhotos extends Model
                             AND pt.pt_latitude != 0 AND pt.pt_longitude != 0
                             AND pt.pt_latitude IS NOT NULL AND pt.pt_longitude IS NOT NULL
                             AND pt.pt_active = 1
-                            ORDER BY pt.pt_rank DESC
+                            ORDER BY pt.pt_is_best DESC, pt.pt_rank DESC
                             LIMIT :limit";
         $this->_db->execute(
             [
