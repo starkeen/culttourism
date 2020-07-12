@@ -83,7 +83,7 @@ class ImageStorageService
         $fileSrc = '/data/photos' . $targetDirectory . '/' . $fileName;
         $filePath = $this->photosDirectory . $targetDirectory . DIRECTORY_SEPARATOR . $fileName;
 
-        move_uploaded_file($uploadedFilePath, $filePath);
+        copy($uploadedFilePath, $filePath);
         $size = getimagesize($filePath);
         [$imgWidth, $imgHeight] = $size;
         $weight = filesize($filePath);
