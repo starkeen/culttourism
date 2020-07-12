@@ -22,13 +22,15 @@ $(document).ready(function () {
     $(".photos-objects-suggestion").live("click", function (event) {
         $("#photos-object-clear").click();
         let $element = $(event.target);
+        $(".photos-objects-suggestion").removeClass("m_selected");
+        $element.addClass("m_selected");
         $("#photos-object-detail-region").text($element.data("region_name"));
         $("#photos-object-detail-title").text($element.data("name"));
         $("#photos-object-detail-id").val($element.data("id"));
         $("#photos-object-detail-latitude").val($element.data("latitude"));
         $("#photos-object-detail-longitude").val($element.data("longitude"));
-        $("#photos-object-search").show();
-        $("#photos-object-clear").show();
+        //$("#photos-object-search").show();
+        //$("#photos-object-clear").show();
         $("#photos-object-detail").show();
         $("#photos-object-search").click();
     });
@@ -52,9 +54,13 @@ $(document).ready(function () {
                     $blockElement.addClass("photos-object-detail-result-variant");
 
                     let $imgElement = $('<img>');
+                    $imgElement.addClass("photos-object-detail-result-variant-img");
                     $imgElement.attr("src", value.thumbnailUrl);
                     $imgElement.attr("height", 100);
                     $imgElement.attr("alt", value.title);
+                    $imgElement.data("url", value.url);
+                    $imgElement.data("link", value.context);
+                    $imgElement.data("title", value.title);
                     $blockElement.append($imgElement);
 
                     let $titleElement = $("<span>");
@@ -73,54 +79,42 @@ $(document).ready(function () {
                     $domainElement.text(value.domain);
                     $blockElement.append($domainElement);
 
-                    let $buttonImport = $("<button>");
-                    $buttonImport.addClass("photos-object-detail-result-variant-import");
-                    $buttonImport.data("url", value.url);
-                    $buttonImport.data("link", value.context);
-                    $buttonImport.attr("title", "Превью");
-                    $blockElement.append($buttonImport);
-
-                    let $buttonInfo = $("<button>");
-                    $buttonInfo.addClass("photos-object-detail-result-variant-info");
-                    $buttonInfo.data("url", value.context);
-                    $buttonInfo.attr("title", "Инфо");
-                    $blockElement.append($buttonInfo);
-
                     $("#photos-object-detail-results").append($blockElement);
                 });
             }
         );
     });
 
-    // клик по кнопке информации о картинке
-    $(".photos-object-detail-result-variant-info").live("click", function (event) {
-        let $button = $(event.target);
-        let contextUrl = $button.data("url");
-        let win = window.open(contextUrl, '_blank');
-        if (win) {
-            win.focus();
-        } else {
-            alert('Please allow popups for this website');
-        }
-    });
-
-    // клик по кнопке импорта картинки
-    $(".photos-object-detail-result-variant-import").live("click", function (event) {
+    // клик по кнопке превью картинки
+    $(".photos-object-detail-result-variant-img").live("click", function (event) {
         let $button = $(event.target);
         let url = $button.data("url");
         let link = $button.data("link");
+        let title = $button.data("title");
 
         let $imgElement = $('<img>');
         $imgElement.attr("src", url);
+        $imgElement.addClass("photos-object-detail-preview-image");
 
-        let $buttonImport = $('<button>');
-        $buttonImport.addClass("photos-object-detail-result-variant-process");
-        $buttonImport.data("url", url);
-        $buttonImport.data("link", link);
-        $buttonImport.val("Загрузить");
-        $buttonImport.text("Загрузить");
+        let $processButtonImport = $('<button>');
+        $processButtonImport.addClass("photos-object-detail-process");
+        $processButtonImport.data("url", url);
+        $processButtonImport.data("link", link);
+        $processButtonImport.val("Загрузить");
+        $processButtonImport.text("Загрузить");
 
-        $("#photos-object-detail-preview").empty().append($imgElement).append($buttonImport).show();
+        let $previewLinkElement = $("<a>");
+        $previewLinkElement.addClass("photos-object-detail-link");
+        $previewLinkElement.text(title);
+        $previewLinkElement.attr("href", link);
+        $previewLinkElement.attr("target", "_blank");
+
+        $("#photos-object-detail-preview")
+            .empty()
+            .append($previewLinkElement)
+            .append($imgElement)
+            .append($processButtonImport)
+            .show();
     });
 
     // Загрузка картинки на сервер
@@ -135,7 +129,7 @@ $(document).ready(function () {
             },
             function (response) {
                 if (response.photo_id) {
-                    $("#photos-object-detail-preview").empty();
+                    $("#photos-object-detail-preview").empty().hide();
                 }
             });
     });

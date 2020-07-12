@@ -19,7 +19,6 @@
         <input type="hidden" id="photos-object-detail-latitude" value="" />
         <input type="hidden" id="photos-object-detail-longitude" value="" />
 
-        <br />
         <input type="button" id="photos-object-search" value="Искать">
         <input type="button" id="photos-object-clear" value="Х">
         <div id="photos-object-detail-results"></div>
