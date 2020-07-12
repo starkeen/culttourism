@@ -118,7 +118,7 @@ $(document).ready(function () {
     });
 
     // Загрузка картинки на сервер
-    $(".photos-object-detail-result-variant-process").live("click", function (event) {
+    $(".photos-object-detail-process").live("click", function (event) {
         let $button = $(event.target);
         $.post(
             "photos_import.php?act=upload",
