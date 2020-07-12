@@ -1,5 +1,7 @@
 <?php
 
+use app\services\image_storage\ImageStorageFactory;
+
 require_once('common.php');
 
 $smarty->assign('title', 'Фотографии');
@@ -14,73 +16,34 @@ if (isset($_GET['act'])) {
             if (!empty($_FILES)) {
                 $file = $_FILES['photo'];
                 if ((int) $file['error'] === 0) {
-                    $fileName = md5_file($file['tmp_name']);
-                    $fileExt = Helper::getExt($file['type']);
-                    $fileName .= '.' . $fileExt;
-                    $fileDir1 = '/photos/' . substr($fileName, 0, 1);
-                    if (!file_exists(_DIR_DATA . $fileDir1)) {
-                        mkdir(_DIR_DATA . $fileDir1);
-                    }
-                    $fileDir2 = $fileDir1 . '/' . substr($fileName, 1, 1);
-                    if (!file_exists(_DIR_DATA . $fileDir2)) {
-                        mkdir(_DIR_DATA . $fileDir2);
-                    }
-                    $fileSrc = '/data' . $fileDir2 . '/' . $fileName;
-                    $filePath = _DIR_DATA . $fileDir2 . '/' . $fileName;
+                    $imageService = ImageStorageFactory::build();
+                    $photoId = $imageService->uploadFromFile($file['tmp_name']);
+                    if ($photoId > 0) {
+                        $pcId = (int) $_POST['pcid'];
+                        $ptId = (int) $_POST['ptid'];
+                        $addPc = (int) $_POST['pcid_add'];
+                        $addPt = (int) $_POST['ptid_add'];
 
-                    try {
-                        if (move_uploaded_file($file['tmp_name'], $filePath)) {
-                            $size = getimagesize($filePath);
-                            $weight = filesize($filePath);
-                            $mime = mime_content_type($filePath);
-                            [$imgWidth, $imgHeight] = $size;
-                            $pcid = (int) $_POST['pcid'];
-                            $ptid = (int) $_POST['ptid'];
-                            $id = $ph->insert(
+                        if ($pcId > 0 && $addPc === 1) {
+                            $imageService->bindPhotoToRegion($photoId, $pcId);
+                            $pc->updateByPk(
+                                $pcId,
                                 [
-                                    'ph_title' => $_POST['title'] ?? null,
-                                    'ph_author' => $_POST['author'] ?? null,
-                                    'ph_link' => $_POST['link'] ?? null,
-                                    'ph_src' => $fileSrc,
-                                    'ph_weight' => $weight,
-                                    'ph_width' => $imgWidth,
-                                    'ph_height' => $imgHeight,
-                                    'ph_mime' => $mime,
-                                    'ph_lat' => null,
-                                    'ph_lon' => null,
-                                    'ph_pc_id' => $pcid ?: null,
-                                    'ph_pt_id' => $ptid ?: null,
-                                    'ph_date_add' => $ph->now(),
-                                    'ph_order' => 20,
+                                    'pc_coverphoto_id' => $photoId,
+                                    'pc_lastup_date' => $pc->now(),
                                 ]
                             );
-
-                            if ($id > 0) {
-                                $addpc = (int) $_POST['pcid_add'];
-                                $addpt = (int) $_POST['ptid_add'];
-
-                                if ($pcid > 0 && $addpc === 1) {
-                                    $pc->updateByPk(
-                                        $pcid,
-                                        [
-                                            'pc_coverphoto_id' => $id,
-                                            'pc_lastup_date' => $pc->now(),
-                                        ]
-                                    );
-                                }
-                                if ($ptid > 0 && $addpt === 1) {
-                                    $pt->updateByPk(
-                                        $ptid,
-                                        [
-                                            'pt_photo_id' => $id,
-                                            'pt_lastup_date' => $pt->now(),
-                                        ]
-                                    );
-                                }
-                            }
                         }
-                    } catch (Exception $e) {
-                        //
+                        if ($ptId > 0 && $addPt === 1) {
+                            $imageService->bindPhotoToObject($photoId, $ptId);
+                            $pt->updateByPk(
+                                $ptId,
+                                [
+                                    'pt_photo_id' => $photoId,
+                                    'pt_lastup_date' => $pt->now(),
+                                ]
+                            );
+                        }
                     }
                 }
             }

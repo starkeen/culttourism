@@ -36,6 +36,43 @@ class ImageStorageService
     {
         $uploadedFileName = $this->downloadTmp($url);
         $uploadedFilePath = $this->getTemporaryFilePath($uploadedFileName);
+
+        $id = $this->uploadProcess($uploadedFilePath, $origin, $title, $author);
+
+        $this->deleteTmp($uploadedFileName);
+
+        return $id;
+    }
+
+    public function uploadFromFile(string $tmpName): int
+    {
+        $id = $this->uploadProcess($tmpName);
+
+        return $id;
+    }
+
+    public function bindPhotoToObject(int $photoId, int $objectId): void
+    {
+        $this->photosModel->updateByPk(
+            $photoId,
+            [
+                'ph_pt_id' => $objectId,
+            ]
+        );
+    }
+
+    public function bindPhotoToRegion(int $photoId, int $regionId): void
+    {
+        $this->photosModel->updateByPk(
+            $photoId,
+            [
+                'ph_pc_id' => $regionId,
+            ]
+        );
+    }
+
+    private function uploadProcess(string $uploadedFilePath, string $origin = null, string $title = null, string $author = null): int
+    {
         $fileHash = md5_file($uploadedFilePath);
         $mime = mime_content_type($uploadedFilePath);
         $mimeType = new MimeType($mime);
@@ -46,7 +83,7 @@ class ImageStorageService
         $fileSrc = '/data/photos' . $targetDirectory . '/' . $fileName;
         $filePath = $this->photosDirectory . $targetDirectory . DIRECTORY_SEPARATOR . $fileName;
 
-        copy($uploadedFilePath, $filePath);
+        move_uploaded_file($uploadedFilePath, $filePath);
         $size = getimagesize($filePath);
         [$imgWidth, $imgHeight] = $size;
         $weight = filesize($filePath);
@@ -71,19 +108,7 @@ class ImageStorageService
             ]
         );
 
-        $this->deleteTmp($uploadedFileName);
-
         return (int) $id;
-    }
-
-    public function bindPhotoToObject(int $photoId, int $objectId): void
-    {
-        $this->photosModel->updateByPk(
-            $photoId,
-            [
-                'ph_pt_id' => $objectId,
-            ]
-        );
     }
 
     private function downloadTmp(string $url): string

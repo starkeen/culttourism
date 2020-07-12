@@ -1,12 +1,14 @@
 <?php
 
+use app\db\MyDB;
+
 class MPhotos extends Model
 {
     protected $_table_pk = 'ph_id';
     protected $_table_order = 'ph_order';
     protected $_table_active = 'ph_active';
 
-    public function __construct($db)
+    public function __construct(MyDB $db)
     {
         $this->_table_name = $db->getTableName('photos');
         $this->_table_fields = [
@@ -104,6 +106,7 @@ class MPhotos extends Model
         $filter['join'][] = 'LEFT JOIN ' . $this->_tables_related['pagecity'] . ' pc ON pc.pc_id = t.ph_pc_id';
         $filter['join'][] = 'LEFT JOIN ' . $this->_tables_related['pagepoints'] . ' pt ON pt.pt_id = t.ph_pt_id';
         $filter['order'] = 'ph_date_add DESC';
+
         return parent::getItemsByFilter($filter);
     }
 }

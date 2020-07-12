@@ -112,7 +112,13 @@
                         {$ph.ph_link|truncate:25:"…"}
                     </a>
                 </td>
-                <td>{$ph.ph_width}x{$ph.ph_height}</td>
+                <td>
+                    {$ph.ph_width}x{$ph.ph_height}
+                    <br>
+                    {round($ph.ph_weight / 1024)} kB
+                    <br>
+                    {$ph.ph_mime}
+                </td>
                 <td>
                     <a href="?id={$ph.ph_id}"><img src="{$ph.ph_src}" style="max-height: 50px" /></a>
                 </td>
