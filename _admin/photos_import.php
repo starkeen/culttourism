@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use app\api\google_search\constant\ImageColorType;
+use app\api\google_search\constant\ImageSize;
+use app\api\google_search\constant\ImageType;
 use app\api\google_search\Factory;
 use app\api\google_search\ResultItem;
 use app\services\image_storage\ImageStorageFactory;
@@ -23,14 +26,13 @@ switch ($act) {
         $page = $_GET['page'] ?? 0;
         $searcher = Factory::buildImageSearcher();
         $searcher->setDocumentsOnPage(10); // больше 10 нельзя в бесплатной версии
-        $searcher->setImageColorType('color');
-        $searcher->setImageSize('xlarge');
-        $searcher->setImageType('photo');
+        $searcher->setImageColorType(ImageColorType::COLOR());
+        $searcher->setImageSize(ImageSize::XLARGE());
+        $searcher->setImageType(ImageType::PHOTO());
         $result = $searcher->search($query, (int) $page);
         $out['data'] = array_map(
             static function (ResultItem $item) {
                 $imageData = $item->getImageData();
-
                 if ($imageData !== null) {
                     return [
                         'title' => $item->getTitle(),
