@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\api\google_search;
 
+use app\api\google_search\exception\SearchException;
 use MSearchLog;
 
 class CachedClient implements HttpClientInterface
@@ -18,12 +19,22 @@ class CachedClient implements HttpClientInterface
      */
     private $cacheModel;
 
+    /**
+     * @param HttpClientInterface $client
+     * @param MSearchLog $cacheModel
+     */
     public function __construct(HttpClientInterface $client, MSearchLog $cacheModel)
     {
         $this->client = $client;
         $this->cacheModel = $cacheModel;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return string
+     * @throws SearchException
+     */
     public function fetchResponse(Request $request): string
     {
         $requestData = http_build_query($request->getData());

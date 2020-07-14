@@ -49,6 +49,9 @@ $(document).ready(function () {
                 act: "search"
             },
             function (response) {
+                if (response.error_text) {
+                    alert(response.error_text);
+                }
                 $.each(response.data, function (index, value) {
                     let $blockElement = $('<div>');
                     $blockElement.addClass("photos-object-detail-result-variant");

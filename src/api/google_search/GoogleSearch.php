@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace app\api\google_search;
 
+use app\api\google_search\exception\SearchException;
+
 class GoogleSearch
 {
     /**
@@ -26,6 +28,13 @@ class GoogleSearch
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * @param string $query
+     * @param int $page
+     *
+     * @return Result
+     * @throws SearchException
+     */
     public function search(string $query, int $page = 0): Result
     {
         $request = new Request($query);

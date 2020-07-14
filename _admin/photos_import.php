@@ -5,6 +5,7 @@ declare(strict_types=1);
 use app\api\google_search\constant\ImageColorType;
 use app\api\google_search\constant\ImageSize;
 use app\api\google_search\constant\ImageType;
+use app\api\google_search\exception\SearchException;
 use app\api\google_search\Factory;
 use app\api\google_search\ResultItem;
 use app\services\image_storage\ImageStorageFactory;
@@ -29,28 +30,33 @@ switch ($act) {
         $searcher->setImageColorType(ImageColorType::COLOR());
         $searcher->setImageSize(ImageSize::XLARGE());
         $searcher->setImageType(ImageType::PHOTO());
-        $result = $searcher->search($query, (int) $page);
-        $out['data'] = array_map(
-            static function (ResultItem $item) {
-                $imageData = $item->getImageData();
-                if ($imageData !== null) {
-                    return [
-                        'title' => $item->getTitle(),
-                        'url' => $item->getUrl(),
-                        'domain' => $item->getDomain(),
-                        'type' => $imageData->getImageType() ?: 'none',
-                        'height' => $imageData->getHeight(),
-                        'width' => $imageData->getWidth(),
-                        'size' => round($imageData->getByteSize() / 1024, 1),
-                        'thumbnailUrl' => $imageData->getThumbnailLink(),
-                        'thumbnailHeight' => $imageData->getThumbnailHeight(),
-                        'thumbnailWidth' => $imageData->getThumbnailWidth(),
-                        'context' => $imageData->getContextLink(),
-                    ];
-                }
-            },
-            $result->getItems()
-        );
+        try {
+            $result = $searcher->search($query, (int) $page);
+            $out['data'] = array_map(
+                static function (ResultItem $item) {
+                    $imageData = $item->getImageData();
+                    if ($imageData !== null) {
+                        return [
+                            'title' => $item->getTitle(),
+                            'url' => $item->getUrl(),
+                            'domain' => $item->getDomain(),
+                            'type' => $imageData->getImageType() ?: 'none',
+                            'height' => $imageData->getHeight(),
+                            'width' => $imageData->getWidth(),
+                            'size' => round($imageData->getByteSize() / 1024, 1),
+                            'thumbnailUrl' => $imageData->getThumbnailLink(),
+                            'thumbnailHeight' => $imageData->getThumbnailHeight(),
+                            'thumbnailWidth' => $imageData->getThumbnailWidth(),
+                            'context' => $imageData->getContextLink(),
+                        ];
+                    }
+                },
+                $result->getItems()
+            );
+        } catch (SearchException $exception) {
+            $out['data'] = [];
+            $out['error_text'] = $exception->getMessage();
+        }
         json($out);
         break;
     case 'upload':
