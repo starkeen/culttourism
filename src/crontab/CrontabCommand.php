@@ -6,5 +6,4 @@ namespace app\crontab;
 
 abstract class CrontabCommand
 {
-    abstract public function run(): void;
 }

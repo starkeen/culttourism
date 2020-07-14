@@ -62,7 +62,6 @@ class YandexWebmasterAPI
      * @param string $fileName
      *
      * @return string|null
-     * @throws GuzzleException
      */
     public function uploadRSS(string $fileName): ?string
     {
