@@ -7,11 +7,23 @@ namespace app\crontab;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\RequestOptions;
 use models\MLinks;
 use Psr\Log\LoggerInterface;
 
 class CheckUrlsCommand extends CrontabCommand
 {
+    private const HTTP_REQUEST_OPTIONS = [
+        RequestOptions::ALLOW_REDIRECTS => false,
+        RequestOptions::CONNECT_TIMEOUT => 1,
+        RequestOptions::READ_TIMEOUT => 1,
+        RequestOptions::TIMEOUT => 1,
+        RequestOptions::FORCE_IP_RESOLVE => 'v4',
+        RequestOptions::HEADERS => [
+            'User-Agent' => 'culttourism bot/1.0',
+        ],
+    ];
+
     /**
      * @var MLinks
      */
@@ -45,7 +57,7 @@ class CheckUrlsCommand extends CrontabCommand
             $statusCodeOld = $urlData['status'];
 
             try {
-                $response = $this->httpClient->request('GET', $url);
+                $response = $this->httpClient->request('GET', $url, self::HTTP_REQUEST_OPTIONS);
 
                 $statusCodeNew = $response->getStatusCode();
                 $contentSize = $response->getBody()->getSize();
