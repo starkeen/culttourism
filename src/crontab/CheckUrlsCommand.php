@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace app\crontab;
 
-use app\db\MyDB;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\BadResponseException;
 use models\MLinks;
 use Psr\Log\LoggerInterface;
 
@@ -43,10 +43,16 @@ class CheckUrlsCommand extends CrontabCommand
             $url = $urlData['url'];
             $statusCodeOld = $urlData['status'];
 
-            $response = $this->httpClient->request('GET', $url);
+            try {
+                $response = $this->httpClient->request('GET', $url);
 
-            $statusCodeNew = $response->getStatusCode();
-            $contentSize = $response->getBody()->getSize();
+                $statusCodeNew = $response->getStatusCode();
+                $contentSize = $response->getBody()->getSize();
+            } catch (BadResponseException $exception) {
+                $statusCodeNew = $exception->getResponse()->getStatusCode();
+                $contentSize = null;
+            }
+
             if ($statusCodeOld !== $statusCodeNew) {
                 $context = [
                     'url' => $url,

@@ -27,6 +27,7 @@ class MLinks extends Model
             'status',
             'status_date',
             'content_size',
+            'is_ok',
         ];
 
         parent::__construct($db);
@@ -61,12 +62,15 @@ class MLinks extends Model
 
     public function updateStatus(int $id, int $statusCode, ?int $contentSize): void
     {
+        $isOk = in_array($statusCode, [200], true) && $contentSize > 5000;
+
         $this->updateByPk(
             $id,
             [
                 'status' => $statusCode,
                 'status_date' => $this->now(),
                 'content_size' => $contentSize,
+                'is_ok' => $isOk,
             ]
         );
     }
