@@ -15,9 +15,9 @@ class CheckUrlsCommand extends CrontabCommand
 {
     private const HTTP_REQUEST_OPTIONS = [
         RequestOptions::ALLOW_REDIRECTS => false,
-        RequestOptions::CONNECT_TIMEOUT => 1,
-        RequestOptions::READ_TIMEOUT => 1,
-        RequestOptions::TIMEOUT => 1,
+        RequestOptions::CONNECT_TIMEOUT => 2,
+        RequestOptions::READ_TIMEOUT => 2,
+        RequestOptions::TIMEOUT => 2,
         RequestOptions::FORCE_IP_RESOLVE => 'v4',
         RequestOptions::HEADERS => [
             'User-Agent' => 'culttourism bot/1.0',
