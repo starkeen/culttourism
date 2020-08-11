@@ -35,9 +35,9 @@ class MLinks extends Model
      */
     public function makeCache(): void
     {
-        $this->_db->sql = "INSERT $this->_table_name (url)
-                            (SELECT pt_website FROM {$this->_tables_related['pagepoints']} AS o WHERE pt_website IS NOT NULL AND pt_website != '')
-                           ON DUPLICATE KEY UPDATE id_object = o.id";
+        $this->_db->sql = "INSERT $this->_table_name (id_object, url)
+                            (SELECT pt_id, pt_website FROM {$this->_tables_related['pagepoints']} AS o WHERE pt_website IS NOT NULL AND pt_website != '')
+                           ON DUPLICATE KEY UPDATE url = pt_website";
         $this->_db->exec();
     }
 }
