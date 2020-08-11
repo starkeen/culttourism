@@ -74,4 +74,14 @@ class MLinks extends Model
             ]
         );
     }
+
+    public function deleteByPoint(int $objectId): void
+    {
+        $this->_db->sql = "DELETE FROM $this->_table_name WHERE id_object = :object_id";
+        $this->_db->execute(
+            [
+                ':object_id' => $objectId,
+            ]
+        );
+    }
 }

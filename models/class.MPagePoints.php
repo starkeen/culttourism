@@ -138,9 +138,9 @@ class MPagePoints extends Model
      * @param $bounds
      * @param int $selected_object_id
      *
-     * @return array
+     * @return array[]
      */
-    public function getPointsByBounds($bounds, $selected_object_id = 0)
+    public function getPointsByBounds($bounds, $selected_object_id = 0): array
     {
         $this->_db->sql = "SELECT pp.*,
                                 IF (pp.pt_id = :selected_object_id2, 1, 0) AS obj_selected,
@@ -176,9 +176,9 @@ class MPagePoints extends Model
     /**
      * @param int $limit
      *
-     * @return array
+     * @return array[]
      */
-    public function getUnslug($limit = 10)
+    public function getUnslug($limit = 10): array
     {
         $this->_db->sql = "SELECT pt_id, pt_name, pc_title, pc_title_english, tr_sight
                             FROM $this->_table_name pt
@@ -194,9 +194,9 @@ class MPagePoints extends Model
     /**
      * @param $slugline
      *
-     * @return array
+     * @return array[]
      */
-    public function searchSlugline($slugline)
+    public function searchSlugline($slugline): array
     {
         $this->_db->sql = "SELECT *,
                                 '' AS gps_dec,
@@ -221,9 +221,9 @@ class MPagePoints extends Model
      * @param $name
      * @param bool $like
      *
-     * @return array
+     * @return array[]
      */
-    public function searchByName($name, $like = false)
+    public function searchByName($name, $like = false): array
     {
         $this->_db->sql = "SELECT *
                             FROM $this->_table_name pt\n";
@@ -240,7 +240,7 @@ class MPagePoints extends Model
     /**
      * @param $id
      */
-    public function createSluglineById($id)
+    public function createSluglineById($id): void
     {
         $point = $this->getItemByPk($id);
 
@@ -273,7 +273,7 @@ class MPagePoints extends Model
     /**
      * @return array
      */
-    public function checkSluglines()
+    public function checkSluglines(): array
     {
         $out = [
             'state' => true,
@@ -319,7 +319,7 @@ class MPagePoints extends Model
 
         $this->_db->execute(
             [
-                ':oid' => intval($id),
+                ':oid' => (int) $id,
             ]
         );
         return $this->_db->fetch();
@@ -328,9 +328,9 @@ class MPagePoints extends Model
     /**
      * @param $cid
      *
-     * @return array
+     * @return array[]
      */
-    public function getGeoPointsByCityId($cid)
+    public function getGeoPointsByCityId($cid): array
     {
         $this->_db->sql = "SELECT pp.*,
                                 CONCAT(:url_root1, ru.url, '/') AS cityurl,
@@ -365,25 +365,27 @@ class MPagePoints extends Model
     public function updateByPk($id, $values = [], $files = [])
     {
         if (isset($values['pt_latitude'])) {
-            $values['pt_latitude'] = floatval(str_replace(',', '.', trim($values['pt_latitude'])));
-            if ($values['pt_latitude'] == 0) {
+            $values['pt_latitude'] = (float) str_replace(',', '.', trim($values['pt_latitude']));
+            if ((int) $values['pt_latitude'] === 0) {
                 unset($values['pt_latitude']);
             }
         }
         if (isset($values['pt_longitude'])) {
-            $values['pt_longitude'] = floatval(str_replace(',', '.', trim($values['pt_longitude'])));
-            if ($values['pt_longitude'] == 0) {
+            $values['pt_longitude'] = (float) str_replace(',', '.', trim($values['pt_longitude']));
+            if ((int) $values['pt_longitude'] === 0) {
                 unset($values['pt_longitude']);
             }
         }
-        if (isset($values['pt_website']) && strlen($values['pt_website']) != 0 && strpos(
-                $values['pt_website'],
-                'http'
-            ) === false) {
-            $values['pt_website'] = 'http://' . $values['pt_website'];
+        if (isset($values['pt_website'])
+            && trim($values['pt_website']) !== ''
+            && strpos($values['pt_website'], 'http') === false
+        ) {
+            $values['pt_website'] = 'http://' . trim($values['pt_website']);
         }
+
         $values['pt_lastup_date'] = $this->now();
         $values['pt_lastup_user'] = $this->getUserId();
+
         return parent::updateByPk($id, $values, $files);
     }
 
@@ -462,13 +464,13 @@ class MPagePoints extends Model
     {
         if (isset($values['pt_latitude'])) {
             $values['pt_latitude'] = (float) str_replace(',', '.', trim($values['pt_latitude']));
-            if ($values['pt_latitude'] == 0) {
+            if ((int) $values['pt_latitude'] === 0) {
                 unset($values['pt_latitude']);
             }
         }
         if (isset($values['pt_longitude'])) {
             $values['pt_longitude'] = (float) str_replace(',', '.', trim($values['pt_longitude']));
-            if ($values['pt_longitude'] == 0) {
+            if ((int) $values['pt_longitude'] === 0) {
                 unset($values['pt_longitude']);
             }
         }
@@ -483,14 +485,16 @@ class MPagePoints extends Model
         }
         $values['pt_lastup_date'] = $values['pt_create_date'];
         $values['pt_lastup_user'] = $values['pt_create_user'];
-        if (isset($values['pt_website']) && strlen($values['pt_website']) != 0 && strpos(
-                $values['pt_website'],
-                'http'
-            ) === false) {
-            $values['pt_website'] = 'http://' . $values['pt_website'];
+        if (isset($values['pt_website'])
+            && trim($values['pt_website']) !== ''
+            && strpos($values['pt_website'], 'http') === false
+        ) {
+            $values['pt_website'] = 'http://' . trim($values['pt_website']);
         }
+
         $new_id = parent::insert($values, $files);
         $this->createSluglineById($new_id);
+
         return $new_id;
     }
 
@@ -585,7 +589,7 @@ class MPagePoints extends Model
      *
      * @return bool
      */
-    public function deleteByPk($id): bool
+    public function deleteByPk(int $id): bool
     {
         return $this->updateByPk($id, [$this->_table_active => 0]);
     }
@@ -650,5 +654,4 @@ class MPagePoints extends Model
         );
         return $this->_db->fetchAll();
     }
-
 }

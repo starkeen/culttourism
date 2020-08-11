@@ -1,5 +1,7 @@
 <?php
 
+use models\MLinks;
+
 class Page extends PageCommon
 {
     /**
@@ -118,6 +120,8 @@ class Page extends PageCommon
         );
         if ($out) {
             $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $cid);
+            $linksModel = new MLinks($this->db);
+            $linksModel->deleteByPoint($cid);
             return true;
         } else {
             return false;
