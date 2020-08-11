@@ -85,3 +85,9 @@ class MLinks extends Model
         );
     }
 }
+
+//SELECT  p.pt_name, c.pc_title_unique, l.*
+//FROM `cult_links` l
+//left join cult_pagepoints p on p.pt_id = l.id_object
+//left join cult_pagecity c on c.pc_id = p.pt_citypage_id
+//WHERE `is_ok` = 0
