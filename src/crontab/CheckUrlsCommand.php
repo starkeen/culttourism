@@ -69,6 +69,13 @@ class CheckUrlsCommand extends CrontabCommand
                 $statusCodeNew = 500;
                 $contentSize = null;
             } catch (RequestException $exception) {
+                $context = [
+                    'url' => $url,
+                    'old' => $statusCodeOld,
+                    'exception_message' => $exception->getMessage(),
+                    'exception_response' => $exception->getResponse(),
+                ];
+                $this->logger->warning('Необработанная ошибка в сетевом запросе', $context);
                 continue;
             }
 
