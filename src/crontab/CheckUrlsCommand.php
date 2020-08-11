@@ -6,6 +6,7 @@ namespace app\crontab;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\ConnectException;
 use models\MLinks;
 use Psr\Log\LoggerInterface;
 
@@ -50,6 +51,9 @@ class CheckUrlsCommand extends CrontabCommand
                 $contentSize = $response->getBody()->getSize();
             } catch (BadResponseException $exception) {
                 $statusCodeNew = $exception->getResponse()->getStatusCode();
+                $contentSize = null;
+            } catch (ConnectException $exception) {
+                $statusCodeNew = 500;
                 $contentSize = null;
             }
 
