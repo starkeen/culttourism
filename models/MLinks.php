@@ -86,8 +86,9 @@ class MLinks extends Model
     }
 }
 
-//SELECT  p.pt_name, c.pc_title_unique, l.*
+//SELECT  p.pt_name, c.pc_title_unique, l.url, l.status
 //FROM `cult_links` l
-//left join cult_pagepoints p on p.pt_id = l.id_object
-//left join cult_pagecity c on c.pc_id = p.pt_citypage_id
-//WHERE `is_ok` = 0
+//LEFT JOIN cult_pagepoints p ON p.pt_id = l.id_object
+//LEFT JOIN cult_pagecity c ON c.pc_id = p.pt_citypage_id
+//WHERE `is_ok` = 0 AND status > 301
+//ORDER BY status DESC, c.pc_title_unique ASC
