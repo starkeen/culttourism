@@ -43,4 +43,31 @@ class MLinks extends Model
                            ON DUPLICATE KEY UPDATE url = pt_website, last_date = NOW()";
         $this->_db->exec();
     }
+
+    public function getCheckPortion(int $count = 10): array
+    {
+        $this->_db->sql = "SELECT *
+                           FROM $this->_table_name
+                           ORDER BY status_date ASC
+                           LIMIT :limit";
+        $this->_db->execute(
+            [
+                ':limit' => $count,
+            ]
+        );
+
+        return $this->_db->fetchAll();
+    }
+
+    public function updateStatus(int $id, int $statusCode, ?int $contentSize): void
+    {
+        $this->updateByPk(
+            $id,
+            [
+                'status' => $statusCode,
+                'status_date' => $this->now(),
+                'content_size' => $contentSize,
+            ]
+        );
+    }
 }
