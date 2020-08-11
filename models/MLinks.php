@@ -22,6 +22,8 @@ class MLinks extends Model
         $this->_table_fields = [
             'url',
             'id_object',
+            'fetch_date',
+            'last_date',
             'status',
             'status_date',
         ];
@@ -35,9 +37,9 @@ class MLinks extends Model
      */
     public function makeCache(): void
     {
-        $this->_db->sql = "INSERT $this->_table_name (id_object, url)
-                            (SELECT pt_id, pt_website FROM {$this->_tables_related['pagepoints']} AS o WHERE pt_website IS NOT NULL AND pt_website != '')
-                           ON DUPLICATE KEY UPDATE url = pt_website";
+        $this->_db->sql = "INSERT $this->_table_name (id_object, url, fetch_date, last_date)
+                            (SELECT pt_id, pt_website, NOW(), NOW() FROM {$this->_tables_related['pagepoints']} AS o WHERE pt_website IS NOT NULL AND pt_website != '')
+                           ON DUPLICATE KEY UPDATE url = pt_website, last_date = NOW()";
         $this->_db->exec();
     }
 }
