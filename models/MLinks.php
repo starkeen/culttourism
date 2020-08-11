@@ -33,6 +33,7 @@ class MLinks extends Model
         parent::__construct($db);
 
         $this->_addRelatedTable('pagepoints');
+        $this->_addRelatedTable('pagecity');
     }
 
     /**
@@ -47,8 +48,10 @@ class MLinks extends Model
 
     public function getCheckPortion(int $count = 10): array
     {
-        $this->_db->sql = "SELECT *
-                           FROM $this->_table_name
+        $this->_db->sql = "SELECT u.*, o.pt_name, c.pc_title_unique
+                           FROM $this->_table_name AS u
+                           LEFT JOIN {$this->_tables_related['pagepoints']} AS o ON o.pt_id = u.id_object
+                           LEFT JOIN {$this->_tables_related['pagecity']} AS c ON c.pc_id = o.pt_citypage_id
                            ORDER BY status_date ASC
                            LIMIT :limit";
         $this->_db->execute(

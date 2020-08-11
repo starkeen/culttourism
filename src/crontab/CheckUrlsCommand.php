@@ -72,6 +72,8 @@ class CheckUrlsCommand extends CrontabCommand
                 $context = [
                     'url' => $url,
                     'old' => $statusCodeOld,
+                    'page' => $urlData['pt_name'],
+                    'city' => $urlData['pc_title_unique'],
                     'exception_message' => $exception->getMessage(),
                     'exception_response' => $exception->getResponse(),
                 ];
@@ -82,6 +84,8 @@ class CheckUrlsCommand extends CrontabCommand
             if ($statusCodeOld !== $statusCodeNew) {
                 $context = [
                     'url' => $url,
+                    'page' => $urlData['pt_name'],
+                    'city' => $urlData['pc_title_unique'],
                     'old' => $statusCodeOld,
                     'new' => $statusCodeNew,
                 ];
