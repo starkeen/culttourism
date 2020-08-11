@@ -26,6 +26,7 @@ class MLinks extends Model
             'last_date',
             'status',
             'status_date',
+            'content_size',
         ];
 
         parent::__construct($db);
