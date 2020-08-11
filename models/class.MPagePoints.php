@@ -589,7 +589,7 @@ class MPagePoints extends Model
      *
      * @return bool
      */
-    public function deleteByPk(int $id): bool
+    public function deleteByPk($id): bool
     {
         return $this->updateByPk($id, [$this->_table_active => 0]);
     }
