@@ -32,6 +32,7 @@ class MPhones extends Model
     }
 
     /**
+     * Удаление телефонов по идентификатору объекта
      * @param int $pointId
      */
     public function deleteByPoint(int $pointId): void
@@ -46,6 +47,7 @@ class MPhones extends Model
     }
 
     /**
+     * Обработка собранных телефонов
      */
     public function process(): void
     {
