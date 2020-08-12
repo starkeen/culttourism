@@ -11,6 +11,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 use models\MLinks;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class CheckUrlsCommand extends CrontabCommand
 {
@@ -53,6 +54,7 @@ class CheckUrlsCommand extends CrontabCommand
 
         $portion = $this->linksModel->getCheckPortion(20);
         foreach ($portion as $urlData) {
+            $context = null;
             $id = (int) $urlData['id'];
             $url = $urlData['url'];
             $statusCodeOld = $urlData['status'];
@@ -77,7 +79,17 @@ class CheckUrlsCommand extends CrontabCommand
                     'exception_message' => $exception->getMessage(),
                     'exception_response' => $exception->getResponse(),
                 ];
-                $this->logger->warning('Необработанная ошибка в сетевом запросе', $context);
+                $this->logger->warning('Сетевая ошибка в запросе', $context);
+                continue;
+            } catch (Throwable $exception) {
+                $context = [
+                    'url' => $url,
+                    'old' => $statusCodeOld,
+                    'page' => $urlData['pt_name'],
+                    'city' => $urlData['pc_title_unique'],
+                    'exception_message' => $exception->getMessage(),
+                ];
+                $this->logger->warning('Системная ошибка в сетевом запросе', $context);
                 continue;
             }
 
