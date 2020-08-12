@@ -21,6 +21,7 @@ class CheckUrlsCommand extends CrontabCommand
         RequestOptions::READ_TIMEOUT => 2,
         RequestOptions::TIMEOUT => 2,
         RequestOptions::FORCE_IP_RESOLVE => 'v4',
+        RequestOptions::VERIFY => false,
         RequestOptions::HEADERS => [
             'User-Agent' => 'culttourism bot/1.0',
         ],
