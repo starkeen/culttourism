@@ -36,7 +36,7 @@ class MSearchLog extends Model
      *
      * @return int
      */
-    public function add($data): ?int
+    public function add(array $data): ?int
     {
         $data['sl_date'] = $this->now();
         $data['sl_date_last'] = $this->now();
@@ -58,7 +58,7 @@ class MSearchLog extends Model
      *
      * @param array $data
      */
-    public function setAnswer($data): void
+    public function setAnswer(array $data): void
     {
         $this->updateByPk($this->recordId, $data);
     }
@@ -119,5 +119,23 @@ class MSearchLog extends Model
         $trimmed = trim($symbols);
 
         return sha1($trimmed);
+    }
+
+    /**
+     * Удаляет записи старше указанной даты
+     *
+     * @param string $dateDepth
+     */
+    public function deleteOldRecords(string $dateDepth): void
+    {
+        $timestamp = strtotime($dateDepth);
+
+        $this->_db->sql = "DELETE FROM $this->_table_name
+                            WHERE sl_date <= :date_from";
+        $this->_db->execute(
+            [
+                ':date_from' => date('Y-m-d H:i:s', $timestamp),
+            ]
+        );
     }
 }
