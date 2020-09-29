@@ -25,6 +25,7 @@ class MLinks extends Model
             'fetch_date',
             'last_date',
             'status',
+            'status_count',
             'status_date',
             'content_size',
             'is_ok',
@@ -63,7 +64,7 @@ class MLinks extends Model
         return $this->_db->fetchAll();
     }
 
-    public function updateStatus(int $id, int $statusCode, ?int $contentSize): void
+    public function updateStatus(int $id, int $statusCode, int $statusCount, ?int $contentSize): void
     {
         $isOk = in_array($statusCode, [200], true) && $contentSize > 5000;
 
@@ -71,6 +72,7 @@ class MLinks extends Model
             $id,
             [
                 'status' => $statusCode,
+                'status_count' => $statusCount,
                 'status_date' => $this->now(),
                 'content_size' => $contentSize,
                 'is_ok' => $isOk,

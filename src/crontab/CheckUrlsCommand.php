@@ -59,6 +59,7 @@ class CheckUrlsCommand extends CrontabCommand
             $id = (int) $urlData['id'];
             $url = $urlData['url'];
             $statusCodeOld = $urlData['status'];
+            $statusCount = $urlData['status_count'];
 
             try {
                 $response = $this->httpClient->request('GET', $url, self::HTTP_REQUEST_OPTIONS);
@@ -103,9 +104,12 @@ class CheckUrlsCommand extends CrontabCommand
                     'new' => $statusCodeNew,
                 ];
                 $this->logger->info('Изменился статус ответа URL', $context);
+                $statusCount = 0;
+            } else {
+                $statusCount++;
             }
 
-            $this->linksModel->updateStatus($id, $statusCodeNew, $contentSize);
+            $this->linksModel->updateStatus($id, $statusCodeNew, $statusCount, $contentSize);
         }
     }
 }
