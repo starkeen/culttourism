@@ -18,11 +18,13 @@
         {foreach from=$links item=link}
             <tr>
                 <td>
-                    {$link.pt_name}
+                    <a href="{$link.url}" target="_blank">{$link.pt_name}</a>
                     <br/>
                     <span style="font-style: italic">{$link.pc_title_unique}</span>
                 </td>
-                <td style="">{$link.url}</td>
+                <td style="">
+                    <a href="{$link.url}" target="_blank">{$link.url}</a>
+                </td>
                 <td style="text-align: center;">{$link.status}</td>
             </tr>
         {/foreach}
