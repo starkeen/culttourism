@@ -89,6 +89,24 @@ class MLinks extends Model
             ]
         );
     }
+
+    public function getList(int $count): array
+    {
+        $this->_db->sql = "SELECT u.*, o.pt_name, c.pc_title_unique
+                           FROM $this->_table_name AS u
+                           LEFT JOIN {$this->_tables_related['pagepoints']} AS o ON o.pt_id = u.id_object
+                           LEFT JOIN {$this->_tables_related['pagecity']} AS c ON c.pc_id = o.pt_citypage_id
+                           WHERE is_ok = 0
+                           ORDER BY status_count DESC
+                           LIMIT :limit";
+        $this->_db->execute(
+            [
+                ':limit' => $count,
+            ]
+        );
+
+        return $this->_db->fetchAll();
+    }
 }
 
 //SELECT  p.pt_name, c.pc_title_unique, l.url, l.status

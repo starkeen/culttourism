@@ -1,23 +1,23 @@
 <?php
 
 include('common.php');
-include (_DIR_INCLUDES . '/class.Pager.php');
+include(_DIR_INCLUDES . '/class.Pager.php');
 
 $smarty->assign('title', 'Списки объектов');
 
 $lst = new MLists($db);
 
 if (isset($_GET['id'])) {
-    $id = intval($_GET['id']);
+    $id = (int) $_GET['id'];
     $list = $lst->getItemByPk($id);
 
     $lstitems = new MListsItems($db, $id);
 
     if (isset($_POST) && !empty($_POST)) {
-        if (isset($_GET['act']) && $_GET['act'] = 'add' && isset($_POST['add_id']) && intval($_POST['add_id']) > 0) {
-            $res = $lstitems->insert(array('li_ls_id' => $id, 'li_pt_id' => intval($_POST['add_id'])));
+        if (isset($_GET['act'], $_POST['add_id']) && $_GET['act'] === 'add' && (int) $_POST['add_id'] > 0) {
+            $res = $lstitems->insert(['li_ls_id' => $id, 'li_pt_id' => (int) $_POST['add_id']]);
             if ($res) {
-                $lst->updateByPk($id, array('ls_update_date' => date('Y-m-D H:i:s')));
+                $lst->updateByPk($id, ['ls_update_date' => date('Y-m-D H:i:s')]);
                 header("Location: lists.php?id=$id");
                 exit();
             }
@@ -36,39 +36,39 @@ if (isset($_GET['id'])) {
     $smarty->assign('list_items', $lstitems->getAll());
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/lists.item.sm.html'));
 } elseif (isset($_GET['suggest'])) {
-    $out = array('query' => '', 'suggestions' => array());
+    $out = ['query' => '', 'suggestions' => []];
     $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
-    $lid = intval($_GET['lid']);
+    $lid = (int) $_GET['lid'];
 
     if (strlen($out['query']) > 4) {
         $lstitems = new MListsItems($db, $lid);
         $variants = $lstitems->getSuggestion($out['query']);
         foreach ($variants as $variant) {
-            $out['suggestions'][] = array(
+            $out['suggestions'][] = [
                 'value' => "{$variant['pt_name']} ({$variant['pc_title']})",
                 'oid' => "{$variant['pt_id']}",
-            );
+            ];
         }
         if (empty($out['suggestions'])) {
-            $out['suggestions'][] = array(
+            $out['suggestions'][] = [
                 'value' => "-- не найдено --",
                 'oid' => "",
-            );
+            ];
         }
     }
     header('Content-type: application/json');
     echo json_encode($out);
     exit();
 } elseif (isset($_GET['json'])) {
-    $out = array('state' => false, 'newval' => null);
+    $out = ['state' => false, 'newval' => null];
 
-    $lstitems = new MListsItems($db, intval($_GET['lid']));
-    $out['newval'] = $lstitems->setField($_GET['field'], intval($_GET['ptid']), $_GET['val']);
+    $lstitems = new MListsItems($db, (int) $_GET['lid']);
+    $out['newval'] = $lstitems->setField($_GET['field'], (int) $_GET['ptid'], $_GET['val']);
     if ($out['newval'] !== null) {
         $out['state'] = true;
     }
 
-    $lst->updateByPk(intval($_GET['lid']), array('ls_update_date' => date('Y-m-D H:i:s')));
+    $lst->updateByPk((int) $_GET['lid'], ['ls_update_date' => date('Y-m-D H:i:s')]);
 
     header('Content-type: application/json');
     echo json_encode($out);
