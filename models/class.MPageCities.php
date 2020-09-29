@@ -261,13 +261,13 @@ class MPageCities extends Model
     public function updateByPk($id, $values = [], $files = [])
     {
         if (isset($values['pc_latitude'])) {
-            $values['pc_latitude'] = floatval(str_replace(',', '.', trim($values['pc_latitude'])));
+            $values['pc_latitude'] = (float) str_replace(',', '.', trim($values['pc_latitude']));
             if ($values['pc_latitude'] == 0) {
                 unset($values['pc_latitude']);
             }
         }
         if (isset($values['pc_longitude'])) {
-            $values['pc_longitude'] = floatval(str_replace(',', '.', trim($values['pc_longitude'])));
+            $values['pc_longitude'] = (float) str_replace(',', '.', trim($values['pc_longitude']));
             if ($values['pc_longitude'] == 0) {
                 unset($values['pc_longitude']);
             }
@@ -287,13 +287,13 @@ class MPageCities extends Model
     public function insert($values = [], $files = [])
     {
         if (isset($values['pc_latitude'])) {
-            $values['pc_latitude'] = floatval(str_replace(',', '.', trim($values['pc_latitude'])));
+            $values['pc_latitude'] = (float) str_replace(',', '.', trim($values['pc_latitude']));
             if ($values['pc_latitude'] == 0) {
                 unset($values['pc_latitude']);
             }
         }
         if (isset($values['pc_longitude'])) {
-            $values['pc_longitude'] = floatval(str_replace(',', '.', trim($values['pc_longitude'])));
+            $values['pc_longitude'] = (float) str_replace(',', '.', trim($values['pc_longitude']));
             if ($values['pc_longitude'] == 0) {
                 unset($values['pc_longitude']);
             }

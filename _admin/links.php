@@ -9,7 +9,7 @@ include('common.php');
 include (_DIR_INCLUDES . '/class.Pager.php');
 
 /** @var TemplateEngine $smarty */
-$smarty->assign('title', 'Списки объектов');
+$smarty->assign('title', 'Ссылки для ручной проверки');
 
 $linksModel = new MLinks($db);
 

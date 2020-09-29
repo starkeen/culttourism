@@ -35,6 +35,7 @@ class MLinks extends Model
 
         $this->_addRelatedTable('pagepoints');
         $this->_addRelatedTable('pagecity');
+        $this->_addRelatedTable('region_url');
     }
 
     /**
@@ -92,12 +93,19 @@ class MLinks extends Model
 
     public function getList(int $count): array
     {
-        $this->_db->sql = "SELECT u.*, o.pt_name, c.pc_title_unique
+        $this->_db->sql = "SELECT u.*,
+                             ROUND(u.content_size / 1024) AS content_kb,
+                             o.pt_name,
+                             c.pc_title_unique,
+                             CONCAT(url.url, '/') AS url_city,
+                             CONCAT(url.url, '/', o.pt_slugline, '.html') AS url_point
                            FROM $this->_table_name AS u
                            LEFT JOIN {$this->_tables_related['pagepoints']} AS o ON o.pt_id = u.id_object
                            LEFT JOIN {$this->_tables_related['pagecity']} AS c ON c.pc_id = o.pt_citypage_id
-                           WHERE is_ok = 0
-                           ORDER BY status_count DESC
+                           LEFT JOIN {$this->_tables_related['region_url']} AS url ON url.uid = c.pc_url_id
+                           WHERE u.is_ok = 0
+                             AND u.status_count > 0
+                           ORDER BY u.status_count DESC, c.pc_order DESC, c.pc_count_points DESC
                            LIMIT :limit";
         $this->_db->execute(
             [

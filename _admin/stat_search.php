@@ -8,7 +8,7 @@ $dbpc = $db->getTableName('pagecity');
 $dbur = $db->getTableName('region_url');
 $dbsc = $db->getTableName('search_cache');
 
-if (isset($_GET['filter']) && $_GET['filter'] == 'free')
+if (isset($_GET['filter']) && $_GET['filter'] === 'free')
     $where = 'AND url.url IS NULL';
 else
     $where = '';
