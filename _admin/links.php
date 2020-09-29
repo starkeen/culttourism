@@ -13,7 +13,11 @@ $smarty->assign('title', 'Списки объектов');
 
 $linksModel = new MLinks($db);
 
-$smarty->assign('links', $linksModel->getList(20));
+$urls = $linksModel->getList(20);
+$pager = new Pager($urls);
+
+$smarty->assign('links', $pager->out);
+$smarty->assign('pager', $pager->pages);
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/links.list.tpl'));
 
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');

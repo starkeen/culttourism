@@ -1,7 +1,7 @@
 <?php
 
 include('common.php');
-include (_DIR_INCLUDES . '/class.Pager.php');
+include(_DIR_INCLUDES . '/class.Pager.php');
 
 $smarty->assign('title', 'Объекты в базе');
 
@@ -15,11 +15,11 @@ $dbpt = $db->getTableName('ref_pointtypes');
 $dbru = $db->getTableName('region_url');
 
 if (isset($_GET['act'])) {
-    $data = array(
+    $data = [
         'state' => false,
         'out' => null,
-    );
-    $oid = intval($_GET['oid']);
+    ];
+    $oid = (int) $_GET['oid'];
     $prop = isset($_GET['prop']) ? $db->getEscapedString($_GET['prop']) : null;
     switch ($_GET['act']) {
         case 'getprop':
@@ -31,7 +31,7 @@ if (isset($_GET['act'])) {
             break;
         case 'setprop':
             $val = $db->getEscapedString(trim($_POST['value']));
-            if ($prop == 'pt_website' && substr($val, 0, 4) != 'http') {
+            if ($prop === 'pt_website' && substr($val, 0, 4) !== 'http') {
                 $val = "http://$val";
             }
             $db->sql = "UPDATE $dbpp SET $prop = '$val', pt_lastup_date = now() WHERE pt_id = '$oid'";
@@ -44,7 +44,7 @@ if (isset($_GET['act'])) {
             $db->exec();
             $row = $db->fetch();
             $citypage = $row['pt_citypage_id'];
-            $data['out'] = array();
+            $data['out'] = [];
             $db->sql = "SELECT pc_id AS id, pc_title AS title, pc_region_id FROM $dbpc WHERE pc_id = '$citypage'";
             $db->exec();
             $row = $db->fetch();
@@ -62,7 +62,7 @@ if (isset($_GET['act'])) {
     exit();
 }
 
-$filter = array(
+$filter = [
     'oid' => null,
     'title' => null,
     'country' => null,
@@ -73,40 +73,40 @@ $filter = array(
     'noaddr' => null,
     'phone' => null,
     'web' => null,
-    'gps' => array(
+    'gps' => [
         'lat' => null,
         'lon' => null,
-    ),
-);
-$refs = array(
-    'countries' => array(),
-    'regions' => array(),
-    'cities' => array(),
-    'types' => array(),
-);
+    ],
+];
+$refs = [
+    'countries' => [],
+    'regions' => [],
+    'cities' => [],
+    'types' => [],
+];
 
-if (isset($_GET['oid']) && intval($_GET['oid']) > 0) {
-    $filter['oid'] = intval($_GET['oid']);
+if (isset($_GET['oid']) && (int) $_GET['oid'] > 0) {
+    $filter['oid'] = (int) $_GET['oid'];
 }
 if (isset($_GET['title']) && strlen($_GET['title']) > 0) {
     $filter['title'] = cut_trash_text($_GET['title']);
 }
-if (isset($_GET['country']) && intval($_GET['country']) > 0) {
-    $filter['country'] = intval($_GET['country']);
+if (isset($_GET['country']) && (int) $_GET['country'] > 0) {
+    $filter['country'] = (int) $_GET['country'];
 }
-if (isset($_GET['region']) && intval($_GET['region']) > 0) {
-    $filter['region'] = intval($_GET['region']);
+if (isset($_GET['region']) && (int) $_GET['region'] > 0) {
+    $filter['region'] = (int) $_GET['region'];
 }
-if (isset($_GET['city']) && intval($_GET['city']) > 0) {
-    $filter['city'] = intval($_GET['city']);
+if (isset($_GET['city']) && (int) $_GET['city'] > 0) {
+    $filter['city'] = (int) $_GET['city'];
 }
-if (isset($_GET['type']) && intval($_GET['type']) > 0) {
-    $filter['type'] = intval($_GET['type']);
+if (isset($_GET['type']) && (int) $_GET['type'] > 0) {
+    $filter['type'] = (int) $_GET['type'];
 }
 if (isset($_GET['addr']) && strlen($_GET['addr']) > 0) {
     $filter['addr'] = cut_trash_text($_GET['addr']);
 }
-if (isset($_GET['noaddr']) && intval($_GET['noaddr']) == 1) {
+if (isset($_GET['noaddr']) && (int) $_GET['noaddr'] == 1) {
     $filter['noaddr'] = 1;
 }
 if (isset($_GET['phone']) && strlen($_GET['phone']) > 0) {
@@ -122,7 +122,7 @@ if (isset($_GET['gps_lon']) && strlen($_GET['gps_lon']) > 0) {
     $filter['gps']['lon'] = cut_trash_float($_GET['gps_lon']);
 }
 
-$points = array();
+$points = [];
 $db->sql = "SELECT SQL_CALC_FOUND_ROWS
                 pp.pt_id, pp.pt_name, pp.pt_slugline,
                 pp.pt_adress, pp.pt_phone, pp.pt_website,
@@ -169,11 +169,11 @@ if ($filter['web'] != '') {
     $db->sql .= "AND pp.pt_website LIKE '%{$filter['web']}%'\n";
 }
 if ($filter['gps']['lat'] != 0) {
-    $lat_max = floatval(($filter['gps']['lat']) + 0.5);
+    $lat_max = ($filter['gps']['lat']) + 0.5;
     $db->sql .= "AND pp.pt_latitude >= '{$filter['gps']['lat']}' AND pp.pt_latitude < '$lat_max'\n";
 }
 if ($filter['gps']['lon'] != 0) {
-    $lon_max = floatval(($filter['gps']['lon']) + 0.5);
+    $lon_max =($filter['gps']['lon']) + 0.5;
     $db->sql .= "AND pp.pt_longitude >= '{$filter['gps']['lon']}' AND pp.pt_longitude < '$lon_max'\n";
 }
 $db->sql .= "ORDER BY pp.pt_create_date
