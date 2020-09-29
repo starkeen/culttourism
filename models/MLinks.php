@@ -105,7 +105,7 @@ class MLinks extends Model
                            LEFT JOIN {$this->_tables_related['region_url']} AS url ON url.uid = c.pc_url_id
                            WHERE u.is_ok = 0
                              AND u.status_count > 0
-                           ORDER BY u.status_count DESC, c.pc_order DESC, c.pc_count_points DESC
+                           ORDER BY u.status_count DESC, c.pc_order DESC, c.pc_count_points DESC, u.status DESC
                            LIMIT :limit";
         $this->_db->execute(
             [
