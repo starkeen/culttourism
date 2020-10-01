@@ -13,7 +13,7 @@ $smarty->assign('title', 'Ссылки для ручной проверки');
 
 $linksModel = new MLinks($db);
 
-$urls = $linksModel->getList();
+$urls = $linksModel->getList(1000);
 $pager = new Pager($urls);
 
 $smarty->assign('links', $pager->out);
