@@ -53,7 +53,7 @@ class CheckUrlsCommand extends CrontabCommand
     {
         $this->linksModel->makeCache();
 
-        $portion = $this->linksModel->getCheckPortion(20);
+        $portion = $this->linksModel->getCheckPortion(5);
         foreach ($portion as $urlData) {
             $context = null;
             $id = (int) $urlData['id'];
