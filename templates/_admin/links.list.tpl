@@ -28,7 +28,7 @@
                 <td style="text-align: center;">
                     {$link.status}
                     <br />
-                    <span style="font-style: italic">{$link.content_kb|string_format:"%d"} kB</span>
+                    <span style="font-style: italic">{$link.content_kb|string_format:"%.1f"} kB</span>
                 </td>
             </tr>
         {/foreach}
