@@ -95,7 +95,7 @@ class MLinks extends Model
     public function getList(int $count): array
     {
         $this->_db->sql = "SELECT u.*,
-                             ROUND(u.content_size / 1024) AS content_kb,
+                             ROUND(u.content_size / 1024, 1) AS content_kb,
                              o.pt_name,
                              c.pc_title_unique,
                              CONCAT(url.url, '/') AS url_city,
