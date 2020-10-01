@@ -70,7 +70,7 @@ class CheckUrlsCommand extends CrontabCommand
                 $statusCodeNew = $exception->getResponse()->getStatusCode();
                 $contentSize = null;
             } catch (ConnectException $exception) {
-                $statusCodeNew = 500;
+                $statusCodeNew = 523;
                 $contentSize = null;
             } catch (RequestException $exception) {
                 $context = [
