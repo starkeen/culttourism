@@ -92,7 +92,7 @@ class MLinks extends Model
         );
     }
 
-    public function getList(int $count): array
+    public function getList(): array
     {
         $this->_db->sql = "SELECT u.*,
                              ROUND(u.content_size / 1024) AS content_kb,
@@ -109,11 +109,7 @@ class MLinks extends Model
                              AND o.pt_active = 1
                            ORDER BY u.status_count DESC, c.pc_order DESC, c.pc_count_points DESC, u.status DESC
                            LIMIT :limit";
-        $this->_db->execute(
-            [
-                ':limit' => $count,
-            ]
-        );
+        $this->_db->execute();
 
         return $this->_db->fetchAll();
     }
