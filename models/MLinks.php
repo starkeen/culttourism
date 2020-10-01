@@ -43,7 +43,7 @@ class MLinks extends Model
     public function makeCache(): void
     {
         $this->_db->sql = "INSERT $this->_table_name (id_object, url, fetch_date, last_date)
-                            (SELECT pt_id, pt_website, NOW(), NOW() FROM {$this->_tables_related['pagepoints']} AS o WHERE pt_website IS NOT NULL AND pt_website != '')
+                            (SELECT pt_id, pt_website, NOW(), NOW() FROM {$this->_tables_related['pagepoints']} AS o WHERE pt_website IS NOT NULL AND pt_website != '' AND pt_active = 1)
                            ON DUPLICATE KEY UPDATE url = pt_website, last_date = NOW()";
         $this->_db->exec();
     }
@@ -54,6 +54,7 @@ class MLinks extends Model
                            FROM $this->_table_name AS u
                            LEFT JOIN {$this->_tables_related['pagepoints']} AS o ON o.pt_id = u.id_object
                            LEFT JOIN {$this->_tables_related['pagecity']} AS c ON c.pc_id = o.pt_citypage_id
+                           WHERE o.pt_active = 1
                            ORDER BY status_date ASC
                            LIMIT :limit";
         $this->_db->execute(
@@ -105,6 +106,7 @@ class MLinks extends Model
                            LEFT JOIN {$this->_tables_related['region_url']} AS url ON url.uid = c.pc_url_id
                            WHERE u.is_ok = 0
                              AND u.status_count > 0
+                             AND o.pt_active = 1
                            ORDER BY u.status_count DESC, c.pc_order DESC, c.pc_count_points DESC, u.status DESC
                            LIMIT :limit";
         $this->_db->execute(
