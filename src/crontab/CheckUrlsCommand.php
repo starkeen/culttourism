@@ -103,7 +103,9 @@ class CheckUrlsCommand extends CrontabCommand
                     'old' => $statusCodeOld,
                     'new' => $statusCodeNew,
                 ];
-                $this->logger->info('Изменился статус ответа URL', $context);
+                if ($statusCodeOld !== null) {
+                    $this->logger->info('Изменился статус ответа URL', $context);
+                }
                 $statusCount = 0;
             } else {
                 $statusCount++;
