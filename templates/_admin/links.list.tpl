@@ -37,7 +37,7 @@
                 <td style="">
                     <a href="{$link.url}" target="_blank">{$link.url}</a>
                 </td>
-                <td style="text-align: center;">
+                <td class="{$link.status_class}" style="text-align: center;">
                     {$link.status}
                     <br/>
                     <span style="font-style: italic">{$link.content_kb|string_format:"%.1f"} kB</span>
@@ -48,3 +48,5 @@
 
     {$pager}
 </div>
+
+<link rel="stylesheet" href="/css/admin/links.css" type="text/css"/>
