@@ -1,15 +1,15 @@
 .status-fatal {
-    background-color: #90636e !important;
+    background-color: #F8CCCA !important;
 }
 
 .status-error {
-    background-color: #636490 !important;
+    background-color: #CACCF8 !important;
 }
 
 .status-redirect {
-    background-color: #908f63 !important;
+    background-color: #F8EBCA !important;
 }
 
 .status-ok {
-    background-color: #639063 !important;
+    background-color: #DAF8CA !important;
 }
