@@ -68,7 +68,7 @@ class MLinks extends Model
 
     public function updateStatus(int $id, int $statusCode, int $statusCount, ?int $contentSize): void
     {
-        $isOk = in_array($statusCode, [200], true) && $contentSize > 5000;
+        $isOk = $statusCode === 200 && $contentSize > 3000;
 
         $this->updateByPk(
             $id,
@@ -105,7 +105,7 @@ class MLinks extends Model
                            LEFT JOIN {$this->_tables_related['pagecity']} AS c ON c.pc_id = o.pt_citypage_id
                            LEFT JOIN {$this->_tables_related['region_url']} AS url ON url.uid = c.pc_url_id
                            WHERE u.is_ok = 0
-                             AND u.status_count > 0
+                             AND u.status_count > 1
                              AND o.pt_active = 1
                            ORDER BY u.status_count DESC, c.pc_order DESC, c.pc_count_points DESC, u.status DESC
                            LIMIT :limit";

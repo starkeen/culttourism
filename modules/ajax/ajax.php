@@ -135,6 +135,10 @@ class Page extends PageCommon
         }
         $p = new MPagePoints($this->db);
         $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $pid);
+
+        $linksModel = new MLinks($this->db);
+        $linksModel->deleteByPoint($pid);
+
         return $p->updateByPk($pid, ['pt_adress' => $_POST['addr']]);
     }
 
@@ -260,7 +264,6 @@ class Page extends PageCommon
     private function getPointNew($id)
     {
         if ($this->checkEdit()) {
-            $city_title = '';
             if ($id) {
                 $pc = new MPageCities($this->db);
                 $city = $pc->getItemByPk($id);
@@ -290,6 +293,9 @@ class Page extends PageCommon
         $pp = new MPagePoints($this->db);
         $state = $pp->deleteByPk($ppid);
         if ($state) {
+            $linksModel = new MLinks($this->db);
+            $linksModel->deleteByPoint($ppid);
+
             return $ppid;
         } else {
             return false;
@@ -306,7 +312,7 @@ class Page extends PageCommon
         }
         $pts = new MPagePoints($this->db);
         $add_item = [
-            'pt_name' => trim($_POST['nname']) != '' ? trim($_POST['nname']) : '[не указано]',
+            'pt_name' => trim($_POST['nname']) !== '' ? trim($_POST['nname']) : '[не указано]',
             'pt_description' => trim($_POST['ndesc']),
             'pt_citypage_id' => (int) $_POST['cid'],
             'pt_website' => trim($_POST['nweb']),
