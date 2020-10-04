@@ -36,6 +36,7 @@ class MLinks extends Model
         $this->_addRelatedTable('pagepoints');
         $this->_addRelatedTable('pagecity');
         $this->_addRelatedTable('region_url');
+        $this->_addRelatedTable('ref_pointtypes');
     }
 
     /**
@@ -97,6 +98,7 @@ class MLinks extends Model
         $this->_db->sql = "SELECT u.*,
                              ROUND(u.content_size / 1024, 1) AS content_kb,
                              o.pt_name,
+                             pt.tp_icon, pt.tp_short, pt.tp_name,
                              c.pc_title_unique,
                              CONCAT(url.url, '/') AS url_city,
                              CONCAT(url.url, '/', o.pt_slugline, '.html') AS url_point
@@ -104,6 +106,7 @@ class MLinks extends Model
                            LEFT JOIN {$this->_tables_related['pagepoints']} AS o ON o.pt_id = u.id_object
                            LEFT JOIN {$this->_tables_related['pagecity']} AS c ON c.pc_id = o.pt_citypage_id
                            LEFT JOIN {$this->_tables_related['region_url']} AS url ON url.uid = c.pc_url_id
+                           LEFT JOIN {$this->_tables_related['pagecity']} pt ON pt.tp_id = o.pt_type_id
                            WHERE u.is_ok = 0
                              AND u.status_count > 1
                              AND o.pt_active = 1

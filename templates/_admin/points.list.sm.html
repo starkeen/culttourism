@@ -97,15 +97,21 @@
         <td style="text-align: center;">
             <a href="{$point.url}/{$point.pt_slugline}.html" target="_blank">{$point.pt_id}</a>
         </td>
-        <td>{$point.country_name}</td>
-        <td>{$point.region_name}</td>
+        <td>
+            {$point.country_name}
+        </td>
+        <td>
+            {$point.region_name}
+        </td>
         <td>
             <a href="{$point.url}/" target="_blank" id="points-pctitle-{$point.pt_id}">{$point.pc_title}</a>
         </td>
         <td style="text-align: center;">
             <input type="button" class="points-moveto" data-oid="{$point.pt_id}" value=">" title="Переместить" />
         </td>
-        <td><img src="/img/points/x16/{$point.tp_icon}" alt="{$point.tp_short}" title="{$point.tp_name}"></td>
+        <td>
+            <img src="/img/points/x16/{$point.tp_icon}" alt="{$point.tp_short}" title="{$point.tp_name}">
+        </td>
         <td>
             <a href="#" class="points-editprop" data-prop="pt_name" data-oid="{$point.pt_id}">
                 {if $point.pt_active == 0}<s>{$point.pt_name}</s>{else}{$point.pt_name}{/if}
