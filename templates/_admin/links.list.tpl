@@ -11,12 +11,16 @@
 
     <table class="commontable" cellspacing="1">
         <tr>
+            <th>K</th>
             <th>Точка</th>
             <th>URL</th>
             <th>Код</th>
         </tr>
         {foreach from=$links item=link}
             <tr>
+                <td style="text-align: center;">
+                    {$link.status_count}
+                </td>
                 <td>
                     <a href="{$link.url_point}" target="_blank">{$link.pt_name}</a>
                     <br/>
