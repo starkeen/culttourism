@@ -30,7 +30,7 @@ foreach ($pager->out as $link) {
     $links[] = $link;
 }
 
-$smarty->assign('links', $pager->out);
+$smarty->assign('links', $links);
 $smarty->assign('pager', $pager->pages);
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/links.list.tpl'));
 
