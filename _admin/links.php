@@ -40,7 +40,7 @@ foreach ($pager->out as $link) {
             $redirectUrlDomain = str_replace('www.', '', $redirectUrlDomain);
         }
 
-        if ($redirectUrlDomain === $currentUrlDomain) {
+        if (strtolower($redirectUrlDomain) === strtolower($currentUrlDomain)) {
             $link['process_redirect'] = true;
         }
     }
