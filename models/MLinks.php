@@ -28,6 +28,7 @@ class MLinks extends Model
             'status_count',
             'status_date',
             'content_size',
+            'redirect_url',
             'is_ok',
         ];
 
