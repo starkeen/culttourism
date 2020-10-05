@@ -47,7 +47,7 @@
                     <a href="{$link.redirect_url}" target="_blank">{$link.redirect_url}</a>
                     {if $link.process_redirect}
                         <br />
-                        <span class="links-redirect-process">использовать</span>
+                        <span class="links-redirect-process" data-id="{$link.id}">использовать</span>
                     {/if}
                 </td>
             </tr>

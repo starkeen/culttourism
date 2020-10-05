@@ -6,12 +6,34 @@ use app\sys\TemplateEngine;
 use models\MLinks;
 
 include('common.php');
-include (_DIR_INCLUDES . '/class.Pager.php');
+include(_DIR_INCLUDES . '/class.Pager.php');
 
 /** @var TemplateEngine $smarty */
 $smarty->assign('title', 'Ссылки для ручной проверки');
 
 $linksModel = new MLinks($db);
+$pointsModel = new MPagePoints($db);
+
+$act = $_GET['act'] ?? null;
+
+if ($act === 'process-redirect') {
+    $id = (int) $_POST['id'];
+    $record = $linksModel->getItemByPk($id);
+    if ($record['redirect_url'] !== null) {
+        $pointsModel->updateByPk(
+            $record['id_object'],
+            [
+                'pt_website' => $record['redirect_url'],
+            ]
+        );
+        $linksModel->deleteByPoint($record['id_object']);
+    }
+    $out = [
+        'state' => true,
+    ];
+    json($out);
+    exit();
+}
 
 $urls = $linksModel->getList(1000);
 $pager = new Pager($urls);
@@ -53,4 +75,6 @@ $smarty->assign('pager', $pager->pages);
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/links.list.tpl'));
 
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
+
+
 exit();

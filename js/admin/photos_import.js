@@ -29,8 +29,6 @@ $(document).ready(function () {
         $("#photos-object-detail-id").val($element.data("id"));
         $("#photos-object-detail-latitude").val($element.data("latitude"));
         $("#photos-object-detail-longitude").val($element.data("longitude"));
-        //$("#photos-object-search").show();
-        //$("#photos-object-clear").show();
         $("#photos-object-detail").show();
         $("#photos-object-search").click();
     });
