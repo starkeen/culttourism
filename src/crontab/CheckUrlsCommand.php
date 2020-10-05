@@ -64,8 +64,9 @@ class CheckUrlsCommand extends CrontabCommand
             $statusCodeOld = $urlData['status'];
             $statusCount = $urlData['status_count'];
 
-            $scheme = parse_url($url, PHP_URL_SCHEME);
-            $domain = parse_url($url, PHP_URL_HOST);
+            $urlScheme = parse_url($url, PHP_URL_SCHEME);
+            $urlDomain = parse_url($url, PHP_URL_HOST);
+            $redirectUrl = null;
 
             try {
                 $response = $this->httpClient->request('GET', $url, self::HTTP_REQUEST_OPTIONS);
@@ -75,11 +76,22 @@ class CheckUrlsCommand extends CrontabCommand
                 $statusCodeNew = $response->getStatusCode();
                 $contentSize = $response->getBody()->getSize();
 
-                $this->logger->info('Зафиксирован редирект', [
-                    'headers_redirect' => $headersRedirect,
-                    'scheme_old' => $scheme,
-                    'domain_old' => $domain,
-                ]);
+                if (!empty($headersRedirect)) {
+                    $statusCodeNew = 301;
+                    $redirectUrl = array_pop($headersRedirect);
+                    $redirectUrlScheme = parse_url($redirectUrl, PHP_URL_SCHEME);
+                    $redirectUrlDomain = parse_url($redirectUrl, PHP_URL_HOST);
+                    if ($redirectUrlDomain === $urlDomain && $redirectUrlScheme !== $urlScheme) {
+                        $context = [
+                            'url' => $url,
+                            'redirect' => $redirectUrl,
+                            'old' => $statusCodeOld,
+                            'page' => $urlData['pt_name'],
+                            'city' => $urlData['pc_title_unique'],
+                        ];
+                        $this->logger->info('Редирект на https', $context);
+                    }
+                }
             } catch (BadResponseException $exception) {
                 $statusCodeNew = $exception->getResponse()->getStatusCode();
                 $contentSize = null;
@@ -116,6 +128,7 @@ class CheckUrlsCommand extends CrontabCommand
                     'city' => $urlData['pc_title_unique'],
                     'old' => $statusCodeOld,
                     'new' => $statusCodeNew,
+                    'redirectUrl' => $redirectUrl,
                 ];
                 if ($statusCodeOld !== null) {
                     $this->logger->info('Изменился статус ответа URL', $context);
@@ -125,7 +138,7 @@ class CheckUrlsCommand extends CrontabCommand
                 $statusCount++;
             }
 
-            $this->linksModel->updateStatus($id, $statusCodeNew, $statusCount, $contentSize);
+            $this->linksModel->updateStatus($id, $statusCodeNew, $statusCount, $contentSize, $redirectUrl);
         }
     }
 }
