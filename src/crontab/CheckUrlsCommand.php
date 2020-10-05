@@ -78,7 +78,7 @@ class CheckUrlsCommand extends CrontabCommand
 
                 if (!empty($headersRedirect)) {
                     $statusCodeNew = 301;
-                    $redirectUrl = array_pop($headersRedirect);
+                    $redirectUrl = array_pop($headersRedirect) ?: null;
                     $redirectUrlScheme = parse_url($redirectUrl, PHP_URL_SCHEME);
                     $redirectUrlDomain = parse_url($redirectUrl, PHP_URL_HOST);
                     if ($redirectUrlDomain === $urlDomain && $redirectUrlScheme !== $urlScheme) {
