@@ -18,6 +18,7 @@
             <th>Точка</th>
             <th>URL</th>
             <th>Код</th>
+            <th>Редирект</th>
         </tr>
         {foreach from=$links item=link}
             <tr>
@@ -42,6 +43,13 @@
                     <br/>
                     <span style="font-style: italic">{$link.content_kb|string_format:"%.1f"} kB</span>
                 </td>
+                <td>
+                    <a href="{$link.redirect_url}" target="_blank">{$link.redirect_url}</a>
+                    {if $link.process_redirect}
+                        <br />
+                        <span class="links-redirect-process">использовать</span>
+                    {/if}
+                </td>
             </tr>
         {/foreach}
     </table>
@@ -50,3 +58,4 @@
 </div>
 
 <link rel="stylesheet" href="/css/admin/links.css" type="text/css"/>
+<script type="text/javascript" src="/js/admin/links.js" defer="defer"></script>

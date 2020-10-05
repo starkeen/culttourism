@@ -13,3 +13,9 @@
 .status-ok {
     background-color: #DAF8CA !important;
 }
+
+.links-redirect-process {
+    color: #004C96;
+    border-bottom: 1px dotted #004C96;
+    cursor: pointer;
+}

@@ -27,6 +27,26 @@ foreach ($pager->out as $link) {
     } else {
         $link['status_class'] = 'status-ok';
     }
+
+    $link['process_redirect'] = false;
+    if ($link['status'] === 301) {
+        $currentUrlScheme = parse_url($link['url'], PHP_URL_SCHEME);
+        $currentUrlDomain = parse_url($link['url'], PHP_URL_HOST);
+        $redirectUrlScheme = parse_url($link['redirect_url'], PHP_URL_SCHEME);
+        $redirectUrlDomain = parse_url($link['redirect_url'], PHP_URL_HOST);
+
+        if (strpos($currentUrlDomain, 'www.') === 0) {
+            $currentUrlDomain = str_replace('www.', '', $currentUrlDomain);
+        }
+        if (strpos($redirectUrlDomain, 'www.') === 0) {
+            $redirectUrlDomain = str_replace('www.', '', $redirectUrlDomain);
+        }
+
+        if ($redirectUrlDomain === $currentUrlDomain && $redirectUrlScheme !== $currentUrlScheme) {
+            $link['process_redirect'] = true;
+        }
+    }
+
     $links[] = $link;
 }
 
