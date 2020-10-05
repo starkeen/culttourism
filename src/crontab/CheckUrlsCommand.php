@@ -8,6 +8,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\RedirectMiddleware;
 use GuzzleHttp\RequestOptions;
 use models\MLinks;
 use Psr\Log\LoggerInterface;
@@ -16,7 +17,9 @@ use Throwable;
 class CheckUrlsCommand extends CrontabCommand
 {
     private const HTTP_REQUEST_OPTIONS = [
-        RequestOptions::ALLOW_REDIRECTS => false,
+        RequestOptions::ALLOW_REDIRECTS => [
+            'track_redirects' => true,
+        ],
         RequestOptions::CONNECT_TIMEOUT => 2,
         RequestOptions::READ_TIMEOUT => 2,
         RequestOptions::TIMEOUT => 2,
@@ -61,11 +64,22 @@ class CheckUrlsCommand extends CrontabCommand
             $statusCodeOld = $urlData['status'];
             $statusCount = $urlData['status_count'];
 
+            $scheme = parse_url($url, PHP_URL_SCHEME);
+            $domain = parse_url($url, PHP_URL_HOST);
+
             try {
                 $response = $this->httpClient->request('GET', $url, self::HTTP_REQUEST_OPTIONS);
 
+                $headersRedirect = $response->getHeader(RedirectMiddleware::HISTORY_HEADER);
+
                 $statusCodeNew = $response->getStatusCode();
                 $contentSize = $response->getBody()->getSize();
+
+                $this->logger->info('Зафиксирован редирект', [
+                    'headers_redirect' => $headersRedirect,
+                    'scheme_old' => $scheme,
+                    'domain_old' => $domain,
+                ]);
             } catch (BadResponseException $exception) {
                 $statusCodeNew = $exception->getResponse()->getStatusCode();
                 $contentSize = null;
