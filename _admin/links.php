@@ -31,7 +31,8 @@ if ($act === 'process-redirect') {
     $out = [
         'state' => true,
     ];
-    json($out);
+    header('Content-Type: application/json');
+    echo json_encode($out);
     exit();
 }
 
