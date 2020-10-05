@@ -30,9 +30,7 @@ foreach ($pager->out as $link) {
 
     $link['process_redirect'] = false;
     if ($link['status'] === 301 && $link['redirect_url'] !== null) {
-        $currentUrlScheme = parse_url($link['url'], PHP_URL_SCHEME);
         $currentUrlDomain = parse_url($link['url'], PHP_URL_HOST);
-        $redirectUrlScheme = parse_url($link['redirect_url'], PHP_URL_SCHEME);
         $redirectUrlDomain = parse_url($link['redirect_url'], PHP_URL_HOST);
 
         if (strpos($currentUrlDomain, 'www.') === 0) {
@@ -42,7 +40,7 @@ foreach ($pager->out as $link) {
             $redirectUrlDomain = str_replace('www.', '', $redirectUrlDomain);
         }
 
-        if ($redirectUrlDomain === $currentUrlDomain && $redirectUrlScheme !== $currentUrlScheme) {
+        if ($redirectUrlDomain === $currentUrlDomain) {
             $link['process_redirect'] = true;
         }
     }
