@@ -58,7 +58,6 @@ class CheckUrlsCommand extends CrontabCommand
 
         $portion = $this->linksModel->getCheckPortion(5);
         foreach ($portion as $urlData) {
-            $context = null;
             $id = (int) $urlData['id'];
             $url = $urlData['url'];
             $statusCodeOld = $urlData['status'];
@@ -82,14 +81,14 @@ class CheckUrlsCommand extends CrontabCommand
                     $redirectUrlScheme = parse_url($redirectUrl, PHP_URL_SCHEME);
                     $redirectUrlDomain = parse_url($redirectUrl, PHP_URL_HOST);
                     if ($redirectUrlDomain === $urlDomain && $redirectUrlScheme !== $urlScheme) {
-                        $context = [
+                        $context1 = [
                             'url' => $url,
                             'redirect' => $redirectUrl,
                             'old' => $statusCodeOld,
                             'page' => $urlData['pt_name'],
                             'city' => $urlData['pc_title_unique'],
                         ];
-                        $this->logger->info('Редирект на https', $context);
+                        $this->logger->info('Редирект на https', $context1);
                     }
                 }
             } catch (BadResponseException $exception) {
@@ -99,7 +98,7 @@ class CheckUrlsCommand extends CrontabCommand
                 $statusCodeNew = 523;
                 $contentSize = null;
             } catch (RequestException $exception) {
-                $context = [
+                $context2 = [
                     'url' => $url,
                     'old' => $statusCodeOld,
                     'page' => $urlData['pt_name'],
@@ -107,22 +106,22 @@ class CheckUrlsCommand extends CrontabCommand
                     'exception_message' => $exception->getMessage(),
                     'exception_response' => $exception->getResponse(),
                 ];
-                $this->logger->warning('Сетевая ошибка в запросе', $context);
+                $this->logger->warning('Сетевая ошибка в запросе', $context2);
                 continue;
             } catch (Throwable $exception) {
-                $context = [
+                $context3 = [
                     'url' => $url,
                     'old' => $statusCodeOld,
                     'page' => $urlData['pt_name'],
                     'city' => $urlData['pc_title_unique'],
                     'exception_message' => $exception->getMessage(),
                 ];
-                $this->logger->warning('Системная ошибка в сетевом запросе', $context);
+                $this->logger->warning('Системная ошибка в сетевом запросе', $context3);
                 continue;
             }
 
             if ($statusCodeOld !== $statusCodeNew) {
-                $context = [
+                $context4 = [
                     'url' => $url,
                     'page' => $urlData['pt_name'],
                     'city' => $urlData['pc_title_unique'],
@@ -131,7 +130,7 @@ class CheckUrlsCommand extends CrontabCommand
                     'redirectUrl' => $redirectUrl,
                 ];
                 if ($statusCodeOld !== null) {
-                    $this->logger->info('Изменился статус ответа URL', $context);
+                    $this->logger->info('Изменился статус ответа URL', $context4);
                 }
                 $statusCount = 0;
             } else {
