@@ -12,7 +12,7 @@ class UnirefKeys extends Model
         $this->_table_fields = [
         ];
         parent::__construct($db);
-        $this->_addRelatedTable('uniref_values');
+        $this->addRelatedTable('uniref_values');
     }
 
     public function getAll(): array

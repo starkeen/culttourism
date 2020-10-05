@@ -18,7 +18,7 @@ class MNewsItems extends Model {
             'ni_active',
         );
         parent::__construct($db);
-        $this->_addRelatedTable('news_sourses');
+        $this->addRelatedTable('news_sourses');
     }
 
     public function cleanExpired() {

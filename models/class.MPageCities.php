@@ -45,10 +45,10 @@ class MPageCities extends Model
             'pc_active',
         ];
         parent::__construct($db);
-        $this->_addRelatedTable('region_url');
-        $this->_addRelatedTable('pagepoints');
-        $this->_addRelatedTable('city_data');
-        $this->_addRelatedTable('photos');
+        $this->addRelatedTable('region_url');
+        $this->addRelatedTable('pagepoints');
+        $this->addRelatedTable('city_data');
+        $this->addRelatedTable('photos');
     }
 
     /**

@@ -24,10 +24,10 @@ class MWordstat extends Model {
             'ws_position_last',
         );
         parent::__construct($db);
-        $this->_addRelatedTable('pagecity');
-        $this->_addRelatedTable('ref_city');
-        $this->_addRelatedTable('ref_region');
-        $this->_addRelatedTable('ref_country');
+        $this->addRelatedTable('pagecity');
+        $this->addRelatedTable('ref_city');
+        $this->addRelatedTable('ref_region');
+        $this->addRelatedTable('ref_country');
     }
 
     /**

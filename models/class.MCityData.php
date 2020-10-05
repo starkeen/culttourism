@@ -15,7 +15,7 @@ class MCityData extends Model {
             'cd_value',
         );
         parent::__construct($db);
-        $this->_addRelatedTable('city_fields');
+        $this->addRelatedTable('city_fields');
     }
 
     public function getByCityId($cid) {

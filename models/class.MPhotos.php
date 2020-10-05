@@ -29,9 +29,9 @@ class MPhotos extends Model
             'ph_active',
         ];
         parent::__construct($db);
-        $this->_addRelatedTable('pagecity');
-        $this->_addRelatedTable('pagepoints');
-        $this->_addRelatedTable('wordstat');
+        $this->addRelatedTable('pagecity');
+        $this->addRelatedTable('pagepoints');
+        $this->addRelatedTable('wordstat');
     }
 
     /**

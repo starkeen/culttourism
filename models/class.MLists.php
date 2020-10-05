@@ -22,7 +22,7 @@ class MLists extends Model
             'ls_active',
         ];
         parent::__construct($db);
-        $this->_addRelatedTable('lists_items');
+        $this->addRelatedTable('lists_items');
     }
 
     public function getItemBySlugline($slugline)

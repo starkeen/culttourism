@@ -19,11 +19,11 @@ class MListsItems extends Model
         ];
         $this->_list_id = intval($lid);
         parent::__construct($db);
-        $this->_addRelatedTable('lists');
-        $this->_addRelatedTable('pagepoints');
-        $this->_addRelatedTable('pagecity');
-        $this->_addRelatedTable('region_url');
-        $this->_addRelatedTable('ref_pointtypes');
+        $this->addRelatedTable('lists');
+        $this->addRelatedTable('pagepoints');
+        $this->addRelatedTable('pagecity');
+        $this->addRelatedTable('region_url');
+        $this->addRelatedTable('ref_pointtypes');
     }
 
     public function setField($field, $pt_id, $val)

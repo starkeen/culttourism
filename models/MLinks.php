@@ -34,10 +34,10 @@ class MLinks extends Model
 
         parent::__construct($db);
 
-        $this->_addRelatedTable('pagepoints');
-        $this->_addRelatedTable('pagecity');
-        $this->_addRelatedTable('region_url');
-        $this->_addRelatedTable('ref_pointtypes');
+        $this->addRelatedTable('pagepoints');
+        $this->addRelatedTable('pagecity');
+        $this->addRelatedTable('region_url');
+        $this->addRelatedTable('ref_pointtypes');
     }
 
     /**
@@ -50,6 +50,11 @@ class MLinks extends Model
         $this->_db->exec();
     }
 
+    /**
+     * @param int $count
+     *
+     * @return array[]
+     */
     public function getCheckPortion(int $count = 10): array
     {
         $this->_db->sql = "SELECT u.*, o.pt_name, c.pc_title_unique
@@ -68,6 +73,13 @@ class MLinks extends Model
         return $this->_db->fetchAll();
     }
 
+    /**
+     * @param int $id
+     * @param int $statusCode
+     * @param int $statusCount
+     * @param int|null $contentSize
+     * @param string|null $redirectUrl
+     */
     public function updateStatus(int $id, int $statusCode, int $statusCount, ?int $contentSize, ?string $redirectUrl = null): void
     {
         $isOk = $statusCode === 200 && $contentSize > 3000;
@@ -85,6 +97,9 @@ class MLinks extends Model
         );
     }
 
+    /**
+     * @param int $objectId
+     */
     public function deleteByPoint(int $objectId): void
     {
         $this->_db->sql = "DELETE FROM $this->_table_name WHERE id_object = :object_id";
@@ -95,6 +110,11 @@ class MLinks extends Model
         );
     }
 
+    /**
+     * @param int $count
+     *
+     * @return array[]
+     */
     public function getList(int $count): array
     {
         $this->_db->sql = "SELECT u.*,
@@ -123,10 +143,3 @@ class MLinks extends Model
         return $this->_db->fetchAll();
     }
 }
-
-//SELECT  p.pt_name, c.pc_title_unique, l.url, l.status
-//FROM `cult_links` l
-//LEFT JOIN cult_pagepoints p ON p.pt_id = l.id_object
-//LEFT JOIN cult_pagecity c ON c.pc_id = p.pt_citypage_id
-//WHERE `is_ok` = 0 AND status > 301
-//ORDER BY status DESC, c.pc_title_unique ASC

@@ -27,8 +27,8 @@ class MPhones extends Model
 
         parent::__construct($db);
 
-        $this->_addRelatedTable('pagecity');
-        $this->_addRelatedTable('city_data');
+        $this->addRelatedTable('pagecity');
+        $this->addRelatedTable('city_data');
     }
 
     /**

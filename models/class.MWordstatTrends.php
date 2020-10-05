@@ -16,7 +16,7 @@ class MWordstatTrends extends Model {
             'wp_positions_avg',
         );
         parent::__construct($db);
-        $this->_addRelatedTable('wordstat');
+        $this->addRelatedTable('wordstat');
     }
 
     public function calcToday()

@@ -42,11 +42,11 @@ class MCandidatePoints extends Model
         ];
         parent::__construct($db);
 
-        $this->_addRelatedTable('pagecity');
-        $this->_addRelatedTable('uniref_values');
-        $this->_addRelatedTable('ref_pointtypes');
-        $this->_addRelatedTable('region_url');
-        $this->_addRelatedTable('data_check');
+        $this->addRelatedTable('pagecity');
+        $this->addRelatedTable('uniref_values');
+        $this->addRelatedTable('ref_pointtypes');
+        $this->addRelatedTable('region_url');
+        $this->addRelatedTable('data_check');
 
         $rpt = new MRefPointtypes($this->_db);
         $this->types_markers = $rpt->getMarkers();

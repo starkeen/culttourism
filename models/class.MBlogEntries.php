@@ -19,7 +19,7 @@ class MBlogEntries extends Model
             'br_active',
         ];
         parent::__construct($db);
-        $this->_addRelatedTable('users');
+        $this->addRelatedTable('users');
     }
 
     /**

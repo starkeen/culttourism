@@ -39,13 +39,13 @@ class MPagePoints extends Model
             'pt_active',
         ];
         parent::__construct($db);
-        $this->_addRelatedTable('pagecity');
-        $this->_addRelatedTable('region_url');
-        $this->_addRelatedTable('photos');
-        $this->_addRelatedTable('lists');
-        $this->_addRelatedTable('lists_items');
-        $this->_addRelatedTable('data_check');
-        $this->_addRelatedTable('ref_pointtypes');
+        $this->addRelatedTable('pagecity');
+        $this->addRelatedTable('region_url');
+        $this->addRelatedTable('photos');
+        $this->addRelatedTable('lists');
+        $this->addRelatedTable('lists_items');
+        $this->addRelatedTable('data_check');
+        $this->addRelatedTable('ref_pointtypes');
     }
 
     /**
