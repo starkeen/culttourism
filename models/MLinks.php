@@ -115,7 +115,7 @@ class MLinks extends Model
      *
      * @return array[]
      */
-    public function getList(int $count): array
+    public function getHandProcessingList(int $count): array
     {
         $this->_db->sql = "SELECT u.*,
                              ROUND(u.content_size / 1024, 1) AS content_kb,
@@ -132,7 +132,7 @@ class MLinks extends Model
                            WHERE u.is_ok = 0
                              AND u.status_count > 1
                              AND o.pt_active = 1
-                           ORDER BY u.status_count DESC, c.pc_order DESC, c.pc_count_points DESC, u.status DESC
+                           ORDER BY u.status_count DESC, c.pc_order DESC, c.pc_count_points DESC, u.status DESC, o.pt_rank DESC
                            LIMIT :limit";
         $this->_db->execute(
             [

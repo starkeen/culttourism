@@ -36,7 +36,7 @@ if ($act === 'process-redirect') {
     exit();
 }
 
-$urls = $linksModel->getList(1000);
+$urls = $linksModel->getHandProcessingList(1000);
 $pager = new Pager($urls);
 
 $links = [];
