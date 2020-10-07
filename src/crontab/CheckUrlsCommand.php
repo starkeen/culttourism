@@ -19,6 +19,7 @@ class CheckUrlsCommand extends CrontabCommand
     private const HTTP_REQUEST_OPTIONS = [
         RequestOptions::ALLOW_REDIRECTS => [
             'track_redirects' => true,
+            'max' => 10,
         ],
         RequestOptions::CONNECT_TIMEOUT => 2,
         RequestOptions::READ_TIMEOUT => 2,
