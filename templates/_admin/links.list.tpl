@@ -36,6 +36,9 @@
                 </td>
                 <td>
                     <a href="{$link.url_point}" target="_blank">{$link.pt_name}</a>
+                    <a href="https://yandex.ru/yandsearch?text={$link.pt_name} {$link.pc_title_unique}" target="_blank">
+                        <img src="/img/btn/btn.search.png" />
+                    </a>
                     <br/>
                     <a href="{$link.url_city}" style="font-style: italic" target="_blank">{$link.pc_title_unique}</a>
                 </td>
