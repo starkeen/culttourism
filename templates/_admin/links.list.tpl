@@ -41,6 +41,7 @@
                 </td>
                 <td style="">
                     <a href="{$link.url}" target="_blank">{$link.url}</a>
+                    <img class="links-delete-process" data-id="{$link.id}" src="/img/btn/btn.delete.png" />
                 </td>
                 <td class="{$link.status_class}" style="text-align: center;">
                     {$link.status}
@@ -50,8 +51,7 @@
                 <td>
                     <a href="{$link.redirect_url}" target="_blank">{$link.redirect_url}</a>
                     {if $link.process_redirect}
-                        <br />
-                        <span class="links-redirect-process" data-id="{$link.id}">использовать</span>
+                        <img class="links-redirect-process" data-id="{$link.id}" src="/img/btn/btn.tick.png" />
                     {/if}
                 </td>
             </tr>

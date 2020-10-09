@@ -35,6 +35,22 @@ if ($act === 'process-redirect') {
     header('Content-Type: application/json');
     echo json_encode($out);
     exit();
+} elseif ($act === 'process-delete') {
+    $id = (int) $_POST['id'];
+    $record = $linksModel->getItemByPk($id);
+    $pointsModel->updateByPk(
+        $record['id_object'],
+        [
+            'pt_website' => $record['url'],
+        ]
+    );
+    $linksModel->deleteByPoint($record['id_object']);
+    $out = [
+        'state' => true,
+    ];
+    header('Content-Type: application/json');
+    echo json_encode($out);
+    exit();
 }
 
 $urls = $linksModel->getHandProcessingList(1000, $status ?: null);
