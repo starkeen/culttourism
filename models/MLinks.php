@@ -112,11 +112,15 @@ class MLinks extends Model
 
     /**
      * @param int $count
+     * @param int|null $status
      *
      * @return array[]
      */
-    public function getHandProcessingList(int $count): array
+    public function getHandProcessingList(int $count, ?int $status): array
     {
+        $params = [
+            ':limit' => $count,
+        ];
         $this->_db->sql = "SELECT u.*,
                              ROUND(u.content_size / 1024, 1) AS content_kb,
                              o.pt_name,
@@ -131,14 +135,15 @@ class MLinks extends Model
                            LEFT JOIN {$this->_tables_related['ref_pointtypes']} pt ON pt.tp_id = o.pt_type_id
                            WHERE u.is_ok = 0
                              AND u.status_count > 1
-                             AND o.pt_active = 1
-                           ORDER BY u.status_count DESC, c.pc_order DESC, c.pc_count_points DESC, u.status DESC, o.pt_rank DESC
-                           LIMIT :limit";
-        $this->_db->execute(
-            [
-                ':limit' => $count,
-            ]
-        );
+                             AND o.pt_active = 1 \n";
+        if ($status !== null) {
+            $this->_db->sql .= "AND u.status = :status\n";
+            $params[':status'] = $status;
+        }
+        $this->_db->sql .= "ORDER BY u.status_count DESC, c.pc_order DESC, c.pc_count_points DESC, u.status DESC, o.pt_rank DESC
+                            LIMIT :limit";
+
+        $this->_db->execute($params);
 
         return $this->_db->fetchAll();
     }
@@ -152,7 +157,7 @@ class MLinks extends Model
                              AND u.status_count > 1
                              AND o.pt_active = 1
                            GROUP BY u.status";
-        $this->_db->execute();
+        $this->_db->exec();
 
         return $this->_db->fetchAll();
     }

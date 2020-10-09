@@ -4,8 +4,9 @@
 <div>
     <fieldset>
         <legend>Фильтр</legend>
+        <a class="" href="?">все</a>
         {foreach from=$statuses item=statusData}
-            | <a href="?status={$statusData.status}">{$statusData.status}</a> <i>{$statusData.cnt}</i>
+            | <a class="{if $statusData.status == $status}selected-status{/if}" href="?status={$statusData.status}">{$statusData.status}</a> - <i>{$statusData.cnt}</i>
         {/foreach}
         <form method="get"></form>
     </fieldset>

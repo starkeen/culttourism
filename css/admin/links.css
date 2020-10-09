@@ -1,3 +1,7 @@
+.selected-status {
+    font-weight: bold;
+}
+
 .status-fatal {
     background-color: #F8CCCA !important;
 }
