@@ -39,6 +39,8 @@ if ($act === 'process-redirect') {
 $urls = $linksModel->getHandProcessingList(1000);
 $pager = new Pager($urls);
 
+$statuses = $linksModel->getHandProcessingStatuses();
+
 $links = [];
 foreach ($pager->out as $link) {
     if ($link['status'] >= 500) {
@@ -73,6 +75,7 @@ foreach ($pager->out as $link) {
 
 $smarty->assign('links', $links);
 $smarty->assign('pager', $pager->pages);
+$smarty->assign('statuses', $statuses);
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/links.list.tpl'));
 
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');

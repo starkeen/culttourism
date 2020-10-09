@@ -142,4 +142,18 @@ class MLinks extends Model
 
         return $this->_db->fetchAll();
     }
+
+    public function getHandProcessingStatuses(): array
+    {
+        $this->_db->sql = "SELECT u.status, COUNT(1) as cnt
+                           FROM $this->_table_name AS u
+                           LEFT JOIN {$this->_tables_related['pagepoints']} AS o ON o.pt_id = u.id_object
+                           WHERE u.is_ok = 0
+                             AND u.status_count > 1
+                             AND o.pt_active = 1
+                           GROUP BY u.status";
+        $this->_db->execute();
+
+        return $this->_db->fetchAll();
+    }
 }
