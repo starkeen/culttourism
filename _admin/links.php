@@ -19,6 +19,7 @@ $status = (int) ($_GET['status'] ?? null);
 
 if ($act === 'process-redirect') {
     $id = (int) $_POST['id'];
+    $state = false;
     $record = $linksModel->getItemByPk($id);
     if ($record['redirect_url'] !== null) {
         $pointsModel->updateByPk(
@@ -28,25 +29,30 @@ if ($act === 'process-redirect') {
             ]
         );
         $linksModel->deleteByPoint($record['id_object']);
+        $state = true;
     }
     $out = [
-        'state' => true,
+        'state' => $state,
     ];
     header('Content-Type: application/json');
     echo json_encode($out);
     exit();
 } elseif ($act === 'process-delete') {
     $id = (int) $_POST['id'];
+    $state = false;
     $record = $linksModel->getItemByPk($id);
-    $pointsModel->updateByPk(
-        $record['id_object'],
-        [
-            'pt_website' => '',
-        ]
-    );
-    $linksModel->deleteByPoint($record['id_object']);
+    if (!empty($record['id_object'])) {
+        $pointsModel->updateByPk(
+            $record['id_object'],
+            [
+                'pt_website' => '',
+            ]
+        );
+        $linksModel->deleteByPoint($record['id_object']);
+        $state = true;
+    }
     $out = [
-        'state' => true,
+        'state' => $state,
     ];
     header('Content-Type: application/json');
     echo json_encode($out);
