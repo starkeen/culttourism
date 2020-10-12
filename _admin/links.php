@@ -41,7 +41,7 @@ if ($act === 'process-redirect') {
     $pointsModel->updateByPk(
         $record['id_object'],
         [
-            'pt_website' => $record['url'],
+            'pt_website' => '',
         ]
     );
     $linksModel->deleteByPoint($record['id_object']);
