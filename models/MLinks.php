@@ -134,7 +134,7 @@ class MLinks extends Model
                            LEFT JOIN {$this->_tables_related['region_url']} AS url ON url.uid = c.pc_url_id
                            LEFT JOIN {$this->_tables_related['ref_pointtypes']} pt ON pt.tp_id = o.pt_type_id
                            WHERE u.is_ok = 0
-                             AND u.status_count > 1
+                             AND u.status_count > 2
                              AND o.pt_active = 1 \n";
         if ($status !== null) {
             $this->_db->sql .= "AND u.status = :status\n";
@@ -154,7 +154,7 @@ class MLinks extends Model
                            FROM $this->_table_name AS u
                            LEFT JOIN {$this->_tables_related['pagepoints']} AS o ON o.pt_id = u.id_object
                            WHERE u.is_ok = 0
-                             AND u.status_count > 1
+                             AND u.status_count > 2
                              AND o.pt_active = 1
                            GROUP BY u.status";
         $this->_db->exec();
