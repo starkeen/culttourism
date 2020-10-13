@@ -2,6 +2,11 @@
     font-weight: bold;
 }
 
+.links-content-title {
+    font-style: italic;
+    color: #5e5e5e;
+}
+
 .status-fatal {
     background-color: #F8CCCA !important;
 }

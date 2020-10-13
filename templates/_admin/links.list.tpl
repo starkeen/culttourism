@@ -45,6 +45,8 @@
                 <td style="">
                     <a href="{$link.url}" target="_blank">{$link.url}</a>
                     <img class="links-delete-process" data-id="{$link.id}" src="/img/btn/btn.delete.png" />
+                    <br />
+                    <span class="links-content-title">{$link.content_title}</span>
                 </td>
                 <td class="{$link.status_class}" style="text-align: center;">
                     {$link.status}

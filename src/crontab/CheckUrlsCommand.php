@@ -74,6 +74,7 @@ class CheckUrlsCommand extends CrontabCommand
                 $headersRedirect = $response->getHeader(RedirectMiddleware::HISTORY_HEADER);
 
                 $statusCodeNew = $response->getStatusCode();
+                $content = $response->getBody()->getContents();
                 $contentSize = $response->getBody()->getSize();
 
                 if (!empty($headersRedirect)) {
@@ -94,9 +95,11 @@ class CheckUrlsCommand extends CrontabCommand
                 }
             } catch (BadResponseException $exception) {
                 $statusCodeNew = $exception->getResponse()->getStatusCode();
+                $content = $exception->getResponse()->getBody()->getContents();
                 $contentSize = null;
             } catch (ConnectException $exception) {
                 $statusCodeNew = 523;
+                $content = null;
                 $contentSize = null;
             } catch (RequestException $exception) {
                 $context2 = [
@@ -138,7 +141,27 @@ class CheckUrlsCommand extends CrontabCommand
                 $statusCount++;
             }
 
-            $this->linksModel->updateStatus($id, $statusCodeNew, $statusCount, $contentSize, $redirectUrl);
+            $contentTitle = $this->getContentTitle($content);
+            $this->linksModel->updateStatus($id, $statusCodeNew, $statusCount, $contentSize, $contentTitle, $redirectUrl);
         }
+    }
+
+    /**
+     * @param string|null $content
+     *
+     * @return string|null
+     */
+    private function getContentTitle(?string $content): ?string
+    {
+        $result = null;
+
+        if ($content !== null) {
+            $matches = [];
+            if (preg_match("/<title>(.+)<\/title>/i", $content, $matches)) {
+                $result = $matches[1];
+            }
+        }
+
+        return $result;
     }
 }

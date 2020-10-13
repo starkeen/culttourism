@@ -28,6 +28,7 @@ class MLinks extends Model
             'status_count',
             'status_date',
             'content_size',
+            'content_title',
             'redirect_url',
             'is_ok',
         ];
@@ -78,9 +79,10 @@ class MLinks extends Model
      * @param int $statusCode
      * @param int $statusCount
      * @param int|null $contentSize
+     * @param string|null $contentTitle
      * @param string|null $redirectUrl
      */
-    public function updateStatus(int $id, int $statusCode, int $statusCount, ?int $contentSize, ?string $redirectUrl = null): void
+    public function updateStatus(int $id, int $statusCode, int $statusCount, ?int $contentSize, ?string $contentTitle, ?string $redirectUrl = null): void
     {
         $isOk = $statusCode === 200 && $contentSize > 3000;
 
@@ -91,6 +93,7 @@ class MLinks extends Model
                 'status_count' => $statusCount,
                 'status_date' => $this->now(),
                 'content_size' => $contentSize,
+                'content_title' => $contentTitle,
                 'redirect_url' => $redirectUrl,
                 'is_ok' => $isOk,
             ]
