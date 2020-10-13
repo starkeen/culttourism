@@ -157,8 +157,8 @@ class CheckUrlsCommand extends CrontabCommand
 
         if ($content !== null) {
             $matches = [];
-            if (preg_match("/<title>(.+)<\/title>/i", $content, $matches)) {
-                $result = $matches[1];
+            if (preg_match("/<title>(.+)<\/title>/is", $content, $matches)) {
+                $result = html_entity_decode(trim($matches[1]), ENT_QUOTES);
             }
         }
 
