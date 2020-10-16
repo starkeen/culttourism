@@ -1,5 +1,7 @@
 <h1>{$city.pc_title}</h1>
+
 <div id="city_path">{$city.pc_pagepath}</div>
+
 {if $city.pc_latitude && $city.pc_longitude}
 <div id="map_container">
     <div id="city_map" style="{if $page_image}background-image: url({$page_image});{/if}"></div>
@@ -11,6 +13,7 @@
     <a id="city_map_link" href="/map/#center={$city.pc_longitude},{$city.pc_latitude}&zoom={$city.pc_zoom+1}" title="Большая карта достопримечательностей {$city.pc_inwheretext}">на весь экран</a>
 </div>
 {/if}
+
 <div id="citytext">
     <div id="city_float">
         <div class="city_weather" data-lat="{$city.pc_latitude}" data-lon="{$city.pc_longitude}" title="погодные условия">
@@ -163,6 +166,7 @@
     {/if}
     {/if}
 </div>
+
 {if $city.pc_latitude && $city.pc_longitude}
 <input type="hidden" id="mapcity_pc_id" value="{$city.pc_id}" />
 <input type="hidden" id="mapcity_pc_latitude" value="{$city.pc_latitude}" />
@@ -175,4 +179,5 @@
 <div id="yandex_sharer">
     <script type="text/javascript" src="https://yastatic.net/share/share.js" charset="utf-8" defer="defer"></script><div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="small" data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki,moimir" data-yashareTheme="counter"></div>
 </div>
+
 <div id="yandex_ad_city" class="yandex_ad"></div>
