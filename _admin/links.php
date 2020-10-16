@@ -34,9 +34,7 @@ if ($act === 'process-redirect') {
     $out = [
         'state' => $state,
     ];
-    header('Content-Type: application/json');
-    echo json_encode($out);
-    exit();
+    answer($out);
 } elseif ($act === 'process-delete') {
     $id = (int) $_POST['id'];
     $state = false;
@@ -54,9 +52,30 @@ if ($act === 'process-redirect') {
     $out = [
         'state' => $state,
     ];
-    header('Content-Type: application/json');
-    echo json_encode($out);
-    exit();
+    answer($out);
+} elseif ($act === 'process-edit') {
+    $id = (int) $_POST['id'];
+    $value = cut_trash_string($_POST['value']);
+    $newValue = null;
+    $state = false;
+    $record = $linksModel->getItemByPk($id);
+    if (!empty($record['id_object'])) {
+        $pointsModel->updateByPk(
+            $record['id_object'],
+            [
+                'pt_website' => $value,
+            ]
+        );
+        $newPoint = $pointsModel->getItemByPk($record['id_object']);
+        $newValue = $newPoint['pt_website'];
+        $linksModel->deleteByPoint($record['id_object']);
+        $state = true;
+    }
+    $out = [
+        'state' => $state,
+        'value' => $newValue,
+    ];
+    answer($out);
 }
 
 $urls = $linksModel->getHandProcessingList(1000, $status ?: null);
@@ -106,3 +125,11 @@ $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
 
 
 exit();
+
+
+function answer(array $data): void
+{
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit();
+}

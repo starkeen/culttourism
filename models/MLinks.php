@@ -126,7 +126,7 @@ class MLinks extends Model
         ];
         $this->_db->sql = "SELECT u.*,
                              ROUND(u.content_size / 1024, 1) AS content_kb,
-                             o.pt_name,
+                             o.pt_name, o.pt_adress,
                              pt.tp_icon, pt.tp_short, pt.tp_name,
                              c.pc_title_unique,
                              CONCAT(url.url, '/') AS url_city,

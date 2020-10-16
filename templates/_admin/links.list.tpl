@@ -41,14 +41,16 @@
                     </a>
                     <br/>
                     <a href="{$link.url_city}" style="font-style: italic" target="_blank">{$link.pc_title_unique}</a>
+                    <span class="point-address">{$link.pt_adress}</span>
                 </td>
-                <td style="">
-                    <a href="{$link.url}" target="_blank">{$link.url}</a>
+                <td class="table-cell-url">
+                    <a href="{$link.url}" target="_blank" id="link-id-{$link.id}">{$link.url}</a>
                     <img class="links-delete-process" data-id="{$link.id}" src="/img/btn/btn.delete.png" />
+                    <img class="links-edit-process" data-id="{$link.id}" src="/img/btn/btn.edit.png" />
                     <br />
                     <span class="links-content-title">{$link.content_title}</span>
                 </td>
-                <td class="{$link.status_class}" style="text-align: center;">
+                <td class="{$link.status_class}" title="{$link.status_date}" style="text-align: center;">
                     {$link.status}
                     <br/>
                     <span style="font-style: italic">{$link.content_kb|string_format:"%.1f"} kB</span>
