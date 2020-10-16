@@ -48,7 +48,7 @@
 }
 .index-blog-title .textmarker {
     vertical-align: top;
-    margin:1px;
+    margin: 1px;
 }
 .index-blog-title a {
     font-weight: bold;
@@ -547,7 +547,7 @@ textarea.feedinput {
 
 /*------------------------------ page POINT ----------------------------------*/
 .textmarker {
-    margin-right:1em;
+    margin-right: 0;
 }
 #object_container {
     position:absolute;
@@ -561,10 +561,10 @@ textarea.feedinput {
 }
 #object_text_container {
     position: absolute;
-    width:100%;
-    margin-top:-1.1em;
-    top:0;
-    bottom:0;
+    width: 100%;
+    margin-top: -13px;
+    top: 0;
+    bottom: 0;
     margin-bottom: 7px;
     overflow-y: scroll;
 }
@@ -620,7 +620,13 @@ textarea.feedinput {
 }
 #object_contacts {
     list-style: none;
+    margin-top: 2px;
 }
+
+#object_contacts li {
+    margin-top: 2px;
+}
+
 #object_contacts img {
     vertical-align: middle;
 }
