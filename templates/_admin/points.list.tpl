@@ -1,6 +1,10 @@
 <img class="pageicon" src="/img/admin/ico.a_refs.gif" />
 <h3>{$title}</h3>
 
+<div class="points-menu-block">
+    <a href="./links.php">Ссылки</a>
+</div>
+
 <fieldset>
     <legend>Фильтр</legend>
     <form method="get">

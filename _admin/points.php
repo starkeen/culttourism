@@ -31,7 +31,7 @@ if (isset($_GET['act'])) {
             break;
         case 'setprop':
             $val = $db->getEscapedString(trim($_POST['value']));
-            if ($prop === 'pt_website' && substr($val, 0, 4) !== 'http') {
+            if ($prop === 'pt_website' && strpos($val, 'http') !== 0) {
                 $val = "http://$val";
             }
             $db->sql = "UPDATE $dbpp SET $prop = '$val', pt_lastup_date = now() WHERE pt_id = '$oid'";
@@ -106,7 +106,7 @@ if (isset($_GET['type']) && (int) $_GET['type'] > 0) {
 if (isset($_GET['addr']) && strlen($_GET['addr']) > 0) {
     $filter['addr'] = cut_trash_text($_GET['addr']);
 }
-if (isset($_GET['noaddr']) && (int) $_GET['noaddr'] == 1) {
+if (isset($_GET['noaddr']) && (int) $_GET['noaddr'] === 1) {
     $filter['noaddr'] = 1;
 }
 if (isset($_GET['phone']) && strlen($_GET['phone']) > 0) {
@@ -230,7 +230,7 @@ $smarty->assign('points_cnt', $points_cnt);
 $smarty->assign('filter', $filter);
 $smarty->assign('refs', $refs);
 
-$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/points.list.sm.html'));
+$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/points.list.tpl'));
 
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
 exit();
