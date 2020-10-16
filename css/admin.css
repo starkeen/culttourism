@@ -1,65 +1,70 @@
-/* 
-Document   : admin
-Created on : 06.07.2009, 13:20:43
-Author     : Andrey_Pns
-Description:
-Purpose of the stylesheet follows.
-*/
-
 body {
     font-family: Geneva, Arial, Helvetica, sans-serif;
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
     font-size: 10pt;
 }
+
 #mainadmin {
-    float:left;
+    float: left;
 }
+
 #adm_username {
-    text-align:right;
+    text-align: right;
 }
+
 #mainadmin a {
     color: #ffffff;
 }
+
 .pageicon {
-    float:left;
-    margin-right:10px;
+    float: left;
+    margin-right: 10px;
 }
+
 #admheader {
     height: 70px;
     background-color: #614874;
-    color:white;
+    color: white;
     padding: 5px;
 }
+
 #admmainmenu {
-    list-style:none;
-    clear:both;
+    list-style: none;
+    clear: both;
 }
+
 #admmainmenu li {
-    display:inline;
+    display: inline;
     color: white;
 }
+
 #admmainmenu li a {
     color: #614874;
-    background-color: #F0EDF1;
+    background-color: #f0edf1;
     padding: 1px;
 }
+
 #admcontent {
     font-size: 11pt;
 }
+
 img {
     border: none;
 }
+
 h1, h2, h3 {
     background-image: url('/img/bg/tab2.gif');
     margin: 0;
     padding: 10px;
     padding-left: 20px;
-    color: #009FD4;
+    color: #009fd4;
 }
+
 ymaps h3 {
-    border:0;
-    color: #000;
-    padding:0;
+    border: 0;
+    color: #000000;
+    padding: 0;
     font-size: 12pt;
     background: none;
 }
@@ -68,93 +73,111 @@ ymaps h3 {
 .m_center {
     text-align: center;
 }
+
 .m_hide {
-    display:none;
+    display: none;
 }
+
 .h_valign_top {
     vertical-align: top;
 }
+
 .m_width_full {
     width: 100%;
 }
+
 .m_height_full {
     height: 100%;
 }
+
 /* -----------------------------  COMMON TABLES ------------------------- */
 .commontable {
-    background-color: #8A648A;
-    font-size:90%;
-    margin:10px auto;
+    background-color: #8a648a;
+    font-size: 90%;
+    margin: 10px auto;
     border-spacing: 1px;
     border-collapse: separate;
 }
+
 .commontable tr {
-    background-color:#fff;
+    background-color: #ffffff;
 }
+
 .commontable tr td {
-    position:relative;
-    background-color:inherit;
+    position: relative;
+    background-color: inherit;
     padding: 3px;
 }
+
 .commontable tr th {
-    background-color: #D3CED3;
+    background-color: #d3ced3;
     padding: 3px;
 }
 
 .detailtable {
-    background-color: #8A648A;
-    margin:10px auto;
+    background-color: #8a648a;
+    margin: 10px auto;
     border-spacing: 1px;
     border-collapse: separate;
 }
+
 .detailtable tr td {
-    background-color: #F1ECF1;
+    background-color: #f1ecf1;
     padding: 3px;
 }
+
 .detailtable tr th {
     text-align: right;
-    background-color: #D3CED3;
+    background-color: #d3ced3;
     padding: 3px;
 }
+
 .tablerow_cellicon {
-    position:absolute;
-    right:2px;
-    bottom:1px;
+    position: absolute;
+    right: 2px;
+    bottom: 1px;
 }
+
 .tablerow_additional_data {
-    color:#777;
+    color: #777777;
     display: block;
-    float:right;
-    font-size:x-small;
+    float: right;
+    font-size: x-small;
 }
+
 .commontable .bkgnd_warning td {
-    background-color:#FFFFD4;
+    background-color: #ffffd4;
 }
+
 .commontable .bkgnd_error td {
-    background-color:#FA8072;
+    background-color: #fa8072;
 }
 
 /* --------------------------------------  PAGER ------------------------ */
 .pager_block {
     border: 1px dotted #efefef;
-    height:25px;
-    clear:both;
+    height: 25px;
+    clear: both;
 }
+
 .pager_block a, .pager_block span {
-    border:1px solid #300c00;
-    margin:5px;
-    padding:5px;
+    border: 1px solid #300c00;
+    margin: 5px;
+    padding: 5px;
     text-decoration: none;
 }
+
 .pager_block a:hover {
-    background-color: #976F68
+    background-color: #976f68
 }
+
 .pager_form {
-    float:right;
-    text-align:right;
-    margin:2px;
-    margin-right:10px;
+    float: right;
+    text-align: right;
+    margin: 2px;
+    margin-right: 10px;
 }
+
 .pager_perpage {
     border: 1px solid #300c00;
 }
@@ -162,24 +185,28 @@ ymaps h3 {
 /* --------------------------------------  INDEX ------------------------ */
 #admenu_table {
     margin-left: 20px;
-    border-top: 1px solid #7B68EE;
-    border-left: 1px solid #7B68EE;
-    border-right: 1px solid #7B68EE;
+    border-top: 1px solid #7b68ee;
+    border-left: 1px solid #7b68ee;
+    border-right: 1px solid #7b68ee;
 }
+
 #admenu_table tr {
     background-image: url('../img/bg/tab2.gif');
-    border: 1px solid #7B68EE;
+    border: 1px solid #7b68ee;
 }
+
 #admenu_table td {
-    border-bottom: 1px solid #7B68EE;
+    border-bottom: 1px solid #7b68ee;
 }
+
 #admenu_table td a {
-    color: #7B68EE;
+    color: #7b68ee;
     font-weight: bold;
     text-decoration: none;
     margin-left: 10px;
     margin-right: 10px;
 }
+
 #admenu_table td a:hover {
     text-decoration: underline;
 }
@@ -188,111 +215,147 @@ ymaps h3 {
 #usertable tr th {
     text-align: left;
 }
+
 #usertable {
-    background-color: #8A648A;
+    background-color: #8a648a;
     margin: 5px;
 }
+
 #usertable tr th {
-    background-color: #D3CED3;
+    background-color: #d3ced3;
 }
+
 #usertable tr td {
-    background-color: #F1ECF1;
+    background-color: #f1ecf1;
     padding: 3px;
 }
 
 /* --------------------------------------  MODULES ------------------------ */
 label {
-    color: #5C8DA0;
+    color: #5c8da0;
     font-size: 10pt;
 }
+
 #modlist {
-    color: #1E90FF;
+    color: #1e90ff;
 }
+
 #modlist li a {
-    color: #1E90FF;
+    color: #1e90ff;
 }
+
 input, textarea, select, #addmdbtn, hr {
-    border: 1px solid #87CEEB;
+    border: 1px solid #87ceeb;
 }
+
 #suburl {
     /*border: 1px solid #87CEEB;
     background-color:white;*/
-    font-size:smaller;
+    font-size: smaller;
 }
 
 /* --------------------------------------  LOG_ERROR ------------------------ */
 #erlogtbl {
-    background-color: #8A648A;
+    background-color: #8a648a;
     margin: 10px;
 }
+
 #erlogtbl tr td {
     background-color: #ffffff;
     padding: 3px;
 }
+
 #erlogtbl tr th {
-    background-color: #D3CED3;
+    background-color: #d3ced3;
     padding: 3px;
 }
 
 /* --------------------------------------  CRON ------------------------ */
 #crontable {
-    background-color: #8A648A;
+    background-color: #8a648a;
     margin: 10px;
 }
+
 #crontable tr td {
     background-color: #ffffff;
     padding: 3px;
 }
+
 #crontable tr th {
-    background-color: #D3CED3;
+    background-color: #d3ced3;
     padding: 3px;
 }
+
 #crontable tr td a {
-    color:#4169E1;
+    color: #4169e1;
 }
+
 .input_elements {
     vertical-align: middle;
 }
 
 /* --------------------------------------  POINTS ------------------------ */
 .points-editprop {
-    color:#4169E1;
+    color: #4169e1;
     text-decoration: none;
-    border-bottom: 1px dotted #4169E1;
+    border-bottom: 1px dotted #4169e1;
 }
+
 .pointadding-list tr td:first-child {
     text-align: center;
 }
+
 .pointadding-list tr td.m_checked {
-    background-color:#bcf5bc;
+    background-color: #bcf5bc;
 }
+
 .pointadding-list tr td span {
     font-size: 70%;
-    color: #777;
+    color: #777777;
 }
 
 /* --------------------------------------  STAT_YANDEX ------------------------ */
 .ws-counts .ws-counts-minmax {
     display: inline-block;
     font-style: italic;
-    color:#777;
+    color: #777777;
 }
+
 .ws-counts .ws-counts-minmax sup, .ws-counts .ws-counts-minmax sub {
     display: block;
     line-height: 0;
     position: relative;
     vertical-align: baseline;
 }
+
 .ws-counts .ws-counts-minmax sup {
     top: -0.6em;
 }
+
 .ws-counts .ws-counts-minmax sub {
     top: 0.4em;
 }
 
 /* Autocomplete
 -----------------------------------------------------------------------------*/
-.autocomplete-suggestions { border: 1px solid #999; background: #FFF; cursor: default; overflow: auto; }
-.autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
-.autocomplete-selected { background: #F0F0F0; }
-.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-suggestions {
+    border: 1px solid #999999;
+    background: #ffffff;
+    cursor: default;
+    overflow: auto;
+}
+
+.autocomplete-suggestion {
+    padding: 2px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.autocomplete-selected {
+    background: #f0f0f0;
+}
+
+.autocomplete-suggestions strong {
+    font-weight: normal;
+    color: #3399ff;
+}

@@ -2,18 +2,22 @@
     position: relative;
     margin: 5px;
 }
+
 #flickr-import-url {
     width: 300px;
 }
+
 #flickr-import-console {
     min-height: 150px;
-    margin:5px;
+    margin: 5px;
 }
+
 #flickr-import-preview {
-    position:absolute;
+    position: absolute;
     top: 0;
     left: 400px;
 }
+
 #flickr-import-add {
 }
 

@@ -1,13 +1,16 @@
 .photos-block {
     padding: 5px;
-    border-bottom: 1px solid #87CEEB;
+    border-bottom: 1px solid #87ceeb;
 }
+
 #photos-to-flickr a {
-    color: #87CEEB;
+    color: #87ceeb;
 }
+
 #photos-upload-data, #photos-upload-bind {
     margin: 3px;
 }
+
 #photos-upload-bind-pt {
     width: 280px;
 }
@@ -18,11 +21,13 @@
 }
 
 .photos-listitem {
-    
+
 }
+
 .photos-listitem td.m_center {
     text-align: center;
 }
+
 .photos-listitem-region {
     display: block;
     font-size: 80%;
@@ -38,6 +43,7 @@
 #photos-item {
     position: relative;
 }
+
 #photos-item-img {
     position: absolute;
     left: 600px;

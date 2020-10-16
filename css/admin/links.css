@@ -19,19 +19,19 @@
 }
 
 .status-fatal {
-    background-color: #F8CCCA !important;
+    background-color: #f8ccca !important;
 }
 
 .status-error {
-    background-color: #CACCF8 !important;
+    background-color: #caccf8 !important;
 }
 
 .status-redirect {
-    background-color: #F8EBCA !important;
+    background-color: #f8ebca !important;
 }
 
 .status-ok {
-    background-color: #DAF8CA !important;
+    background-color: #daf8ca !important;
 }
 
 .links-redirect-process {

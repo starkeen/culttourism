@@ -2,32 +2,40 @@
 -----------------------------------------------------------------------------*/
 @media print {
     img {
-        border:none;
+        border: none;
     }
+
     #mainmenu, .points_selector {
-        display:none;
+        display: none;
     }
+
     #footer_conters {
         content: ' ';
     }
+
     #header {
-        height:150px;
+        height: 150px;
     }
+
     h1, h2 {
-        color:#000;
-        background:none;
+        color: #000000;
+        background: none;
     }
+
     #city_path {
-        color:#292929;
-        background:#fff;
+        color: #292929;
+        background: #ffffff;
     }
+
     img.link_external {
-        display:none;
+        display: none;
     }
+
     .objlink {
-        border:none;
+        border: none;
     }
+
     .yandex_ad {
-        display:none;
+        display: none;
     }
 }
