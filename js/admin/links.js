@@ -19,14 +19,17 @@ $(document).ready(function () {
     $(".links-delete-process").live("click", function (event) {
         if (confirm("Удалить ссылку?")) {
             let $element = $(event.target);
+            let id = $element.data("id");
+            let $link = $("#link-id-" + id);
             $.post(
                 "links.php?act=process-delete",
                 {
-                    id: $element.data("id")
+                    id: id
                 },
                 function (response) {
                     if (response.state) {
                         $element.hide();
+                        $link.hide();
                     }
                 });
         }
