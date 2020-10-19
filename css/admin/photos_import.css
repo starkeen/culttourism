@@ -42,6 +42,7 @@
 
 #photos-object-detail-title {
     font-weight: bold;
+    display: inline-block;
 }
 
 #photos-object-detail-search {

@@ -139,7 +139,7 @@ $(document).ready(function () {
     $("#photos-object-detail-search").live("click", function () {
         let regionName = $("#photos-object-detail-region").text();
         let objectName = $("#photos-object-detail-title").text();
-        let query = regionName + ' ' + objectName;
+        let query = objectName + ' ' + regionName;
         let queryUrl = "https://yandex.ru/images/search?text=" + query;
         let win = window.open(queryUrl, '_blank');
         if (win) {
