@@ -135,6 +135,20 @@ $(document).ready(function () {
             });
     });
 
+    // Клик по кнопке поиска картинок в Яндексе
+    $("#photos-object-detail-search").live("click", function () {
+        let regionName = $("#photos-object-detail-region").text();
+        let objectName = $("#photos-object-detail-title").text();
+        let query = regionName + ' ' + objectName;
+        let queryUrl = "https://yandex.ru/images/search?text=" + query;
+        let win = window.open(queryUrl, '_blank');
+        if (win) {
+            win.focus();
+        } else {
+            alert('Please allow popups for this website');
+        }
+    });
+
     // Очистка блока поиска
     $("#photos-object-clear").live("click", function () {
         $("#photos-object-detail-results").empty();

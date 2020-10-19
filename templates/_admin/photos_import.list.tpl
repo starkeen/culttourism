@@ -15,6 +15,9 @@
     <div id="photos-object-detail">
         <div id="photos-object-detail-region"></div>
         <div id="photos-object-detail-title"></div>
+        <img id="photos-object-detail-search"
+             src="/img/btn/btn.search.png"
+             title="Искать" />
         <input type="hidden" id="photos-object-detail-id" value="" />
         <input type="hidden" id="photos-object-detail-latitude" value="" />
         <input type="hidden" id="photos-object-detail-longitude" value="" />

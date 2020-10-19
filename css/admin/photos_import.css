@@ -44,6 +44,10 @@
     font-weight: bold;
 }
 
+#photos-object-detail-search {
+    cursor: pointer;
+}
+
 #photos-object-detail-results {
     margin: 5px;
     padding: 5px;
