@@ -2,6 +2,10 @@
     font-weight: bold;
 }
 
+.selected-type {
+    border: 1px solid #5e5e5e;
+}
+
 .table-cell-url {
     position: relative;
 }

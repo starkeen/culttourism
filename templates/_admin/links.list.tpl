@@ -8,11 +8,25 @@
 <div>
     <fieldset>
         <legend>Фильтр</legend>
+
         <a class="" href="?">все</a>
         {foreach from=$statuses item=statusData}
             | <a class="{if $statusData.status == $status}selected-status{/if}" href="?status={$statusData.status}">{$statusData.status}</a> - <i>{$statusData.cnt}</i>
         {/foreach}
-        <form method="get"></form>
+
+        ||
+
+        {foreach from=$types item=typeData}
+            |
+            <a href="?type={$typeData.tp_id}">
+                <img src="/img/points/x16/{$typeData.tp_icon}"
+                     class="{if $typeData.tp_id == $type}selected-type{/if}"
+                     alt="{$typeData.tp_short}"
+                     title="{$typeData.tp_name}"/>
+            </a>
+            -
+            <i>{$typeData.cnt}</i>
+        {/foreach}
     </fieldset>
 
     <p>&nbsp;</p>
