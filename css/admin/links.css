@@ -10,6 +10,9 @@
     display: inline-block;
     text-decoration: none;
 }
+.filter-types img {
+    vertical-align: baseline;
+}
 
 .selected-type {
     border: 1px solid #5e5e5e;

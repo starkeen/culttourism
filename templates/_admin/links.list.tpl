@@ -16,7 +16,7 @@
                href="?status={$statusData.status}">
                 {$statusData.status}
             </a>
-            &mdash;
+            &ndash;
             <span class="filter-count">{$statusData.cnt}</span>
         {/foreach}
 
@@ -29,7 +29,7 @@
                      alt="{$typeData.tp_short}"
                      title="{$typeData.tp_name}"/>
             </a>
-            &mdash;
+            &ndash;
             <span class="filter-count">{$typeData.cnt}</span>
         {/foreach}
     </fieldset>
