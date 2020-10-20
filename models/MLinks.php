@@ -116,10 +116,11 @@ class MLinks extends Model
     /**
      * @param int $count
      * @param int|null $status
+     * @param int|null $type
      *
      * @return array[]
      */
-    public function getHandProcessingList(int $count, ?int $status): array
+    public function getHandProcessingList(int $count, ?int $status, ?int $type): array
     {
         $params = [
             ':limit' => $count,
@@ -142,6 +143,10 @@ class MLinks extends Model
         if ($status !== null) {
             $this->_db->sql .= "AND u.status = :status\n";
             $params[':status'] = $status;
+        }
+        if ($type !== null) {
+            $this->_db->sql .= "AND o.pt_type_id = :type\n";
+            $params[':type'] = $type;
         }
         $this->_db->sql .= "ORDER BY u.status_count DESC, c.pc_order DESC, c.pc_count_points DESC, u.status DESC, o.pt_rank DESC
                             LIMIT :limit";

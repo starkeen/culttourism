@@ -79,7 +79,7 @@ if ($act === 'process-redirect') {
     answer($out);
 }
 
-$urls = $linksModel->getHandProcessingList(1000, $status ?: null);
+$urls = $linksModel->getHandProcessingList(1000, $status ?: null, $type ?: null);
 $pager = new Pager($urls);
 
 $statuses = $linksModel->getHandProcessingStatuses();
