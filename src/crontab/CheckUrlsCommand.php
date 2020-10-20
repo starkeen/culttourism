@@ -21,13 +21,13 @@ class CheckUrlsCommand extends CrontabCommand
             'track_redirects' => true,
             'max' => 10,
         ],
-        RequestOptions::CONNECT_TIMEOUT => 2,
-        RequestOptions::READ_TIMEOUT => 2,
-        RequestOptions::TIMEOUT => 2,
+        RequestOptions::CONNECT_TIMEOUT => 5,
+        RequestOptions::READ_TIMEOUT => 5,
+        RequestOptions::TIMEOUT => 5,
         RequestOptions::FORCE_IP_RESOLVE => 'v4',
         RequestOptions::VERIFY => false,
         RequestOptions::HEADERS => [
-            'User-Agent' => 'culttourism bot/1.0',
+            'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36 / culttourism bot/1.0',
         ],
     ];
 
