@@ -9,23 +9,28 @@
     <fieldset>
         <legend>Фильтр</legend>
 
-        <a class="" href="?">все</a>
+        <a class="filter-statuses" href="?">все</a>
         {foreach from=$statuses item=statusData}
-            | <a class="{if $statusData.status == $status}selected-status{/if}" href="?status={$statusData.status}">{$statusData.status}</a> - <i>{$statusData.cnt}</i>
+            |
+            <a class="filter-statuses {if $statusData.status == $status}selected-status{/if}"
+               href="?status={$statusData.status}">
+                {$statusData.status}
+            </a>
+            &mdash;
+            <span class="filter-count">{$statusData.cnt}</span>
         {/foreach}
 
         ||
 
         {foreach from=$types item=typeData}
-            |
-            <a href="?type={$typeData.tp_id}">
+            <a href="?type={$typeData.tp_id}" class="filter-types">
                 <img src="/img/points/x16/{$typeData.tp_icon}"
                      class="{if $typeData.tp_id == $type}selected-type{/if}"
                      alt="{$typeData.tp_short}"
                      title="{$typeData.tp_name}"/>
             </a>
-            -
-            <i>{$typeData.cnt}</i>
+            &mdash;
+            <span class="filter-count">{$typeData.cnt}</span>
         {/foreach}
     </fieldset>
 

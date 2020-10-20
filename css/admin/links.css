@@ -1,9 +1,24 @@
+.filter-statuses {
+    color: #87ceeb;
+}
+
 .selected-status {
     font-weight: bold;
 }
 
+.filter-types {
+    display: inline-block;
+    text-decoration: none;
+}
+
 .selected-type {
     border: 1px solid #5e5e5e;
+}
+
+.filter-count {
+    font-size: 90%;
+    font-style: italic;
+    color: #5e5e5e;
 }
 
 .table-cell-url {
