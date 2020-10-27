@@ -87,7 +87,7 @@ if ($act === 'process-redirect') {
             $record['id_object'],
             [
                 'pt_website' => '',
-                'pt_description' => $point['pt_description'] . PHP_EOL . '<p>Больше не работает</p>',
+                'pt_description' => $point['pt_description'] . PHP_EOL . '<p>Больше не работает.</p>',
             ]
         );
         $pointsModel->deleteByPk($record['id_object']);
