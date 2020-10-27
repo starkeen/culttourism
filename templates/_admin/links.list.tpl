@@ -57,7 +57,7 @@
                          alt="{$link.tp_short}"
                          title="{$link.tp_name}" />
                 </td>
-                <td>
+                <td class="table-cell-point">
                     <a href="{$link.url_point}" target="_blank">{$link.pt_name}</a>
                     <a href="https://yandex.ru/yandsearch?text={$link.pt_name} {$link.pc_title_unique}" target="_blank">
                         <img src="/img/btn/btn.search.png" />
@@ -65,6 +65,7 @@
                     <br/>
                     <a href="{$link.url_city}" style="font-style: italic" target="_blank">{$link.pc_title_unique}</a>
                     <span class="point-address">{$link.pt_adress}</span>
+                    <img class="links-disable-process" data-id="{$link.id}" src="/img/ico/stop.32.png" title="Удалить точку" />
                 </td>
                 <td class="table-cell-url">
                     <a href="{$link.url}" target="_blank" id="link-id-{$link.id}">{$link.url}</a>

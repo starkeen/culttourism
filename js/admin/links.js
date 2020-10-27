@@ -57,4 +57,22 @@ $(document).ready(function () {
                 });
         }
     });
+    // обработка клика при нажатии кнопки "Удалить объект"
+    $(".links-disable-process").live("click", function (event) {
+        let $element = $(event.target);
+        let id = $element.data("id");
+        let $link = $("#link-id-" + id);
+        if (confirm("Деактивировать объект?")) {
+            $.post(
+                "links.php?act=process-disable",
+                {
+                    id: id
+                },
+                function (response) {
+                    if (response.state) {
+                        $element.hide();
+                    }
+                });
+        }
+    });
 });

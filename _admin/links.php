@@ -77,6 +77,27 @@ if ($act === 'process-redirect') {
         'value' => $newValue,
     ];
     answer($out);
+} elseif ($act === 'process-disable') {
+    $id = (int) $_POST['id'];
+    $state = false;
+    $record = $linksModel->getItemByPk($id);
+    if (!empty($record['id_object'])) {
+        $point = $pointsModel->getItemByPk($record['id_object']);
+        $pointsModel->updateByPk(
+            $record['id_object'],
+            [
+                'pt_website' => '',
+                'pt_description' => $point['pt_description'] . PHP_EOL . '<p>Больше не работает</p>',
+            ]
+        );
+        $pointsModel->deleteByPk($record['id_object']);
+        $linksModel->deleteByPoint($record['id_object']);
+        $state = true;
+    }
+    $out = [
+        'state' => $state,
+    ];
+    answer($out);
 }
 
 $urls = $linksModel->getHandProcessingList(1000, $status ?: null, $type ?: null);
