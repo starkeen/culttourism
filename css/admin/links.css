@@ -60,6 +60,10 @@
     background-color: #daf8ca !important;
 }
 
+.links-go-yandex {
+    margin-right: 22px;
+}
+
 .links-redirect-process {
     cursor: pointer;
 }

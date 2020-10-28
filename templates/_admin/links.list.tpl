@@ -59,7 +59,7 @@
                 </td>
                 <td class="table-cell-point">
                     <a href="{$link.url_point}" target="_blank">{$link.pt_name}</a>
-                    <a href="https://yandex.ru/yandsearch?text={$link.pt_name} {$link.pc_title_unique}" target="_blank">
+                    <a class="links-go-yandex" href="https://yandex.ru/yandsearch?text={$link.pt_name} {$link.pc_title_unique}" target="_blank">
                         <img src="/img/btn/btn.search.png" />
                     </a>
                     <br/>
