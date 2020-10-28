@@ -37,10 +37,10 @@ class MyPDO implements IDB
     private $time;
 
     /**
-     * @param string      $db_host
-     * @param string      $db_user
-     * @param string      $db_pwd
-     * @param string      $db_base
+     * @param string $db_host
+     * @param string $db_user
+     * @param string $db_pwd
+     * @param string $db_base
      * @param string|null $db_prefix
      *
      * @throws MyPDOException
@@ -106,6 +106,7 @@ class MyPDO implements IDB
      * Подготавливаем запрос
      *
      * @param string $sql
+     *
      * @throws MyPDOException
      */
     public function prepare($sql = '')
@@ -127,7 +128,7 @@ class MyPDO implements IDB
      * Привязываем параметры по одному
      *
      * @param string $key
-     * @param mixed  $value
+     * @param mixed $value
      */
     public function bind($key, $value)
     {
@@ -375,9 +376,9 @@ class MyPDO implements IDB
 
     /**
      * @param string $name
-     * @param mixed  $value
+     * @param string|int|bool|null $value
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
         if ($name === 'sql') {
             $this->_sql = $value;
@@ -389,7 +390,7 @@ class MyPDO implements IDB
      *
      * @return bool
      */
-    public function __isset($name): bool
+    public function __isset(string $name): bool
     {
         $result = false;
 
@@ -405,7 +406,7 @@ class MyPDO implements IDB
      *
      * @return string
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         $result = null;
 

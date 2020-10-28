@@ -4,10 +4,10 @@ use app\db\MyDB;
 
 class MCandidatePoints extends Model
 {
-    const STATUS_NEW = 3;
-    const STATUS_SPAM = 7;
+    public const STATUS_NEW = 3;
+    public const STATUS_SPAM = 7;
 
-    const SOURCE_FORM = 4;
+    public const SOURCE_FORM = 4;
 
     protected $_table_pk = 'cp_id';
     protected $_table_order = 'cp_date';
@@ -35,6 +35,7 @@ class MCandidatePoints extends Model
             'cp_latitude',
             'cp_longitude',
             'cp_zoom',
+            'cp_hash',
             'cp_source_id',
             'cp_point_id',
             'cp_state',
@@ -52,7 +53,12 @@ class MCandidatePoints extends Model
         $this->types_markers = $rpt->getMarkers();
     }
 
-    public function add($data)
+    /**
+     * @param array $data
+     *
+     * @return int|null
+     */
+    public function add(array $data): ?int
     {
         $data['cp_date'] = $this->now();
         $data['cp_state'] = $data['cp_state'] ?? self::STATUS_NEW;
@@ -70,7 +76,24 @@ class MCandidatePoints extends Model
                 }
             }
         }
-        if ($data['cp_web'] !== '' && strpos($data['cp_web'], 'http') === false) {
+
+        if (empty($data['cp_city'])) {
+            $data['cp_city'] = null;
+        }
+        if (empty($data['cp_addr'])) {
+            $data['cp_addr'] = null;
+        }
+        if (empty($data['cp_phone'])) {
+            $data['cp_phone'] = null;
+        }
+        if (empty($data['cp_web'])) {
+            $data['cp_web'] = null;
+        }
+        if (empty($data['cp_worktime'])) {
+            $data['cp_worktime'] = null;
+        }
+
+        if (!empty($data['cp_web']) && strpos($data['cp_web'], 'http') === false) {
             $data['cp_web'] = 'http://' . $data['cp_web'];
         }
         if (isset($data['cp_latitude'], $data['cp_longitude'])) {
@@ -78,10 +101,30 @@ class MCandidatePoints extends Model
             $data['cp_longitude'] = (float) $data['cp_longitude'];
         }
 
-        return $this->insert($data);
+        $result = $this->insert($data);
+
+        if ((int) $result > 0) {
+            $this->updateHash((int) $result);
+        } else {
+            $result = null;
+        }
+
+        return $result;
     }
 
-    public function getByFilter($filter)
+    public function updateHash(int $id): void
+    {
+        $row = $this->getItemByPk($id);
+        $hashData = [
+            $row['cp_title'],
+            $row['cp_text'],
+            $row['cp_web'],
+        ];
+        $hashString = implode('~|~', $hashData);
+        $this->updateByPk($id, ['cp_hash' => md5($hashString)]);
+    }
+
+    public function getByFilter($filter): array
     {
         $this->_db->sql = "SELECT t.*,
                                 pc.pc_title AS page_title, CONCAT(u.url, '/') AS page_url,
@@ -108,7 +151,7 @@ class MCandidatePoints extends Model
             $this->_db->sql .= "AND t.cp_type_id = '0'\n";
         }
         if ($filter['pcid'] > 0) {
-            $this->_db->sql .= "AND t.cp_citypage_id = '" . intval($filter['pcid']) . "'\n";
+            $this->_db->sql .= "AND t.cp_citypage_id = '" . (int) $filter['pcid'] . "'\n";
         }
         if ($filter['gps'] == 1) {
             $this->_db->sql .= "AND t.cp_latitude > 0 AND t.cp_longitude > 0\n";
@@ -117,7 +160,7 @@ class MCandidatePoints extends Model
             $this->_db->sql .= "AND (t.cp_latitude = 0 OR t.cp_longitude = 0 OR t.cp_latitude IS NULL OR t.cp_longitude IS NULL)\n";
         }
         if ($filter['state'] != 0) {
-            $this->_db->sql .= "AND t.cp_state = '" . intval($filter['state']) . "'\n";
+            $this->_db->sql .= "AND t.cp_state = '" . (int) $filter['state'] . "'\n";
         }
         $this->_db->sql .= "ORDER BY $this->_table_order ASC\n";
         $this->_db->exec();
@@ -127,7 +170,7 @@ class MCandidatePoints extends Model
     /**
      * Статистика по набору активных заявок
      */
-    public function getMatrix()
+    public function getMatrix(): array
     {
         $this->_db->sql = "SELECT count(1) AS cnt,
                                 pc.pc_id, pc.pc_title,
@@ -168,7 +211,7 @@ class MCandidatePoints extends Model
     /**
      * Исправляет форматы данных
      */
-    public function repairData()
+    public function repairData(): void
     {
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 cp_phone = REPLACE(cp_phone, ';', ',')
