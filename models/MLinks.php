@@ -84,7 +84,13 @@ class MLinks extends Model
      */
     public function updateStatus(int $id, int $statusCode, int $statusCount, ?int $contentSize, ?string $contentTitle, ?string $redirectUrl = null): void
     {
-        $isOk = $statusCode === 200 && $contentSize > 3000;
+        $isOk = $statusCode === 200 && $contentSize > 2000;
+
+        foreach (['домен', 'domain', 'прода', 'откл'] as $keyword) {
+            if (mb_strpos($contentTitle, $keyword) !== false) {
+                $isOk = false;
+            }
+        }
 
         $this->updateByPk(
             $id,
