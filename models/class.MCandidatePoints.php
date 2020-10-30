@@ -145,7 +145,10 @@ class MCandidatePoints extends Model
                                     ON pt.tp_id = t.cp_type_id
                                 LEFT JOIN {$this->_tables_related['data_check']} AS dc
                                     ON dc.dc_item_id = t.cp_id AND dc_type = 'candidate_points' AND dc_field = 'cp_text'
-                            WHERE $this->_table_active = 1\n";
+                            WHERE 1\n";
+        if (isset($filter['active']) && (int) $filter['active'] === 1) {
+            $this->_db->sql .= "AND $this->_table_active = 1\n";
+        }
         if (isset($filter['type']) && (int) $filter['type'] > 0) {
             $this->_db->sql .= "AND t.cp_type_id = '" . (int) $filter['type'] . "'\n";
         }

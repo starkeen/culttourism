@@ -170,6 +170,7 @@ if (isset($_GET['id'], $_GET['act'])) {
     $uv_st = new UnirefValues($db, 3);
 
     $filter = [
+        'active' => 1,
         'type' => isset($_GET['type']) ? (int) $_GET['type'] : 0,
         'pcid' => isset($_GET['pcid']) ? (int) $_GET['pcid'] : 0,
         'state' => isset($_GET['state']) ? (int) $_GET['state'] : 0,
