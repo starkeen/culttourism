@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace app\api\google_search;
 
+use app\api\google_search\exception\UnsupportedImageType;
 use app\constant\MimeType;
-use InvalidArgumentException;
 
 class ResultImage
 {
@@ -181,7 +181,7 @@ class ResultImage
     {
         $mimeValue = $this->getMimeType();
         if (!MimeType::isValid($mimeValue)) {
-            throw new InvalidArgumentException('Неизвестный mime-type: ' . $mimeValue);
+            throw new UnsupportedImageType('Неизвестный mime-type: ' . $mimeValue);
         }
         $mimeTypeObject = new MimeType($mimeValue);
 
