@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace app\services\image_storage;
 
 use app\constant\MimeType;
+use app\services\image_storage\exceptions\SourceUnreachedException;
 use MPhotos;
 use RuntimeException;
+use Throwable;
 
 class ImageStorageService
 {
@@ -32,6 +34,15 @@ class ImageStorageService
         $this->photosModel = $photosModel;
     }
 
+    /**
+     * @param string $url
+     * @param string|null $origin
+     * @param string|null $title
+     * @param string|null $author
+     *
+     * @return int
+     * @throws SourceUnreachedException
+     */
     public function uploadFromUrl(string $url, string $origin = null, string $title = null, string $author = null): int
     {
         $uploadedFileName = $this->downloadTmp($url);
@@ -111,6 +122,12 @@ class ImageStorageService
         return (int) $id;
     }
 
+    /**
+     * @param string $url
+     *
+     * @return string
+     * @throws SourceUnreachedException
+     */
     private function downloadTmp(string $url): string
     {
         $pathHash = md5($url);
@@ -124,7 +141,13 @@ class ImageStorageService
         ];
         $context = stream_context_create($contextOptions);
 
-        file_put_contents($resultPath, fopen($url, 'rb', false, $context));
+        try {
+            $source = fopen($url, 'rb', false, $context);
+        } catch (Throwable $exception) {
+            throw new SourceUnreachedException('Не удалось получить файл');
+        }
+
+        file_put_contents($resultPath, $source);
 
         return $pathHash;
     }

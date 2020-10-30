@@ -9,6 +9,7 @@ use app\api\google_search\exception\SearchException;
 use app\api\google_search\exception\UnsupportedImageType;
 use app\api\google_search\Factory;
 use app\api\google_search\ResultItem;
+use app\services\image_storage\exceptions\SourceUnreachedException;
 use app\services\image_storage\ImageStorageFactory;
 
 require_once('common.php');
@@ -68,16 +69,21 @@ switch ($act) {
         $out['image_url'] = $_POST['url'] ?? null;
         $out['image_page'] = $_POST['link'] ?? null;
         $service = ImageStorageFactory::build();
-        $out['photo_id'] = $service->uploadFromUrl($out['image_url'], $out['image_page']);
-        $service->bindPhotoToObject($out['photo_id'], $out['point_id']);
         $pt = new MPagePoints($db);
-        $pt->updateByPk(
-            $out['point_id'],
-            [
-                'pt_photo_id' => $out['photo_id'],
-                'pt_lastup_date' => $pt->now(),
-            ]
-        );
+        try {
+            $out['photo_id'] = $service->uploadFromUrl($out['image_url'], $out['image_page']);
+            $service->bindPhotoToObject($out['photo_id'], $out['point_id']);
+            $pt->updateByPk(
+                $out['point_id'],
+                [
+                    'pt_photo_id' => $out['photo_id'],
+                    'pt_lastup_date' => $pt->now(),
+                ]
+            );
+        } catch (SourceUnreachedException $exception) {
+            $out['photo_id'] = null;
+            $out['error_text'] = $exception->getMessage();
+        }
         json($out);
         break;
 }

@@ -131,6 +131,8 @@ $(document).ready(function () {
             function (response) {
                 if (response.photo_id) {
                     $("#photos-object-detail-preview").empty().hide();
+                } else {
+                    alert(response.error_text);
                 }
             });
     });
