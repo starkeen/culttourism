@@ -104,7 +104,8 @@ class MCandidatePoints extends Model
         $result = $this->insert($data);
 
         if ((int) $result > 0) {
-            $this->updateHash((int) $result);
+            $hash = $this->getHash((int) $result);
+            $this->updateByPk($result, ['cp_hash' => $hash]);
         } else {
             $result = null;
         }
@@ -112,7 +113,7 @@ class MCandidatePoints extends Model
         return $result;
     }
 
-    public function updateHash(int $id): void
+    public function getHash(int $id): string
     {
         $row = $this->getItemByPk($id);
         $hashData = [
@@ -121,10 +122,11 @@ class MCandidatePoints extends Model
             $row['cp_web'],
         ];
         $hashString = implode('~|~', $hashData);
-        $this->updateByPk($id, ['cp_hash' => md5($hashString)]);
+
+        return md5($hashString);
     }
 
-    public function getByFilter($filter): array
+    public function getByFilter(array $filter): array
     {
         $this->_db->sql = "SELECT t.*,
                                 pc.pc_title AS page_title, CONCAT(u.url, '/') AS page_url,
@@ -144,26 +146,30 @@ class MCandidatePoints extends Model
                                 LEFT JOIN {$this->_tables_related['data_check']} AS dc
                                     ON dc.dc_item_id = t.cp_id AND dc_type = 'candidate_points' AND dc_field = 'cp_text'
                             WHERE $this->_table_active = 1\n";
-        if ($filter['type'] > 0) {
-            $this->_db->sql .= "AND t.cp_type_id = '" . intval($filter['type']) . "'\n";
+        if (isset($filter['type']) && (int) $filter['type'] > 0) {
+            $this->_db->sql .= "AND t.cp_type_id = '" . (int) $filter['type'] . "'\n";
         }
-        if ($filter['type'] == -1) {
+        if (isset($filter['type']) && (int) $filter['type'] === -1) {
             $this->_db->sql .= "AND t.cp_type_id = '0'\n";
         }
-        if ($filter['pcid'] > 0) {
+        if (isset($filter['pcid']) && (int) $filter['pcid'] > 0) {
             $this->_db->sql .= "AND t.cp_citypage_id = '" . (int) $filter['pcid'] . "'\n";
         }
-        if ($filter['gps'] == 1) {
+        if (isset($filter['gps']) && (int) $filter['gps'] === 1) {
             $this->_db->sql .= "AND t.cp_latitude > 0 AND t.cp_longitude > 0\n";
         }
-        if ($filter['gps'] == -1) {
+        if (isset($filter['gps']) && (int) $filter['gps'] === -1) {
             $this->_db->sql .= "AND (t.cp_latitude = 0 OR t.cp_longitude = 0 OR t.cp_latitude IS NULL OR t.cp_longitude IS NULL)\n";
         }
-        if ($filter['state'] != 0) {
+        if (isset($filter['type']) && (int) $filter['state'] !== 0) {
             $this->_db->sql .= "AND t.cp_state = '" . (int) $filter['state'] . "'\n";
+        }
+        if ($filter['noHash'] === 1) {
+            $this->_db->sql .= "AND t.cp_hash = IS NULL'\n";
         }
         $this->_db->sql .= "ORDER BY $this->_table_order ASC\n";
         $this->_db->exec();
+
         return $this->_db->fetchAll();
     }
 

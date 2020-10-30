@@ -19,6 +19,14 @@ if (isset($_GET['id'], $_GET['act'])) {
         'error' => null,
     ];
     switch ($_GET['act']) {
+        case 'hash':
+            $list = $c->getByFilter(['noHash' => 1]);
+            foreach ($list as $item) {
+                $hash = $c->getHash((int) $item['cp_id']);
+                $c->updateByPk($item['cp_id'], ['cp_hash' => $hash]);
+            }
+            $out['state'] = true;
+            break;
         case 'set_type':
             $out['state'] = $c->updateByPk(
                 $out['id'],
