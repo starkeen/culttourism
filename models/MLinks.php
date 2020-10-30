@@ -86,9 +86,11 @@ class MLinks extends Model
     {
         $isOk = $statusCode === 200 && $contentSize > 2000;
 
-        foreach (['домен', 'domain', 'прода', 'откл'] as $keyword) {
-            if (mb_strpos($contentTitle, $keyword) !== false) {
-                $isOk = false;
+        if ($contentTitle !== null) {
+            foreach (['домен', 'domain', 'прода', 'откл'] as $keyword) {
+                if (mb_strpos($contentTitle, $keyword) !== false) {
+                    $isOk = false;
+                }
             }
         }
 
