@@ -182,7 +182,7 @@ if (isset($_GET['id'], $_GET['act'])) {
     foreach ($list as $li) {
         $ref_pc[$li['cp_citypage_id']] = [
             'id' => $li['cp_citypage_id'],
-            'title' => $li['page_title'] ? $li['page_title'] : '-не указано-'
+            'title' => $li['page_title'] ?: '-не указано-'
         ];
     }
     asort($ref_pc);

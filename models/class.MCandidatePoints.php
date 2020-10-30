@@ -106,6 +106,15 @@ class MCandidatePoints extends Model
         if ((int) $result > 0) {
             $hash = $this->getHash((int) $result);
             $this->updateByPk($result, ['cp_hash' => $hash]);
+            if ($this->isSpam((int) $result, $hash)) {
+                $this->updateByPk(
+                    $result,
+                    [
+                        'cp_active' => 0,
+                        'cp_state' => self::STATUS_SPAM,
+                    ]
+                );
+            }
         } else {
             $result = null;
         }
@@ -181,7 +190,7 @@ class MCandidatePoints extends Model
      */
     public function getMatrix(): array
     {
-        $this->_db->sql = "SELECT count(1) AS cnt,
+        $this->_db->sql = "SELECT COUNT(1) AS cnt,
                                 pc.pc_id, pc.pc_title,
                                 IFNULL(pt.tp_id, -1) AS tp_id, pt.tp_name, pt.tp_icon
                             FROM $this->_table_name AS t
@@ -254,5 +263,35 @@ class MCandidatePoints extends Model
                                 cp_title = REPLACE(cp_title, '&raquo;', '»')
                             WHERE cp_title LIKE '%&raquo;%'";
         $this->_db->exec();
+    }
+
+    private function isSpam(int $id, string $hash): bool
+    {
+        $result = false;
+
+        $this->_db->sql = "SELECT *
+                            FROM $this->_table_name
+                            WHERE cp_hash = :hash
+                                AND cp_id != :id
+                                AND cp_date > DATE_SUB(NOW(), INTERVAL 1 MONTH)";
+        $this->_db->execute(
+            [
+                ':id' => $id,
+                ':hash' => $hash,
+            ]
+        );
+        $rows = $this->_db->fetchAll();
+        $spamCount = 0;
+        $totalCount = count($rows);
+        foreach ($rows as $row) {
+            if ((int) $row['cp_state'] === self::STATUS_SPAM) {
+                $spamCount++;
+            }
+        }
+        if ($totalCount > 0 && $spamCount === $totalCount) {
+            $result = true;
+        }
+
+        return $result;
     }
 }
