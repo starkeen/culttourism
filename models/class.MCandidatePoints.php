@@ -161,10 +161,10 @@ class MCandidatePoints extends Model
         if (isset($filter['gps']) && (int) $filter['gps'] === -1) {
             $this->_db->sql .= "AND (t.cp_latitude = 0 OR t.cp_longitude = 0 OR t.cp_latitude IS NULL OR t.cp_longitude IS NULL)\n";
         }
-        if (isset($filter['type']) && (int) $filter['state'] !== 0) {
+        if (isset($filter['state']) && (int) $filter['state'] !== 0) {
             $this->_db->sql .= "AND t.cp_state = '" . (int) $filter['state'] . "'\n";
         }
-        if ($filter['noHash'] === 1) {
+        if (isset($filter['noHash']) && (int) $filter['noHash'] === 1) {
             $this->_db->sql .= "AND t.cp_hash = IS NULL'\n";
         }
         $this->_db->sql .= "ORDER BY $this->_table_order ASC\n";
