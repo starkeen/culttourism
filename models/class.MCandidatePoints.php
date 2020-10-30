@@ -165,7 +165,7 @@ class MCandidatePoints extends Model
             $this->_db->sql .= "AND t.cp_state = '" . (int) $filter['state'] . "'\n";
         }
         if (isset($filter['noHash']) && (int) $filter['noHash'] === 1) {
-            $this->_db->sql .= "AND t.cp_hash = IS NULL'\n";
+            $this->_db->sql .= "AND t.cp_hash IS NULL'\n";
         }
         $this->_db->sql .= "ORDER BY $this->_table_order ASC\n";
         $this->_db->exec();
