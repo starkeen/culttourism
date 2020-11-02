@@ -82,8 +82,12 @@ class ImageStorageService
         );
     }
 
-    private function uploadProcess(string $uploadedFilePath, string $origin = null, string $title = null, string $author = null): int
-    {
+    private function uploadProcess(
+        string $uploadedFilePath,
+        string $origin = null,
+        string $title = null,
+        string $author = null
+    ): int {
         $fileHash = md5_file($uploadedFilePath);
         $mime = mime_content_type($uploadedFilePath);
         $mimeType = new MimeType($mime);
@@ -143,6 +147,9 @@ class ImageStorageService
 
         try {
             $source = fopen($url, 'rb', false, $context);
+            if (!$source) {
+                throw new RuntimeException('Не удалось открыть удалённый файл');
+            }
         } catch (Throwable $exception) {
             throw new SourceUnreachedException('Не удалось получить файл');
         }
