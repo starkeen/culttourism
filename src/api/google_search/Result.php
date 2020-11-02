@@ -27,7 +27,7 @@ class Result
 
         foreach ($items as $item) {
             $resultItem = new ResultItem();
-            $resultItem->setTitle($item->title);
+            $resultItem->setTitle($item->title ?? 'untitled');
             $resultItem->setUrl($item->link);
             $resultItem->setDomain($item->displayLink);
             $resultItem->setDescription($item->snippet);
