@@ -429,7 +429,7 @@ class MyPDO implements IDB
             ? $exception->errorInfo[1]
             : $exception->getCode();
 
-        if ($errorCode === 23000) {
+        if ($errorCode === 1062) {
             throw new MyPDODuplicateKeyException('Ошибка PDO: duplicate key', $errorCode, $exception);
         }
 
