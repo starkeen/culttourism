@@ -9,6 +9,12 @@ use Model;
 
 class MLinks extends Model
 {
+    private const BAD_TITLE_MARKERS = [
+        'домен',
+        'domain',
+        'откл',
+    ];
+
     protected $_table_pk = 'id';
     protected $_table_order = 'id';
     protected $_table_active = 'id';
@@ -87,7 +93,7 @@ class MLinks extends Model
         $isOk = $statusCode === 200 && $contentSize > 2000;
 
         if ($contentTitle !== null) {
-            foreach (['домен', 'domain', 'откл', 'site'] as $keyword) {
+            foreach (self::BAD_TITLE_MARKERS as $keyword) {
                 if (mb_strpos($contentTitle, $keyword) !== false) {
                     $isOk = false;
                 }
