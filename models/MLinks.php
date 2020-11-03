@@ -13,6 +13,12 @@ class MLinks extends Model
         'домен',
         'domain',
         'откл',
+        'казино',
+        'сервер',
+        'server',
+        'парковочная',
+        'gadgets',
+        'регистрации',
     ];
 
     protected $_table_pk = 'id';
