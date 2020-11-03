@@ -73,18 +73,8 @@ class CheckUrlsCommand extends CrontabCommand
             $redirectUrl = null;
 
             try {
-                if (
-                    !file_exists(self::COOKIES_PATH)
-                    && !mkdir(self::COOKIES_PATH, 0700, true)
-                    && !is_dir(self::COOKIES_PATH)
-                ) {
-                    throw new RuntimeException(sprintf('Directory "%s" was not created', self::COOKIES_PATH));
-                }
-                $domain = parse_url($url, PHP_URL_HOST);
-                if (empty($domain)) {
-                    $domain = 'common';
-                }
-                $cookies = new FileCookieJar(self::COOKIES_PATH . '/' . $domain . '.txt');
+                $cookieFilePath = $this->getCookieFilePath($url);
+                $cookies = new FileCookieJar($cookieFilePath);
                 $requestOptions = array_merge(
                     self::HTTP_REQUEST_OPTIONS,
                     [
@@ -194,5 +184,27 @@ class CheckUrlsCommand extends CrontabCommand
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return string
+     */
+    private function getCookieFilePath(string $url): string
+    {
+        if (
+            !file_exists(self::COOKIES_PATH)
+            && !mkdir(self::COOKIES_PATH, 0700, true)
+            && !is_dir(self::COOKIES_PATH)
+        ) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', self::COOKIES_PATH));
+        }
+        $domain = parse_url($url, PHP_URL_HOST);
+        if (empty($domain)) {
+            $domain = 'common';
+        }
+
+        return self::COOKIES_PATH . '/' . $domain . '.txt';
     }
 }
