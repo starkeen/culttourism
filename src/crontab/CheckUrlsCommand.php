@@ -74,7 +74,7 @@ class CheckUrlsCommand extends CrontabCommand
 
             try {
                 $cookieFilePath = $this->getCookieFilePath($url);
-                $cookies = new FileCookieJar($cookieFilePath);
+                $cookies = new FileCookieJar($cookieFilePath, true);
                 $requestOptions = array_merge(
                     self::HTTP_REQUEST_OPTIONS,
                     [
