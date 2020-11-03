@@ -2,6 +2,10 @@
 
 namespace app\db;
 
+use app\db\exceptions\MyPDOAccessException;
+use app\db\exceptions\MyPDODuplicateKeyException;
+use app\db\exceptions\MyPDOException;
+use app\db\exceptions\MyPDOTableException;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -429,11 +433,16 @@ class MyPDO implements IDB
             ? $exception->errorInfo[1]
             : $exception->getCode();
 
+        if ($errorCode === 1044) {
+            throw new MyPDOAccessException('Ошибка PDO: access denied', $errorCode, $exception);
+        }
+        if ($errorCode === 1046) {
+            throw new MyPDOTableException('Ошибка PDO: table not found', $errorCode, $exception);
+        }
         if ($errorCode === 1062) {
             throw new MyPDODuplicateKeyException('Ошибка PDO: duplicate key', $errorCode, $exception);
         }
 
-        $message = 'Ошибка PDO: ' . $errorCode;
-        throw new MyPDOException($message, $errorCode, $exception);
+        throw new MyPDOException('Ошибка PDO: ' . $errorCode, $errorCode, $exception);
     }
 }

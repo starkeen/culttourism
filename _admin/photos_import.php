@@ -9,7 +9,7 @@ use app\api\google_search\exception\SearchException;
 use app\api\google_search\exception\UnsupportedImageType;
 use app\api\google_search\Factory;
 use app\api\google_search\ResultItem;
-use app\db\MyPDODuplicateKeyException;
+use app\db\exceptions\MyPDODuplicateKeyException;
 use app\services\image_storage\exceptions\SourceUnreachedException;
 use app\services\image_storage\ImageStorageFactory;
 
