@@ -26,6 +26,7 @@ class Page extends PageCommon
         'package http',
         'Xenu Link Sleuth',
         'archive.org_bot',
+        'Mail.RU_Bot',
     ];
 
     public function __construct($db, $mod)
