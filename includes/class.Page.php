@@ -416,7 +416,7 @@ class Page extends PageCommon
         }
 
         // фиксируем статистику старых адресов точек
-        $logFile = _DIR_DATA . '/logs/old_objects/' . $id . '.txt';
+        $logFile = _DIR_VAR . '/logs/old_objects/' . $id . '.txt';
         $ua = $_SERVER['HTTP_USER_AGENT'] ?? 'ua-undefined';
         $referer = $_SERVER['HTTP_REFERER'] ?? 'referer-undefined';
 
