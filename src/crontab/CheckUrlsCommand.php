@@ -75,7 +75,7 @@ class CheckUrlsCommand extends CrontabCommand
             try {
                 if (
                     !file_exists(self::COOKIES_PATH)
-                    && !mkdir(self::COOKIES_PATH, null, true)
+                    && !mkdir(self::COOKIES_PATH, 0600, true)
                     && !is_dir(self::COOKIES_PATH)
                 ) {
                     throw new RuntimeException(sprintf('Directory "%s" was not created', self::COOKIES_PATH));
