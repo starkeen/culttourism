@@ -2,7 +2,6 @@
 
 namespace app\db;
 
-use Exception;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -16,12 +15,16 @@ class MyPDO implements IDB
 
     public $link;
     protected $prefix;
+
     /** @var string */
     private $_sql;
+
     /** @var PDO */
     private $_pdo;
+
     /** @var PDOStatement */
     private $_stm;
+
     private $_stm_params = [];
     private $_affected_rows = 0;
     private $_last_inserted_id;
@@ -33,10 +36,13 @@ class MyPDO implements IDB
 
     /** @var float */
     private $startTimestamp;
+
     /** @var float */
     private $time;
 
     /**
+     * В конструкторе происходит подключение к БД сразу
+     *
      * @param string $db_host
      * @param string $db_user
      * @param string $db_pwd
@@ -64,9 +70,7 @@ class MyPDO implements IDB
                 $this->link = true;
                 $this->time = microtime(true) - $this->startTimestamp;
             } catch (PDOException $e) {
-                $this->time = microtime(true) - $this->startTimestamp;
-                $this->_errors[] = $e->getMessage();
-                throw new MyPDOException('Ошибка соединения с БД', 0, $e);
+                $this->makeException($e);
             }
         }
     }
@@ -109,7 +113,7 @@ class MyPDO implements IDB
      *
      * @throws MyPDOException
      */
-    public function prepare($sql = '')
+    public function prepare($sql = ''): void
     {
         if (!empty($sql)) {
             $this->_sql = $sql;
@@ -120,7 +124,7 @@ class MyPDO implements IDB
             $this->_stm = $this->_pdo->prepare($this->_sql);
             $this->time = microtime(true) - $this->startTimestamp;
         } catch (PDOException $e) {
-            throw new MyPDOException('Ошибка PDO:prepare', 0, $e);
+            $this->makeException($e);
         }
     }
 
@@ -130,7 +134,7 @@ class MyPDO implements IDB
      * @param string $key
      * @param mixed $value
      */
-    public function bind($key, $value)
+    public function bind($key, $value): void
     {
         $this->_stm_params[$key] = $value;
     }
@@ -161,10 +165,7 @@ class MyPDO implements IDB
 
             return $this->_stm;
         } catch (PDOException $e) {
-            $this->time = microtime(true) - $this->startTimestamp;
-            $this->_errors[] = $e->getMessage();
-
-            throw new MyPDOException('Ошибка PDO:execute', 0, $e);
+            $this->makeException($e);
         }
     }
 
@@ -202,10 +203,7 @@ class MyPDO implements IDB
             $this->time = microtime(true) - $this->startTimestamp;
             return $this->_stm;
         } catch (PDOException $e) {
-            $this->time = microtime(true) - $this->startTimestamp;
-            $this->_errors[] = $e->getMessage();
-
-            throw new MyPDOException('Ошибка PDO:execute', 0, $e);
+            $this->makeException($e);
         }
     }
 
@@ -253,15 +251,14 @@ class MyPDO implements IDB
     public function fetchAll($res = null): array
     {
         $this->time = microtime(true) - $this->startTimestamp;
+        $out = [];
         try {
             $out = $this->_stm->fetchAll();
             $this->_stm->closeCursor();
-        } catch (Exception $e) {
-            $this->time = microtime(true) - $this->startTimestamp;
-            $error = $e->getMessage();
-            $this->_errors[] = $error;
-            throw new MyPDOException($error);
+        } catch (PDOException $exception) {
+            $this->makeException($exception);
         }
+
         return $out;
     }
 
@@ -276,7 +273,7 @@ class MyPDO implements IDB
     /**
      * @return int
      */
-    public function getAffectedRows()
+    public function getAffectedRows(): int
     {
         return $this->_affected_rows;
     }
@@ -306,9 +303,9 @@ class MyPDO implements IDB
     }
 
     /**
-     * @param string $sql
+     * @param string|null $sql
      */
-    public function showSQL($sql = null)
+    public function showSQL(string $sql = null): void
     {
         if ($sql !== null) {
             $this->_sql = $sql;
@@ -351,7 +348,7 @@ class MyPDO implements IDB
     /**
      * @return array
      */
-    public function getDebugInfo()
+    public function getDebugInfo(): array
     {
         return ['queries' => $this->_stat_queries_cnt, 'worktime' => $this->_stat_worktime_all];
     }
@@ -415,5 +412,27 @@ class MyPDO implements IDB
         }
 
         return $result;
+    }
+
+    /**
+     * @param PDOException $exception
+     *
+     * @throws MyPDODuplicateKeyException
+     * @throws MyPDOException
+     */
+    private function makeException(PDOException $exception): void
+    {
+        $this->time = microtime(true) - $this->startTimestamp;
+        $this->_errors[] = $exception->getMessage();
+
+        $errorCode = null !== $exception->errorInfo
+            ? $exception->errorInfo[1]
+            : $exception->getCode();
+
+        if ($errorCode === 23000) {
+            throw new MyPDODuplicateKeyException('Ошибка PDO: duplicate key', $errorCode, $exception);
+        }
+
+        throw new MyPDOException('Ошибка PDO', $errorCode, $exception);
     }
 }
