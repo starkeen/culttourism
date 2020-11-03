@@ -158,7 +158,7 @@ class MLinks extends Model
                            LEFT JOIN {$this->_tables_related['region_url']} AS url ON url.uid = c.pc_url_id
                            LEFT JOIN {$this->_tables_related['ref_pointtypes']} pt ON pt.tp_id = o.pt_type_id
                            WHERE u.is_ok = 0
-                             AND u.status_count > 2
+                             AND (u.status_count > 2 OR u.status = 301)
                              AND o.pt_active = 1 \n";
         if ($status !== null) {
             $this->_db->sql .= "AND u.status = :status\n";
