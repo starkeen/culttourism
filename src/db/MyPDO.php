@@ -305,7 +305,7 @@ class MyPDO implements IDB
     /**
      * @param string|null $sql
      */
-    public function showSQL(string $sql = null): void
+    public function showSQL($sql = null): void
     {
         if ($sql !== null) {
             $this->_sql = $sql;
