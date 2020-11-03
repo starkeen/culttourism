@@ -80,7 +80,11 @@ class CheckUrlsCommand extends CrontabCommand
                 ) {
                     throw new RuntimeException(sprintf('Directory "%s" was not created', self::COOKIES_PATH));
                 }
-                $cookies = new FileCookieJar(self::COOKIES_PATH . '/common.txt');
+                $domain = parse_url($url, PHP_URL_HOST);
+                if (empty($domain)) {
+                    $domain = 'common';
+                }
+                $cookies = new FileCookieJar(self::COOKIES_PATH . '/' . $domain . '.txt');
                 $requestOptions = array_merge(
                     self::HTTP_REQUEST_OPTIONS,
                     [
