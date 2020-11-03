@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\crontab;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Cookie\FileCookieJar;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
@@ -12,6 +13,7 @@ use GuzzleHttp\RedirectMiddleware;
 use GuzzleHttp\RequestOptions;
 use models\MLinks;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Throwable;
 
 class CheckUrlsCommand extends CrontabCommand
@@ -30,6 +32,8 @@ class CheckUrlsCommand extends CrontabCommand
             'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36 / culttourism bot/1.0',
         ],
     ];
+
+    private const COOKIES_PATH = _DIR_VAR . '/cookies';
 
     /**
      * @var MLinks
@@ -69,7 +73,21 @@ class CheckUrlsCommand extends CrontabCommand
             $redirectUrl = null;
 
             try {
-                $response = $this->httpClient->request('GET', $url, self::HTTP_REQUEST_OPTIONS);
+                if (
+                    !file_exists(self::COOKIES_PATH)
+                    && !mkdir(self::COOKIES_PATH, null, true)
+                    && !is_dir(self::COOKIES_PATH)
+                ) {
+                    throw new RuntimeException(sprintf('Directory "%s" was not created', self::COOKIES_PATH));
+                }
+                $cookies = new FileCookieJar(self::COOKIES_PATH . '/common.txt');
+                $requestOptions = array_merge(
+                    self::HTTP_REQUEST_OPTIONS,
+                    [
+                        RequestOptions::COOKIES => $cookies,
+                    ]
+                );
+                $response = $this->httpClient->request('GET', $url, $requestOptions);
 
                 $headersRedirect = $response->getHeader(RedirectMiddleware::HISTORY_HEADER);
 
@@ -142,7 +160,14 @@ class CheckUrlsCommand extends CrontabCommand
             }
 
             $contentTitle = $this->getContentTitle($content);
-            $this->linksModel->updateStatus($id, $statusCodeNew, $statusCount, $contentSize, $contentTitle, $redirectUrl);
+            $this->linksModel->updateStatus(
+                $id,
+                $statusCodeNew,
+                $statusCount,
+                $contentSize,
+                $contentTitle,
+                $redirectUrl
+            );
         }
     }
 
