@@ -433,7 +433,7 @@ class MyPDO implements IDB
             ? $exception->errorInfo[1]
             : $exception->getCode();
 
-        if ($errorCode === 1044) {
+        if (in_array($errorCode, [1044, 1045], true)) {
             throw new MyPDOAccessException('Ошибка PDO: access denied', $errorCode, $exception);
         }
         if ($errorCode === 1046) {
