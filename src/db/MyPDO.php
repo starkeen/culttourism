@@ -433,6 +433,7 @@ class MyPDO implements IDB
             throw new MyPDODuplicateKeyException('Ошибка PDO: duplicate key', $errorCode, $exception);
         }
 
-        throw new MyPDOException('Ошибка PDO', $errorCode, $exception);
+        $message = 'Ошибка PDO: ' . $errorCode;
+        throw new MyPDOException($message, $errorCode, $exception);
     }
 }

@@ -9,6 +9,7 @@ use app\api\google_search\exception\SearchException;
 use app\api\google_search\exception\UnsupportedImageType;
 use app\api\google_search\Factory;
 use app\api\google_search\ResultItem;
+use app\db\MyPDODuplicateKeyException;
 use app\services\image_storage\exceptions\SourceUnreachedException;
 use app\services\image_storage\ImageStorageFactory;
 
@@ -83,6 +84,9 @@ switch ($act) {
         } catch (SourceUnreachedException $exception) {
             $out['photo_id'] = null;
             $out['error_text'] = $exception->getMessage();
+        } catch (MyPDODuplicateKeyException $exception) {
+            $out['photo_id'] = null;
+            $out['error_text'] = 'Такая фотография уже есть';
         }
         json($out);
         break;
