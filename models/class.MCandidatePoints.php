@@ -162,7 +162,7 @@ class MCandidatePoints extends Model
             $this->_db->sql .= "AND t.cp_type_id = '" . (int) $filter['type'] . "'\n";
         }
         if (isset($filter['type']) && (int) $filter['type'] === -1) {
-            $this->_db->sql .= "AND t.cp_type_id = '0'\n";
+            $this->_db->sql .= "AND (t.cp_type_id = 0 OR t.cp_type_id IS NULL)\n";
         }
         if (isset($filter['pcid']) && (int) $filter['pcid'] > 0) {
             $this->_db->sql .= "AND t.cp_citypage_id = '" . (int) $filter['pcid'] . "'\n";
@@ -235,30 +235,37 @@ class MCandidatePoints extends Model
                                 cp_phone = REPLACE(cp_phone, ';', ',')
                             WHERE cp_phone LIKE '%;%'";
         $this->_db->exec();
+
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 cp_phone = REPLACE(cp_phone, ' ,', ',')
                             WHERE cp_phone LIKE '% ,%'";
         $this->_db->exec();
+
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 cp_title = TRIM(TRAILING '.' FROM cp_title)
                             WHERE cp_title LIKE '%.'";
         $this->_db->exec();
+
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 cp_addr = TRIM(TRAILING '.' FROM cp_addr)
                             WHERE cp_addr LIKE '%.'";
         $this->_db->exec();
+
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 cp_text = REPLACE(cp_text, '&nbsp;', ' ')
                             WHERE cp_text LIKE '%&nbsp;%'";
         $this->_db->exec();
+
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 cp_title = REPLACE(cp_title, '&nbsp;', ' ')
                             WHERE cp_title LIKE '%&nbsp;%'";
         $this->_db->exec();
+
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 cp_title = REPLACE(cp_title, '&laquo;', '«')
                             WHERE cp_title LIKE '%&laquo;%'";
         $this->_db->exec();
+
         $this->_db->sql = "UPDATE $this->_table_name SET
                                 cp_title = REPLACE(cp_title, '&raquo;', '»')
                             WHERE cp_title LIKE '%&raquo;%'";
