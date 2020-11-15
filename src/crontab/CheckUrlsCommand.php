@@ -25,7 +25,7 @@ class CheckUrlsCommand extends CrontabCommand
         ],
         RequestOptions::CONNECT_TIMEOUT => 10,
         RequestOptions::READ_TIMEOUT => 10,
-        RequestOptions::TIMEOUT => 5,
+        RequestOptions::TIMEOUT => 10,
         RequestOptions::FORCE_IP_RESOLVE => 'v4',
         RequestOptions::VERIFY => false,
         RequestOptions::HEADERS => [
@@ -92,18 +92,6 @@ class CheckUrlsCommand extends CrontabCommand
                 if (!empty($headersRedirect)) {
                     $statusCodeNew = 301;
                     $redirectUrl = array_pop($headersRedirect) ?: null;
-                    $redirectUrlScheme = parse_url($redirectUrl, PHP_URL_SCHEME);
-                    $redirectUrlDomain = parse_url($redirectUrl, PHP_URL_HOST);
-                    if ($redirectUrlDomain === $urlDomain && $redirectUrlScheme !== $urlScheme) {
-                        $context1 = [
-                            'url' => $url,
-                            'redirect' => $redirectUrl,
-                            'old' => $statusCodeOld,
-                            'page' => $urlData['pt_name'],
-                            'city' => $urlData['pc_title_unique'],
-                        ];
-                        $this->logger->info('Редирект на https', $context1);
-                    }
                 }
             } catch (BadResponseException $exception) {
                 $statusCodeNew = $exception->getResponse()->getStatusCode();
@@ -114,40 +102,12 @@ class CheckUrlsCommand extends CrontabCommand
                 $content = null;
                 $contentSize = null;
             } catch (RequestException $exception) {
-                $context2 = [
-                    'url' => $url,
-                    'old' => $statusCodeOld,
-                    'page' => $urlData['pt_name'],
-                    'city' => $urlData['pc_title_unique'],
-                    'exception_message' => $exception->getMessage(),
-                    'exception_response' => $exception->getResponse(),
-                ];
-                $this->logger->warning('Сетевая ошибка в запросе', $context2);
                 continue;
             } catch (Throwable $exception) {
-                $context3 = [
-                    'url' => $url,
-                    'old' => $statusCodeOld,
-                    'page' => $urlData['pt_name'],
-                    'city' => $urlData['pc_title_unique'],
-                    'exception_message' => $exception->getMessage(),
-                ];
-                $this->logger->warning('Системная ошибка в сетевом запросе', $context3);
                 continue;
             }
 
             if ($statusCodeOld !== $statusCodeNew) {
-                $context4 = [
-                    'url' => $url,
-                    'page' => $urlData['pt_name'],
-                    'city' => $urlData['pc_title_unique'],
-                    'old' => $statusCodeOld,
-                    'new' => $statusCodeNew,
-                    'redirectUrl' => $redirectUrl,
-                ];
-                if ($statusCodeOld !== null) {
-                    $this->logger->info('Изменился статус ответа URL', $context4);
-                }
                 $statusCount = 0;
             } else {
                 $statusCount++;
