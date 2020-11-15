@@ -270,6 +270,10 @@ class MCandidatePoints extends Model
                                 cp_title = REPLACE(cp_title, '&raquo;', '»')
                             WHERE cp_title LIKE '%&raquo;%'";
         $this->_db->exec();
+
+        $this->_db->sql = "UPDATE $this->_table_name SET
+                                cp_title = CONCAT(UCASE(LEFT(cp_title, 1)), SUBSTRING(cp_title, 2))";
+        $this->_db->exec();
     }
 
     private function isSpam(int $id, string $hash): bool
