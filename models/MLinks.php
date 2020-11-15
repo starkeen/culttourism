@@ -9,6 +9,8 @@ use Model;
 
 class MLinks extends Model
 {
+    private const SHOW_BAD_STATUS_COUNT = 4;
+
     private const BAD_TITLE_MARKERS = [
         'домен',
         'domain',
@@ -94,8 +96,14 @@ class MLinks extends Model
      * @param string|null $contentTitle
      * @param string|null $redirectUrl
      */
-    public function updateStatus(int $id, int $statusCode, int $statusCount, ?int $contentSize, ?string $contentTitle, ?string $redirectUrl = null): void
-    {
+    public function updateStatus(
+        int $id,
+        int $statusCode,
+        int $statusCount,
+        ?int $contentSize,
+        ?string $contentTitle,
+        ?string $redirectUrl = null
+    ): void {
         $isOk = $statusCode === 200 && $contentSize > 2000;
 
         if ($contentTitle !== null) {
@@ -144,6 +152,7 @@ class MLinks extends Model
     {
         $params = [
             ':limit' => $count,
+            ':threshold' => self::SHOW_BAD_STATUS_COUNT,
         ];
         $this->_db->sql = "SELECT u.*,
                              ROUND(u.content_size / 1024, 1) AS content_kb,
@@ -158,7 +167,7 @@ class MLinks extends Model
                            LEFT JOIN {$this->_tables_related['region_url']} AS url ON url.uid = c.pc_url_id
                            LEFT JOIN {$this->_tables_related['ref_pointtypes']} pt ON pt.tp_id = o.pt_type_id
                            WHERE u.is_ok = 0
-                             AND (u.status_count > 4 OR u.status = 301)
+                             AND u.status_count > :threshold
                              AND o.pt_active = 1 \n";
         if ($status !== null) {
             $this->_db->sql .= "AND u.status = :status\n";
@@ -182,10 +191,14 @@ class MLinks extends Model
                            FROM $this->_table_name AS u
                            LEFT JOIN {$this->_tables_related['pagepoints']} AS o ON o.pt_id = u.id_object
                            WHERE u.is_ok = 0
-                             AND (u.status_count > 4 OR u.status = 301)
+                             AND u.status_count > :threshold
                              AND o.pt_active = 1
                            GROUP BY u.status";
-        $this->_db->exec();
+        $this->_db->execute(
+            [
+                ':threshold' => self::SHOW_BAD_STATUS_COUNT,
+            ]
+        );
 
         return $this->_db->fetchAll();
     }
@@ -198,10 +211,14 @@ class MLinks extends Model
                            LEFT JOIN {$this->_tables_related['pagepoints']} AS o ON o.pt_id = u.id_object
                            LEFT JOIN {$this->_tables_related['ref_pointtypes']} pt ON pt.tp_id = o.pt_type_id
                            WHERE u.is_ok = 0
-                             AND (u.status_count > 4 OR u.status = 301)
+                             AND u.status_count > :threshold
                              AND o.pt_active = 1
                            GROUP BY o.pt_type_id";
-        $this->_db->exec();
+        $this->_db->execute(
+            [
+                ':threshold' => self::SHOW_BAD_STATUS_COUNT,
+            ]
+        );
 
         return $this->_db->fetchAll();
     }
