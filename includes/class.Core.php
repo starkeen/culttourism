@@ -218,9 +218,9 @@ abstract class Core
      * Добавление произвольного мета-тега
      *
      * @param string $key
-     * @param string $value
+     * @param string|null $value
      */
-    public function addCustomMeta(string $key, string $value): void
+    public function addCustomMeta(string $key, ?string $value): void
     {
         $val = trim(html_entity_decode(strip_tags($value)));
         if (empty($val)) {
