@@ -1,9 +1,11 @@
 <?php
 
+use app\constant\OgType;
+
 class Page extends PageCommon {
 
     public function __construct($db, $mod) {
-        list($module_id, $page_id, $id) = $mod;
+        [$module_id, $page_id, $id] = $mod;
         parent::__construct($db, 'list', $page_id);
         $id = urldecode($id);
         if (strpos($id, '?') !== FALSE) {
@@ -35,11 +37,11 @@ class Page extends PageCommon {
             $this->addDescription($list['data']['ls_description']);
             $this->addKeywords($list['data']['ls_keywords']);
             $this->addTitle($list['data']['ls_title']);
-            $this->addOGMeta('title', $list['data']['ls_title']);
-            $this->addOGMeta('description', $list['data']['ls_description']);
+            $this->addOGMeta(OgType::TITLE(), $list['data']['ls_title']);
+            $this->addOGMeta(OgType::DESCRIPTION(), $list['data']['ls_description']);
             if (!empty($list['data']['ls_image'])) {
                 $objImage = $this->getAbsoluteURL($list['data']['ls_image']);
-                $this->addOGMeta('image', $objImage);
+                $this->addOGMeta(OgType::IMAGE(), $objImage);
             }
 
             $this->lastedit_timestamp = $list['data']['last_update'];

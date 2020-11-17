@@ -1,5 +1,7 @@
 <?php
 
+use app\constant\OgType;
+
 class Page extends PageCommon
 {
     public function __construct($db, $mod)
@@ -97,14 +99,15 @@ class Page extends PageCommon
         $this->addKeywords($entry['bg_year'] . ' год');
         $this->lastedit_timestamp = $entry['last_update'];
         $this->canonical = $entry['br_canonical'];
-        $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $entry['br_canonical']);
-        $this->addOGMeta('type', 'article');
-        $this->addOGMeta('title', $entry['br_title']);
-        $this->addOGMeta('description', $entry['br_text']);
+        $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $entry['br_canonical']);
+        $this->addOGMeta(OgType::TYPE(), 'article');
+        $this->addOGMeta(OgType::TITLE(), $entry['br_title']);
+        $this->addOGMeta(OgType::DESCRIPTION(), $entry['br_text']);
         if (!empty($entry['br_picture'])) {
-            $this->addOGMeta('image', $entry['br_picture']);
+            $this->addOGMeta(OgType::IMAGE(), $entry['br_picture']);
         }
         $this->smarty->assign('entry', $entry);
+
         return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.one.sm.html');
     }
 

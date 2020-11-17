@@ -1,6 +1,7 @@
 <?php
 
 use app\api\yandex_search\Factory;
+use app\constant\OgType;
 use app\db\MyDB;
 use app\sys\Logger;
 use app\sys\SentryLogger;
@@ -115,17 +116,17 @@ abstract class Core
         $md = new MModules($this->db);
         $row = $md->getModuleByURI($mod_id);
 
-        $this->addOGMeta('site_name', $this->globalsettings['default_pagetitle'] ?? '');
-        $this->addOGMeta('locale', 'ru_RU');
-        $this->addOGMeta('type', 'website');
-        $this->addOGMeta('url', _SITE_URL);
-        $this->addOGMeta('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
+        $this->addOGMeta(OgType::SITE_NAME(), $this->globalsettings['default_pagetitle'] ?? '');
+        $this->addOGMeta(OgType::LOCALE(), 'ru_RU');
+        $this->addOGMeta(OgType::TYPE(), 'website');
+        $this->addOGMeta(OgType::URL(), _SITE_URL);
+        $this->addOGMeta(OgType::IMAGE(), _SITE_URL . 'img/logo/culttourism-head.jpg');
         $this->addDataLD('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
         if ($row['md_photo_id']) {
             $ph = new MPhotos($this->db);
             $photo = $ph->getItemByPk($row['md_photo_id']);
             $objImage = $this->getAbsoluteURL($photo['ph_src']);
-            $this->addOGMeta('image', $objImage);
+            $this->addOGMeta(OgType::IMAGE(), $objImage);
             $this->addDataLD('image', $objImage);
         }
 
@@ -144,9 +145,9 @@ abstract class Core
             $this->description = $this->globalsettings['default_pagedescription'] ?? '';
             $this->addDescription($row['md_description']);
 
-            $this->addOGMeta('title', $this->globalsettings['default_pagetitle'] ?? '');
-            $this->addOGMeta('description', $this->globalsettings['default_pagedescription'] ?? '');
-            $this->addOGMeta('updated_time', $this->lastedit_timestamp);
+            $this->addOGMeta(OgType::TITLE(), $this->globalsettings['default_pagetitle'] ?? '');
+            $this->addOGMeta(OgType::DESCRIPTION(), $this->globalsettings['default_pagedescription'] ?? '');
+            $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
 
             $this->isCounters = $row['md_counters'];
             $this->content = $row['md_pagecontent'];
@@ -173,7 +174,7 @@ abstract class Core
     /**
      * @param string $text
      */
-    public function addTitle($text): void
+    public function addTitle(string $text): void
     {
         $this->_title[] = $text;
         krsort($this->_title);
@@ -184,7 +185,7 @@ abstract class Core
      *
      * @param string $text
      */
-    public function addKeywords($text): void
+    public function addKeywords(string $text): void
     {
         $this->_keywords[] = $text;
         krsort($this->_keywords);
@@ -195,7 +196,7 @@ abstract class Core
      *
      * @param string $text
      */
-    public function addDescription($text): void
+    public function addDescription(string $text): void
     {
         $this->_description[] = trim($text);
         krsort($this->_description);
@@ -205,16 +206,12 @@ abstract class Core
     /**
      * Добавляет в разметку мета-теги OpenGraph
      *
-     * @param string $key
+     * @param OgType $ogType
      * @param string $value
      */
-    public function addOGMeta(string $key, string $value): void
+    public function addOGMeta(OgType $ogType, string $value): void
     {
-        $allowTags = ['app_id', 'title', 'type', 'locale', 'url', 'image', 'site_name', 'description', 'updated_time'];
-        if (!in_array($key, $allowTags, true)) {
-            return;
-        }
-        $this->addCustomMeta('og:' . $key, $value);
+        $this->addCustomMeta('og:' . $ogType->getValue(), $value);
     }
 
     /**
@@ -223,7 +220,7 @@ abstract class Core
      * @param string $key
      * @param string $value
      */
-    public function addCustomMeta($key, $value): void
+    public function addCustomMeta(string $key, string $value): void
     {
         $val = trim(html_entity_decode(strip_tags($value)));
         if (empty($val)) {

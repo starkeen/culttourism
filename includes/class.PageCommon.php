@@ -4,6 +4,8 @@
  * Class of common elements of modules
  */
 
+use app\constant\OgType;
+
 class PageCommon extends Core
 {
     public $ymaps_ver = 1;
@@ -30,9 +32,9 @@ class PageCommon extends Core
         $this->mainfile_css = $this->globalsettings['mainfile_css'];
         $this->mainfile_js = $this->globalsettings['mainfile_js'];
         
-        $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $_SERVER['REQUEST_URI']);
-        $this->addOGMeta('title', $this->title);
-        $this->addOGMeta('description', $this->description);
+        $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $_SERVER['REQUEST_URI']);
+        $this->addOGMeta(OgType::TITLE(), $this->title);
+        $this->addOGMeta(OgType::DESCRIPTION(), $this->description);
 
         if (isset($_SESSION['user'])) {
             $this->user['object'] = $_SESSION['user'];

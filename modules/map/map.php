@@ -1,6 +1,7 @@
 <?php
 
 use app\cache\Cache;
+use app\constant\OgType;
 use app\db\MyDB;
 
 class Page extends PageCommon
@@ -16,7 +17,7 @@ class Page extends PageCommon
         if ($page_id == '') {
             $this->ymaps_ver = 2;
 
-            $this->addOGMeta('type', 'website');
+            $this->addOGMeta(OgType::TYPE(), 'website');
 
             $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/map/map.sm.html');
         } //====================  M A P   E N T R Y  ============================

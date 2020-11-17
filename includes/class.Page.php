@@ -1,5 +1,7 @@
 <?php
 
+use app\constant\OgType;
+
 class Page extends PageCommon
 {
     private const DESCRIPTION_THRESHOLD = 200;
@@ -192,21 +194,20 @@ class Page extends PageCommon
             $this->addKeywords('координаты GPS');
         }
 
-        $this->addOGMeta('type', 'article');
-        $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $this->canonical);
-        $this->addOGMeta('title', $object['esc_name']);
-        $this->addOGMeta('description', $short);
-        $this->addOGMeta('updated_time', $this->lastedit_timestamp);
-        if ($object['pt_photo_id'] != 0) {
+        $this->addOGMeta(OgType::TYPE(), 'article');
+        $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $this->canonical);
+        $this->addOGMeta(OgType::TITLE(), $object['esc_name']);
+        $this->addOGMeta(OgType::DESCRIPTION(), $short);
+        $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
+        $objImage = null;
+        if ((int) $object['pt_photo_id'] !== 0) {
             $ph = new MPhotos($this->db);
             $photo = $ph->getItemByPk($object['pt_photo_id']);
-            $objImage = strpos($photo['ph_src'], '/') === 0 ? rtrim(
-                    _SITE_URL,
-                    '/'
-                ) . $photo['ph_src'] : $photo['ph_src'];
-            $this->addOGMeta('image', $objImage);
-        } else {
-            $objImage = null;
+            $objImage = rtrim(_SITE_URL, '/') . $photo['ph_src'];
+            if (strpos($photo['ph_src'], '/') !== 0) {
+                $objImage = $photo['ph_src'];
+            }
+            $this->addOGMeta(OgType::IMAGE(), $objImage);
         }
 
         if (!empty($object['pt_description'])) {
@@ -359,14 +360,14 @@ class Page extends PageCommon
                 $this->addKeywords($row['pc_title_synonym']);
             }
 
-            $this->addOGMeta('type', 'article');
-            $this->addOGMeta('url', rtrim(_SITE_URL, '/') . $this->canonical);
-            $this->addOGMeta('title', 'Достопримечательности ' . $row['pc_inwheretext']);
+            $this->addOGMeta(OgType::TYPE(), 'article');
+            $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $this->canonical);
+            $this->addOGMeta(OgType::TITLE(), 'Достопримечательности ' . $row['pc_inwheretext']);
             $this->addOGMeta(
-                'description',
+                OgType::DESCRIPTION(),
                 $row['pc_description'] . ($row['pc_announcement'] ? '. ' . $row['pc_announcement'] : '')
             );
-            $this->addOGMeta('updated_time', $this->lastedit_timestamp);
+            $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
             if ($row['pc_coverphoto_id']) {
                 $ph = new MPhotos($this->db);
                 $photo = $ph->getItemByPk($row['pc_coverphoto_id']);
@@ -374,7 +375,7 @@ class Page extends PageCommon
                         _SITE_URL,
                         '/'
                     ) . $photo['ph_src'] : $photo['ph_src'];
-                $this->addOGMeta('image', $cityImage);
+                $this->addOGMeta(OgType::IMAGE(), $cityImage);
             } else {
                 $cityImage = null;
             }
