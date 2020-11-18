@@ -21,6 +21,8 @@ class MLinks extends Model
         'парковочная',
         'gadgets',
         'регистрации',
+        'хостинг',
+        'директори',
     ];
 
     protected $_table_pk = 'id';
