@@ -53,6 +53,8 @@ define('_DIR_MODELS', _DIR_ROOT . _DELIMITER_PATH . 'models');
 define('_DIR_ADDONS', _DIR_ROOT . _DELIMITER_PATH . 'addons');
 define('_DIR_SMARTY', _DIR_ROOT . _DELIMITER_PATH . 'addons/Smarty3/libs');
 define('_DIR_VAR', _DIR_ROOT . _DELIMITER_PATH . 'var');
+define('_DIR_CACHE', _DIR_VAR . _DELIMITER_PATH . 'cache');
+define('_DIR_TMP', _DIR_VAR . _DELIMITER_PATH . 'tmp');
 
 define('_SITE_URL', 'https://' . _URL_ROOT . '/');
 

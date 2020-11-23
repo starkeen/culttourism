@@ -15,7 +15,7 @@ class Cache
      * Список доступных кэшей
      * @var array
      */
-    const CONFIG = [
+    private const CONFIG = [
         'refs' => [
             'dir' => 'refs',
             'lifetime' => 3600,
@@ -36,11 +36,11 @@ class Cache
     /** @var mixed */
     private $cacheCurrent;
 
-    private function __construct($cache_id)
+    private function __construct(string $cacheId)
     {
-        if (isset(self::CONFIG[$cache_id])) {
-            $this->cacheCurrent = self::CONFIG[$cache_id];
-            $this->cacheDir = _DIR_DATA . '/private/cache';
+        if (isset(self::CONFIG[$cacheId])) {
+            $this->cacheCurrent = self::CONFIG[$cacheId];
+            $this->cacheDir = _DIR_CACHE;
         }
     }
 
@@ -51,7 +51,7 @@ class Cache
      *
      * @return self
      */
-    public static function i($cache): self
+    public static function i(string $cache): self
     {
         if (!isset(self::$_instance[$cache])) {
             // создаем новый экземпляр
@@ -68,7 +68,7 @@ class Cache
      *
      * @return array|string|null
      */
-    public function get($key)
+    public function get(string $key)
     {
         $filename = $this->cacheDir . '/' . $this->cacheCurrent['dir'] . '/' . $key;
         if (!file_exists($filename) || !is_file($filename)) {
@@ -89,11 +89,11 @@ class Cache
      * Записываем данные в кэш
      *
      * @param string $key
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return bool
      */
-    public function put($key, $value): bool
+    public function put(string $key, $value): bool
     {
         $fileDir = $this->cacheDir . '/' . $this->cacheCurrent['dir'] . '/';
         if (!file_exists($fileDir)) {
@@ -117,7 +117,7 @@ class Cache
      *
      * @return bool|null
      */
-    public function remove($key)
+    public function remove(string $key)
     {
         $filename = $this->cacheDir . '/' . $this->cacheCurrent['dir'] . '/' . $key;
         $result = null;
@@ -135,7 +135,7 @@ class Cache
     }
 
     /**
-     * @param $data
+     * @param mixed $data
      *
      * @return string
      */
