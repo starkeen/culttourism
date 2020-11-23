@@ -44,7 +44,6 @@ define('GOOGLE_CUSTOM_SEARCH_CX', 'absdef');
 /* Directory settings */
 define('_DIR_INCLUDES', _DIR_ROOT . _DELIMITER_PATH . 'includes');
 define('_DIR_DATA', _DIR_ROOT . _DELIMITER_PATH . 'data');
-define('_DIR_TMP', _DIR_DATA . _DELIMITER_PATH . 'tmp');
 define('_DIR_PHOTOS', _DIR_DATA . _DELIMITER_PATH . 'photos');
 define('_DIR_TEMPLATES', _DIR_ROOT . _DELIMITER_PATH . 'templates');
 define('_DIR_TEMPLATES_ADM', _DIR_ROOT . _DELIMITER_PATH . 'templates' . _DELIMITER_PATH . '_admin');
