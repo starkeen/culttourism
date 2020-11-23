@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace app\db\exceptions;
 
-class MyPDOTableException extends MyPDOException
+class TooManyConnectionsException extends MyPDOException
 {
 }

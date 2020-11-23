@@ -2,10 +2,11 @@
 
 namespace app\db;
 
-use app\db\exceptions\MyPDOAccessException;
-use app\db\exceptions\MyPDODuplicateKeyException;
+use app\db\exceptions\AccessException;
+use app\db\exceptions\DuplicateKeyException;
 use app\db\exceptions\MyPDOException;
-use app\db\exceptions\MyPDOTableException;
+use app\db\exceptions\TableException;
+use app\db\exceptions\TooManyConnectionsException;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -421,7 +422,7 @@ class MyPDO implements IDB
     /**
      * @param PDOException $exception
      *
-     * @throws MyPDODuplicateKeyException
+     * @throws DuplicateKeyException
      * @throws MyPDOException
      */
     private function makeException(PDOException $exception): void
@@ -433,14 +434,17 @@ class MyPDO implements IDB
             ? $exception->errorInfo[1]
             : $exception->getCode();
 
+        if ($errorCode === 1040) {
+            throw new TooManyConnectionsException('Ошибка PDO: to many connections', $errorCode, $exception);
+        }
         if (in_array($errorCode, [1044, 1045], true)) {
-            throw new MyPDOAccessException('Ошибка PDO: access denied', $errorCode, $exception);
+            throw new AccessException('Ошибка PDO: access denied', $errorCode, $exception);
         }
         if ($errorCode === 1046) {
-            throw new MyPDOTableException('Ошибка PDO: table not found', $errorCode, $exception);
+            throw new TableException('Ошибка PDO: table not found', $errorCode, $exception);
         }
         if ($errorCode === 1062) {
-            throw new MyPDODuplicateKeyException('Ошибка PDO: duplicate key', $errorCode, $exception);
+            throw new DuplicateKeyException('Ошибка PDO: duplicate key', $errorCode, $exception);
         }
 
         throw new MyPDOException('Ошибка PDO: ' . $errorCode, $errorCode, $exception);
