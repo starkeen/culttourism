@@ -31,6 +31,7 @@ class MPhotos extends Model
         parent::__construct($db);
         $this->addRelatedTable('pagecity');
         $this->addRelatedTable('pagepoints');
+        $this->addRelatedTable('ref_pointtypes');
         $this->addRelatedTable('wordstat');
     }
 
@@ -66,8 +67,10 @@ class MPhotos extends Model
     {
         $this->_db->sql = "SELECT pt.*, pc.pc_id, pc.pc_title_unique
                             FROM {$this->_tables_related['pagepoints']} pt
+                            LEFT JOIN {$this->_tables_related['ref_pointtypes']} pts ON pts.tp_id = pt.pt_type_id
                             LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
                             WHERE pt.pt_photo_id = 0
+                            AND pts.tr_sight = 1
                             AND pt.pt_latitude != 0 AND pt.pt_longitude != 0
                             AND pt.pt_latitude IS NOT NULL AND pt.pt_longitude IS NOT NULL
                             AND pt.pt_active = 1
