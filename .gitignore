@@ -30,5 +30,5 @@ robots.txt
 /templates_c/
 /templates_cache/
 /templates/sys/
-/var/logs/
+/var/
 /vendor/
