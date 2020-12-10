@@ -100,11 +100,11 @@ class SiteRequestTest extends TestCase
             ],
             'страница внутри вложенного подраздела модуля с параметрами' => [
                 '/module/sub/subSub/nested/page.html?param=value',
-                '/module/sub/subSub/nested/page.html',
+                '/module/sub/subSub/nested',
             ],
             'страница внутри кириллического подраздела модуля с параметрами' => [
                 '/module/sub/subSub/подРаздел/page.html?param=значение',
-                '/module/sub/subSub/подРаздел/page.html',
+                '/module/sub/subSub/подРаздел',
             ],
         ];
     }
