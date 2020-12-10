@@ -12,8 +12,8 @@ class TemplateEngine extends Smarty
     {
         parent::__construct();
         $this->setTemplateDir(_DIR_TEMPLATES . '/');
-        $this->setCompileDir(_DIR_ROOT . '/templates_c/');
-        $this->setCacheDir(_DIR_ROOT . '/templates_cache/');
+        $this->setCompileDir(_DIR_VAR . '/templates_c/');
+        $this->setCacheDir(_DIR_VAR . '/templates_cache/');
 
         $this->caching = Smarty::CACHING_OFF;
         $this->cache_lifetime = 3600;
