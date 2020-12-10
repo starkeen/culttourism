@@ -9,6 +9,11 @@ use PHPUnit\Framework\TestCase;
 
 class SiteRequestTest extends TestCase
 {
+    public function setUp(): void
+    {
+        define('_INDEXPAGE_URI', 'ndx');
+    }
+
     /**
      * @dataProvider getExamples
      *
@@ -27,7 +32,7 @@ class SiteRequestTest extends TestCase
         return [
             'главная страница' => [
                 '/',
-                '/',
+                '/ndx',
             ],
             'корень модуля' => [
                 '/module',
