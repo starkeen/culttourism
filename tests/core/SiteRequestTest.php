@@ -40,7 +40,7 @@ class SiteRequestTest extends TestCase
             ],
             'корень модуля с закрытием' => [
                 '/module/',
-                '/module/',
+                '/module',
             ],
             'русскоязычный модуль' => [
                 '/модуль',
@@ -56,7 +56,7 @@ class SiteRequestTest extends TestCase
             ],
             'раздел модуля с закрытием' => [
                 '/module/sub/',
-                '/module/sub/',
+                '/module/sub',
             ],
             'раздел модуля без закрытия' => [
                 '/module/sub',
@@ -64,11 +64,27 @@ class SiteRequestTest extends TestCase
             ],
             'раздел модуля с параметрами' => [
                 '/module/sub/?param=value',
-                '/module/sub/',
+                '/module/sub',
             ],
             'страница внутри раздела модуля с параметрами' => [
                 '/module/sub/page.html?param=value',
                 '/module/sub/page.html',
+            ],
+            'подраздел модуля с закрытием' => [
+                '/module/sub/subSub/',
+                '/module/sub/subSub',
+            ],
+            'подраздел модуля без закрытия' => [
+                '/module/sub/subSub',
+                '/module/sub/subSub',
+            ],
+            'подраздел модуля с параметрами' => [
+                '/module/sub/subSub/?param=value',
+                '/module/sub/subSub',
+            ],
+            'страница внутри подраздела модуля с параметрами' => [
+                '/module/sub/subSub/page.html?param=value',
+                '/module/sub/subSub/page.html',
             ],
         ];
     }
