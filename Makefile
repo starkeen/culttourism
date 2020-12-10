@@ -6,9 +6,9 @@ DOCKER_COMPOSE_FILE="docker-compose.yml"
 DOMAIN = `cat config/DOMAIN`
 ROOT = /var/www/html
 PATH_VAR = ${ROOT}/var
-PATH_CACHE = ${ROOT}/data/private/cache
-PATH_COMPILED_TEMPLATES = ${ROOT}/templates_c
-PATH_CACHED_TEMPLATES = ${ROOT}/templates_cache
+PATH_CACHE = ${PATH_VAR}/cache
+PATH_COMPILED_TEMPLATES = ${PATH_VAR}/templates_c
+PATH_CACHED_TEMPLATES = ${PATH_VAR}/templates_cache
 
 vendor:
 	$(COMPOSER) -- install -o
@@ -60,3 +60,6 @@ down: _dev-env-docker
 
 down-clean: _dev-env-docker
 	$(DOCKER_COMPOSE) down -v --remove-orphans
+
+exec:
+	$(DOCKER_COMPOSE) exec -u nobody app bash
