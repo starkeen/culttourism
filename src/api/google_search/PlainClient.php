@@ -8,6 +8,7 @@ use app\api\google_search\exception\QuotaExceededException;
 use app\api\google_search\exception\SearchException;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 
 class PlainClient implements HttpClientInterface
 {
@@ -65,6 +66,12 @@ class PlainClient implements HttpClientInterface
             if ($responseCode === 429) {
                 throw new QuotaExceededException($responseData['error']['message']);
             }
+            throw new SearchException($responseData['error']['message'], $responseCode, $exception);
+        } catch (ServerException $exception) {
+            $responseCode = $exception->getResponse()->getStatusCode();
+            $responseContents = $exception->getResponse()->getBody()->getContents();
+            $responseData = json_decode($responseContents, true);
+
             throw new SearchException($responseData['error']['message'], $responseCode, $exception);
         }
 
