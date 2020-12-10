@@ -11,6 +11,9 @@ class SiteRequest
      */
     private $requestUri;
 
+    /**
+     * @var bool
+     */
     private $parsed = false;
 
     /**
