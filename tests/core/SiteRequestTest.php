@@ -86,6 +86,26 @@ class SiteRequestTest extends TestCase
                 '/module/sub/subSub/page.html?param=value',
                 '/module/sub/subSub/page.html',
             ],
+            'вложенный подраздел модуля с закрытием' => [
+                '/module/sub/subSub/nested/',
+                '/module/sub/subSub/nested',
+            ],
+            'вложенный подраздел модуля без закрытия' => [
+                '/module/sub/subSub/nested',
+                '/module/sub/subSub/nested',
+            ],
+            'вложенный подраздел модуля с параметрами' => [
+                '/module/sub/subSub/nested/?param=value',
+                '/module/sub/subSub/nested',
+            ],
+            'страница внутри вложенного подраздела модуля с параметрами' => [
+                '/module/sub/subSub/nested/page.html?param=value',
+                '/module/sub/subSub/nested/page.html',
+            ],
+            'страница внутри кириллического подраздела модуля с параметрами' => [
+                '/module/sub/subSub/подРаздел/page.html?param=значение',
+                '/module/sub/subSub/подРаздел/page.html',
+            ],
         ];
     }
 }
