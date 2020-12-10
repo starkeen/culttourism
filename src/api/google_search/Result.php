@@ -30,7 +30,9 @@ class Result
             $resultItem->setTitle($item->title ?? 'untitled');
             $resultItem->setUrl($item->link);
             $resultItem->setDomain($item->displayLink);
-            $resultItem->setDescription($item->snippet);
+            if (isset($item->snippet)) {
+                $resultItem->setDescription($item->snippet);
+            }
             if (isset($item->mime)) {
                 $resultItem->setMimeType($item->mime);
             }
