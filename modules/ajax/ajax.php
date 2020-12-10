@@ -1,5 +1,7 @@
 <?php
 
+use app\core\SiteRequest;
+use app\db\MyDB;
 use models\MLinks;
 
 class Page extends PageCommon
@@ -9,10 +11,10 @@ class Page extends PageCommon
      */
     private $mDataCheck;
 
-    public function __construct($db, $mod)
+    public function __construct(MyDB $db, SiteRequest $siteRequest)
     {
-        [$module_id, $page_id, $id] = $mod;
-        parent::__construct($db, 'ajax');
+        $id = $siteRequest->getLevel2();
+        parent::__construct($db, $siteRequest);
         $this->smarty->caching = false;
         $id = urldecode($id);
         if (strpos($id, '?') !== false) {
@@ -23,7 +25,7 @@ class Page extends PageCommon
 
         $this->mDataCheck = new MDataCheck($db);
 
-        if ($page_id === 'point') {
+        if ($siteRequest->getLevel1() === 'point') {
             if ($id == '' && isset($_GET['id']) && (int) $_GET['id']) {
                 $this->content = $this->getPoint((int) $_GET['id']);
             } elseif ($id === 's' && isset($_GET['id'])) {
@@ -50,7 +52,7 @@ class Page extends PageCommon
                 $this->content = $this->setFormPointBest((int) $_GET['id']);
             }
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
-        } elseif ($page_id === 'city') {
+        } elseif ($siteRequest->getLevel1() === 'city') {
             if ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
                 $this->content = $this->saveCityTitle((int) $_GET['id']);
             } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
@@ -61,13 +63,13 @@ class Page extends PageCommon
                 $this->content = $this->setFormCityGPS((int) $_GET['cid']);
             }
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
-        } elseif ($page_id === 'pointtype') {
+        } elseif ($siteRequest->getLevel1() === 'pointtype') {
             if ($id === 'getform') {
                 $this->content = $this->getChangeTypeForm();
             } elseif ($id === 'savetype' && isset($_POST['pid']) && (int) $_POST['pid']) {
                 $this->content = $this->setPointType((int) $_POST['pid']);
             }
-        } elseif ($page_id === 'page') {
+        } elseif ($siteRequest->getLevel1() === 'page') {
             if ($id === 'gps') {
                 $this->content = $this->getTextPage(31);
             } else {
@@ -76,11 +78,6 @@ class Page extends PageCommon
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
-    }
-
-    public static function getInstance($db, $mod = null)
-    {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
     }
 
 //--------------------------------------------------------- TEXT PAGES ---------
@@ -542,5 +539,10 @@ class Page extends PageCommon
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
+    }
+
+    public static function getInstance(MyDB $db, SiteRequest $request): self
+    {
+        return self::getInstanceOf(__CLASS__, $db, $request);
     }
 }

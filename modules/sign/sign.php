@@ -1,27 +1,31 @@
 <?php
 
-class Page extends PageCommon {
+use app\core\SiteRequest;
+use app\db\MyDB;
 
-    public function __construct($db, $mod) {
-        [$module_id, $page_id, $id] = $mod;
-        parent::__construct($db, 'sign');
-        $this->id = $id;
-        if ($page_id == 'in') {
+class Page extends PageCommon
+{
+    public function __construct(MyDB $db, SiteRequest $request)
+    {
+        parent::__construct($db, $request);
+
+        if ($request->getLevel1() === 'in') {
             $this->content = $this->getIn();
-        } elseif ($page_id == 'up') {
+        } elseif ($request->getLevel1() === 'up') {
             $this->content = $this->getUp();
-        } elseif ($page_id == 'check') {
-            $this->content = $this->doCheck($this->id);
-        } elseif ($page_id == 'out') {
+        } elseif ($request->getLevel1() === 'check') {
+            $this->content = $this->doCheck($request->getLevel2());
+        } elseif ($request->getLevel1() === 'out') {
             $this->content = $this->doOut();
-        } elseif ($page_id == 'form') {
+        } elseif ($request->getLevel1() === 'form') {
             $this->content = $this->getFormLogin();
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
     }
 
-    private function getIn() {
+    private function getIn()
+    {
         $uniq_key = md5(uniqid(mt_rand(), true));
         if (!isset($_SESSION['userkey']) || !$_SESSION['userkey']) {
             $_SESSION['userkey'] = $uniq_key;
@@ -33,11 +37,13 @@ class Page extends PageCommon {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/sign/in.sm.html');
     }
 
-    private function getUp() {
+    private function getUp()
+    {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/sign/up.sm.html');
     }
 
-    private function doOut() {
+    private function doOut()
+    {
         $this->auth->deleteKey();
         $_SESSION['user'] = null;
         $_SESSION['user_id'] = null;
@@ -80,7 +86,8 @@ class Page extends PageCommon {
         }
     }
 
-    private function getFormLogin() {
+    private function getFormLogin()
+    {
         if (isset($_SESSION['user_id'])) {
             $this->smarty->assign('username', $_SESSION['user_name']);
             return $this->smarty->fetch(_DIR_TEMPLATES . '/sign/authuser.sm.html');
@@ -91,8 +98,8 @@ class Page extends PageCommon {
         }
     }
 
-    public static function getInstance($db, $mod) {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
+    public static function getInstance(MyDB $db, SiteRequest $request): self
+    {
+        return self::getInstanceOf(__CLASS__, $db, $request);
     }
-
 }

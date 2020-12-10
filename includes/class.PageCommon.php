@@ -1,10 +1,8 @@
 <?php
 
-/*
- * Class of common elements of modules
- */
-
 use app\constant\OgType;
+use app\core\SiteRequest;
+use app\db\MyDB;
 
 class PageCommon extends Core
 {
@@ -25,8 +23,12 @@ class PageCommon extends Core
      */
     public $mainfile_js;
 
-    public function __construct($db, $mod_id) {
-        parent::__construct($db, $mod_id);
+    /**
+     * @param MyDB $db
+     * @param SiteRequest $request
+     */
+    public function __construct(MyDB $db, SiteRequest $request) {
+        parent::__construct($db, $request);
 
         $this->key_yandexmaps = $this->globalsettings['key_yandexmaps'];
         $this->mainfile_css = $this->globalsettings['mainfile_css'];

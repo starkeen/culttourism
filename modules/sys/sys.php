@@ -1,8 +1,8 @@
 <?php
 
+use app\core\SiteRequest;
 use app\db\MyDB;
 use app\sys\DeployBitbucket;
-use app\sys\Logging;
 use GuzzleHttp\Client;
 
 /**
@@ -11,20 +11,21 @@ use GuzzleHttp\Client;
 class Page extends PageCommon
 {
     private const SETTINGS_BRANCH_DEPLOY = 9;
-    private const MODULE_KEY = 'sys';
 
-    public function __construct($db, $mod)
+    public function __construct(MyDB $db, SiteRequest $request)
     {
-        [$module_id, $page_id, $id] = $mod;
+        parent::__construct($db, $request);
 
-        parent::__construct($db, self::MODULE_KEY, $page_id);
+        if ($request->getLevel2() !== null) {
+            $this->processError(Core::HTTP_CODE_404);
+        }
 
-        if ($page_id == '' && $id == '' && empty($_GET)) {
+        if ($request->getLevel1() === null && empty($request->getGET())) {
             $this->processError(Core::HTTP_CODE_301, '/');
-        } elseif ($page_id === 'bitbucket' && $id == '' && isset($_GET['key'])) {
+        } elseif ($request->getLevel1() === 'bitbucket' && $request->getGETParam('key') !== null) {
             $this->getBitbucket(trim($_GET['key']));
-        } elseif ($page_id === 'static' && $id == '' && isset($_GET['type']) && isset($_GET['pack'])) {
-            $this->getStatic(trim($_GET['type']), trim($_GET['pack']));
+        } elseif ($request->getLevel1() === 'static' && $request->getGETParam('type') !== null && $request->getGETParam('pack') !== null) {
+            $this->getStatic(trim($request->getGETParam('type')), trim($request->getGETParam('pack')));
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
@@ -120,12 +121,12 @@ class Page extends PageCommon
 
     /**
      * @param MyDB $db
-     * @param string $mod
+     * @param SiteRequest $request
      *
-     * @return Core
+     * @return self
      */
-    public static function getInstance(MyDB $db, $mod): self
+    public static function getInstance(MyDB $db, SiteRequest $request): self
     {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
+        return self::getInstanceOf(__CLASS__, $db, $request);
     }
 }

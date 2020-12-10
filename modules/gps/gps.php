@@ -1,28 +1,32 @@
 <?php
 
-class Page extends PageCommon {
+use app\core\SiteRequest;
+use app\db\MyDB;
 
-    public function __construct($db, $mod) {
-        list($module_id, $page_id, $id) = $mod;
+class Page extends PageCommon
+{
+    public function __construct(MyDB $db, SiteRequest $mod)
+    {
+        [$module_id, $page_id, $id] = $mod;
         parent::__construct($db, 'gps', $page_id);
         $id = urldecode($id);
-        if (strpos($id, '?') !== FALSE)
+        if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
+        }
         $this->id = $id;
 
         //========================  I N D E X  ================================
         if ($page_id == '') {
             $this->smarty->assign('gps_text', $this->content);
             $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/gps/gps.sm.html');
-        }
-        //=======================  E X P O R T  ===============================
+        } //=======================  E X P O R T  ===============================
         elseif ($page_id == 'export') {
             if (isset($_POST['pts']) && !empty($_POST['pts']) && (
                     isset($_POST['submit_gpx']) ||
                     isset($_POST['submit_kml']))) {
 
-                $list_points = array();
-                $export_points = array();
+                $list_points = [];
+                $export_points = [];
                 foreach ($_POST['pts'] as $ptid => $pv) {
                     $list_points[] = cut_trash_int($ptid);
                 }
@@ -77,26 +81,29 @@ class Page extends PageCommon {
                 if ($export_type == 'gpx') {
                     $file_content = $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
                     header('Content-type: application/gpx+xml');
-                    header("Content-Disposition: attachment; filename=culttourism_GPX_{$region['pc_title_translit']}.gpx");
+                    header(
+                        "Content-Disposition: attachment; filename=culttourism_GPX_{$region['pc_title_translit']}.gpx"
+                    );
                 } elseif ($export_type == 'kml') {
                     $file_content = $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/KML.export.sm.xml');
                     header('Content-type: application/vnd.google-earth.kml+xml');
-                    header("Content-Disposition: attachment; filename=culttourism_KML_{$region['pc_title_translit']}.kml");
+                    header(
+                        "Content-Disposition: attachment; filename=culttourism_KML_{$region['pc_title_translit']}.kml"
+                    );
                 }
                 echo $file_content;
                 exit();
             } else {
                 $this->processError(Core::HTTP_CODE_301, '../');
             }
-        }
-        //==========================  E X I T  ================================
+        } //==========================  E X I T  ================================
         else {
             $this->processError(Core::HTTP_CODE_404);
         }
     }
 
-    public static function getInstance($db, $mod) {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
+    public static function getInstance(MyDB $db, SiteRequest $request)
+    {
+        return self::getInstanceOf(__CLASS__, $db, $request);
     }
-
 }

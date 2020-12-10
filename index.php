@@ -1,9 +1,9 @@
 <?php
 
+use app\core\SiteRequest;
 use app\db\FactoryDB;
 use app\sys\Logger;
 use app\sys\SentryLogger;
-use app\sys\TemplateEngine;
 
 session_start();
 include __DIR__ . '/vendor/autoload.php';
@@ -25,57 +25,35 @@ if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS']
     exit();
 }
 
-$server_request_uri = urldecode($_SERVER['REQUEST_URI']);
-if (strpos($server_request_uri, '?')) {
-    $server_request_uri = mb_substr($server_request_uri, 0, strpos($server_request_uri, '?'), 'utf-8');
-}
-$requestURIArray = explode('/', $server_request_uri);
-if ($_SERVER['HTTP_HOST'] !== _URL_ROOT) {
-    $requestSubURIArray = explode('/', _URL_ROOT);
-    if (isset($requestSubURIArray[1], $requestURIArray[1]) && $requestSubURIArray[1] === $requestURIArray[1]) {
-        array_shift($requestURIArray);
-    }
-}
-// защита от двойного слеша в начале
-if ($requestURIArray[1] === '' && !empty($requestURIArray[2])) {
-    unset($requestURIArray[1]);
-    $canonical = implode('/', $requestURIArray);
-    header('HTTP/1.1 301 Moved Permanently');
-    header("Location: $canonical");
-    exit();
-}
+$request = new SiteRequest($_SERVER['REQUEST_URI']);
 
-$requestURIParamsList = array_values($requestURIArray);
-$host_id = null;
-$module_id = null;
-$page_id = null;
-$id = null;
-$id2 = null;
-if (isset($requestURIParamsList[0])) {
-    $host_id = $requestURIParamsList[0];
-}
-if (isset($requestURIParamsList[1])) {
-    $module_id = $requestURIParamsList[1];
-}
-if (isset($requestURIParamsList[2])) {
-    $page_id = $requestURIParamsList[2];
-}
-if (isset($requestURIParamsList[3])) {
-    $id = $requestURIParamsList[3];
-}
-if (isset($requestURIParamsList[4])) {
-    $id2 = $requestURIParamsList[4];
-}
+//$server_request_uri = urldecode($_SERVER['REQUEST_URI']);
+//if (strpos($server_request_uri, '?')) {
+//    $server_request_uri = mb_substr($server_request_uri, 0, strpos($server_request_uri, '?'), 'utf-8');
+//}
+//$requestURIArray = explode('/', $server_request_uri);
+//if ($_SERVER['HTTP_HOST'] !== _URL_ROOT) {
+//    $requestSubURIArray = explode('/', _URL_ROOT);
+//    if (isset($requestSubURIArray[1], $requestURIArray[1]) && $requestSubURIArray[1] === $requestURIArray[1]) {
+//        array_shift($requestURIArray);
+//    }
+//}
+//// защита от двойного слеша в начале
+//if ($requestURIArray[1] === '' && !empty($requestURIArray[2])) {
+//    unset($requestURIArray[1]);
+//    $canonical = implode('/', $requestURIArray);
+//    header('HTTP/1.1 301 Moved Permanently');
+//    header("Location: $canonical");
+//    exit();
+//}
 
-$module_id = (isset($module_id) && strlen($module_id) !== 0) ? urldecode($module_id) : _INDEXPAGE_URI;
-if ($module_id === 'index') {
-    $module_id = _INDEXPAGE_URI;
-}
-$page_id = isset($page_id) ? urlencode($page_id) : null;
-$id = isset($id) ? urlencode($id) : null;
-$id2 = isset($id) ? urlencode($id2) : null;
+// $requestURIParamsList = array_values($requestURIArray);
 
-$smarty = new TemplateEngine();
+$module_id = $request->getModuleKey();
+$page_id = $request->getLevel1();
+$id = $request->getLevel2();
+$id2 = $request->getLevel3();
+
 $db = FactoryDB::db();
 
 $sp = new MSysProperties($db);
@@ -89,8 +67,7 @@ if (file_exists($customModulePath)) {
 }
 include($includeModulePath);
 
-$page = Page::getInstance($db, [$module_id, $page_id, $id, $id2]);
-$smarty->assign('page', $page);
+$page = Page::getInstance($db, $request);
 
 header('X-Powered-By: html');
 header('Content-Type: text/html; charset=utf-8');
@@ -132,19 +109,7 @@ if (_CACHE_DAYS !== 0 && !$page->isAjax) {
     header('Expires: ' . date('r'));
     $page->lastedit = null;
 }
-$smarty->caching = false;
-if (_ER_REPORT || isset($_GET['debug'])) {
-    $smarty->assign('debug_info', $db->getDebugInfoText());
-} else {
-    $smarty->assign('debug_info', '');
-}
 
-if ($page->isAjax) {
-    echo $page->content;
-} elseif ($module_id === 'api') {
-    $smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
-} else {
-    $smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
-}
+$page->display();
 
 exit();

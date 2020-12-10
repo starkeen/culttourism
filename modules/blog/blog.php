@@ -1,34 +1,35 @@
 <?php
 
 use app\constant\OgType;
+use app\core\SiteRequest;
+use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct($db, $mod)
+    public function __construct(MyDB $db, SiteRequest $request)
     {
-        @list($module_id, $page_id, $id, $id2) = $mod;
-        parent::__construct($db, 'blog');
-        $this->id = $id;
-        if ($page_id == '') {
+        parent::__construct($db, $request);
+        $this->id = $request->getLevel2();
+        if ($request->getLevel1() === null) {
             $this->content = $this->getAllEntries(); //все записи
-        } elseif ($page_id === 'addform') { //форма добавления записи в блог
+        } elseif ($request->getLevel1() === 'addform') { //форма добавления записи в блог
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             $this->content = $this->getFormBlog();
-        } elseif ($page_id === 'editform' && isset($_GET['brid']) && (int) $_GET['brid']) {
+        } elseif ($request->getLevel1() === 'editform' && isset($_GET['brid']) && (int) $_GET['brid']) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             $this->content = $this->getFormBlog((int) $_GET['brid']);
-        } elseif ($page_id === 'saveform') {
+        } elseif ($request->getLevel1() === 'saveform') {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             $this->content = $this->saveFormBlog();
-        } elseif ($page_id === 'delentry' && (int) $_GET['bid']) {
+        } elseif ($request->getLevel1() === 'delentry' && (int) $_GET['bid']) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             $this->content = $this->deleteBlogEntry((int) $_GET['bid']);
-        } elseif ($page_id === 'blog') {
+        } elseif ($request->getLevel1() === 'blog') {
             $this->processError(Core::HTTP_CODE_301, '/blog/');
-        } elseif ($id2 != '') {
-            $this->content = $this->getOneEntry($id2, $page_id, $id); //одна запись
-        } elseif ($page_id != '') {
-            $this->content = $this->getCalendar($page_id, $id); //календарь
+        } elseif ($request->getLevel3() != '') {
+            $this->content = $this->getOneEntry($request->getLevel3(), $request->getLevel1(), $request->getLevel2()); //одна запись
+        } elseif ($request->getLevel1() != '') {
+            $this->content = $this->getCalendar($request->getLevel1(), $request->getLevel2()); //календарь
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
@@ -199,7 +200,7 @@ class Page extends PageCommon
         );
         if ($res) {
             $row = $this->db->fetch();
-            $bid = intval($row['br_id']);
+            $bid = (int) $row['br_id'];
             if (!$bid) {
                 return false;
             }

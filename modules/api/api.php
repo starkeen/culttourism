@@ -1,15 +1,21 @@
 <?php
 
-class Page extends PageCommon {
+use app\core\SiteRequest;
+use app\db\MyDB;
 
+class Page extends PageCommon
+{
     public $files_ver = 11;
 
-    public function __construct($db, $mod) {
-        list($module_id, $page_id, $id) = $mod;
-        parent::__construct($db, 'api', $page_id);
+    public function __construct(MyDB $db, SiteRequest $siteRequest)
+    {
+        $page_id = $siteRequest->getLevel1();
+        $id = $siteRequest->getLevel2();
+        parent::__construct($db, $siteRequest);
         $id = urldecode($id);
-        if (strpos($id, '?') !== FALSE)
+        if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
+        }
         $this->id = $id;
         $this->auth->setService('api');
 
@@ -30,38 +36,41 @@ class Page extends PageCommon {
             $this->content = $this->getApi4();
             return true;
         } elseif ($page_id == '5' && isset($_GET['id'])) {//место xml
-            $this->content = $this->getApi5(intval($_GET['id']));
+            $this->content = $this->getApi5((int) $_GET['id']);
             return true;
         } elseif ($page_id == '') {
             header("Location: /api/0/");
             exit();
-        }
-        //==========================  E X I T  ================================
+        } //==========================  E X I T  ================================
         else {
             $this->processError(Core::HTTP_CODE_404);
         }
     }
 
-    private function getApi0() {
+    private function getApi0()
+    {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/api/map0.sm.html');
     }
 
-    private function getApi1() {
+    private function getApi1()
+    {
         $db = $this->db;
         $dbpt = $db->getTableName('pagepoints');
         $dbpc = $db->getTableName('pagecity');
         $dpru = $db->getTableName('region_url');
         $dprt = $db->getTableName('ref_pointtypes');
 
-        list($c_lat, $c_lon) = explode(',', cut_trash_string($_GET['center']));
+        [$c_lat, $c_lon] = explode(',', cut_trash_string($_GET['center']));
         $c_lat = cut_trash_float($c_lat);
         $c_lon = cut_trash_float($c_lon);
 
         if (isset($_GET['filter'])) {
-            if ($_GET['filter'] == "sights")
+            if ($_GET['filter'] == "sights") {
                 $filter = "AND rt.tr_sight = 1\n";
-            if ($_GET['filter'] == "useful")
+            }
+            if ($_GET['filter'] == "useful") {
                 $filter = "AND rt.tr_sight = 0\n";
+            }
         } else {
             $filter = '';
         }
@@ -80,7 +89,7 @@ class Page extends PageCommon {
                     LIMIT 20";
         //$db->showSQL();
         $db->exec();
-        $points = array();
+        $points = [];
         while ($pt = $db->fetch()) {
             $pt['pt_description'] = strip_tags($pt['pt_description']);
             $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
@@ -94,7 +103,8 @@ class Page extends PageCommon {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/api/api1.sm.html');
     }
 
-    private function getApi2($id) {
+    private function getApi2($id)
+    {
         $db = $this->db;
         $dbpt = $db->getTableName('pagepoints');
         $dbpc = $db->getTableName('pagecity');
@@ -115,8 +125,9 @@ class Page extends PageCommon {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/api/api2.sm.html');
     }
 
-    private function getApi3($center) {
-        list($c_lat, $c_lon) = explode(',', cut_trash_string($center));
+    private function getApi3($center)
+    {
+        [$c_lat, $c_lon] = explode(',', cut_trash_string($center));
         $c_lat = cut_trash_float($c_lat);
         $c_lon = cut_trash_float($c_lon);
 
@@ -131,23 +142,26 @@ class Page extends PageCommon {
         return $json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['text'];
     }
 
-    private function getApi4() {
+    private function getApi4()
+    {
         $db = $this->db;
         $dbpt = $db->getTableName('pagepoints');
         $dbpc = $db->getTableName('pagecity');
         $dpru = $db->getTableName('region_url');
         $dprt = $db->getTableName('ref_pointtypes');
 
-        list($c_lat, $c_lon) = explode(',', cut_trash_string($_GET['center']));
+        [$c_lat, $c_lon] = explode(',', cut_trash_string($_GET['center']));
         $c_lat = cut_trash_float($c_lat);
         $c_lon = cut_trash_float($c_lon);
-        $points = array();
+        $points = [];
         if ($c_lat != 0 && $c_lon != 0) {
             if (isset($_GET['filter'])) {
-                if ($_GET['filter'] == "sights")
+                if ($_GET['filter'] == "sights") {
                     $filter = "AND rt.tr_sight = 1\n";
-                if ($_GET['filter'] == "useful")
+                }
+                if ($_GET['filter'] == "useful") {
                     $filter = "AND rt.tr_sight = 0\n";
+                }
             } else {
                 $filter = '';
             }
@@ -166,20 +180,28 @@ class Page extends PageCommon {
                     LIMIT 20";
             //$db->showSQL();
             $db->exec();
-            $remove_symbols = array("\n", "\t");
+            $remove_symbols = ["\n", "\t"];
 
             while ($pt = $db->fetch()) {
                 $pt['pt_description'] = strip_tags($pt['pt_description']);
                 $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
                 $short_end = @mb_strpos($pt['pt_description'], ' ', 350, 'utf-8');
-                $pt['pt_short'] = trim(str_replace($remove_symbols, '', trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-")));
+                $pt['pt_short'] = trim(
+                    str_replace(
+                        $remove_symbols,
+                        '',
+                        trim(mb_substr($pt['pt_description'], 0, $short_end, 'utf-8'), "\x00..\x1F,.-")
+                    )
+                );
                 $pt['pt_dist'] = $this->calcGeodesicLine($c_lat, $c_lon, $pt['pt_latitude'], $pt['pt_longitude']);
                 $pt['pt_adress'] = trim(str_replace($remove_symbols, '', $pt['pt_adress']));
                 $pt['tp_icon'] = 'o_' . str_replace('.png', '', $pt['tp_icon']);
-                if (!$pt['pt_adress'])
+                if (!$pt['pt_adress']) {
                     $pt['pt_adress'] = ' ';
-                if (!$pt['pt_short'])
+                }
+                if (!$pt['pt_short']) {
                     $pt['pt_short'] = ' ';
+                }
                 $points[] = $pt;
             }
         }
@@ -190,7 +212,8 @@ class Page extends PageCommon {
         exit();
     }
 
-    private function getApi5($id) {
+    private function getApi5($id)
+    {
         $db = $this->db;
         $dbpt = $db->getTableName('pagepoints');
         $dbpc = $db->getTableName('pagecity');
@@ -207,22 +230,29 @@ class Page extends PageCommon {
                     LIMIT 1";
         $db->exec();
         $pt = $db->fetch();
-        $line_breaks = array("<br/>", "<br>");
-        $pt['pt_description'] = trim(strip_tags(html_entity_decode(str_replace($line_breaks, "\n", $pt['pt_description']), ENT_QUOTES, "UTF-8")));
+        $line_breaks = ["<br/>", "<br>"];
+        $pt['pt_description'] = trim(
+            strip_tags(html_entity_decode(str_replace($line_breaks, "\n", $pt['pt_description']), ENT_QUOTES, "UTF-8"))
+        );
         $this->smarty->assign('point', $pt);
         header("Content-type: application/xml");
         echo $this->smarty->fetch(_DIR_TEMPLATES . '/api/api5.sm.xml');
         exit();
     }
 
-    private function calcGeodesicLine($lat1, $lon1, $lat2, $lon2) {
-        return round(6371 * 1000 * acos(sin(deg2rad($lat1)) * sin(deg2rad($lat2)) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($lon1) - deg2rad($lon2))));
+    private function calcGeodesicLine($lat1, $lon1, $lat2, $lon2)
+    {
+        return round(
+            6371 * 1000 * acos(
+                sin(deg2rad($lat1)) * sin(deg2rad($lat2)) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(
+                    deg2rad($lon1) - deg2rad($lon2)
+                )
+            )
+        );
     }
 
-    public static function getInstance($db, $mod) {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
+    public static function getInstance(MyDB $db, SiteRequest $request): self
+    {
+        return self::getInstanceOf(__CLASS__, $db, $request);
     }
-
 }
-
-?>

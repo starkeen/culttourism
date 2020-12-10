@@ -1,21 +1,22 @@
 <?php
 
+use app\core\SiteRequest;
+use app\db\MyDB;
 use app\includes\ReCaptcha;
 use app\utils\MyKCaptcha;
 use GuzzleHttp\Client;
 
 class Page extends PageCommon
 {
-    public function __construct($db, $mod)
+    public function __construct(MyDB $db, SiteRequest $request)
     {
-        [$module_id, $page_id, $id] = $mod;
-        parent::__construct($db, 'feedback', $page_id);
+        parent::__construct($db, $request);
 
-        if ((string) $page_id === '') {
+        if ($request->getLevel1() === null) {
             $this->getCommon();
-        } elseif ($page_id === 'getcapt') {
+        } elseif ($request->getLevel1() === 'getcapt') {
             $this->showCaptcha();
-        } elseif ($page_id === 'newpoint') {
+        } elseif ($request->getLevel1() === 'newpoint') {
             $this->getAdd();
         } else {
             $this->processError(Core::HTTP_CODE_404);
@@ -211,8 +212,8 @@ class Page extends PageCommon
         exit();
     }
 
-    public static function getInstance($db, $mod = null): Core
+    public static function getInstance(MyDB $db, SiteRequest $request): self
     {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
+        return self::getInstanceOf(__CLASS__, $db, $request);
     }
 }

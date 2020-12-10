@@ -1,19 +1,20 @@
 <?php
 
 use app\api\yandex_search\Factory;
+use app\core\SiteRequest;
+use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct($db, $mod)
+    public function __construct(MyDB $db, SiteRequest $request)
     {
-        [$module_id, $page_id, $id] = $mod;
-        parent::__construct($db, 'search');
-        if ($id) {
+        parent::__construct($db, $request);
+        if ($request->getLevel2() !== null) {
             $this->processError(Core::HTTP_CODE_404);
         }
-        if ($page_id === 'suggest' && isset($_GET['query'])) {
+        if ($request->getLevel1() === 'suggest' && isset($_GET['query'])) {
             $this->getSuggests();
-        } elseif ($page_id === 'suggest-object' && isset($_GET['query'])) {
+        } elseif ($request->getLevel1() === 'suggest-object' && isset($_GET['query'])) {
             $this->getObjectSuggests();
         }
         $this->content = $this->getSearchYandex();
@@ -274,8 +275,8 @@ class Page extends PageCommon
         return $this->smarty->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
     }
 
-    public static function getInstance($db, $mod = null)
+    public static function getInstance(MyDB $db, SiteRequest $request): self
     {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
+        return self::getInstanceOf(__CLASS__, $db, $request);
     }
 }

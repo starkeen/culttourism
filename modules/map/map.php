@@ -2,38 +2,38 @@
 
 use app\cache\Cache;
 use app\constant\OgType;
+use app\core\SiteRequest;
 use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct(MyDB $db, $mod)
+    public function __construct(MyDB $db, SiteRequest $request)
     {
-        [$module_id, $page_id, $id] = $mod;
-        parent::__construct($db, 'map', $page_id);
+        parent::__construct($db, $request);
 
-        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $module_id) : $this->globalsettings['res_js_' . $module_id];
+        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $request->getModuleKey()) : $this->globalsettings['res_js_' . $request->getModuleKey()];
 
         //========================  I N D E X  ================================
-        if ($page_id == '') {
+        if ($request->getLevel1() === null) {
             $this->ymaps_ver = 2;
 
             $this->addOGMeta(OgType::TYPE(), 'website');
 
             $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/map/map.sm.html');
         } //====================  M A P   E N T R Y  ============================
-        elseif ($page_id === 'common') {
+        elseif ($request->getLevel1() === 'common') {
             $this->auth->setService('map');
             $this->isAjax = true;
             $this->getYMapsMLCommon($_GET);
-        } elseif ($page_id === 'city' && isset($_GET['cid']) && (int) $_GET['cid'] > 0) {
+        } elseif ($request->getLevel1() === 'city' && isset($_GET['cid']) && (int) $_GET['cid'] > 0) {
             $this->auth->setService('map');
             $this->isAjax = true;
             $this->getYMapsMLRegion((int) $_GET['cid']);
-        } elseif ($page_id === 'list' && isset($_GET['lid']) && (int) $_GET['lid'] > 0) {
+        } elseif ($request->getLevel1() === 'list' && isset($_GET['lid']) && (int) $_GET['lid'] > 0) {
             $this->auth->setService('map');
             $this->isAjax = true;
             $this->getYMapsMLList((int) $_GET['lid']);
-        } elseif ($page_id === 'gpx' && isset($_GET['cid']) && (int) $_GET['cid']) {
+        } elseif ($request->getLevel1() === 'gpx' && isset($_GET['cid']) && (int) $_GET['cid']) {
             $this->showCityPointsGPX((int) $_GET['cid']);
         } //==========================  E X I T  ================================
         else {
@@ -260,8 +260,8 @@ class Page extends PageCommon
         header('Expires: ' . date('r'));
     }
 
-    public static function getInstance($db, $mod): Core
+    public static function getInstance(MyDB $db, SiteRequest $request): self
     {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
+        return self::getInstanceOf(__CLASS__, $db, $request);
     }
 }

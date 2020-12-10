@@ -1,6 +1,8 @@
 <?php
 
 use app\constant\OgType;
+use app\core\SiteRequest;
+use app\db\MyDB;
 
 class Page extends PageCommon
 {
@@ -31,11 +33,11 @@ class Page extends PageCommon
         'Mail.RU_Bot',
     ];
 
-    public function __construct($db, $mod)
+    public function __construct(MyDB $db, SiteRequest $request)
     {
-        parent::__construct($db, $mod[0]); //встроеные модули
+        parent::__construct($db, $request); //встроенные модули
         if (!$this->content) {
-            $this->content = $this->getPageByURL($mod);
+            $this->content = $this->getPageByURL($request);
         }
         if (!$this->content) {
             $this->processError(Core::HTTP_CODE_404);
@@ -43,18 +45,13 @@ class Page extends PageCommon
     }
 
     /**
-     * @param string[] $urlArray
+     * @param SiteRequest $request
      *
      * @return bool|string|void
      */
-    public function getPageByURL($urlArray)
+    public function getPageByURL(SiteRequest $request)
     {
-        $url = '';
-        foreach ($urlArray as $w) {
-            if ($w != '') {
-                $url .= '/' . $w;
-            }
-        }
+        $url = $request->getUrl();
         if ($url !== '') {
             $this->checkRedirect($url);
 
@@ -87,7 +84,7 @@ class Page extends PageCommon
      *
      * @return string
      */
-    private function getPageObjectBySlug($slugLine)
+    private function getPageObjectBySlug(string $slugLine)
     {
         if (!$slugLine) {
             return '';
@@ -450,13 +447,13 @@ class Page extends PageCommon
     }
 
     /**
-     * @param      $db
-     * @param null $mod
+     * @param MyDb $db
+     * @param SiteRequest $request
      *
      * @return Core
      */
-    public static function getInstance($db, $mod = null): Core
+    public static function getInstance(MyDb $db, SiteRequest $request): Core
     {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
+        return self::getInstanceOf(__CLASS__, $db, $request);
     }
 }

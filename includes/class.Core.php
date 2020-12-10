@@ -2,6 +2,7 @@
 
 use app\api\yandex_search\Factory;
 use app\constant\OgType;
+use app\core\SiteRequest;
 use app\db\MyDB;
 use app\sys\Logger;
 use app\sys\SentryLogger;
@@ -25,6 +26,11 @@ abstract class Core
      */
     protected $db;
 
+    /**
+     * @var SiteRequest
+     */
+    protected $siteRequest;
+
     public $content = '';
     public $url = '';
     private $_title = ['Культурный туризм'];
@@ -40,7 +46,6 @@ abstract class Core
     public $canonical;
     public $h1 = '';
     public $counters = '';
-    public $isIndex = 0;
     public $isCounters = 0;
     public $isAjax = false;
     public $module_id = _INDEXPAGE_URI;
@@ -77,26 +82,27 @@ abstract class Core
      */
     protected $logger;
 
-    protected function __construct(MyDB $db, string $mod)
+    /**
+     * @param MyDB $db
+     * @param SiteRequest $request
+     */
+    protected function __construct(MyDB $db, SiteRequest $request)
     {
         set_exception_handler([$this, 'errorsExceptionsHandler']);
         $this->db = $db;
+        $this->siteRequest = $request;
         $this->smarty = new TemplateEngine();
 
         $this->logger = new Logger(new SentryLogger(SENTRY_DSN));
 
         if (!$this->db->link) {
-            $this->module_id = $mod;
+            $this->module_id = $this->siteRequest->getModuleKey();
             $this->processError(self::HTTP_CODE_503, $this->smarty);
         }
-        $mod_id = $mod;
-        $page_id = null;
-        $id = null;
+
         $this->basepath = _URL_ROOT;
 
-        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
-            $this->isAjax = true;
-        }
+        $this->isAjax = $this->siteRequest->isAjax();
 
         $this->auth = new Auth($this->db);
         $this->auth->checkSession('web');
@@ -114,7 +120,7 @@ abstract class Core
         }
 
         $md = new MModules($this->db);
-        $row = $md->getModuleByURI($mod_id);
+        $row = $md->getModuleByURI($this->siteRequest->getModuleKey());
 
         $this->addOGMeta(OgType::SITE_NAME(), $this->globalsettings['default_pagetitle'] ?? '');
         $this->addOGMeta(OgType::LOCALE(), 'ru_RU');
@@ -152,9 +158,9 @@ abstract class Core
             $this->isCounters = $row['md_counters'];
             $this->content = $row['md_pagecontent'];
             $this->md_id = $row['md_id'];
-            $this->module_id = $mod_id;
-            $this->page_id = $page_id;
-            $this->id_id = $id;
+            $this->module_id = $this->siteRequest->getModuleKey();
+            $this->page_id = $this->siteRequest->getLevel1();
+            $this->id_id = $this->siteRequest->getLevel2();
             $this->custom_css = $row['md_css'];
             $this->robots_indexing = $row['md_robots'];
             $this->lastedit = $row['md_timestamp'];
@@ -167,6 +173,26 @@ abstract class Core
             if (isset($_SESSION['user_name'])) {
                 $this->user['username'] = $_SESSION['user_name'];
                 $this->user['userid'] = $_SESSION['user_id'];
+            }
+        }
+    }
+
+    public function display(): void
+    {
+        if ($this->isAjax) {
+            echo $this->content;
+        } else {
+            $this->smarty->assign('page', $this);
+            $this->smarty->caching = false;
+            if (_ER_REPORT || isset($_GET['debug'])) {
+                $this->smarty->assign('debug_info', $this->db->getDebugInfoText());
+            } else {
+                $this->smarty->assign('debug_info', '');
+            }
+            if ($this->module_id === 'api') {
+                $this->smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
+            } else {
+                $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
             }
         }
     }
@@ -440,7 +466,7 @@ abstract class Core
      */
     public function getAbsoluteURL(string $path): string
     {
-        return substr($path, 0, 1) === '/' ? rtrim(
+        return strpos($path, '/') === 0 ? rtrim(
                 _SITE_URL,
                 '/'
             ) . $path : $path;
@@ -457,15 +483,15 @@ abstract class Core
 
     /**
      * @param string $sClassname
-     * @param $db
-     * @param $mod
+     * @param MyDB $db
+     * @param SiteRequest $request
      *
      * @return self
      */
-    protected static function getInstanceOf($sClassname, $db, $mod): self
+    protected static function getInstanceOf(string $sClassname, MyDB $db, SiteRequest $request): self
     {
         if (!isset(self::$hInstances[$sClassname])) {
-            self::$hInstances[$sClassname] = new $sClassname($db, $mod); // создаем экземпляр
+            self::$hInstances[$sClassname] = new $sClassname($db, $request); // создаем экземпляр
         }
 
         return self::$hInstances[$sClassname];

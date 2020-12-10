@@ -1,27 +1,29 @@
 <?php
 
 use app\constant\OgType;
+use app\core\SiteRequest;
+use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct($db, $mod)
+    public function __construct(MyDB $db, SiteRequest $siteRequest)
     {
-        [$module_id, $page_id, $id] = $mod;
-        parent::__construct($db, 'list', $page_id);
-        $id = urldecode($id);
+        parent::__construct($db, $siteRequest);
+
+        $id = urldecode($siteRequest->getLevel2());
         if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
         }
         $this->id = $id;
         $regs = [];
 
-        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $module_id) : $this->globalsettings['res_js_' . $module_id];
+        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $siteRequest->getModuleKey()) : $this->globalsettings['res_js_' . $siteRequest->getModuleKey()];
 
-        $url_array = explode('/', $page_id);
+        $url_array = explode('/', $siteRequest->getLevel1());
         $url_last = array_pop($url_array);
 
         //========================  I N D E X  ================================
-        if ($page_id == '') {
+        if ($siteRequest->getLevel1() === null) {
             $this->prepareIndex();
         } //========================   L I S T   ================================
         elseif (preg_match('/([a-z0-9_-]+)\.html/i', $url_last, $regs)) {
@@ -80,8 +82,14 @@ class Page extends PageCommon
         $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/list/index.sm.html');
     }
 
-    public static function getInstance($db, $mod)
+    /**
+     * @param MyDB $db
+     * @param SiteRequest $request
+     *
+     * @return self
+     */
+    public static function getInstance(MyDB $db, SiteRequest $request): self
     {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
+        return self::getInstanceOf(__CLASS__, $db, $request);
     }
 }

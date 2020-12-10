@@ -1,24 +1,24 @@
 <?php
 
 use app\constant\OgType;
-use app\db\FactoryDB;
+use app\core\SiteRequest;
+use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct($module_id, $page_id)
+    public function __construct(MyDB $db, SiteRequest $request)
     {
-        $db = FactoryDB::db();
-        parent::__construct($db, 'city', $page_id);
+        parent::__construct($db,  $request);
 
-        if ($page_id[1] == '') {
+        if ($request->getLevel1() === null) {
             $this->pageCity();
-        } elseif ($page_id[1] === 'add') {
+        } elseif ($request->getLevel1() === 'add') {
             $this->addCity();
-        } elseif ($page_id[1] === 'detail') {
+        } elseif ($request->getLevel1() === 'detail') {
             $this->detailCity();
-        } elseif ($page_id[1] === 'meta') {
+        } elseif ($request->getLevel1() === 'meta') {
             $this->metaCity();
-        } elseif ($page_id[1] === 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
+        } elseif ($request->getLevel1() === 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
             $this->isAjax = true;
             $this->getBlockWeather($_GET['lat'], $_GET['lon']);
@@ -539,9 +539,8 @@ class Page extends PageCommon
         }
     }
 
-    public static function getInstance($db, $mod)
+    public static function getInstance(MyDB $db, SiteRequest $request): self
     {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
+        return self::getInstanceOf(__CLASS__, $db, $request);
     }
-
 }
