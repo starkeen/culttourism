@@ -2,34 +2,35 @@
 
 use app\constant\OgType;
 
-class Page extends PageCommon {
-
-    public function __construct($db, $mod) {
+class Page extends PageCommon
+{
+    public function __construct($db, $mod)
+    {
         [$module_id, $page_id, $id] = $mod;
         parent::__construct($db, 'list', $page_id);
         $id = urldecode($id);
-        if (strpos($id, '?') !== FALSE) {
+        if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
         }
         $this->id = $id;
-        $regs = array();
+        $regs = [];
 
         $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $module_id) : $this->globalsettings['res_js_' . $module_id];
-        
+
         $url_array = explode('/', $page_id);
         $url_last = array_pop($url_array);
 
         //========================  I N D E X  ================================
         if ($page_id == '') {
             return $this->getIndex();
-        }
-        //========================   L I S T   ================================
+        } //========================   L I S T   ================================
         elseif (preg_match('/([a-z0-9_-]+)\.html/i', $url_last, $regs)) {
             return $this->getListBySlug($regs[1]);
         }
     }
 
-    private function getListBySlug($slug) {
+    private function getListBySlug($slug)
+    {
         $lst = new MLists($this->db);
         $list = $lst->getItemBySlugline($slug);
         if (isset($list['data']['ls_id']) && $list['data']['ls_id'] > 0) {
@@ -58,10 +59,11 @@ class Page extends PageCommon {
         }
     }
 
-    private function getIndex() {
+    private function getIndex()
+    {
         $lst = new MLists($this->db);
 
-        $index_list = array();
+        $index_list = [];
         foreach ($lst->getActive() as $list) {
             if ($list['last_update'] > $this->lastedit_timestamp) {
                 $this->lastedit_timestamp = $list['last_update'];
@@ -76,7 +78,8 @@ class Page extends PageCommon {
         return true;
     }
 
-    public static function getInstance($db, $mod) {
+    public static function getInstance($db, $mod)
+    {
         return self::getInstanceOf(__CLASS__, $db, $mod);
     }
 }
