@@ -31,6 +31,21 @@ abstract class Core
      */
     protected $siteRequest;
 
+    /**
+     * @var TemplateEngine
+     */
+    public $smarty;
+
+    /**
+     * @var Auth
+     */
+    protected $auth;
+
+    /**
+     * @var LoggerInterface
+     */
+    public $logger;
+
     public $content = '';
     public $url = '';
     private $_title = ['Культурный туризм'];
@@ -66,21 +81,6 @@ abstract class Core
     public $lastedit;
     public $lastedit_timestamp = 0;
     public $expiredate;
-
-    /**
-     * @var TemplateEngine
-     */
-    public $smarty;
-
-    /**
-     * @var Auth
-     */
-    protected $auth;
-
-    /**
-     * @var LoggerInterface
-     */
-    public $logger;
 
     /**
      * @param MyDB $db
