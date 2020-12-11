@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class SiteRequestTest extends TestCase
 {
-    public function setUp(): void
+    public static function setUpBeforeClass(): void
     {
         define('_INDEXPAGE_URI', 'ndx');
     }

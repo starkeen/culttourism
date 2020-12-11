@@ -1,4 +1,5 @@
 PHP = php -d memory_limit=768M
+PHPUNIT = $(PHP) -f vendor/bin/phpunit -- --verbose --fail-on-warning
 COMPOSER = COMPOSER_ALLOW_XDEBUG=1 COMPOSER_DISABLE_XDEBUG_WARN=1 $(PHP) -d allow_url_fopen=On -f bin/composer.phar
 SHELL = /bin/bash
 DOCKER_COMPOSE="docker-compose"
@@ -63,3 +64,6 @@ down-clean: _dev-env-docker
 
 exec:
 	$(DOCKER_COMPOSE) exec -u nobody app bash
+
+test: vendor
+	$(PHPUNIT) -c tests/phpunit.xml tests/
