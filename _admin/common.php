@@ -1,6 +1,6 @@
 <?php
 
-use app\core\AdminApplication;
+use app\core\application\AdminApplication;
 use app\sys\TemplateEngine;
 
 error_reporting(E_ALL);

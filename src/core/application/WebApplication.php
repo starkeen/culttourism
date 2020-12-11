@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace app\core;
+namespace app\core\application;
 
+use app\core\SiteRequest;
 use MSysProperties;
 use Page;
 
@@ -21,9 +22,14 @@ class WebApplication extends Application
         $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
     }
 
-    public function run(): void
+    public function init(): void
     {
         session_start();
+    }
+
+    public function run(): void
+    {
+        $this->init();
 
         // редиректим на https
         if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] === '')) {

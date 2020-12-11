@@ -1,6 +1,6 @@
 <?php
 
-use app\core\CrontabApplication;
+use app\core\application\CrontabApplication;
 use app\sys\TemplateEngine;
 
 error_reporting(E_ALL & ~E_DEPRECATED);

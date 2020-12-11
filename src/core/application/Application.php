@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace app\core;
+namespace app\core\application;
 
 use app\db\FactoryDB;
 use app\db\MyDB;
@@ -30,6 +30,8 @@ abstract class Application
         $sentryLogger = new SentryLogger(SENTRY_DSN);
         $this->logger = new Logger($sentryLogger);
     }
+
+    abstract public function init(): void;
 
     abstract public function run(): void;
 
