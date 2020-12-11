@@ -92,6 +92,7 @@ abstract class Core
         $this->db = $db;
         $this->siteRequest = $request;
         $this->smarty = new TemplateEngine(); // TODO убрать!
+        $this->logger = new Logger(new SentryLogger(SENTRY_DSN)); // TODO убрать!
 
         if (!$this->db->link) {
             $this->module_id = $this->siteRequest->getModuleKey();
