@@ -10,7 +10,7 @@ use app\sys\TemplateEngine;
 use Psr\Log\LoggerInterface;
 
 /**
- * Core
+ * Core - ядро
  */
 abstract class Core
 {
