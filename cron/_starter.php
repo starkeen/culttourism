@@ -1,8 +1,6 @@
 <?php
 
-use app\db\FactoryDB;
-use app\sys\Logger;
-use app\sys\SentryLogger;
+use app\core\CrontabApplication;
 use app\sys\TemplateEngine;
 
 error_reporting(E_ALL & ~E_DEPRECATED);
@@ -11,17 +9,17 @@ $_timer_start_main = microtime(true);
 header('Content-Type: text/html; charset=utf-8');
 include(dirname(__DIR__) . '/config/configuration.php');
 include _DIR_ROOT . '/vendor/autoload.php';
+$app = new CrontabApplication();
 
-$sentryLogger = new SentryLogger(SENTRY_DSN);
-$logger = new Logger($sentryLogger);
+$logger = $app->getLogger();
 
-$db = FactoryDB::db();
+$db = $app->getDb();
 $smarty = new TemplateEngine();
 $sp = new MSysProperties($db);
 $cr = new MCron($db);
 
 $releaseKey = $sp->getByName('git_hash');
-$sentryLogger->setReleaseKey($releaseKey);
+$logger->setReleaseKey($releaseKey);
 
 $global_cron_email = $sp->getByName('mail_report_cron');
 
@@ -70,3 +68,5 @@ foreach ($scripts as $job) {
         $logger->debug('Окончание работы задачи crontab', $logContext);
     }
 }
+
+$app->run();

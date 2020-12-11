@@ -89,6 +89,14 @@ class Logger implements LoggerInterface
         Logging::addHistory($level, $message, $context);
     }
 
+    /**
+     * @param string $key
+     */
+    public function setReleaseKey(string $key): void
+    {
+        $this->sentry->setReleaseKey($key);
+    }
+
     private function sendSentry($level, $message, array $context = []):void
     {
         if ($level === LogLevel::NOTICE) {

@@ -1,8 +1,6 @@
 <?php
 
-use app\db\FactoryDB;
-use app\sys\Logger;
-use app\sys\SentryLogger;
+use app\core\AdminApplication;
 use app\sys\TemplateEngine;
 
 error_reporting(E_ALL);
@@ -12,9 +10,10 @@ session_start();
 
 include dirname(__DIR__) . '/vendor/autoload.php';
 include dirname(__DIR__) . '/config/configuration.php';
+$app = new AdminApplication();
+$app->run();
 
-$sentryLogger = new SentryLogger(SENTRY_DSN);
-$logger = new Logger($sentryLogger);
+$logger = $app->getLogger();
 
 if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] === '')) {
     header('HTTP/1.1 301 Moved Permanently');
@@ -22,11 +21,11 @@ if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS']
     exit();
 }
 
-$db = FactoryDB::db();
+$db = $app->getDb();
 
 $sp = new MSysProperties($db);
 $releaseKey = $sp->getByName('git_hash');
-$sentryLogger->setReleaseKey($releaseKey);
+$logger->setReleaseKey($releaseKey);
 
 $ticket = new Auth($db);
 $ticket->checkSession('admin');
