@@ -1,7 +1,6 @@
 <?php
 
 use app\core\application\CrontabApplication;
-use app\sys\TemplateEngine;
 
 error_reporting(E_ALL & ~E_DEPRECATED);
 ini_set('display_errors', false);
@@ -10,16 +9,14 @@ header('Content-Type: text/html; charset=utf-8');
 include(dirname(__DIR__) . '/config/configuration.php');
 include _DIR_ROOT . '/vendor/autoload.php';
 $app = new CrontabApplication();
+$app->run();
 
 $logger = $app->getLogger();
 
 $db = $app->getDb();
-$smarty = new TemplateEngine();
+$smarty = $app->getSmarty();
 $sp = new MSysProperties($db);
 $cr = new MCron($db);
-
-$releaseKey = $sp->getByName('git_hash');
-$logger->setReleaseKey($releaseKey);
 
 $global_cron_email = $sp->getByName('mail_report_cron');
 
@@ -68,5 +65,3 @@ foreach ($scripts as $job) {
         $logger->debug('Окончание работы задачи crontab', $logContext);
     }
 }
-
-$app->run();

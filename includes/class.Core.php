@@ -80,7 +80,7 @@ abstract class Core
     /**
      * @var LoggerInterface
      */
-    protected $logger;
+    public $logger;
 
     /**
      * @param MyDB $db
@@ -91,9 +91,7 @@ abstract class Core
         set_exception_handler([$this, 'errorsExceptionsHandler']);
         $this->db = $db;
         $this->siteRequest = $request;
-        $this->smarty = new TemplateEngine();
-
-        $this->logger = new Logger(new SentryLogger(SENTRY_DSN));
+        $this->smarty = new TemplateEngine(); // TODO убрать!
 
         if (!$this->db->link) {
             $this->module_id = $this->siteRequest->getModuleKey();

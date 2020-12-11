@@ -1,7 +1,6 @@
 <?php
 
 use app\core\application\AdminApplication;
-use app\sys\TemplateEngine;
 
 error_reporting(E_ALL);
 ini_set('display_errors', 'Off');
@@ -22,10 +21,6 @@ if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS']
 }
 
 $db = $app->getDb();
-
-$sp = new MSysProperties($db);
-$releaseKey = $sp->getByName('git_hash');
-$logger->setReleaseKey($releaseKey);
 
 $ticket = new Auth($db);
 $ticket->checkSession('admin');
@@ -64,7 +59,7 @@ if ($isAdmin) {
     $adm_menu_items[] = ['link' => 'settings.php', 'title' => 'Настройки сайта', 'ico' => 'ico.a_refs.gif'];
 }
 
-$smarty = new TemplateEngine();
+$smarty = $app->getSmarty();
 
 $smarty->assign('adm_menu', $adm_menu_items);
 if (isset($_SESSION['user_name'])) {

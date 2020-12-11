@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace app\core\application;
 
 use app\core\SiteRequest;
-use MSysProperties;
 use Page;
 
 class WebApplication extends Application
@@ -25,6 +24,7 @@ class WebApplication extends Application
     public function init(): void
     {
         session_start();
+        parent::init();
     }
 
     public function run(): void
@@ -38,13 +38,7 @@ class WebApplication extends Application
             exit();
         }
 
-        $sp = new MSysProperties($this->db);
-        $releaseKey = $sp->getByName('git_hash');
-        $this->logger->setReleaseKey($releaseKey);
-
-        $request = new SiteRequest($_SERVER['REQUEST_URI']);
-
-        $module_id = $request->getModuleKey();
+        $module_id = $this->request->getModuleKey();
 
         $includeModulePath = _DIR_INCLUDES . '/class.Page.php';
         $customModulePath = sprintf('%s/%s/%s.php', _DIR_MODULES, $module_id, $module_id);
@@ -54,6 +48,8 @@ class WebApplication extends Application
         include($includeModulePath);
 
         $page = Page::getInstance($this->db, $this->request);
+        $page->smarty = $this->smarty;
+        $page->logger = $this->logger;
 
         header('X-Powered-By: html');
         header('Content-Type: text/html; charset=utf-8');

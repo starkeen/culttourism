@@ -8,6 +8,8 @@ use app\db\FactoryDB;
 use app\db\MyDB;
 use app\sys\Logger;
 use app\sys\SentryLogger;
+use app\sys\TemplateEngine;
+use MSysProperties;
 
 abstract class Application
 {
@@ -21,6 +23,11 @@ abstract class Application
      */
     protected $logger;
 
+    /**
+     * @var TemplateEngine
+     */
+    protected $smarty;
+
     public function __construct()
     {
         error_reporting(E_ALL & ~E_DEPRECATED);
@@ -29,9 +36,16 @@ abstract class Application
 
         $sentryLogger = new SentryLogger(SENTRY_DSN);
         $this->logger = new Logger($sentryLogger);
+
+        $this->smarty = new TemplateEngine();
     }
 
-    abstract public function init(): void;
+    public function init(): void
+    {
+        $sp = new MSysProperties($this->db);
+        $releaseKey = $sp->getByName('git_hash');
+        $this->logger->setReleaseKey($releaseKey);
+    }
 
     abstract public function run(): void;
 
@@ -51,5 +65,14 @@ abstract class Application
     public function getDb(): MyDB
     {
         return $this->db;
+    }
+
+    /**
+     * @deprecated
+     * @return TemplateEngine
+     */
+    public function getSmarty(): TemplateEngine
+    {
+        return $this->smarty;
     }
 }
