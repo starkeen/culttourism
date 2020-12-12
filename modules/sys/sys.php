@@ -32,6 +32,12 @@ class Page extends PageCommon
     }
 
     /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
+    /**
      * @param string $type
      * @param string $pack
      */

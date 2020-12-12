@@ -176,8 +176,15 @@ abstract class Core
         }
     }
 
+    /**
+     * Определение типа страницы внутри модуля и формирование контента
+     */
+    protected function compileContent(): void
+    {}
+
     public function display(): void
     {
+        $this->compileContent();
         if ($this->isAjax) {
             echo $this->content;
         } else {

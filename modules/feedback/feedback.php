@@ -24,6 +24,12 @@ class Page extends PageCommon
     }
 
     /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
+    /**
      * Обработка формы добавления точки
      */
     private function getAdd(): void

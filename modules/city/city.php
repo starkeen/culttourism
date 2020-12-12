@@ -27,6 +27,12 @@ class Page extends PageCommon
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
     //****************************************  БЛОК  ПОГОДЫ  ******************
     private function getBlockWeather($lat, $lon)
     {

@@ -80,6 +80,12 @@ class Page extends PageCommon
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
 //--------------------------------------------------------- TEXT PAGES ---------
     private function getTextPage($pg_id): string
     {

@@ -47,6 +47,12 @@ class Page extends PageCommon
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
     private function getApi0()
     {
         return $this->smarty->fetch(_DIR_TEMPLATES . '/api/map0.sm.html');

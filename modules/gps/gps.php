@@ -102,6 +102,12 @@ class Page extends PageCommon
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
     public static function getInstance(MyDB $db, SiteRequest $request)
     {
         return self::getInstanceOf(__CLASS__, $db, $request);

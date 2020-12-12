@@ -35,6 +35,12 @@ class Page extends PageCommon
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
     private function getAllEntries()
     {
         $dbb = $this->db->getTableName('blogentries');

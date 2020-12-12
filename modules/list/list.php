@@ -31,6 +31,12 @@ class Page extends PageCommon
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
     private function prepareListBySlug(string $slug): void
     {
         $lst = new MLists($this->db);

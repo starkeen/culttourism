@@ -48,6 +48,12 @@ class PageCommon extends Core
     }
 
     /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
+    /**
      * @return bool|null
      */
     public function checkEdit(): ?bool

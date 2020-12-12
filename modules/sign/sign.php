@@ -24,6 +24,12 @@ class Page extends PageCommon
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
     private function getIn()
     {
         $uniq_key = md5(uniqid(mt_rand(), true));

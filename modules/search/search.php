@@ -21,6 +21,12 @@ class Page extends PageCommon
     }
 
     /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
+    /**
      * Саджест регионов
      */
     private function getSuggests(): void

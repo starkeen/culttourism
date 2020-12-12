@@ -45,6 +45,12 @@ class Page extends PageCommon
     }
 
     /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
+    /**
      * @param SiteRequest $request
      *
      * @return bool|string|void

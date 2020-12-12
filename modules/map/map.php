@@ -41,6 +41,12 @@ class Page extends PageCommon
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
     private function getYMapsMLList($list_id): void
     {
         $bounds = [

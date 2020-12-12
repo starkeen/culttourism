@@ -32,6 +32,12 @@ class Page extends PageCommon
         $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/index.html/index.sm.html');
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
+    {}
+
     public static function getInstance(MyDB $db, SiteRequest $request): self
     {
         return self::getInstanceOf(__CLASS__, $db, $request);
