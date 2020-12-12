@@ -7,11 +7,13 @@ class Page extends PageCommon
 {
     public $files_ver = 11;
 
-    public function __construct(MyDB $db, SiteRequest $siteRequest)
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
     {
-        $page_id = $siteRequest->getLevel1();
-        $id = $siteRequest->getLevel2();
-        parent::__construct($db, $siteRequest);
+        $page_id = $this->siteRequest->getLevel1();
+        $id = $this->siteRequest->getLevel2();
         $id = urldecode($id);
         if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
@@ -22,22 +24,16 @@ class Page extends PageCommon
         //========================  I N D E X  ================================
         if ($page_id == '0') {//карта
             $this->content = $this->getApi0();
-            return true;
         } elseif ($page_id == '1' && isset($_GET['center'])) {//список
             $this->content = $this->getApi1();
-            return true;
         } elseif ($page_id == '2' && isset($_GET['id'])) {//место
-            $this->content = $this->getApi2(intval($_GET['id']));
-            return true;
+            $this->content = $this->getApi2((int) $_GET['id']);
         } elseif ($page_id == '3' && isset($_GET['center'])) {//адрес
             $this->content = $this->getApi3($_GET['center']);
-            return true;
         } elseif ($page_id == '4' && isset($_GET['center'])) {//список xml
             $this->content = $this->getApi4();
-            return true;
         } elseif ($page_id == '5' && isset($_GET['id'])) {//место xml
             $this->content = $this->getApi5((int) $_GET['id']);
-            return true;
         } elseif ($page_id == '') {
             header("Location: /api/0/");
             exit();
@@ -46,12 +42,6 @@ class Page extends PageCommon
             $this->processError(Core::HTTP_CODE_404);
         }
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function compileContent(): void
-    {}
 
     private function getApi0()
     {

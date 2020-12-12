@@ -1,6 +1,7 @@
 <?php
 
 use app\cache\Cache;
+use app\db\MyDB;
 
 /**
  * Модель таблицы системных настроек
@@ -10,13 +11,12 @@ class MSysProperties extends Model
     private const CACHE_PREFIX_BY_NAME = 'by_name_';
     private const CACHE_KEY_PUBLIC = 'public';
 
-
     protected $_table_pk = 'sp_id';
     protected $_table_order = 'sp_name';
     protected $_table_active = 'sp_id';
     protected $cache;
 
-    public function __construct($db)
+    public function __construct(MyDB $db)
     {
         $this->_table_name = $db->getTableName('siteprorerties');
         $this->_table_fields = [

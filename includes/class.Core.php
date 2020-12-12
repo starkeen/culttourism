@@ -91,80 +91,83 @@ abstract class Core
         set_exception_handler([$this, 'errorsExceptionsHandler']);
         $this->db = $db;
         $this->siteRequest = $request;
-        $this->smarty = new TemplateEngine(); // TODO убрать!
-        $this->logger = new Logger(new SentryLogger(SENTRY_DSN)); // TODO убрать!
-
-        if (!$this->db->link) {
-            $this->module_id = $this->siteRequest->getModuleKey();
-            $this->processError(self::HTTP_CODE_503, $this->smarty);
-        }
-
         $this->basepath = _URL_ROOT;
-
         $this->isAjax = $this->siteRequest->isAjax();
-
         $this->auth = new Auth($this->db);
+    }
+
+    /**
+     * Инициализация базовых элементов всех страниц
+     */
+    private function init(): void
+    {
         $this->auth->checkSession('web');
 
-        $sp = new MSysProperties($db);
+        $sp = new MSysProperties($this->db);
         $this->globalsettings = $sp->getPublic();
 
         if (_ER_REPORT) {//отладочная конфигурация
             $this->globalsettings['mainfile_css'] = '../sys/static/?type=css&pack=common';
             $this->globalsettings['mainfile_js'] = '../sys/static/?type=js&pack=common';
         }
+        $this->key_yandexmaps = $this->globalsettings['key_yandexmaps'];
+        $this->mainfile_css = $this->globalsettings['mainfile_css'];
+        $this->mainfile_js = $this->globalsettings['mainfile_js'];
 
         if (!empty($this->globalsettings['site_active']) && $this->globalsettings['site_active'] === 'Off') {
             $this->processError(self::HTTP_CODE_503);
         }
 
         $md = new MModules($this->db);
-        $row = $md->getModuleByURI($this->siteRequest->getModuleKey());
+        $moduleData = $md->getModuleByURI($this->siteRequest->getModuleKey());
+
+        $this->addOGMeta(OgType::TITLE(), $this->title);
+        $this->addOGMeta(OgType::DESCRIPTION(), $this->description);
 
         $this->addOGMeta(OgType::SITE_NAME(), $this->globalsettings['default_pagetitle'] ?? '');
         $this->addOGMeta(OgType::LOCALE(), 'ru_RU');
         $this->addOGMeta(OgType::TYPE(), 'website');
-        $this->addOGMeta(OgType::URL(), _SITE_URL);
+        $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $_SERVER['REQUEST_URI']);
         $this->addOGMeta(OgType::IMAGE(), _SITE_URL . 'img/logo/culttourism-head.jpg');
         $this->addDataLD('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
-        if ($row['md_photo_id']) {
+        if ($moduleData['md_photo_id']) {
             $ph = new MPhotos($this->db);
-            $photo = $ph->getItemByPk($row['md_photo_id']);
+            $photo = $ph->getItemByPk($moduleData['md_photo_id']);
             $objImage = $this->getAbsoluteURL($photo['ph_src']);
             $this->addOGMeta(OgType::IMAGE(), $objImage);
             $this->addDataLD('image', $objImage);
         }
 
-        if (!empty($row)) {
-            if ($row['md_redirect'] !== null) {
-                $this->processError(self::HTTP_CODE_301, $row['md_redirect']);
+        if (!empty($moduleData)) {
+            if ($moduleData['md_redirect'] !== null) {
+                $this->processError(self::HTTP_CODE_301, $moduleData['md_redirect']);
             }
-            $this->url = $row['md_url'];
+            $this->url = $moduleData['md_url'];
             $this->title = $this->globalsettings['default_pagetitle'] ?? '';
-            if ($row['md_title']) {
-                $this->addTitle($row['md_title']);
+            if ($moduleData['md_title']) {
+                $this->addTitle($moduleData['md_title']);
             }
-            $this->h1 = $row['md_title'];
+            $this->h1 = $moduleData['md_title'];
             $this->keywords = $this->globalsettings['default_pagekeywords'] ?? '';
-            $this->addKeywords($row['md_keywords']);
+            $this->addKeywords($moduleData['md_keywords']);
             $this->description = $this->globalsettings['default_pagedescription'] ?? '';
-            $this->addDescription($row['md_description']);
+            $this->addDescription($moduleData['md_description']);
 
             $this->addOGMeta(OgType::TITLE(), $this->globalsettings['default_pagetitle'] ?? '');
             $this->addOGMeta(OgType::DESCRIPTION(), $this->globalsettings['default_pagedescription'] ?? '');
             $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
 
-            $this->isCounters = $row['md_counters'];
-            $this->content = $row['md_pagecontent'];
-            $this->md_id = $row['md_id'];
+            $this->isCounters = $moduleData['md_counters'];
+            $this->content = $moduleData['md_pagecontent'];
+            $this->md_id = $moduleData['md_id'];
             $this->module_id = $this->siteRequest->getModuleKey();
             $this->page_id = $this->siteRequest->getLevel1();
             $this->id_id = $this->siteRequest->getLevel2();
-            $this->custom_css = $row['md_css'];
-            $this->robots_indexing = $row['md_robots'];
-            $this->lastedit = $row['md_timestamp'];
-            $this->lastedit_timestamp = strtotime($row['md_timestamp']);
-            $this->expiredate = $row['md_expiredate'];
+            $this->custom_css = $moduleData['md_css'];
+            $this->robots_indexing = $moduleData['md_robots'];
+            $this->lastedit = $moduleData['md_timestamp'];
+            $this->lastedit_timestamp = strtotime($moduleData['md_timestamp']);
+            $this->expiredate = $moduleData['md_expiredate'];
 
             if (isset($_SESSION['user'])) {
                 $this->user['object'] = $_SESSION['user'];
@@ -179,11 +182,11 @@ abstract class Core
     /**
      * Определение типа страницы внутри модуля и формирование контента
      */
-    protected function compileContent(): void
-    {}
+    abstract protected function compileContent(): void;
 
     public function display(): void
     {
+        $this->init();
         $this->compileContent();
         if ($this->isAjax) {
             echo $this->content;

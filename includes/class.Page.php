@@ -33,22 +33,18 @@ class Page extends PageCommon
         'Mail.RU_Bot',
     ];
 
-    public function __construct(MyDB $db, SiteRequest $request)
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
     {
-        parent::__construct($db, $request); //встроенные модули
         if (!$this->content) {
-            $this->content = $this->getPageByURL($request);
+            $this->content = $this->getPageByURL($this->siteRequest);
         }
         if (!$this->content) {
             $this->processError(Core::HTTP_CODE_404);
         }
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function compileContent(): void
-    {}
 
     /**
      * @param SiteRequest $request

@@ -6,36 +6,31 @@ use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct(MyDB $db, SiteRequest $siteRequest)
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
     {
-        parent::__construct($db, $siteRequest);
-
-        $id = urldecode($siteRequest->getLevel2());
+        $id = urldecode($this->siteRequest->getLevel2());
         if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
         }
         $this->id = $id;
         $regs = [];
 
-        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $siteRequest->getModuleKey()) : $this->globalsettings['res_js_' . $siteRequest->getModuleKey()];
+        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $this->siteRequest->getModuleKey()) : $this->globalsettings['res_js_' . $this->siteRequest->getModuleKey()];
 
-        $url_array = explode('/', $siteRequest->getLevel1());
+        $url_array = explode('/', $this->siteRequest->getLevel1());
         $url_last = array_pop($url_array);
 
         //========================  I N D E X  ================================
-        if ($siteRequest->getLevel1() === null) {
+        if ($this->siteRequest->getLevel1() === null) {
             $this->prepareIndex();
         } //========================   L I S T   ================================
         elseif (preg_match('/([a-z0-9_-]+)\.html/i', $url_last, $regs)) {
             $this->prepareListBySlug($regs[1]);
         }
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function compileContent(): void
-    {}
 
     private function prepareListBySlug(string $slug): void
     {

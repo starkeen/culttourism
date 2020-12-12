@@ -5,30 +5,25 @@ use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct(MyDB $db, SiteRequest $request)
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
     {
-        parent::__construct($db, $request);
-
-        if ($request->getLevel1() === 'in') {
+        if ($this->siteRequest->getLevel1() === 'in') {
             $this->content = $this->getIn();
-        } elseif ($request->getLevel1() === 'up') {
+        } elseif ($this->siteRequest->getLevel1() === 'up') {
             $this->content = $this->getUp();
-        } elseif ($request->getLevel1() === 'check') {
-            $this->content = $this->doCheck($request->getLevel2());
-        } elseif ($request->getLevel1() === 'out') {
+        } elseif ($this->siteRequest->getLevel1() === 'check') {
+            $this->content = $this->doCheck($this->siteRequest->getLevel2());
+        } elseif ($this->siteRequest->getLevel1() === 'out') {
             $this->content = $this->doOut();
-        } elseif ($request->getLevel1() === 'form') {
+        } elseif ($this->siteRequest->getLevel1() === 'form') {
             $this->content = $this->getFormLogin();
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function compileContent(): void
-    {}
 
     private function getIn()
     {

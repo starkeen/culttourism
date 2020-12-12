@@ -7,45 +7,40 @@ use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct(MyDB $db, SiteRequest $request)
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
     {
-        parent::__construct($db, $request);
-
-        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $request->getModuleKey()) : $this->globalsettings['res_js_' . $request->getModuleKey()];
+        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $this->siteRequest->getModuleKey()) : $this->globalsettings['res_js_' . $this->siteRequest->getModuleKey()];
 
         //========================  I N D E X  ================================
-        if ($request->getLevel1() === null) {
+        if ($this->siteRequest->getLevel1() === null) {
             $this->ymaps_ver = 2;
 
             $this->addOGMeta(OgType::TYPE(), 'website');
 
             $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/map/map.sm.html');
         } //====================  M A P   E N T R Y  ============================
-        elseif ($request->getLevel1() === 'common') {
+        elseif ($this->siteRequest->getLevel1() === 'common') {
             $this->auth->setService('map');
             $this->isAjax = true;
             $this->getYMapsMLCommon($_GET);
-        } elseif ($request->getLevel1() === 'city' && isset($_GET['cid']) && (int) $_GET['cid'] > 0) {
+        } elseif ($this->siteRequest->getLevel1() === 'city' && isset($_GET['cid']) && (int) $_GET['cid'] > 0) {
             $this->auth->setService('map');
             $this->isAjax = true;
             $this->getYMapsMLRegion((int) $_GET['cid']);
-        } elseif ($request->getLevel1() === 'list' && isset($_GET['lid']) && (int) $_GET['lid'] > 0) {
+        } elseif ($this->siteRequest->getLevel1() === 'list' && isset($_GET['lid']) && (int) $_GET['lid'] > 0) {
             $this->auth->setService('map');
             $this->isAjax = true;
             $this->getYMapsMLList((int) $_GET['lid']);
-        } elseif ($request->getLevel1() === 'gpx' && isset($_GET['cid']) && (int) $_GET['cid']) {
+        } elseif ($this->siteRequest->getLevel1() === 'gpx' && isset($_GET['cid']) && (int) $_GET['cid']) {
             $this->showCityPointsGPX((int) $_GET['cid']);
         } //==========================  E X I T  ================================
         else {
             $this->processError(Core::HTTP_CODE_404);
         }
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function compileContent(): void
-    {}
 
     private function getYMapsMLList($list_id): void
     {

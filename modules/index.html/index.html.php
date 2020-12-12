@@ -5,10 +5,11 @@ use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct(MyDB $db, SiteRequest $request)
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
     {
-        parent::__construct($db, $request);
-
         $bg = new MBlogEntries($this->db);
         $ns = new MNewsItems($this->db);
 
@@ -31,12 +32,6 @@ class Page extends PageCommon
 
         $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/index.html/index.sm.html');
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function compileContent(): void
-    {}
 
     public static function getInstance(MyDB $db, SiteRequest $request): self
     {

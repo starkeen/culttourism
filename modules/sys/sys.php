@@ -12,30 +12,25 @@ class Page extends PageCommon
 {
     private const SETTINGS_BRANCH_DEPLOY = 9;
 
-    public function __construct(MyDB $db, SiteRequest $request)
-    {
-        parent::__construct($db, $request);
-
-        if ($request->getLevel2() !== null) {
-            $this->processError(Core::HTTP_CODE_404);
-        }
-
-        if ($request->getLevel1() === null && empty($request->getGET())) {
-            $this->processError(Core::HTTP_CODE_301, '/');
-        } elseif ($request->getLevel1() === 'bitbucket' && $request->getGETParam('key') !== null) {
-            $this->getBitbucket(trim($_GET['key']));
-        } elseif ($request->getLevel1() === 'static' && $request->getGETParam('type') !== null && $request->getGETParam('pack') !== null) {
-            $this->getStatic(trim($request->getGETParam('type')), trim($request->getGETParam('pack')));
-        } else {
-            $this->processError(Core::HTTP_CODE_404);
-        }
-    }
-
     /**
      * @inheritDoc
      */
     protected function compileContent(): void
-    {}
+    {
+        if ($this->siteRequest->getLevel2() !== null) {
+            $this->processError(Core::HTTP_CODE_404);
+        }
+
+        if ($this->siteRequest->getLevel1() === null && empty($this->siteRequest->getGET())) {
+            $this->processError(Core::HTTP_CODE_301, '/');
+        } elseif ($this->siteRequest->getLevel1() === 'bitbucket' && $this->siteRequest->getGETParam('key') !== null) {
+            $this->getBitbucket(trim($_GET['key']));
+        } elseif ($this->siteRequest->getLevel1() === 'static' && $this->siteRequest->getGETParam('type') !== null && $this->siteRequest->getGETParam('pack') !== null) {
+            $this->getStatic(trim($this->siteRequest->getGETParam('type')), trim($this->siteRequest->getGETParam('pack')));
+        } else {
+            $this->processError(Core::HTTP_CODE_404);
+        }
+    }
 
     /**
      * @param string $type

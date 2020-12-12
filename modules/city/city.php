@@ -6,19 +6,20 @@ use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct(MyDB $db, SiteRequest $request)
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
     {
-        parent::__construct($db,  $request);
-
-        if ($request->getLevel1() === null) {
+        if ($this->siteRequest->getLevel1() === null) {
             $this->pageCity();
-        } elseif ($request->getLevel1() === 'add') {
+        } elseif ($this->siteRequest->getLevel1() === 'add') {
             $this->addCity();
-        } elseif ($request->getLevel1() === 'detail') {
+        } elseif ($this->siteRequest->getLevel1() === 'detail') {
             $this->detailCity();
-        } elseif ($request->getLevel1() === 'meta') {
+        } elseif ($this->siteRequest->getLevel1() === 'meta') {
             $this->metaCity();
-        } elseif ($request->getLevel1() === 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
+        } elseif ($this->siteRequest->getLevel1() === 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
             $this->isAjax = true;
             $this->getBlockWeather($_GET['lat'], $_GET['lon']);
@@ -26,12 +27,6 @@ class Page extends PageCommon
             $this->processError(Core::HTTP_CODE_404);
         }
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function compileContent(): void
-    {}
 
     //****************************************  БЛОК  ПОГОДЫ  ******************
     private function getBlockWeather($lat, $lon)

@@ -5,10 +5,13 @@ use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct(MyDB $db, SiteRequest $mod)
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
     {
-        [$module_id, $page_id, $id] = $mod;
-        parent::__construct($db, 'gps', $page_id);
+        $page_id = $this->siteRequest->getLevel1();
+        $id = $this->siteRequest->getLevel2();
         $id = urldecode($id);
         if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
@@ -20,7 +23,7 @@ class Page extends PageCommon
             $this->smarty->assign('gps_text', $this->content);
             $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/gps/gps.sm.html');
         } //=======================  E X P O R T  ===============================
-        elseif ($page_id == 'export') {
+        elseif ($page_id === 'export') {
             if (isset($_POST['pts']) && !empty($_POST['pts']) && (
                     isset($_POST['submit_gpx']) ||
                     isset($_POST['submit_kml']))) {
@@ -30,32 +33,32 @@ class Page extends PageCommon
                 foreach ($_POST['pts'] as $ptid => $pv) {
                     $list_points[] = cut_trash_int($ptid);
                 }
-                $dbpp = $db->getTableName('pagepoints');
-                $dbpc = $db->getTableName('pagecity');
-                $dbru = $db->getTableName('region_url');
-                $dbse = $db->getTableName('statexport');
+                $dbpp = $this->db->getTableName('pagepoints');
+                $dbpc = $this->db->getTableName('pagecity');
+                $dbru = $this->db->getTableName('region_url');
+                $dbse = $this->db->getTableName('statexport');
 
-                $db->sql = "SELECT pt_id, pt_name, pt_adress, pt_phone, pt_description,
+                $this->db->sql = "SELECT pt_id, pt_name, pt_adress, pt_phone, pt_description,
                             pt_latitude, pt_longitude, pt_citypage_id,
                             DATE_FORMAT(pt_lastup_date, '%Y-%m-%dT%H:%i:%sZ') as pt_date
                             FROM $dbpp
                             WHERE pt_id IN (" . implode(',', $list_points) . ")
                                 AND pt_latitude != ''
                                 AND pt_longitude != ''";
-                $db->exec();
-                while ($row = $db->fetch()) {
+                $this->db->exec();
+                while ($row = $this->db->fetch()) {
                     $row['pt_text'] = $row['pt_description'];
                     $export_points[] = $row;
                 }
                 $city_id = $export_points[0]['pt_citypage_id'];
 
-                $db->sql = "SELECT pc_title, pc_inwheretext, pc_title_translit, pc_latitude, pc_longitude,
+                $this->db->sql = "SELECT pc_title, pc_inwheretext, pc_title_translit, pc_latitude, pc_longitude,
                             url
                             FROM $dbpc pc
                             LEFT JOIN $dbru ru ON ru.uid = pc.pc_url_id
                             WHERE pc_id = '$city_id'";
-                $db->exec();
-                $region = $db->fetch();
+                $this->db->exec();
+                $region = $this->db->fetch();
 
                 if (isset($_POST['submit_gpx'])) {
                     $export_type = 'gpx';
@@ -66,25 +69,25 @@ class Page extends PageCommon
                 }
 
                 $hash = $this->getUserHash();
-                $db->sql = "INSERT INTO $dbse (se_citypage_id, se_points, se_type, se_userhash, se_date) VALUES ";
+                $this->db->sql = "INSERT INTO $dbse (se_citypage_id, se_points, se_type, se_userhash, se_date) VALUES ";
                 $sql_pnts = [];
                 foreach ($list_points as $pnt_id) {
                     $sql_pnts[] = "('$city_id', '$pnt_id', '$export_type', '$hash', now())";
                 }
-                $db->sql .= implode(', ', $sql_pnts);
-                $db->exec();
+                $this->db->sql .= implode(', ', $sql_pnts);
+                $this->db->exec();
 
                 $this->smarty->assign('points', $export_points);
                 $this->smarty->assign('region', $region);
 
                 $file_content = '';
-                if ($export_type == 'gpx') {
+                if ($export_type === 'gpx') {
                     $file_content = $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
                     header('Content-type: application/gpx+xml');
                     header(
                         "Content-Disposition: attachment; filename=culttourism_GPX_{$region['pc_title_translit']}.gpx"
                     );
-                } elseif ($export_type == 'kml') {
+                } elseif ($export_type === 'kml') {
                     $file_content = $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/KML.export.sm.xml');
                     header('Content-type: application/vnd.google-earth.kml+xml');
                     header(
@@ -102,13 +105,7 @@ class Page extends PageCommon
         }
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function compileContent(): void
-    {}
-
-    public static function getInstance(MyDB $db, SiteRequest $request)
+    public static function getInstance(MyDB $db, SiteRequest $request): self
     {
         return self::getInstanceOf(__CLASS__, $db, $request);
     }

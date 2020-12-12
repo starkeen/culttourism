@@ -6,25 +6,21 @@ use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct(MyDB $db, SiteRequest $request)
-    {
-        parent::__construct($db, $request);
-        if ($request->getLevel2() !== null) {
-            $this->processError(Core::HTTP_CODE_404);
-        }
-        if ($request->getLevel1() === 'suggest' && isset($_GET['query'])) {
-            $this->getSuggests();
-        } elseif ($request->getLevel1() === 'suggest-object' && isset($_GET['query'])) {
-            $this->getObjectSuggests();
-        }
-        $this->content = $this->getSearchYandex();
-    }
-
     /**
      * @inheritDoc
      */
     protected function compileContent(): void
-    {}
+    {
+        if ($this->siteRequest->getLevel2() !== null) {
+            $this->processError(Core::HTTP_CODE_404);
+        }
+        if ($this->siteRequest->getLevel1() === 'suggest' && isset($_GET['query'])) {
+            $this->getSuggests();
+        } elseif ($this->siteRequest->getLevel1() === 'suggest-object' && isset($_GET['query'])) {
+            $this->getObjectSuggests();
+        }
+        $this->content = $this->getSearchYandex();
+    }
 
     /**
      * Саджест регионов

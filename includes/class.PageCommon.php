@@ -24,34 +24,12 @@ class PageCommon extends Core
     public $mainfile_js;
 
     /**
-     * @param MyDB $db
-     * @param SiteRequest $request
-     */
-    public function __construct(MyDB $db, SiteRequest $request) {
-        parent::__construct($db, $request);
-
-        $this->key_yandexmaps = $this->globalsettings['key_yandexmaps'];
-        $this->mainfile_css = $this->globalsettings['mainfile_css'];
-        $this->mainfile_js = $this->globalsettings['mainfile_js'];
-        
-        $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $_SERVER['REQUEST_URI']);
-        $this->addOGMeta(OgType::TITLE(), $this->title);
-        $this->addOGMeta(OgType::DESCRIPTION(), $this->description);
-
-        if (isset($_SESSION['user'])) {
-            $this->user['object'] = $_SESSION['user'];
-        }
-        if (isset($_SESSION['user_name'])) {
-            $this->user['username'] = $_SESSION['user_name'];
-            $this->user['userid'] = $_SESSION['user_id'];
-        }
-    }
-
-    /**
      * @inheritDoc
      */
     protected function compileContent(): void
-    {}
+    {
+
+    }
 
     /**
      * @return bool|null

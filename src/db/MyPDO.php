@@ -18,7 +18,6 @@ class MyPDO implements IDB
 {
     private static $_instances = false;
 
-    public $link;
     protected $prefix;
 
     /** @var string */
@@ -72,7 +71,6 @@ class MyPDO implements IDB
                 $dsn = "mysql:host=$db_host;dbname=$db_base;charset=utf8";
                 $this->_pdo = new PDO($dsn, $db_user, $db_pwd, $opts);
                 self::$_instances = true;
-                $this->link = true;
                 $this->time = microtime(true) - $this->startTimestamp;
             } catch (PDOException $e) {
                 $this->makeException($e);

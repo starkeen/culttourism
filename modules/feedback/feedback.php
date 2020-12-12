@@ -8,26 +8,21 @@ use GuzzleHttp\Client;
 
 class Page extends PageCommon
 {
-    public function __construct(MyDB $db, SiteRequest $request)
+    /**
+     * @inheritDoc
+     */
+    protected function compileContent(): void
     {
-        parent::__construct($db, $request);
-
-        if ($request->getLevel1() === null) {
+        if ($this->siteRequest->getLevel1() === null) {
             $this->getCommon();
-        } elseif ($request->getLevel1() === 'getcapt') {
+        } elseif ($this->siteRequest->getLevel1() === 'getcapt') {
             $this->showCaptcha();
-        } elseif ($request->getLevel1() === 'newpoint') {
+        } elseif ($this->siteRequest->getLevel1() === 'newpoint') {
             $this->getAdd();
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function compileContent(): void
-    {}
 
     /**
      * Обработка формы добавления точки

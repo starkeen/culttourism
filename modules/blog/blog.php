@@ -1,45 +1,39 @@
 <?php
 
 use app\constant\OgType;
-use app\core\SiteRequest;
-use app\db\MyDB;
 
 class Page extends PageCommon
 {
-    public function __construct(MyDB $db, SiteRequest $request)
-    {
-        parent::__construct($db, $request);
-        $this->id = $request->getLevel2();
-        if ($request->getLevel1() === null) {
-            $this->content = $this->getAllEntries(); //все записи
-        } elseif ($request->getLevel1() === 'addform') { //форма добавления записи в блог
-            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
-            $this->content = $this->getFormBlog();
-        } elseif ($request->getLevel1() === 'editform' && isset($_GET['brid']) && (int) $_GET['brid']) {
-            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
-            $this->content = $this->getFormBlog((int) $_GET['brid']);
-        } elseif ($request->getLevel1() === 'saveform') {
-            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
-            $this->content = $this->saveFormBlog();
-        } elseif ($request->getLevel1() === 'delentry' && (int) $_GET['bid']) {
-            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
-            $this->content = $this->deleteBlogEntry((int) $_GET['bid']);
-        } elseif ($request->getLevel1() === 'blog') {
-            $this->processError(Core::HTTP_CODE_301, '/blog/');
-        } elseif ($request->getLevel3() != '') {
-            $this->content = $this->getOneEntry($request->getLevel3(), $request->getLevel1(), $request->getLevel2()); //одна запись
-        } elseif ($request->getLevel1() != '') {
-            $this->content = $this->getCalendar($request->getLevel1(), $request->getLevel2()); //календарь
-        } else {
-            $this->processError(Core::HTTP_CODE_404);
-        }
-    }
-
     /**
      * @inheritDoc
      */
     protected function compileContent(): void
-    {}
+    {
+        $this->id = $this->siteRequest->getLevel2();
+        if ($this->siteRequest->getLevel1() === null) {
+            $this->content = $this->getAllEntries(); //все записи
+        } elseif ($this->siteRequest->getLevel1() === 'addform') { //форма добавления записи в блог
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->content = $this->getFormBlog();
+        } elseif ($this->siteRequest->getLevel1() === 'editform' && isset($_GET['brid']) && (int) $_GET['brid']) {
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->content = $this->getFormBlog((int) $_GET['brid']);
+        } elseif ($this->siteRequest->getLevel1() === 'saveform') {
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->content = $this->saveFormBlog();
+        } elseif ($this->siteRequest->getLevel1() === 'delentry' && (int) $_GET['bid']) {
+            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->content = $this->deleteBlogEntry((int) $_GET['bid']);
+        } elseif ($this->siteRequest->getLevel1() === 'blog') {
+            $this->processError(Core::HTTP_CODE_301, '/blog/');
+        } elseif ($this->siteRequest->getLevel3() != '') {
+            $this->content = $this->getOneEntry($this->siteRequest->getLevel3(), $this->siteRequest->getLevel1(), $this->siteRequest->getLevel2()); //одна запись
+        } elseif ($this->siteRequest->getLevel1() != '') {
+            $this->content = $this->getCalendar($this->siteRequest->getLevel1(), $this->siteRequest->getLevel2()); //календарь
+        } else {
+            $this->processError(Core::HTTP_CODE_404);
+        }
+    }
 
     private function getAllEntries()
     {
