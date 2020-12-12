@@ -12,7 +12,7 @@ class Page extends PageCommon
      */
     protected function compileContent(): void
     {
-        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $this->siteRequest->getModuleKey()) : $this->globalsettings['res_js_' . $this->siteRequest->getModuleKey()];
+        $this->pageContent->setCustomJsModule($this->siteRequest->getModuleKey());
 
         //========================  I N D E X  ================================
         if ($this->siteRequest->getLevel1() === null) {

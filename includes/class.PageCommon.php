@@ -14,16 +14,6 @@ class PageCommon extends Core
     protected $key_yandexmaps;
 
     /**
-     * @var string
-     */
-    public $mainfile_css;
-
-    /**
-     * @var string
-     */
-    public $mainfile_js;
-
-    /**
      * @inheritDoc
      */
     protected function compileContent(): void

@@ -88,7 +88,6 @@ abstract class Core
 
     public $globalsettings = [
         'default_pagetitle' => '',
-        'main_rss' => '',
         'stat_text' => '',
     ];
     public $user = ['userid' => null];
@@ -109,7 +108,7 @@ abstract class Core
         $this->siteRequest = $request;
         $this->basepath = _URL_ROOT;
         $this->isAjax = $this->siteRequest->isAjax();
-        $this->globalConfig = new GlobalConfig();
+        $this->globalConfig = new GlobalConfig($this->db);
         $this->pageContent = new Content();
         $this->pageHeaders = new Headers();
     }
@@ -123,18 +122,13 @@ abstract class Core
 
         $sp = new MSysProperties($this->db);
         $globals = $sp->getPublic();
-        $this->globalConfig->setUrlCss($globals['mainfile_css']);
-        $this->globalConfig->setUrlJs($globals['mainfile_js']);
-
         $this->globalsettings = $globals;
+        $this->pageContent->setJsResources($this->globalConfig->getJsResources());
+        $this->pageContent->setUrlCss($this->globalConfig->getUrlCss());
+        $this->pageContent->setUrlJs($this->globalConfig->getUrlJs());
+        $this->pageContent->setUrlRss($this->globalConfig->getUrlRSS());
 
-        if (_ER_REPORT) {//отладочная конфигурация
-            $this->globalsettings['mainfile_css'] = '../sys/static/?type=css&pack=common';
-            $this->globalsettings['mainfile_js'] = '../sys/static/?type=js&pack=common';
-        }
-        $this->key_yandexmaps = $this->globalsettings['key_yandexmaps'];
-        $this->mainfile_css = $this->globalsettings['mainfile_css'];
-        $this->mainfile_js = $this->globalsettings['mainfile_js'];
+        $this->key_yandexmaps = $this->globalConfig->getYandexMapsKey();
 
         if (!empty($this->globalsettings['site_active']) && $this->globalsettings['site_active'] === 'Off') {
             $this->processError(self::HTTP_CODE_503);
@@ -214,6 +208,7 @@ abstract class Core
             echo $this->content;
         } else {
             $this->smarty->assign('page', $this);
+            $this->smarty->assign('pageContent', $this->pageContent);
             $this->smarty->caching = false;
             if (_ER_REPORT || isset($_GET['debug'])) {
                 $this->smarty->assign('debug_info', $this->db->getDebugInfoText());
@@ -402,11 +397,10 @@ abstract class Core
         if ($errorHttpCode !== self::HTTP_CODE_301) {
             $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
             $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
-            $this->globalConfig->setUrlRss('');
-            $this->globalsettings['main_rss'] = $this->globalConfig->getUrlRss();
+            $this->pageContent->setUrlRss('');
             $this->basepath = _URL_ROOT;
-            $this->mainfile_css = basename($_css_files[0] ?? '/');
-            $this->mainfile_js = basename($_js_files[0] ?? '/');
+            $this->pageContent->setUrlCss(basename($_css_files[0] ?? '/'));
+            $this->pageContent->setUrlJs(basename($_js_files[0] ?? '/'));
             $this->smarty->assign('page', $this);
             $this->smarty->assign('debug_info', '');
         }

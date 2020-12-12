@@ -18,7 +18,7 @@ class Page extends PageCommon
         $this->id = $id;
         $regs = [];
 
-        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=' . $this->siteRequest->getModuleKey()) : $this->globalsettings['res_js_' . $this->siteRequest->getModuleKey()];
+        $this->pageContent->setCustomJsModule($this->siteRequest->getModuleKey());
 
         $url_array = explode('/', $this->siteRequest->getLevel1());
         $url_last = array_pop($url_array);

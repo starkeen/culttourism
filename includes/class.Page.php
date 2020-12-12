@@ -221,7 +221,7 @@ class Page extends PageCommon
             $this->addDataLD('openingHours', $object['pt_worktime']);
         }
 
-        $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=point') : $this->globalsettings['res_js_point'];
+        $this->pageContent->setCustomJsModule('point');
 
         $this->smarty->assign('object', $object);
         $this->smarty->assign('city', $city);
@@ -387,7 +387,7 @@ class Page extends PageCommon
             $this->smarty->assign('page_image', $cityImage);
             $this->smarty->assign('types_select', $points_data['types']);
             $this->smarty->assign('ptypes', []);
-            $this->mainfile_js = _ER_REPORT ? ('../sys/static/?type=js&pack=city') : $this->globalsettings['res_js_city'];
+            $this->pageContent->setCustomJsModule('city');
 
             if ($this->checkEdit()) {
                 return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.edit.sm.html');
