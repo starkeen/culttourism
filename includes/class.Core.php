@@ -2,10 +2,11 @@
 
 use app\api\yandex_search\Factory;
 use app\constant\OgType;
+use app\core\GlobalConfig;
+use app\core\page\Content;
+use app\core\page\Headers;
 use app\core\SiteRequest;
 use app\db\MyDB;
-use app\sys\Logger;
-use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
 use Psr\Log\LoggerInterface;
 
@@ -45,6 +46,21 @@ abstract class Core
      * @var LoggerInterface
      */
     public $logger;
+
+    /**
+     * @var GlobalConfig
+     */
+    protected $globalConfig;
+
+    /**
+     * @var Content
+     */
+    protected $pageContent;
+
+    /**
+     * @var Headers
+     */
+    protected $pageHeaders;
 
     public $content = '';
     public $url = '';
@@ -93,6 +109,9 @@ abstract class Core
         $this->siteRequest = $request;
         $this->basepath = _URL_ROOT;
         $this->isAjax = $this->siteRequest->isAjax();
+        $this->globalConfig = new GlobalConfig();
+        $this->pageContent = new Content();
+        $this->pageHeaders = new Headers();
     }
 
     /**
@@ -103,7 +122,11 @@ abstract class Core
         $this->auth->checkSession('web');
 
         $sp = new MSysProperties($this->db);
-        $this->globalsettings = $sp->getPublic();
+        $globals = $sp->getPublic();
+        $this->globalConfig->setUrlCss($globals['mainfile_css']);
+        $this->globalConfig->setUrlJs($globals['mainfile_js']);
+
+        $this->globalsettings = $globals;
 
         if (_ER_REPORT) {//отладочная конфигурация
             $this->globalsettings['mainfile_css'] = '../sys/static/?type=css&pack=common';
@@ -379,7 +402,8 @@ abstract class Core
         if ($errorHttpCode !== self::HTTP_CODE_301) {
             $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
             $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
-            $this->globalsettings['main_rss'] = '';
+            $this->globalConfig->setUrlRss('');
+            $this->globalsettings['main_rss'] = $this->globalConfig->getUrlRss();
             $this->basepath = _URL_ROOT;
             $this->mainfile_css = basename($_css_files[0] ?? '/');
             $this->mainfile_js = basename($_js_files[0] ?? '/');
