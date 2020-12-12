@@ -39,7 +39,7 @@ abstract class Core
     /**
      * @var Auth
      */
-    protected $auth;
+    public $auth;
 
     /**
      * @var LoggerInterface
@@ -93,7 +93,6 @@ abstract class Core
         $this->siteRequest = $request;
         $this->basepath = _URL_ROOT;
         $this->isAjax = $this->siteRequest->isAjax();
-        $this->auth = new Auth($this->db);
     }
 
     /**

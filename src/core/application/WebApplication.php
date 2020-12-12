@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\core\application;
 
 use app\core\SiteRequest;
+use Auth;
 use Page;
 
 class WebApplication extends Application
@@ -50,6 +51,7 @@ class WebApplication extends Application
         $page = Page::getInstance($this->db, $this->request);
         $page->smarty = $this->smarty;
         $page->logger = $this->logger;
+        $page->auth = new Auth($this->db);
 
         header('X-Powered-By: html');
         header('Content-Type: text/html; charset=utf-8');
