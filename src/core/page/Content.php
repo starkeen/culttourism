@@ -83,12 +83,6 @@ class Content
      */
     public function getUrlCss(): string
     {
-        $pack = 'common';
-        if ($this->customJsModule !== null) {
-            $pack = $this->customJsModule;
-            $this->urlJs = 'res_js_' . $this->customJsModule;
-        }
-
         return !_ER_REPORT ? $this->urlCss : '../sys/static/?type=css&pack=common';
     }
 
