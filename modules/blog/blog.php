@@ -99,7 +99,7 @@ class Page extends PageCommon
         $this->pageContent->getHead()->addKeyword('месяц ' . $entry['bg_month']);
         $this->pageContent->getHead()->addKeyword($entry['bg_year'] . ' год');
         $this->lastedit_timestamp = $entry['last_update'];
-        $this->canonical = $entry['br_canonical'];
+        $this->pageContent->getHead()->setCanonicalUrl($entry['br_canonical']);
         $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $entry['br_canonical']);
         $this->addOGMeta(OgType::TYPE(), 'article');
         $this->addOGMeta(OgType::TITLE(), $entry['br_title']);

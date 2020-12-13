@@ -66,8 +66,9 @@ class Page extends PageCommon
                 return $this->getPageCity($url);
             } elseif (in_array($urlParts, self::REDIRECT_SUFFIXES, true)) {
                 $url = substr($url, 0, stripos($url, $urlParts));
-                header('HTTP/1.1 301 Moved Permanently');
-                header('Location: ' . $url);
+                $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
+                $this->pageHeaders->add('Location: ' . $url);
+                $this->pageHeaders->flush();
                 exit();
             } elseif (preg_match('/object([0-9]+)\.html/i', $urlParts, $regs)) {
                 $this->showPageObject((int) $regs[1]);
@@ -101,10 +102,11 @@ class Page extends PageCommon
         if (!$object) {
             return false;
         }
-        $this->canonical = $object['url_canonical'];
-        if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != $this->canonical) {
-            header('HTTP/1.1 301 Moved Permanently');
-            header("Location: $this->canonical ");
+        $this->pageContent->getHead()->setCanonicalUrl($object['url_canonical']);
+        if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] !== $object['url_canonical']) {
+            $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
+            $this->pageHeaders->add('Location: ' . $object['url_canonical']);
+            $this->pageHeaders->flush();
             exit();
         }
 
@@ -194,7 +196,7 @@ class Page extends PageCommon
         }
 
         $this->addOGMeta(OgType::TYPE(), 'article');
-        $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $this->canonical);
+        $this->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
         $this->addOGMeta(OgType::TITLE(), $object['esc_name']);
         $this->addOGMeta(OgType::DESCRIPTION(), $short);
         $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
@@ -248,8 +250,9 @@ class Page extends PageCommon
         $urlFiltered = '/' . implode('/', array_filter($urlFiltered));
         $lastPart = array_pop($urlParts);
         if ($lastPart === 'index.html') {
-            header('HTTP/1.1 301 Moved Permanently');
-            header('Location: ' . str_replace('index.html', '', $url));
+            $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
+            $this->pageHeaders->add('Location: ' . str_replace('index.html', '', $url));
+            $this->pageHeaders->flush();
             exit();
         }
 
@@ -262,10 +265,11 @@ class Page extends PageCommon
             $this->lastedit_timestamp = $row['last_update'];
 
             //--------------------  c a n o n i c a l  ------------------------
-            $this->canonical = $row['url_canonical'];
-            if ($this->canonical !== ($url . '/')) {
-                header('HTTP/1.1 301 Moved Permanently');
-                header("Location: $this->canonical");
+            $this->pageContent->getHead()->setCanonicalUrl($row['url_canonical']);
+            if ($row['url_canonical'] !== ($url . '/')) {
+                $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
+                $this->pageHeaders->add('Location: ' . $row['url_canonical']);
+                $this->pageHeaders->flush();
                 exit();
             }
 
@@ -303,7 +307,7 @@ class Page extends PageCommon
             }
 
             $this->addOGMeta(OgType::TYPE(), 'article');
-            $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $this->canonical);
+            $this->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
             $this->addOGMeta(OgType::TITLE(), 'Достопримечательности ' . $row['pc_inwheretext']);
             $this->addOGMeta(
                 OgType::DESCRIPTION(),
@@ -375,8 +379,9 @@ class Page extends PageCommon
             file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX);
         }
 
-        header('HTTP/1.1 301 Moved Permanently');
-        header("Location: {$object['url_canonical']}");
+        $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
+        $this->pageHeaders->add('Location: ' . $object['url_canonical']);
+        $this->pageHeaders->flush();
         exit();
     }
 
@@ -387,7 +392,8 @@ class Page extends PageCommon
     {
         $pc = new MPageCities($this->db);
         $city = $pc->getCityByUrl(str_replace('/map.html', '', $url));
-        header("Location: /map/#center={$city['pc_longitude']},{$city['pc_latitude']}&zoom={$city['pc_latlon_zoom']}");
+        $this->pageHeaders->add("Location: /map/#center={$city['pc_longitude']},{$city['pc_latitude']}&zoom={$city['pc_latlon_zoom']}");
+        $this->pageHeaders->flush();
         exit();
     }
 

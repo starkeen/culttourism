@@ -1,6 +1,5 @@
 <?php
 
-use app\api\yandex_search\Factory;
 use app\constant\OgType;
 use app\core\GlobalConfig;
 use app\core\page\Content;
@@ -68,7 +67,6 @@ abstract class Core
     private $metaTagsJSONLD = [
         '@context' => 'http://schema.org',
     ];
-    public $canonical;
     public $h1 = '';
     public $module_id = _INDEXPAGE_URI;
     public $md_id; //id of module in database

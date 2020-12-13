@@ -22,8 +22,8 @@
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
         <link rel="search" href="/search/"/>
         <link rel="alternate" href="{$pageContent->getUrlRss()}" type="application/rss+xml" title="RSS blog"/>
-        {if $page->canonical}
-            <link rel="canonical" href="https://culttourism.ru{$page->canonical}"/>
+        {if $pageContent->getHead()->getCanonicalUrl()}
+            <link rel="canonical" href="{$pageContent->getHead()->getCanonicalUrl()}"/>
         {/if}
         <script type="text/javascript" src="https://www.google.com/recaptcha/api.js" defer="defer"></script>
         <script type="text/javascript"

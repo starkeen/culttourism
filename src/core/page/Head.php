@@ -26,6 +26,11 @@ class Head
      */
     private $titleDelimiter = ' - ';
 
+    /**
+     * @var string|null
+     */
+    private $canonicalUrl;
+
     public function addTitleElement(string $element): void
     {
         $this->titleElements[] = $element;
@@ -62,5 +67,21 @@ class Head
     public function setTitleDelimiter(string $delimiter): void
     {
         $this->titleDelimiter = $delimiter;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCanonicalUrl(): ?string
+    {
+        return rtrim(_SITE_URL, '/') . $this->canonicalUrl;
+    }
+
+    /**
+     * @param string $canonicalUrl
+     */
+    public function setCanonicalUrl(string $canonicalUrl): void
+    {
+        $this->canonicalUrl = $canonicalUrl;
     }
 }

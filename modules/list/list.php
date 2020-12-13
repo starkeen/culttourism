@@ -47,8 +47,8 @@ class Page extends PageCommon
                 $objImage = $this->getAbsoluteURL($list['ls_image']);
                 $this->addOGMeta(OgType::IMAGE(), $objImage);
             }
-            $this->canonical = '/list/' . $slug . '.html';
-            $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $this->canonical);
+            $this->pageContent->getHead()->setCanonicalUrl('/list/' . $slug . '.html');
+            $this->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
 
             $this->lastedit_timestamp = $list['last_update'];
 
@@ -65,8 +65,8 @@ class Page extends PageCommon
 
     private function prepareIndex(): void
     {
-        $this->canonical = '/list/';
-        $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $this->canonical);
+        $this->pageContent->getHead()->setCanonicalUrl('/list/');
+        $this->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
 
         $lst = new MLists($this->db);
 
