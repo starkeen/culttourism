@@ -273,57 +273,6 @@ abstract class Core
         return !empty($this->metaTagsJSONLD['@type']) ? $this->metaTagsJSONLD : [];
     }
 
-    private function getSuggestions404Local($req)
-    {
-        $out = [];
-        if (strpos($req, '.html') !== false) {
-            $c = new MPageCities($this->db);
-
-            $uri = explode('/', $req);
-            array_pop($uri);
-            $page = $c->getCityByUrl('/' . trim(implode('/', $uri), '/'));
-            if (!empty($page)) {
-                $out[] = [
-                    'url' => $page['url'] . '/',
-                    'title' => $page['pc_title'],
-                ];
-            }
-        }
-        return $out;
-    }
-
-    /**
-     * @param string $req
-     *
-     * @return array
-     */
-    private function getSuggestions404Yandex(string $req): array
-    {
-        $out = [];
-
-        if (strpos($req, '.css') === false
-            && strpos($req, '.js') === false
-            && strpos($req, '.png') === false
-            && strpos($req, '.txt') === false
-            && strpos($req, '.xml') === false
-        ) {
-            $searcher = Factory::build();
-            $searcher->setDocumentsOnPage(3);
-            $searchString = trim(implode(' ', explode('/', $req))) . ' host:culttourism.ru';
-            $result = $searcher->searchPages($searchString, 0);
-            if (!$result->isError() && !empty($result->getItems())) {
-                foreach ($result->getItems() as $variant) {
-                    $out[] = [
-                        'url' => $variant->getUrl(),
-                        'title' => trim(str_replace('| Культурный туризм', '', $variant->getTitle())),
-                    ];
-                }
-            }
-        }
-
-        return $out;
-    }
-
     public function errorsExceptionsHandler($e): void
     {
         $msg = "Error: " . $e->getMessage() . "\n"
