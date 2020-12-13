@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\core\application;
 
 use app\core\page\Content;
+use app\core\page\Head;
 use app\core\page\Headers;
 use app\core\SiteRequest;
 use Auth;
@@ -33,7 +34,7 @@ class WebApplication extends Application
 
         $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
         $this->headers = new Headers();
-        $this->content = new Content();
+        $this->content = new Content(new Head());
     }
 
     public function init(): void

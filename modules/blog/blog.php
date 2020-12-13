@@ -92,12 +92,12 @@ class Page extends PageCommon
         if (empty($entry['br_title'])) {
             $this->processError(Core::HTTP_CODE_404);
         }
-        $this->addTitle($entry['br_title']);
-        $this->addDescription($entry['br_title']);
-        $this->addKeywords($entry['br_title']);
-        $this->addKeywords($entry['br_url']);
-        $this->addKeywords('месяц ' . $entry['bg_month']);
-        $this->addKeywords($entry['bg_year'] . ' год');
+        $this->pageContent->getHead()->addTitleElement($entry['br_title']);
+        $this->pageContent->getHead()->addDescription($entry['br_title']);
+        $this->pageContent->getHead()->addKeyword($entry['br_title']);
+        $this->pageContent->getHead()->addKeyword($entry['br_url']);
+        $this->pageContent->getHead()->addKeyword('месяц ' . $entry['bg_month']);
+        $this->pageContent->getHead()->addKeyword($entry['bg_year'] . ' год');
         $this->lastedit_timestamp = $entry['last_update'];
         $this->canonical = $entry['br_canonical'];
         $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $entry['br_canonical']);
@@ -114,17 +114,17 @@ class Page extends PageCommon
 
     private function getCalendar($y, $m = null)
     {
-        $year = intval($y);
-        $month = intval($m);
+        $year = (int) $y;
+        $month = (int) $m;
         if ($year) {
-            $this->addTitle($year);
-            $this->addKeywords('год ' . $year);
-            $this->addDescription("Записи в блоге за $year год");
+            $this->pageContent->getHead()->addTitleElement((string) $year);
+            $this->pageContent->getHead()->addKeyword('год ' . $year);
+            $this->pageContent->getHead()->addDescription("Записи в блоге за $year год");
         }
         if ($month) {
-            $this->addTitle($m);
-            $this->addKeywords('месяц ' . $month);
-            $this->addDescription("Записи в блоге за $month месяц");
+            $this->pageContent->getHead()->addTitleElement((string) $m);
+            $this->pageContent->getHead()->addKeyword('месяц ' . $month);
+            $this->pageContent->getHead()->addDescription("Записи в блоге за $month месяц");
         }
         $dbb = $this->db->getTableName('blogentries');
         $dbu = $this->db->getTableName('users');

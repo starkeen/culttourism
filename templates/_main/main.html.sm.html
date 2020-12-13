@@ -5,9 +5,9 @@
         <!--[if lt IE 9]>
         <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
-        <title>{$page->title}</title>
-        <meta name="keywords" content="{$page->keywords|escape:"html"}"/>
-        <meta name="description" content="{$page->description|escape:"html"}"/>
+        <title>{$pageContent->getHead()->getTitle()}</title>
+        <meta name="keywords" content="{$pageContent->getHead()->getKeywords()|escape:"html"}"/>
+        <meta name="description" content="{$pageContent->getHead()->getDescription()|escape:"html"}"/>
         <meta property="fb:pages" content="251308854921643" />
         <meta property="fb:admins" content="787133747" />
         <meta property="fb:app_id" content="345000545624253"/>

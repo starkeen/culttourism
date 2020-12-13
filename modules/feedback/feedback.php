@@ -192,7 +192,7 @@ class Page extends PageCommon
      */
     private function getAddingForm(): string
     {
-        $this->addTitle('Добавить объект (музей, гостиницу, кафе и др.)');
+        $this->pageContent->getHead()->addTitleElement('Добавить объект (музей, гостиницу, кафе и др.)');
         $this->smarty->assign('recaptcha_key', ReCaptcha::KEY);
         return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addpoint.sm.html');
     }

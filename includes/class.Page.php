@@ -150,8 +150,8 @@ class Page extends PageCommon
         $sp = new MStatpoints($this->db);
         $sp->add($object['pt_id'], $this->getUserHash());
 
-        $this->addTitle($city['pc_title_unique']);
-        $this->addTitle($object['esc_name']);
+        $this->pageContent->getHead()->addTitleElement($city['pc_title_unique']);
+        $this->pageContent->getHead()->addTitleElement($object['esc_name']);
 
         $this->addCustomMeta('business:contact_data:locality', $city['pc_title_unique']);
 
@@ -167,10 +167,10 @@ class Page extends PageCommon
         );
 
         if ($object['tr_sight']) {
-            $this->addDescription('Достопримечательности ' . $city['pc_inwheretext']);
+            $this->pageContent->getHead()->addDescription('Достопримечательности ' . $city['pc_inwheretext']);
         }
         if (isset($object['gps_dec'])) {
-            $this->addDescription('GPS-координаты');
+            $this->pageContent->getHead()->addDescription('GPS-координаты');
 
             $this->addCustomMeta('place:location:latitude', $object['pt_latitude']);
             $this->addCustomMeta('place:location:longitude', $object['pt_longitude']);
@@ -184,13 +184,13 @@ class Page extends PageCommon
                 ]
             );
         }
-        $this->addDescription("{$object['tp_short']} {$city['pc_inwheretext']}");
-        $this->addDescription($object['esc_name']);
-        $this->addDescription($short);
-        $this->addKeywords($city['pc_title']);
-        $this->addKeywords($object['esc_name']);
+        $this->pageContent->getHead()->addDescription("{$object['tp_short']} {$city['pc_inwheretext']}");
+        $this->pageContent->getHead()->addDescription($object['esc_name']);
+        $this->pageContent->getHead()->addDescription($short);
+        $this->pageContent->getHead()->addKeyword($city['pc_title']);
+        $this->pageContent->getHead()->addKeyword($object['esc_name']);
         if (isset($object['gps_dec'])) {
-            $this->addKeywords('координаты GPS');
+            $this->pageContent->getHead()->addKeyword('координаты GPS');
         }
 
         $this->addOGMeta(OgType::TYPE(), 'article');
@@ -232,63 +232,6 @@ class Page extends PageCommon
     }
 
     /**
-     * @param int $pid
-     * @param string $p_url
-     */
-    public function getSubContent($pid, $p_url): void
-    {
-        $dbm = $this->db->getTableName('modules');
-        $this->db->sql = "SELECT md_url, md_title, md_keywords, md_description, md_pagecontent
-                            FROM $dbm WHERE md_active = '1' AND md_pid = '$pid'";
-        $res = $this->db->exec();
-        if (!$res) {
-            $this->processError(Core::HTTP_CODE_404);
-        }
-        while ($row = $this->db->fetch($res)) {
-            if ($row['md_url'] === $p_url) {
-                $this->h1 .= $this->globalConfig->getTitleDelimiter() . $row['md_title'];
-                $this->content = $row['md_pagecontent'];
-                $this->addDescription($row['md_description']);
-                $this->addKeywords($row['md_keywords']);
-                $this->addTitle($row['md_title']);
-            }
-        }
-        $this->processError(Core::HTTP_CODE_404);
-    }
-
-    /**
-     * @param string $module_id
-     * @param string $sub_url
-     *
-     * @return string
-     */
-    public function getNavigation($module_id, $sub_url)
-    {
-        $dbm = $this->db->getTableName('modules');
-        $this->db->sql = "SELECT md_title, md_url FROM $dbm WHERE md_active = '1' AND md_id = '$module_id' LIMIT 1";
-        $this->db->exec();
-        $parent = $this->db->fetch();
-        $this->db->sql = "SELECT md_title, md_url FROM $dbm WHERE md_active = '1' AND md_pid = '$module_id'";
-        $res = $this->db->exec();
-        if ($res) {
-            while ($row = $this->db->fetch($res)) {
-                $navi = ['url' => $row['md_url'], 'title' => $row['md_title'], 'active' => false];
-                if ($row['md_url'] === $sub_url) {
-                    $navi['active'] = true;
-                }
-                $navi_items[] = $navi;
-            }
-            if (isset($navi_items) && !empty($navi_items)) {
-                $this->smarty->assign('parent', $parent);
-                $this->smarty->assign('navi_items', $navi_items);
-                return $this->smarty->fetch(_DIR_TEMPLATES . '/_main/navigation.sm.html');
-            }
-        } else {
-            return '';
-        }
-    }
-
-    /**
      * @param string $url
      *
      * @return string
@@ -315,7 +258,7 @@ class Page extends PageCommon
         $row = $pcs->getCityByUrl($urlFiltered);
 
         if (!empty($row) && isset($row['pc_title']) && $row['pc_title'] != '') {
-            $row['pc_zoom'] = ($row['pc_latlon_zoom']) ? $row['pc_latlon_zoom'] : 12;
+            $row['pc_zoom'] = ($row['pc_latlon_zoom']) ?: 12;
             $this->lastedit_timestamp = $row['last_update'];
 
             //--------------------  c a n o n i c a l  ------------------------
@@ -340,23 +283,23 @@ class Page extends PageCommon
             $sc = new MStatcity($this->db);
             $sc->add($row['pc_id'], $this->getUserHash());
 
-            $this->addTitle($row['pc_title_unique'] . ': достопримечательности');
-            $this->addDescription($row['pc_title_unique'] . ' - что посмотреть');
+            $this->pageContent->getHead()->addTitleElement($row['pc_title_unique'] . ': достопримечательности');
+            $this->pageContent->getHead()->addDescription($row['pc_title_unique'] . ' - что посмотреть');
             if ($row['pc_description']) {
-                $this->addDescription($row['pc_description']);
+                $this->pageContent->getHead()->addDescription($row['pc_description']);
             }
-            $this->addDescription('Достопримечательности ' . $row['pc_inwheretext'] . ' с GPS-координатами');
+            $this->pageContent->getHead()->addDescription('Достопримечательности ' . $row['pc_inwheretext'] . ' с GPS-координатами');
             if ($row['pc_keywords']) {
-                $this->addKeywords($row['pc_keywords']);
+                $this->pageContent->getHead()->addKeyword($row['pc_keywords']);
             }
-            $this->addKeywords('достопримечательности ' . $row['pc_inwheretext']);
-            $this->addKeywords('Координаты GPS');
-            $this->addKeywords($row['pc_title_translit']);
+            $this->pageContent->getHead()->addKeyword('достопримечательности ' . $row['pc_inwheretext']);
+            $this->pageContent->getHead()->addKeyword('Координаты GPS');
+            $this->pageContent->getHead()->addKeyword($row['pc_title_translit']);
             if ($row['pc_title_english'] && $row['pc_title_english'] != $row['pc_title_translit']) {
-                $this->addKeywords($row['pc_title_english']);
+                $this->pageContent->getHead()->addKeyword($row['pc_title_english']);
             }
             if ($row['pc_title_synonym']) {
-                $this->addKeywords($row['pc_title_synonym']);
+                $this->pageContent->getHead()->addKeyword($row['pc_title_synonym']);
             }
 
             $this->addOGMeta(OgType::TYPE(), 'article');

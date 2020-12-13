@@ -64,12 +64,6 @@ abstract class Core
 
     public $content = '';
     public $url = '';
-    private $_title = ['Культурный туризм'];
-    public $title = 'Культурный туризм';
-    private $_keywords = ['достопримечательности'];
-    public $keywords = 'достопримечательности';
-    private $_description = [];
-    public $description = '';
     private $metaTagsCustom = [];
     private $metaTagsJSONLD = [
         '@context' => 'http://schema.org',
@@ -110,6 +104,9 @@ abstract class Core
     {
         $this->auth->checkSession('web');
 
+        $this->pageContent->getHead()->setTitleDelimiter($this->globalConfig->getTitleDelimiter());
+        $this->pageContent->getHead()->addTitleElement('Культурный туризм');
+
         $this->pageContent->setJsResources($this->globalConfig->getJsResources());
         $this->pageContent->setUrlCss($this->globalConfig->getUrlCss());
         $this->pageContent->setUrlJs($this->globalConfig->getUrlJs());
@@ -124,9 +121,8 @@ abstract class Core
         $md = new MModules($this->db);
         $moduleData = $md->getModuleByURI($this->siteRequest->getModuleKey());
 
-        $this->addOGMeta(OgType::TITLE(), $this->title);
-        $this->addOGMeta(OgType::DESCRIPTION(), $this->description);
-
+        $this->addOGMeta(OgType::TITLE(), $this->pageContent->getHead()->getTitle());
+        $this->addOGMeta(OgType::DESCRIPTION(), $this->pageContent->getHead()->getDescription());
         $this->addOGMeta(OgType::SITE_NAME(), $this->globalConfig->getDefaultPageTitle());
         $this->addOGMeta(OgType::LOCALE(), 'ru_RU');
         $this->addOGMeta(OgType::TYPE(), 'website');
@@ -146,15 +142,15 @@ abstract class Core
                 $this->processError(self::HTTP_CODE_301, $moduleData['md_redirect']);
             }
             $this->url = $moduleData['md_url'];
-            $this->title = $this->globalConfig->getDefaultPageTitle();
+            $this->pageContent->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
             if ($moduleData['md_title']) {
-                $this->addTitle($moduleData['md_title']);
+                $this->pageContent->getHead()->addTitleElement($moduleData['md_title']);
             }
             $this->h1 = $moduleData['md_title'];
-            $this->keywords = $this->globalConfig->getDefaultPageKeywords();
-            $this->addKeywords($moduleData['md_keywords']);
-            $this->description = $this->globalConfig->getDefaultPageDescription();
-            $this->addDescription($moduleData['md_description']);
+            $this->pageContent->getHead()->addKeyword($this->globalConfig->getDefaultPageKeywords());
+            $this->pageContent->getHead()->addKeyword($moduleData['md_keywords']);
+            $this->pageContent->getHead()->addDescription($this->globalConfig->getDefaultPageDescription());
+            $this->pageContent->getHead()->addDescription($moduleData['md_description']);
 
             $this->addOGMeta(OgType::TITLE(), $this->globalConfig->getDefaultPageTitle());
             $this->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
@@ -208,38 +204,6 @@ abstract class Core
                 $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
             }
         }
-    }
-
-    /**
-     * @param string $text
-     */
-    public function addTitle(string $text): void
-    {
-        $this->_title[] = $text;
-        krsort($this->_title);
-        $this->title = implode($this->globalConfig->getTitleDelimiter(), $this->_title);
-    }
-
-    /**
-     *
-     * @param string $text
-     */
-    public function addKeywords(string $text): void
-    {
-        $this->_keywords[] = $text;
-        krsort($this->_keywords);
-        $this->keywords = implode(', ', $this->_keywords);
-    }
-
-    /**
-     *
-     * @param string $text
-     */
-    public function addDescription(string $text): void
-    {
-        $this->_description[] = trim($text);
-        krsort($this->_description);
-        $this->description = implode('. ', $this->_description);
     }
 
     /**
@@ -409,7 +373,7 @@ abstract class Core
                 $this->pageHeaders->add('Content-Type: text/html; charset=utf-8');
                 $this->pageHeaders->add('HTTP/1.1 403 Forbidden');
 
-                $this->title = "$this->title - 403 Forbidden - страница недоступна (запрещено)";
+                $this->pageContent->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
                 $this->h1 = 'Запрещено';
                 $this->smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
                 $this->smarty->assign('host', _SITE_URL);
@@ -426,7 +390,7 @@ abstract class Core
                 $this->pageHeaders->add('HTTP/1.0 404 Not Found');
 
                 $suggestions = [];
-                $this->title = "$this->title - 404 Not Found - страница не найдена на сервере";
+                $this->pageContent->getHead()->addTitleElement('404 Not Found - страница не найдена на сервере');
                 $this->h1 = 'Не найдено';
                 $this->smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
                 $this->smarty->assign('host', _SITE_URL);
@@ -441,7 +405,7 @@ abstract class Core
                 $this->pageHeaders->add('Status: 503 Service Temporarily Unavailable');
                 $this->pageHeaders->add('Retry-After: 300');
 
-                $this->title = "$this->title - Ошибка 503 - Сервис временно недоступен";
+                $this->pageContent->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
                 $this->h1 = 'Сервис временно недоступен';
                 $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html');
             }

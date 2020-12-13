@@ -7,6 +7,16 @@ namespace app\core\page;
 class Content
 {
     /**
+     * @var Head
+     */
+    private $head;
+
+    /**
+     * @var string
+     */
+    private $body;
+
+    /**
      * @var string
      */
     private $urlCss;
@@ -30,6 +40,38 @@ class Content
      * @var string[]
      */
     private $jsResources = [];
+
+    /**
+     * @param Head $head
+     */
+    public function __construct(Head $head)
+    {
+        $this->head = $head;
+    }
+
+    /**
+     * @return Head
+     */
+    public function getHead(): Head
+    {
+        return $this->head;
+    }
+
+    /**
+     * @param string $bodyContent
+     */
+    public function setBody(string $bodyContent): void
+    {
+        $this->body = $bodyContent;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBody(): string
+    {
+        return $this->body;
+    }
 
     /**
      * @return string

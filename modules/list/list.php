@@ -38,9 +38,9 @@ class Page extends PageCommon
         $list = $lst->getItemBySlugLine($slug);
         if (isset($list['ls_id']) && $list['ls_id'] > 0) {
             $this->h1 = $list['ls_title'];
-            $this->addDescription($list['ls_description']);
-            $this->addKeywords($list['ls_keywords']);
-            $this->addTitle($list['ls_title']);
+            $this->pageContent->getHead()->addDescription($list['ls_description']);
+            $this->pageContent->getHead()->addKeyword($list['ls_keywords']);
+            $this->pageContent->getHead()->addTitleElement($list['ls_title']);
             $this->addOGMeta(OgType::TITLE(), $list['ls_title']);
             $this->addOGMeta(OgType::DESCRIPTION(), $list['ls_description']);
             if (!empty($list['ls_image'])) {

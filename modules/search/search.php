@@ -163,12 +163,11 @@ class Page extends PageCommon
     private function getSearchInternal()
     {
         if (isset($_GET['q'])) {
-            $q = trim($q);
             $q = cut_trash_string($_GET['q']);
 
             $q = $this->db->getEscapedString($q);
             $this->smarty->assign('search', $q);
-            $this->addTitle($q);
+            $this->pageContent->getHead()->addTitleElement($q);
 
             if (mb_strlen($q) >= 2) {
                 $q = mb_strtolower($q);
