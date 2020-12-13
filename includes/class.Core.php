@@ -402,6 +402,7 @@ abstract class Core
             $this->pageContent->setUrlCss(basename($_css_files[0] ?? '/'));
             $this->pageContent->setUrlJs(basename($_js_files[0] ?? '/'));
             $this->smarty->assign('page', $this);
+            $this->smarty->assign('pageContent', $this->pageContent);
             $this->smarty->assign('debug_info', '');
         }
         switch ($errorHttpCode) {
