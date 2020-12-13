@@ -14,7 +14,12 @@ class Content
     /**
      * @var string
      */
-    private $body;
+    private $body = '';
+
+    /**
+     * @var string|null
+     */
+    private $h1;
 
     /**
      * @var string
@@ -55,6 +60,22 @@ class Content
     public function getHead(): Head
     {
         return $this->head;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getH1(): ?string
+    {
+        return $this->h1;
+    }
+
+    /**
+     * @param string $h1
+     */
+    public function setH1(string $h1): void
+    {
+        $this->h1 = $h1;
     }
 
     /**

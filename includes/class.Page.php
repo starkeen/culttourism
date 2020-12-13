@@ -38,10 +38,10 @@ class Page extends PageCommon
      */
     protected function compileContent(): void
     {
-        if (!$this->content) {
-            $this->content = $this->getPageByURL($this->siteRequest);
+        if (!$this->pageContent->getBody()) {
+            $this->pageContent->setBody($this->getPageByURL($this->siteRequest));
         }
-        if (!$this->content) {
+        if (!$this->pageContent->getBody()) {
             $this->processError(Core::HTTP_CODE_404);
         }
     }

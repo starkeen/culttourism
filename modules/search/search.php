@@ -19,7 +19,7 @@ class Page extends PageCommon
         } elseif ($this->siteRequest->getLevel1() === 'suggest-object' && isset($_GET['query'])) {
             $this->getObjectSuggests();
         }
-        $this->content = $this->getSearchYandex();
+        $this->pageContent->setBody($this->getSearchYandex());
     }
 
     /**

@@ -20,7 +20,7 @@ class Page extends PageCommon
 
             $this->addOGMeta(OgType::TYPE(), 'website');
 
-            $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/map/map.sm.html');
+            $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/map/map.sm.html'));
         } //====================  M A P   E N T R Y  ============================
         elseif ($this->siteRequest->getLevel1() === 'common') {
             $this->auth->setService('map');

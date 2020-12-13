@@ -23,17 +23,17 @@ class Page extends PageCommon
 
         //========================  I N D E X  ================================
         if ($page_id == '0') {//карта
-            $this->content = $this->getApi0();
+            $this->pageContent->setBody($this->getApi0());
         } elseif ($page_id == '1' && isset($_GET['center'])) {//список
-            $this->content = $this->getApi1();
+            $this->pageContent->setBody($this->getApi1());
         } elseif ($page_id == '2' && isset($_GET['id'])) {//место
-            $this->content = $this->getApi2((int) $_GET['id']);
+            $this->pageContent->setBody($this->getApi2((int) $_GET['id']));
         } elseif ($page_id == '3' && isset($_GET['center'])) {//адрес
-            $this->content = $this->getApi3($_GET['center']);
+            $this->pageContent->setBody($this->getApi3($_GET['center']));
         } elseif ($page_id == '4' && isset($_GET['center'])) {//список xml
-            $this->content = $this->getApi4();
+            $this->getApi4();
         } elseif ($page_id == '5' && isset($_GET['id'])) {//место xml
-            $this->content = $this->getApi5((int) $_GET['id']);
+            $this->getApi5((int) $_GET['id']);
         } elseif ($page_id == '') {
             header("Location: /api/0/");
             exit();

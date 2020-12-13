@@ -25,12 +25,12 @@ class Page extends PageCommon
             $this->lastedit_timestamp = $news['max_ts'];
         }
 
-        $this->smarty->assign('hello_text', $this->content);
+        $this->smarty->assign('hello_text', $this->pageContent->getBody());
         $this->smarty->assign('stat', $this->globalConfig->getIndexStatText());
         $this->smarty->assign('blogentries', $blogentries);
         $this->smarty->assign('agrnewsentries', $newsentries);
 
-        $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/index.html/index.sm.html');
+        $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/index.html/index.sm.html'));
     }
 
     public static function getInstance(MyDB $db, SiteRequest $request): self

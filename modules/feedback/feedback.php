@@ -76,10 +76,10 @@ class Page extends PageCommon
                 unset($_SESSION['feedback_referer'], $_SESSION[MyKCaptcha::SESSION_KEY]);
             }
 
-            $this->content = $this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']);
+            $this->pageContent->setBody($this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']));
             unset($_POST);
         } else {
-            $this->content = $this->getAddingForm();
+            $this->pageContent->setBody($this->getAddingForm());
         }
     }
 
@@ -153,14 +153,14 @@ class Page extends PageCommon
                 unset($_POST);
                 unset($_SESSION[MyKCaptcha::SESSION_KEY]);
                 unset($_SESSION[MyKCaptcha::SESSION_KEY]);
-                $this->content = $this->getCommonSuccess($data);
+                $this->pageContent->setBody($this->getCommonSuccess($data));
             } else {
-                $this->content = $this->getCommonForm($data);
+                $this->pageContent->setBody($this->getCommonForm($data));
             }
 
             unset($_SESSION[MyKCaptcha::SESSION_KEY]);
         } else {
-            $this->content = $this->getCommonForm($data);
+            $this->pageContent->setBody($this->getCommonForm($data));
         }
     }
 

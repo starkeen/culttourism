@@ -11,15 +11,15 @@ class Page extends PageCommon
     protected function compileContent(): void
     {
         if ($this->siteRequest->getLevel1() === 'in') {
-            $this->content = $this->getIn();
+            $this->pageContent->setBody($this->getIn());
         } elseif ($this->siteRequest->getLevel1() === 'up') {
-            $this->content = $this->getUp();
+            $this->pageContent->setBody($this->getUp());
         } elseif ($this->siteRequest->getLevel1() === 'check') {
-            $this->content = $this->doCheck($this->siteRequest->getLevel2());
+            $this->pageContent->setBody($this->doCheck($this->siteRequest->getLevel2()));
         } elseif ($this->siteRequest->getLevel1() === 'out') {
-            $this->content = $this->doOut();
+            $this->pageContent->setBody($this->doOut());
         } elseif ($this->siteRequest->getLevel1() === 'form') {
-            $this->content = $this->getFormLogin();
+            $this->pageContent->setBody($this->getFormLogin());
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }

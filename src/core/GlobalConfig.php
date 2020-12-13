@@ -115,19 +115,19 @@ class GlobalConfig
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getIndexStatCountBlog(): string
+    public function getIndexStatCountBlog(): int
     {
-        return $this->getProperties()->index_cnt_blogs;
+        return (int) $this->getProperties()->index_cnt_blogs;
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getIndexStatCountNews(): string
+    public function getIndexStatCountNews(): int
     {
-        return $this->getProperties()->index_cnt_news;
+        return (int) $this->getProperties()->index_cnt_news;
     }
 
     /**

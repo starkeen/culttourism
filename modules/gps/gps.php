@@ -20,8 +20,8 @@ class Page extends PageCommon
 
         //========================  I N D E X  ================================
         if ($page_id == '') {
-            $this->smarty->assign('gps_text', $this->content);
-            $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/gps/gps.sm.html');
+            $this->smarty->assign('gps_text', $this->pageContent->getBody());
+            $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/gps/gps.sm.html'));
         } //=======================  E X P O R T  ===============================
         elseif ($page_id === 'export') {
             if (isset($_POST['pts']) && !empty($_POST['pts']) && (

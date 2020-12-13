@@ -101,8 +101,8 @@
                 </div>
             </header><!-- #header-->
             <div id="content">
-                {if $page->h1}<h1>{$page->h1}</h1>{/if}
-                {$page->content}
+                {if $pageContent->getH1()}<h1>{$pageContent->getH1()}</h1>{/if}
+                {$pageContent->getBody()}
                 <div class="content-scroll-buttons m_hide">
                     <img src="/img/btn/btn.scroll-top.48.png" alt="go top" />
                 </div>

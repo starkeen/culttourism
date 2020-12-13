@@ -29,51 +29,51 @@ class Page extends PageCommon
 
         if ($this->siteRequest->getLevel1() === 'point') {
             if ($id == '' && isset($_GET['id']) && (int) $_GET['id']) {
-                $this->content = $this->getPoint((int) $_GET['id']);
+                $this->pageContent->setBody($this->getPoint((int) $_GET['id']));
             } elseif ($id === 's' && isset($_GET['id'])) {
-                $this->content = $this->getPointBySlugline(str_replace('.html', '', $_GET['id']));
+                $this->pageContent->setBody($this->getPointBySlugline(str_replace('.html', '', $_GET['id'])));
             } elseif ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
-                $this->content = $this->savePointTitle((int) $_GET['id']);
+                $this->pageContent->setBody($this->savePointTitle((int) $_GET['id']));
             } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
-                $this->content = $this->savePointDescr((int) $_GET['id']);
+                $this->pageContent->setBody($this->savePointDescr((int) $_GET['id']));
             } elseif ($id === 'savecontacts' && isset($_GET['cid']) && (int) $_GET['cid']) {
-                $this->content = $this->savePointContacts((int) $_GET['cid']);
+                $this->pageContent->setBody($this->savePointContacts((int) $_GET['cid']));
             } elseif ($id === 'getnewform' && isset($_GET['cid'])) {
-                $this->content = $this->getPointNew((int) $_GET['cid']);
+                $this->pageContent->setBody($this->getPointNew((int) $_GET['cid']));
             } elseif ($id === 'savenew' && isset($_GET['cid'])) {
-                $this->content = $this->savePointNew((int) $_GET['cid']);
+                $this->pageContent->setBody($this->savePointNew((int) $_GET['cid']));
             } elseif ($id === 'delpoint' && isset($_GET['pid'])) {
-                $this->content = $this->deletePoint((int) $_GET['pid']);
+                $this->pageContent->setBody($this->deletePoint((int) $_GET['pid']));
             } elseif ($id === 'getformGPS' && isset($_GET['pid'])) {
-                $this->content = $this->getFormPointGPS((int) $_GET['pid']);
+                $this->pageContent->setBody($this->getFormPointGPS((int) $_GET['pid']));
             } elseif ($id === 'saveformGPS' && isset($_GET['pid'])) {
-                $this->content = $this->setFormPointGPS((int) $_GET['pid']);
+                $this->pageContent->setBody($this->setFormPointGPS((int) $_GET['pid']));
             } elseif ($id === 'saveAddrGPS' && isset($_GET['pid'])) {
-                $this->content = $this->setFormPointAddr((int) $_GET['pid']);
+                $this->pageContent->setBody($this->setFormPointAddr((int) $_GET['pid']));
             } elseif ($id === 'savebest') {
-                $this->content = $this->setFormPointBest((int) $_GET['id']);
+                $this->pageContent->setBody($this->setFormPointBest((int) $_GET['id']));
             }
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
         } elseif ($this->siteRequest->getLevel1() === 'city') {
             if ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
-                $this->content = $this->saveCityTitle((int) $_GET['id']);
+                $this->pageContent->setBody($this->saveCityTitle((int) $_GET['id']));
             } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
-                $this->content = $this->saveCityDescr((int) $_GET['id']);
+                $this->pageContent->setBody($this->saveCityDescr((int) $_GET['id']));
             } elseif ($id === 'getformGPS' && isset($_GET['cid']) && (int) $_GET['cid']) {
-                $this->content = $this->getFormCityGPS((int) $_GET['cid']);
+                $this->pageContent->setBody($this->getFormCityGPS((int) $_GET['cid']));
             } elseif ($id === 'saveformGPS') {
-                $this->content = $this->setFormCityGPS((int) $_GET['cid']);
+                $this->pageContent->setBody($this->setFormCityGPS((int) $_GET['cid']));
             }
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
         } elseif ($this->siteRequest->getLevel1() === 'pointtype') {
             if ($id === 'getform') {
-                $this->content = $this->getChangeTypeForm();
+                $this->pageContent->setBody($this->getChangeTypeForm());
             } elseif ($id === 'savetype' && isset($_POST['pid']) && (int) $_POST['pid']) {
-                $this->content = $this->setPointType((int) $_POST['pid']);
+                $this->pageContent->setBody($this->setPointType((int) $_POST['pid']));
             }
         } elseif ($this->siteRequest->getLevel1() === 'page') {
             if ($id === 'gps') {
-                $this->content = $this->getTextPage(31);
+                $this->pageContent->setBody($this->getTextPage(31));
             } else {
                 $this->processError(Core::HTTP_CODE_404);
             }

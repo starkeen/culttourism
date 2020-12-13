@@ -61,13 +61,11 @@ abstract class Core
      */
     public $pageHeaders;
 
-    public $content = '';
     public $url = '';
     private $metaTagsCustom = [];
     private $metaTagsJSONLD = [
         '@context' => 'http://schema.org',
     ];
-    public $h1 = '';
     public $module_id = _INDEXPAGE_URI;
     public $md_id; //id of module in database
     public $page_id = '';
@@ -144,7 +142,7 @@ abstract class Core
             if ($moduleData['md_title']) {
                 $this->pageContent->getHead()->addTitleElement($moduleData['md_title']);
             }
-            $this->h1 = $moduleData['md_title'];
+            $this->pageContent->setH1($moduleData['md_title']);
             $this->pageContent->getHead()->addKeyword($this->globalConfig->getDefaultPageKeywords());
             $this->pageContent->getHead()->addKeyword($moduleData['md_keywords']);
             $this->pageContent->getHead()->addDescription($this->globalConfig->getDefaultPageDescription());
@@ -154,7 +152,7 @@ abstract class Core
             $this->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
             $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
 
-            $this->content = $moduleData['md_pagecontent'];
+            $this->pageContent->setBody($moduleData['md_pagecontent']);
             $this->md_id = $moduleData['md_id'];
             $this->module_id = $this->siteRequest->getModuleKey();
             $this->page_id = $this->siteRequest->getLevel1();
@@ -186,7 +184,7 @@ abstract class Core
         $this->compileContent();
 
         if ($this->siteRequest->isAjax()) {
-            echo $this->content;
+            echo $this->pageContent->getBody();
         } else {
             $this->smarty->assign('page', $this);
             $this->smarty->assign('pageContent', $this->pageContent);
@@ -321,10 +319,10 @@ abstract class Core
                 $this->pageHeaders->add('HTTP/1.1 403 Forbidden');
 
                 $this->pageContent->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
-                $this->h1 = 'Запрещено';
+                $this->pageContent->setH1('Запрещено');
                 $this->smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
                 $this->smarty->assign('host', _SITE_URL);
-                $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html');
+                $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html'));
             }
                 break;
             case self::HTTP_CODE_404: {
@@ -338,11 +336,11 @@ abstract class Core
 
                 $suggestions = [];
                 $this->pageContent->getHead()->addTitleElement('404 Not Found - страница не найдена на сервере');
-                $this->h1 = 'Не найдено';
+                $this->pageContent->setH1('Не найдено');
                 $this->smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
                 $this->smarty->assign('host', _SITE_URL);
                 $this->smarty->assign('suggestions', $suggestions);
-                $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html');
+                $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html'));
             }
                 break;
             case self::HTTP_CODE_503: {
@@ -353,15 +351,15 @@ abstract class Core
                 $this->pageHeaders->add('Retry-After: 300');
 
                 $this->pageContent->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
-                $this->h1 = 'Сервис временно недоступен';
-                $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html');
+                $this->pageContent->setH1('Сервис временно недоступен');
+                $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html'));
             }
                 break;
         }
         if ($this->module_id === 'api') {
             $this->smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
         } elseif ($this->siteRequest->isAjax()) {
-            echo $this->content;
+            echo $this->pageContent->getBody();
         } else {
             $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
         }

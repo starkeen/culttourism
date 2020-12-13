@@ -352,7 +352,7 @@ class Page extends PageCommon
         $this->lastedit_timestamp = $citypage['last_update'];
 
         $this->smarty->assign('adminlogined', isset($this->user['userid']) ? $this->getUserId() : 0);
-        $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/city/details.sm.html');
+        $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/details.sm.html'));
     }
 
     //**************************************** ДОБАВЛЕНИЕ ******************
@@ -486,7 +486,7 @@ class Page extends PageCommon
         $this->smarty->assign('already', $already);
         $this->smarty->assign('freeplace', mb_strlen($newcity) >= 5 ? $newcity : null);
         $this->smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : null);
-        $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/city/add.sm.html');
+        $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/add.sm.html'));
     }
 
     //**************************************** СПИСОК **********************
@@ -533,9 +533,9 @@ class Page extends PageCommon
         $this->smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : 0);
 
         if ($this->checkEdit()) {
-            $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html');
+            $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html'));
         } else {
-            $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html');
+            $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html'));
         }
     }
 

@@ -37,7 +37,7 @@ class Page extends PageCommon
         $lst = new MLists($this->db);
         $list = $lst->getItemBySlugLine($slug);
         if (isset($list['ls_id']) && $list['ls_id'] > 0) {
-            $this->h1 = $list['ls_title'];
+            $this->pageContent->setH1($list['ls_title']);
             $this->pageContent->getHead()->addDescription($list['ls_description']);
             $this->pageContent->getHead()->addKeyword($list['ls_keywords']);
             $this->pageContent->getHead()->addTitleElement($list['ls_title']);
@@ -57,7 +57,7 @@ class Page extends PageCommon
             $this->smarty->assign('list', $list);
             $this->smarty->assign('list_items', $listItems->getActive());
 
-            $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/list/list.sm.html');
+            $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/list/list.sm.html'));
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
@@ -78,9 +78,9 @@ class Page extends PageCommon
             $indexLists[] = $list;
         }
 
-        $this->smarty->assign('index_text', $this->content);
+        $this->smarty->assign('index_text', $this->pageContent->getBody());
         $this->smarty->assign('index_lists', $indexLists);
-        $this->content = $this->smarty->fetch(_DIR_TEMPLATES . '/list/index.sm.html');
+        $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/list/index.sm.html'));
     }
 
     /**
