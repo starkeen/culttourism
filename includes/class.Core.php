@@ -55,12 +55,12 @@ abstract class Core
     /**
      * @var Content
      */
-    protected $pageContent;
+    public $pageContent;
 
     /**
      * @var Headers
      */
-    protected $pageHeaders;
+    public $pageHeaders;
 
     public $content = '';
     public $url = '';
@@ -76,9 +76,6 @@ abstract class Core
     ];
     public $canonical;
     public $h1 = '';
-    public $counters = '';
-    public $isCounters = 0;
-    public $isAjax = false;
     public $module_id = _INDEXPAGE_URI;
     public $md_id; //id of module in database
     public $page_id = '';
@@ -103,10 +100,7 @@ abstract class Core
         $this->db = $db;
         $this->siteRequest = $request;
         $this->basepath = _URL_ROOT;
-        $this->isAjax = $this->siteRequest->isAjax();
         $this->globalConfig = new GlobalConfig($this->db);
-        $this->pageContent = new Content();
-        $this->pageHeaders = new Headers();
     }
 
     /**
@@ -166,7 +160,6 @@ abstract class Core
             $this->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
             $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
 
-            $this->isCounters = $moduleData['md_counters'];
             $this->content = $moduleData['md_pagecontent'];
             $this->md_id = $moduleData['md_id'];
             $this->module_id = $this->siteRequest->getModuleKey();
@@ -197,7 +190,8 @@ abstract class Core
     {
         $this->init();
         $this->compileContent();
-        if ($this->isAjax) {
+
+        if ($this->siteRequest->isAjax()) {
             echo $this->content;
         } else {
             $this->smarty->assign('page', $this);
@@ -400,8 +394,9 @@ abstract class Core
         }
         switch ($errorHttpCode) {
             case self::HTTP_CODE_301: {
-                header('HTTP/1.1 301 Moved Permanently');
-                header("Location: $errorData");
+                $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
+                $this->pageHeaders->add('Location: ' . $errorData);
+                $this->pageHeaders->flush();
                 exit();
             }
                 break;
@@ -411,8 +406,8 @@ abstract class Core
                 ];
                 $this->logger->notice('Ошибка 403', $errorContext);
 
-                header('Content-Type: text/html; charset=utf-8');
-                header('HTTP/1.1 403 Forbidden');
+                $this->pageHeaders->add('Content-Type: text/html; charset=utf-8');
+                $this->pageHeaders->add('HTTP/1.1 403 Forbidden');
 
                 $this->title = "$this->title - 403 Forbidden - страница недоступна (запрещено)";
                 $this->h1 = 'Запрещено';
@@ -427,16 +422,10 @@ abstract class Core
                 ];
                 $this->logger->notice('Ошибка 404', $errorContext);
 
-                header('Content-Type: text/html; charset=utf-8');
-                header('HTTP/1.0 404 Not Found');
+                $this->pageHeaders->add('Content-Type: text/html; charset=utf-8');
+                $this->pageHeaders->add('HTTP/1.0 404 Not Found');
 
                 $suggestions = [];
-                //$suggestions = array_merge($suggestions, $this->getSuggestions404Local($_SERVER['REQUEST_URI']));
-                if (false && empty($suggestions) && strpos($_SERVER['REQUEST_URI'], 'php') === false) {
-                    $searchText = trim(str_replace(['_', '/', '.html',], ' ', $_SERVER['REQUEST_URI']));
-                    $suggestions = $this->getSuggestions404Yandex($searchText);
-                }
-
                 $this->title = "$this->title - 404 Not Found - страница не найдена на сервере";
                 $this->h1 = 'Не найдено';
                 $this->smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
@@ -446,10 +435,11 @@ abstract class Core
             }
                 break;
             case self::HTTP_CODE_503: {
-                header('Content-Type: text/html; charset=utf-8');
-                header('HTTP/1.1 503 Service Temporarily Unavailable');
-                header('Status: 503 Service Temporarily Unavailable');
-                header('Retry-After: 300');
+                $this->pageHeaders->add('Content-Type: text/html; charset=utf-8');
+                $this->pageHeaders->add('Content-Type: text/html; charset=utf-8');
+                $this->pageHeaders->add('HTTP/1.1 503 Service Temporarily Unavailable');
+                $this->pageHeaders->add('Status: 503 Service Temporarily Unavailable');
+                $this->pageHeaders->add('Retry-After: 300');
 
                 $this->title = "$this->title - Ошибка 503 - Сервис временно недоступен";
                 $this->h1 = 'Сервис временно недоступен';
@@ -459,7 +449,7 @@ abstract class Core
         }
         if ($this->module_id === 'api') {
             $this->smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
-        } elseif ($this->isAjax) {
+        } elseif ($this->siteRequest->isAjax()) {
             echo $this->content;
         } else {
             $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');

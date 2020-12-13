@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace app\core\application;
 
+use app\core\page\Content;
+use app\core\page\Headers;
 use app\core\SiteRequest;
 use Auth;
 use Page;
@@ -15,11 +17,23 @@ class WebApplication extends Application
      */
     private $request;
 
+    /**
+     * @var Headers
+     */
+    private $headers;
+
+    /**
+     * @var Content
+     */
+    private $content;
+
     public function __construct()
     {
         parent::__construct();
 
         $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
+        $this->headers = new Headers();
+        $this->content = new Content();
     }
 
     public function init(): void
@@ -34,8 +48,9 @@ class WebApplication extends Application
 
         // редиректим на https
         if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] === '')) {
-            header('HTTP/1.1 301 Moved Permanently');
-            header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+            $this->headers->add('HTTP/1.1 301 Moved Permanently');
+            $this->headers->add('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+            $this->headers->flush();
             exit();
         }
 
@@ -52,14 +67,16 @@ class WebApplication extends Application
         $page->smarty = $this->smarty;
         $page->logger = $this->logger;
         $page->auth = new Auth($this->db);
+        $page->pageHeaders = $this->headers;
+        $page->pageContent = $this->content;
 
-        header('X-Powered-By: html');
-        header('Content-Type: text/html; charset=utf-8');
+        $this->headers->add('X-Powered-By: html');
+        $this->headers->add('Content-Type: text/html; charset=utf-8');
 
-        if (_CACHE_DAYS !== 0 && !$page->isAjax) {
-            header('Expires: ' . $page->expiredate);
-            header('Last-Modified: ' . $page->lastedit);
-            header('Cache-Control: public, max-age=' . _CACHE_DAYS * 3600);
+        if (_CACHE_DAYS !== 0 && !$this->request->isAjax()) {
+            $this->headers->add('Expires: ' . $page->expiredate);
+            $this->headers->add('Last-Modified: ' . $page->lastedit);
+            $this->headers->add('Cache-Control: public, max-age=' . _CACHE_DAYS * 3600);
 
             $headers = getallheaders();
             if (isset($headers['If-Modified-Since'])) {
@@ -70,30 +87,32 @@ class WebApplication extends Application
                 $lastModified = strtotime($page->lastedit);
                 // Сравниваем время последней модификации контента с кэшем клиента
                 if ($lastModified <= $modifiedSince) {
-                    // Разгружаем канал передачи данных!
-                    header('HTTP/1.1 304 Not Modified');
+                    $this->headers->add('HTTP/1.1 304 Not Modified');
+                    $this->headers->flush();
                     exit();
                 }
             }
-        } elseif ($page->lastedit_timestamp > 0 && !$page->isAjax) {
-            header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp) . ' GMT');
-            header('Cache-control: public');
-            header('Pragma: cache');
-            header('Expires: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp + 60 * 60 * 24 * 7) . ' GMT');
+        } elseif ($page->lastedit_timestamp > 0 && !$this->request->isAjax()) {
+            $this->headers->add('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp) . ' GMT');
+            $this->headers->add('Cache-control: public');
+            $this->headers->add('Pragma: cache');
+            $this->headers->add('Expires: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp + 60 * 60 * 24 * 7) . ' GMT');
             $headers = getallheaders();
             if (isset($headers['If-Modified-Since'])) {
                 $modifiedSince = explode(';', $headers['If-Modified-Since']);
                 if (strtotime($modifiedSince[0]) >= $page->lastedit_timestamp) {
-                    header('HTTP/1.1 304 Not Modified');
+                    $this->headers->add('HTTP/1.1 304 Not Modified');
+                    $this->headers->flush();
                     exit();
                 }
             }
         } else {
-            header('Cache-Control: no-store, no-cache, must-revalidate');
-            header('Expires: ' . date('r'));
+            $this->headers->add('Cache-Control: no-store, no-cache, must-revalidate');
+            $this->headers->add('Expires: ' . date('r'));
             $page->lastedit = null;
         }
 
+        $this->headers->flush();
         $page->display();
 
         exit();

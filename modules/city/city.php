@@ -21,7 +21,6 @@ class Page extends PageCommon
             $this->metaCity();
         } elseif ($this->siteRequest->getLevel1() === 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
-            $this->isAjax = true;
             $this->getBlockWeather($_GET['lat'], $_GET['lon']);
         } else {
             $this->processError(Core::HTTP_CODE_404);

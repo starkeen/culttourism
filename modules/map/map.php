@@ -24,15 +24,12 @@ class Page extends PageCommon
         } //====================  M A P   E N T R Y  ============================
         elseif ($this->siteRequest->getLevel1() === 'common') {
             $this->auth->setService('map');
-            $this->isAjax = true;
             $this->getYMapsMLCommon($_GET);
         } elseif ($this->siteRequest->getLevel1() === 'city' && isset($_GET['cid']) && (int) $_GET['cid'] > 0) {
             $this->auth->setService('map');
-            $this->isAjax = true;
             $this->getYMapsMLRegion((int) $_GET['cid']);
         } elseif ($this->siteRequest->getLevel1() === 'list' && isset($_GET['lid']) && (int) $_GET['lid'] > 0) {
             $this->auth->setService('map');
-            $this->isAjax = true;
             $this->getYMapsMLList((int) $_GET['lid']);
         } elseif ($this->siteRequest->getLevel1() === 'gpx' && isset($_GET['cid']) && (int) $_GET['cid']) {
             $this->showCityPointsGPX((int) $_GET['cid']);
