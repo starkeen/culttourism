@@ -72,7 +72,7 @@ class Page extends PageCommon
                     'referer' => $_SESSION['feedback_referer']
                 ];
 
-                Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 5, $mailAttrs);
+                Mailing::sendLetterCommon($this->globalConfig->getMailFeedback(), 5, $mailAttrs);
                 unset($_SESSION['feedback_referer'], $_SESSION[MyKCaptcha::SESSION_KEY]);
             }
 
@@ -149,7 +149,7 @@ class Page extends PageCommon
                     'feed_text' => $data['ftext'],
                     'referer' => $referer,
                 ];
-                Mailing::sendLetterCommon($this->globalsettings['mail_feedback'], 4, $mail_attrs);
+                Mailing::sendLetterCommon($this->globalConfig->getMailFeedback(), 4, $mail_attrs);
                 unset($_POST);
                 unset($_SESSION[MyKCaptcha::SESSION_KEY]);
                 unset($_SESSION[MyKCaptcha::SESSION_KEY]);

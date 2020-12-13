@@ -86,10 +86,6 @@ abstract class Core
 
     public $basepath = '';
 
-    public $globalsettings = [
-        'default_pagetitle' => '',
-        'stat_text' => '',
-    ];
     public $user = ['userid' => null];
     public $custom_css;
     public $robots_indexing = 'index,follow';
@@ -120,9 +116,6 @@ abstract class Core
     {
         $this->auth->checkSession('web');
 
-        $sp = new MSysProperties($this->db);
-        $globals = $sp->getPublic();
-        $this->globalsettings = $globals;
         $this->pageContent->setJsResources($this->globalConfig->getJsResources());
         $this->pageContent->setUrlCss($this->globalConfig->getUrlCss());
         $this->pageContent->setUrlJs($this->globalConfig->getUrlJs());
@@ -130,7 +123,7 @@ abstract class Core
 
         $this->key_yandexmaps = $this->globalConfig->getYandexMapsKey();
 
-        if (!empty($this->globalsettings['site_active']) && $this->globalsettings['site_active'] === 'Off') {
+        if (!$this->globalConfig->isSiteActive()) {
             $this->processError(self::HTTP_CODE_503);
         }
 
@@ -140,7 +133,7 @@ abstract class Core
         $this->addOGMeta(OgType::TITLE(), $this->title);
         $this->addOGMeta(OgType::DESCRIPTION(), $this->description);
 
-        $this->addOGMeta(OgType::SITE_NAME(), $this->globalsettings['default_pagetitle'] ?? '');
+        $this->addOGMeta(OgType::SITE_NAME(), $this->globalConfig->getDefaultPageTitle());
         $this->addOGMeta(OgType::LOCALE(), 'ru_RU');
         $this->addOGMeta(OgType::TYPE(), 'website');
         $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $_SERVER['REQUEST_URI']);
@@ -159,18 +152,18 @@ abstract class Core
                 $this->processError(self::HTTP_CODE_301, $moduleData['md_redirect']);
             }
             $this->url = $moduleData['md_url'];
-            $this->title = $this->globalsettings['default_pagetitle'] ?? '';
+            $this->title = $this->globalConfig->getDefaultPageTitle();
             if ($moduleData['md_title']) {
                 $this->addTitle($moduleData['md_title']);
             }
             $this->h1 = $moduleData['md_title'];
-            $this->keywords = $this->globalsettings['default_pagekeywords'] ?? '';
+            $this->keywords = $this->globalConfig->getDefaultPageKeywords();
             $this->addKeywords($moduleData['md_keywords']);
-            $this->description = $this->globalsettings['default_pagedescription'] ?? '';
+            $this->description = $this->globalConfig->getDefaultPageDescription();
             $this->addDescription($moduleData['md_description']);
 
-            $this->addOGMeta(OgType::TITLE(), $this->globalsettings['default_pagetitle'] ?? '');
-            $this->addOGMeta(OgType::DESCRIPTION(), $this->globalsettings['default_pagedescription'] ?? '');
+            $this->addOGMeta(OgType::TITLE(), $this->globalConfig->getDefaultPageTitle());
+            $this->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
             $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
 
             $this->isCounters = $moduleData['md_counters'];
@@ -230,7 +223,7 @@ abstract class Core
     {
         $this->_title[] = $text;
         krsort($this->_title);
-        $this->title = implode(' ' . ($this->globalsettings['title_delimiter'] ?? '') . ' ', $this->_title);
+        $this->title = implode($this->globalConfig->getTitleDelimiter(), $this->_title);
     }
 
     /**

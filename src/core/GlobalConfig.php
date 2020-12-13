@@ -75,6 +75,86 @@ class GlobalConfig
     }
 
     /**
+     * @return bool
+     */
+    public function isSiteActive(): bool
+    {
+        return $this->getProperties()->site_active !== 'Off';
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitleDelimiter(): string
+    {
+        return ' ' . $this->getProperties()->title_delimiter . ' ';
+    }
+
+    /**
+     * @return string
+     */
+    public function getOpenWeatherAPIKey(): string
+    {
+        return $this->getProperties()->app_openweather_key;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMailFeedback(): string
+    {
+        return $this->getProperties()->mail_feedback;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIndexStatText(): string
+    {
+        return $this->getProperties()->stat_text;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIndexStatCountBlog(): string
+    {
+        return $this->getProperties()->index_cnt_blogs;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIndexStatCountNews(): string
+    {
+        return $this->getProperties()->index_cnt_news;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultPageTitle(): string
+    {
+        return $this->getProperties()->default_pagetitle;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultPageKeywords(): string
+    {
+        return $this->getProperties()->default_pagekeywords;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultPageDescription(): string
+    {
+        return $this->getProperties()->default_pagedescription;
+    }
+
+    /**
      * @return Properties
      */
     private function getProperties(): Properties

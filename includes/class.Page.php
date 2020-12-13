@@ -246,7 +246,7 @@ class Page extends PageCommon
         }
         while ($row = $this->db->fetch($res)) {
             if ($row['md_url'] === $p_url) {
-                $this->h1 .= ' ' . $this->globalsettings['title_delimiter'] . ' ' . $row['md_title'];
+                $this->h1 .= $this->globalConfig->getTitleDelimiter() . $row['md_title'];
                 $this->content = $row['md_pagecontent'];
                 $this->addDescription($row['md_description']);
                 $this->addKeywords($row['md_keywords']);

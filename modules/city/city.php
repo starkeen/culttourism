@@ -58,8 +58,8 @@ class Page extends PageCommon
         $curl->config(CURLOPT_FAILONERROR, true);
 
         $url = 'http://api.openweathermap.org/data/2.5/weather?lat='
-            . floatval($lat) . '&lon=' . floatval($lon)
-            . '&APPID=' . $this->globalsettings['app_openweather_key'];
+            . (float) $lat . '&lon=' . (float) $lon
+            . '&APPID=' . $this->globalConfig->getOpenWeatherAPIKey();
         $result = $curl->get($url);
         $response = json_decode($result);
 

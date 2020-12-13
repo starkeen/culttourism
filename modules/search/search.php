@@ -105,7 +105,7 @@ class Page extends PageCommon
 
             if (!$searchResult->isError()) {
                 foreach ($searchResult->getItems() as $resultItem) {
-                    $titleItemElements = explode($this->globalsettings['title_delimiter'], $resultItem->getTitle());
+                    $titleItemElements = explode($this->globalConfig->getTitleDelimiter(), $resultItem->getTitle());
                     if (count($titleItemElements) > 1) {
                         array_pop($titleItemElements);
                     }

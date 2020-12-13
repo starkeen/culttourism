@@ -13,20 +13,20 @@ class Page extends PageCommon
         $bg = new MBlogEntries($this->db);
         $ns = new MNewsItems($this->db);
 
-        $blog = $bg->getLastWithTS($this->globalsettings['index_cnt_blogs']);
+        $blog = $bg->getLastWithTS($this->globalConfig->getIndexStatCountBlog());
         $blogentries = $blog['blogentries'];
         if ($blog['max_ts'] > $this->lastedit_timestamp) {
             $this->lastedit_timestamp = $blog['max_ts'];
         }
 
-        $news = $ns->getLastWithTS($this->globalsettings['index_cnt_news']);
+        $news = $ns->getLastWithTS($this->globalConfig->getIndexStatCountNews());
         $newsentries = $news['entries'];
         if ($news['max_ts'] > $this->lastedit_timestamp) {
             $this->lastedit_timestamp = $news['max_ts'];
         }
 
         $this->smarty->assign('hello_text', $this->content);
-        $this->smarty->assign('stat', $this->globalsettings['stat_text']);
+        $this->smarty->assign('stat', $this->globalConfig->getIndexStatText());
         $this->smarty->assign('blogentries', $blogentries);
         $this->smarty->assign('agrnewsentries', $newsentries);
 
