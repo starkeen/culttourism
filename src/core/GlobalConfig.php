@@ -7,32 +7,6 @@ namespace app\core;
 use app\db\MyDB;
 use MSysProperties;
 
-//    TODO:
-//    - sitename
-//    - default_pagekeywords
-//    - default_pagedescription
-//    - default_pagetitle
-//    - title_delimiter
-//    + main_rss
-//    - stat_city
-//    - stat_points
-//    + mainfile_css
-//    + mainfile_js
-//    + key_yandexmaps
-//    - mail_fromaddr
-//    - mail_to
-//    - mail_feedback
-//    - stat_text
-//    - checklinks_shift
-//    - index_cnt_blogs
-//    - index_cnt_news
-//    - res_js_list
-//    - res_js_map
-//    - res_js_city
-//    - res_js_point
-//    - res_js_editor
-//    - site_active
-//    - app_openweather_key
 class GlobalConfig
 {
     /**
@@ -41,60 +15,16 @@ class GlobalConfig
     private $propertiesModel;
 
     /**
-     * @var bool
+     * @var Properties
      */
-    private $compiled = false;
+    private $properties;
 
     /**
-     * @var string
+     * @param MyDB $db
      */
-    private $urlCss;
-
-    /**
-     * @var string
-     */
-    private $urlJs;
-
-    /**
-     * @var string
-     */
-    private $urlRss;
-
-    /**
-     * @var string
-     */
-    private $yandexMapsKey;
-
-    /**
-     * @deprecated
-     * @var string[]
-     */
-    private $jsResources = [];
-
     public function __construct(MyDB $db)
     {
         $this->propertiesModel = new MSysProperties($db);
-    }
-
-    private function compile(): void
-    {
-        if (!$this->compiled) {
-            $globals = $this->propertiesModel->getPublic();
-
-            $this->urlCss = $globals['mainfile_css'];
-            $this->urlJs = $globals['mainfile_js'];
-            $this->urlRss = $globals['main_rss'];
-            $this->yandexMapsKey = $globals['key_yandexmaps'];
-            $this->jsResources = [
-                'res_js_list' => $globals['res_js_list'],
-                'res_js_map' => $globals['res_js_map'],
-                'res_js_city' => $globals['res_js_city'],
-                'res_js_point' => $globals['res_js_point'],
-                'res_js_editor' => $globals['res_js_editor'],
-            ];
-
-            $this->compiled = true;
-        }
     }
 
     /**
@@ -102,9 +32,7 @@ class GlobalConfig
      */
     public function getUrlCss(): string
     {
-        $this->compile();
-
-        return $this->urlCss;
+        return $this->getProperties()->mainfile_css;
     }
 
     /**
@@ -112,9 +40,7 @@ class GlobalConfig
      */
     public function getUrlJs(): string
     {
-        $this->compile();
-
-        return $this->urlJs;
+        return $this->getProperties()->mainfile_js;
     }
 
     /**
@@ -123,9 +49,13 @@ class GlobalConfig
      */
     public function getJsResources(): array
     {
-        $this->compile();
-
-        return $this->jsResources;
+        return [
+            'res_js_list' => $this->getProperties()->res_js_list,
+            'res_js_map' => $this->getProperties()->res_js_map,
+            'res_js_city' => $this->getProperties()->res_js_city,
+            'res_js_point' => $this->getProperties()->res_js_point,
+            'res_js_editor' => $this->getProperties()->res_js_editor,
+        ];
     }
 
     /**
@@ -133,9 +63,7 @@ class GlobalConfig
      */
     public function getUrlRSS(): string
     {
-        $this->compile();
-
-        return $this->urlRss;
+        return $this->getProperties()->main_rss;
     }
 
     /**
@@ -143,8 +71,22 @@ class GlobalConfig
      */
     public function getYandexMapsKey(): string
     {
-        $this->compile();
+        return $this->getProperties()->key_yandexmaps;
+    }
 
-        return $this->yandexMapsKey;
+    /**
+     * @return Properties
+     */
+    private function getProperties(): Properties
+    {
+        if ($this->properties === null) {
+
+            $this->properties = new Properties();
+            $globals = $this->propertiesModel->getPublic();
+            foreach ($globals as $key => $value) {
+                $this->properties->{$key} = $value;
+            }
+        }
+        return $this->properties;
     }
 }
