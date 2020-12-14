@@ -196,11 +196,7 @@ abstract class Core
             } else {
                 $this->smarty->assign('debug_info', '');
             }
-            if ($this->module_id === 'api') {
-                $this->smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
-            } else {
-                $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
-            }
+            $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
         }
     }
 
@@ -358,9 +354,7 @@ abstract class Core
             }
                 break;
         }
-        if ($this->module_id === 'api') {
-            $this->smarty->display(_DIR_TEMPLATES . '/_main/api.html.sm.html');
-        } elseif ($this->siteRequest->isAjax()) {
+        if ($this->siteRequest->isAjax()) {
             echo $this->pageContent->getBody();
         } else {
             $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
