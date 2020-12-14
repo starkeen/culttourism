@@ -15,9 +15,9 @@ class Page extends PageCommon
         } elseif ($this->siteRequest->getLevel1() === 'up') {
             $this->pageContent->setBody($this->getUp());
         } elseif ($this->siteRequest->getLevel1() === 'check') {
-            $this->pageContent->setBody($this->doCheck($this->siteRequest->getLevel2()));
+            $this->doCheck($this->siteRequest->getLevel2());
         } elseif ($this->siteRequest->getLevel1() === 'out') {
-            $this->pageContent->setBody($this->doOut());
+            $this->doOut();
         } elseif ($this->siteRequest->getLevel1() === 'form') {
             $this->pageContent->setBody($this->getFormLogin());
         } else {
@@ -43,7 +43,7 @@ class Page extends PageCommon
         return $this->smarty->fetch(_DIR_TEMPLATES . '/sign/up.sm.html');
     }
 
-    private function doOut()
+    private function doOut(): void
     {
         $this->auth->deleteKey();
         $_SESSION['user'] = null;
@@ -59,7 +59,7 @@ class Page extends PageCommon
         }
     }
 
-    private function doCheck($key): void
+    private function doCheck(string $key): void
     {
         if (isset($_SERVER['HTTP_REFERER']) && !isset($_SESSION['user_referer'])) {
             $_SESSION['user_referer'] = $_SERVER['HTTP_REFERER'];
