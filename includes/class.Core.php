@@ -152,7 +152,9 @@ abstract class Core
             $this->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
             $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
 
-            $this->pageContent->setBody($moduleData['md_pagecontent']);
+            if ($moduleData['md_pagecontent'] !== null) {
+                $this->pageContent->setBody($moduleData['md_pagecontent']);
+            }
             $this->md_id = $moduleData['md_id'];
             $this->module_id = $this->siteRequest->getModuleKey();
             $this->page_id = $this->siteRequest->getLevel1();
