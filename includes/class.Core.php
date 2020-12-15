@@ -196,7 +196,7 @@ abstract class Core
             } else {
                 $this->smarty->assign('debug_info', '');
             }
-            $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
+            $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.tpl');
         }
     }
 
@@ -357,7 +357,7 @@ abstract class Core
         if ($this->siteRequest->isAjax()) {
             echo $this->pageContent->getBody();
         } else {
-            $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.sm.html');
+            $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.tpl');
         }
         exit();
     }
