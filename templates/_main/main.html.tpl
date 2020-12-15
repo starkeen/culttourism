@@ -31,7 +31,7 @@
                 defer="defer"></script>
         <script type="text/javascript" src="https://yastatic.net/pcode-native/loaders/loader.js" defer="defer"></script>
         <script type="text/javascript" src="/js/{$pageContent->getUrlJs()}" defer="defer"></script>
-        {if $page->user.userid}
+        {if $page->getUserId()}
             <script type="text/javascript" src="/addons/ckeditor/ckeditor.js" defer="defer"></script>
             <script type="text/javascript" src="/addons/ckeditor/adapters/jquery.js" defer="defer"></script>
             <script type="text/javascript" src="/addons/jquery.ui/jquery.ui.core.js" defer="defer"></script>
