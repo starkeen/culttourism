@@ -108,8 +108,6 @@ abstract class Core
         $this->pageContent->setUrlJs($this->globalConfig->getUrlJs());
         $this->pageContent->setUrlRss($this->globalConfig->getUrlRSS());
 
-        $this->key_yandexmaps = $this->globalConfig->getYandexMapsKey();
-
         if (!$this->globalConfig->isSiteActive()) {
             $this->processError(self::HTTP_CODE_503);
         }
@@ -179,6 +177,39 @@ abstract class Core
      * Определение типа страницы внутри модуля и формирование контента
      */
     abstract protected function compileContent(): void;
+
+    /**
+     * @return bool|null
+     */
+    public function checkEdit(): ?bool
+    {
+        //проверяет возможность редактирования
+        return isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUserId(): ?int
+    {
+        if (isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0) {
+            return (int) $_SESSION['user_id'];
+        }
+
+        return null;
+    }
+
+    /**
+     * @return int|string
+     */
+    public function getUserHash() {
+        if (isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0) {
+            return (int) $_SESSION['user_id'];
+        }
+
+        return session_id();
+    }
+
 
     public function display(): void
     {

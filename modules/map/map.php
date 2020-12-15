@@ -5,7 +5,7 @@ use app\constant\OgType;
 use app\core\SiteRequest;
 use app\db\MyDB;
 
-class Page extends PageCommon
+class Page extends Core
 {
     /**
      * @inheritDoc
@@ -16,7 +16,6 @@ class Page extends PageCommon
 
         //========================  I N D E X  ================================
         if ($this->siteRequest->getLevel1() === null) {
-            $this->ymaps_ver = 2;
 
             $this->addOGMeta(OgType::TYPE(), 'website');
 

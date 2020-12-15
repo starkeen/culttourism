@@ -3,10 +3,8 @@
 use app\core\SiteRequest;
 use app\db\MyDB;
 
-class Page extends PageCommon
+class Page extends Core
 {
-    public $files_ver = 11;
-
     /**
      * @inheritDoc
      */

@@ -2,7 +2,7 @@
 
 use app\constant\OgType;
 
-class Page extends PageCommon
+class Page extends Core
 {
     /**
      * @inheritDoc

@@ -4,7 +4,7 @@ use app\api\yandex_search\Factory;
 use app\core\SiteRequest;
 use app\db\MyDB;
 
-class Page extends PageCommon
+class Page extends Core
 {
     /**
      * @inheritDoc

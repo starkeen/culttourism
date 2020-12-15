@@ -6,7 +6,7 @@ use app\includes\ReCaptcha;
 use app\utils\MyKCaptcha;
 use GuzzleHttp\Client;
 
-class Page extends PageCommon
+class Page extends Core
 {
     /**
      * @inheritDoc

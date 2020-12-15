@@ -4,7 +4,7 @@ use app\core\SiteRequest;
 use app\db\MyDB;
 use models\MLinks;
 
-class Page extends PageCommon
+class Page extends Core
 {
     /**
      * @var MDataCheck

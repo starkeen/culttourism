@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 /**
  * Модуль служебных и системных процессов
  */
-class Page extends PageCommon
+class Page extends Core
 {
     private const SETTINGS_BRANCH_DEPLOY = 9;
 
