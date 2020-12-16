@@ -74,7 +74,7 @@ class Head
      */
     public function getCanonicalUrl(): ?string
     {
-        return rtrim(_SITE_URL, '/') . $this->canonicalUrl;
+        return $this->canonicalUrl !== null ? rtrim(_SITE_URL, '/') . $this->canonicalUrl : null;
     }
 
     /**

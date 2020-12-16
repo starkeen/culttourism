@@ -1,5 +1,6 @@
 <?php
 
+use app\constant\MonthName;
 use app\constant\OgType;
 
 class Page extends Core
@@ -10,6 +11,7 @@ class Page extends Core
     protected function compileContent(): void
     {
         $this->id = $this->siteRequest->getLevel2();
+
         if ($this->siteRequest->getLevel1() === null) {
             $this->pageContent->setBody($this->getAllEntries()); //все записи
         } elseif ($this->siteRequest->getLevel1() === 'addform') { //форма добавления записи в блог
@@ -26,10 +28,21 @@ class Page extends Core
             $this->pageContent->setBody($this->deleteBlogEntry((int) $_GET['bid']));
         } elseif ($this->siteRequest->getLevel1() === 'blog') {
             $this->processError(Core::HTTP_CODE_301, '/blog/');
-        } elseif ($this->siteRequest->getLevel3() != '') {
-            $this->pageContent->setBody($this->getOneEntry($this->siteRequest->getLevel3(), $this->siteRequest->getLevel1(), $this->siteRequest->getLevel2())); //одна запись
-        } elseif ($this->siteRequest->getLevel1() != '') {
-            $this->pageContent->setBody($this->getCalendar($this->siteRequest->getLevel1(), $this->siteRequest->getLevel2())); //календарь
+        } elseif ($this->siteRequest->getLevel3() !== null ) { //одна запись
+            $this->pageContent->setBody(
+                $this->getOneEntry(
+                    $this->siteRequest->getLevel3(),
+                    (int) $this->siteRequest->getLevel1(),
+                    (int) $this->siteRequest->getLevel2()
+                )
+            );
+        } elseif ($this->siteRequest->getLevel1() !== null) { //календарь
+            $this->pageContent->setBody(
+                $this->getCalendar(
+                    (int) $this->siteRequest->getLevel1(),
+                    $this->siteRequest->getLevel2() !== null ? (int) $this->siteRequest->getLevel2() : null
+                )
+            );
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
@@ -40,7 +53,7 @@ class Page extends Core
         $dbb = $this->db->getTableName('blogentries');
         $dbu = $this->db->getTableName('users');
         $show_full_admin = $this->checkEdit();
-        $show_full_sql = "";
+        $show_full_sql = '';
         if (!$show_full_admin) {
             $show_full_sql = "HAVING br_showed = 1\n";
         }
@@ -67,17 +80,25 @@ class Page extends Core
         if ($show_full_admin) {
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
         }
+
+        $this->pageContent->getHead()->setCanonicalUrl('/blog/');
+
         $this->smarty->assign('entries', $entry);
         $this->smarty->assign('blogadmin', $show_full_admin);
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.all.sm.html');
+
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.all.tpl');
     }
 
-    private function getOneEntry($id, $y = null, $m = null)
+    /**
+     * @param string $id
+     * @param int    $year
+     * @param int    $month
+     * @return string
+     */
+    private function getOneEntry(string $id, int $year, int $month): string
     {
         $id = urldecode($id);
         $id = substr($id, 0, strpos($id, '.html'));
-        $year = (int) $y;
-        $month = (int) $m;
         $idn = (int) $id;
 
         $entry = null;
@@ -98,8 +119,10 @@ class Page extends Core
         $this->pageContent->getHead()->addKeyword($entry['br_url']);
         $this->pageContent->getHead()->addKeyword('месяц ' . $entry['bg_month']);
         $this->pageContent->getHead()->addKeyword($entry['bg_year'] . ' год');
-        $this->lastedit_timestamp = $entry['last_update'];
         $this->pageContent->getHead()->setCanonicalUrl($entry['br_canonical']);
+
+        $this->lastedit_timestamp = $entry['last_update'];
+
         $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $entry['br_canonical']);
         $this->addOGMeta(OgType::TYPE(), 'article');
         $this->addOGMeta(OgType::TITLE(), $entry['br_title']);
@@ -107,25 +130,35 @@ class Page extends Core
         if (!empty($entry['br_picture'])) {
             $this->addOGMeta(OgType::IMAGE(), $entry['br_picture']);
         }
+
         $this->smarty->assign('entry', $entry);
 
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.one.sm.html');
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.one.tpl');
     }
 
-    private function getCalendar($y, $m = null)
+    /**
+     * @param int $year
+     * @param int|null $month
+     * @return string
+     */
+    private function getCalendar(int $year, int $month = null): string
     {
-        $year = (int) $y;
-        $month = (int) $m;
-        if ($year) {
-            $this->pageContent->getHead()->addTitleElement((string) $year);
-            $this->pageContent->getHead()->addKeyword('год ' . $year);
-            $this->pageContent->getHead()->addDescription("Записи в блоге за $year год");
+        $this->pageContent->getHead()->addTitleElement((string) $year);
+        $this->pageContent->getHead()->addKeyword('год ' . $year);
+        $this->pageContent->getHead()->addDescription('Записи в блоге за ' . $year . ' год');
+
+        $canonical = '/blog/' . $year . '/';
+
+        if ($month !== null) {
+            $monthName = MonthName::getMonthName($month);
+            $this->pageContent->getHead()->addTitleElement(mb_convert_case($monthName, MB_CASE_TITLE, 'UTF-8'));
+            $this->pageContent->getHead()->addKeyword('месяц ' . $monthName);
+            $this->pageContent->getHead()->addDescription("Записи в блоге за $monthName");
+            $canonical .= sprintf('%02d', $month) . '/';
         }
-        if ($month) {
-            $this->pageContent->getHead()->addTitleElement((string) $m);
-            $this->pageContent->getHead()->addKeyword('месяц ' . $month);
-            $this->pageContent->getHead()->addDescription("Записи в блоге за $month месяц");
-        }
+
+        $this->pageContent->getHead()->setCanonicalUrl($canonical);
+
         $dbb = $this->db->getTableName('blogentries');
         $dbu = $this->db->getTableName('users');
         $binds = [
@@ -165,10 +198,14 @@ class Page extends Core
         $this->smarty->assign('years', $years);
         $this->smarty->assign('cur_year', $year);
 
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.calendar.sm.html');
+        return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.calendar.tpl');
     }
 
-    private function checkURL($url)
+    /**
+     * @param string $url
+     * @return null|int
+     */
+    private function checkURL(string $url): ?int
     {
         $dbb = $this->db->getTableName('blogentries');
         $this->db->sql = "SELECT br_id FROM $dbb WHERE br_url = :url AND br_active = 1 LIMIT 1";
@@ -179,13 +216,13 @@ class Page extends Core
         );
         if ($res) {
             $row = $this->db->fetch();
-            $bid = intval($row['br_id']);
+            $bid = (int) $row['br_id'];
             if (!$bid) {
-                return false;
+                return null;
             }
             return $bid;
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -292,31 +329,36 @@ class Page extends Core
 
         $bg = new MBlogEntries($this->db);
 
-        if ($_POST['brid'] == 'add') {
+        if ($_POST['brid'] === 'add') {
             return $bg->insert(
                 [
                     'br_title' => $_POST['ntitle'],
                     'br_text' => $_POST['ntext'],
                     'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
-                    'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
+                    'br_active' => $_POST['nact'] === 'true' ? 1 : 0,
                     'br_url' => $_POST['nurl'],
                     'br_us_id' => $this->getUserId(),
                 ]
             );
         } elseif ($_POST['brid'] > 0) {
             return $bg->updateByPk(
-                intval($_POST['brid']),
+                (int) $_POST['brid'],
                 [
                     'br_title' => $_POST['ntitle'],
                     'br_text' => $_POST['ntext'],
                     'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
-                    'br_active' => $_POST['nact'] == 'true' ? 1 : 0,
+                    'br_active' => $_POST['nact'] === 'true' ? 1 : 0,
                     'br_url' => $_POST['nurl'],
                 ]
             );
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
+    }
+
+    private function getMonthName(int $month): string
+    {
+        return \app\constant\MonthName::NAMES[$month];
     }
 
     public static function getInstance($db, $mod = null)
