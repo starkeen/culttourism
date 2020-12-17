@@ -69,16 +69,11 @@ abstract class Core
     public $pageHeaders;
 
     public $url = '';
-
     public $module_id = _INDEXPAGE_URI;
     public $md_id; //id of module in database
     public $page_id = '';
     private $id_id;
-
     public $basepath = '';
-
-    public $custom_css;
-    public $robots_indexing = 'index,follow';
     public $lastedit;
     public $lastedit_timestamp = 0;
     public $expiredate;
@@ -161,8 +156,7 @@ abstract class Core
             $this->module_id = $this->siteRequest->getModuleKey();
             $this->page_id = $this->siteRequest->getLevel1();
             $this->id_id = $this->siteRequest->getLevel2();
-            $this->custom_css = $moduleData['md_css'];
-            $this->robots_indexing = $moduleData['md_robots'];
+            $this->pageContent->getHead()->setRobotsIndexing($moduleData['md_robots']);
             $this->lastedit = $moduleData['md_timestamp'];
             $this->lastedit_timestamp = strtotime($moduleData['md_timestamp']);
             $this->expiredate = $moduleData['md_expiredate'];

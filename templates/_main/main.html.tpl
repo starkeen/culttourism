@@ -14,7 +14,9 @@
         {foreach from=$pageContent->getHead()->getCustomMetas() key=property item=content}
             <meta property="{$property}" content="{$content|truncate:800:"…"}"/>
         {/foreach}
-        <meta name="robots" content="index, follow"/>
+        {if $pageContent->getHead()->getRobotsIndexing() !== null}
+        <meta name="robots" content="{$pageContent->getHead()->getRobotsIndexing()}"/>
+        {/if}
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta name="revisit-after" content="7 days"/>
         <link rel="stylesheet" href="/css/{$pageContent->getUrlCss()}" type="text/css" media="screen, projection, print"/>

@@ -45,9 +45,9 @@ class Head
     private $customTags = [];
 
     /**
-     * @var bool
+     * @var string
      */
-    private $isEditorMode = false;
+    private $robotsIndexing = 'index,follow';
 
     public function addTitleElement(string $element): void
     {
@@ -165,5 +165,21 @@ class Head
         ksort($this->customTags);
 
         return array_filter($this->customTags);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRobotsIndexing(): ?string
+    {
+        return $this->robotsIndexing;
+    }
+
+    /**
+     * @param string|null $robotsIndexing
+     */
+    public function setRobotsIndexing(?string $robotsIndexing): void
+    {
+        $this->robotsIndexing = $robotsIndexing;
     }
 }
