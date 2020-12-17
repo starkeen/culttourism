@@ -17,7 +17,7 @@ class Page extends Core
         //========================  I N D E X  ================================
         if ($this->siteRequest->getLevel1() === null) {
 
-            $this->addOGMeta(OgType::TYPE(), 'website');
+            $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'website');
 
             $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/map/map.sm.html'));
         } //====================  M A P   E N T R Y  ============================

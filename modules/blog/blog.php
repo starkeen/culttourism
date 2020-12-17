@@ -123,12 +123,12 @@ class Page extends Core
 
         $this->lastedit_timestamp = $entry['last_update'];
 
-        $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $entry['br_canonical']);
-        $this->addOGMeta(OgType::TYPE(), 'article');
-        $this->addOGMeta(OgType::TITLE(), $entry['br_title']);
-        $this->addOGMeta(OgType::DESCRIPTION(), $entry['br_text']);
+        $this->pageContent->getHead()->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $entry['br_canonical']);
+        $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'article');
+        $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $entry['br_title']);
+        $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $entry['br_text']);
         if (!empty($entry['br_picture'])) {
-            $this->addOGMeta(OgType::IMAGE(), $entry['br_picture']);
+            $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $entry['br_picture']);
         }
 
         $this->smarty->assign('entry', $entry);

@@ -41,14 +41,14 @@ class Page extends Core
             $this->pageContent->getHead()->addDescription($list['ls_description']);
             $this->pageContent->getHead()->addKeyword($list['ls_keywords']);
             $this->pageContent->getHead()->addTitleElement($list['ls_title']);
-            $this->addOGMeta(OgType::TITLE(), $list['ls_title']);
-            $this->addOGMeta(OgType::DESCRIPTION(), $list['ls_description']);
+            $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $list['ls_title']);
+            $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $list['ls_description']);
             if (!empty($list['ls_image'])) {
                 $objImage = $this->getAbsoluteURL($list['ls_image']);
-                $this->addOGMeta(OgType::IMAGE(), $objImage);
+                $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
             }
             $this->pageContent->getHead()->setCanonicalUrl('/list/' . $slug . '.html');
-            $this->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
+            $this->pageContent->getHead()->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
 
             $this->lastedit_timestamp = $list['last_update'];
 
@@ -66,7 +66,7 @@ class Page extends Core
     private function prepareIndex(): void
     {
         $this->pageContent->getHead()->setCanonicalUrl('/list/');
-        $this->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
+        $this->pageContent->getHead()->pageContent->getHead()->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
 
         $lst = new MLists($this->db);
 

@@ -527,7 +527,7 @@ class Page extends Core
             $cities[] = $row;
         }
 
-        $this->addOGMeta(OgType::IMAGE(), 'https://culttourism.ru/data/images/pages/map-example-500.png');
+        $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), 'https://culttourism.ru/data/images/pages/map-example-500.png');
 
         $this->smarty->assign('tcity', $cities);
         $this->smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : 0);

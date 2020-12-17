@@ -62,7 +62,6 @@ abstract class Core
     public $pageHeaders;
 
     public $url = '';
-    private $metaTagsCustom = [];
 
     public $module_id = _INDEXPAGE_URI;
     public $md_id; //id of module in database
@@ -112,19 +111,19 @@ abstract class Core
         $md = new MModules($this->db);
         $moduleData = $md->getModuleByURI($this->siteRequest->getModuleKey());
 
-        $this->addOGMeta(OgType::TITLE(), $this->pageContent->getHead()->getTitle());
-        $this->addOGMeta(OgType::DESCRIPTION(), $this->pageContent->getHead()->getDescription());
-        $this->addOGMeta(OgType::SITE_NAME(), $this->globalConfig->getDefaultPageTitle());
-        $this->addOGMeta(OgType::LOCALE(), 'ru_RU');
-        $this->addOGMeta(OgType::TYPE(), 'website');
-        $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $_SERVER['REQUEST_URI']);
-        $this->addOGMeta(OgType::IMAGE(), _SITE_URL . 'img/logo/culttourism-head.jpg');
+        $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $this->pageContent->getHead()->getTitle());
+        $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $this->pageContent->getHead()->getDescription());
+        $this->pageContent->getHead()->addOGMeta(OgType::SITE_NAME(), $this->globalConfig->getDefaultPageTitle());
+        $this->pageContent->getHead()->addOGMeta(OgType::LOCALE(), 'ru_RU');
+        $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'website');
+        $this->pageContent->getHead()->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $_SERVER['REQUEST_URI']);
+        $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), _SITE_URL . 'img/logo/culttourism-head.jpg');
         $this->pageContent->getHead()->addMicroData('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
         if ($moduleData['md_photo_id']) {
             $ph = new MPhotos($this->db);
             $photo = $ph->getItemByPk($moduleData['md_photo_id']);
             $objImage = $this->getAbsoluteURL($photo['ph_src']);
-            $this->addOGMeta(OgType::IMAGE(), $objImage);
+            $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
             $this->pageContent->getHead()->addMicroData('image', $objImage);
         }
 
@@ -145,9 +144,9 @@ abstract class Core
 
             $this->pageContent->getHead()->setCanonicalUrl('/' . $moduleData['md_url'] . '/');
 
-            $this->addOGMeta(OgType::TITLE(), $this->globalConfig->getDefaultPageTitle());
-            $this->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
-            $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
+            $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $this->globalConfig->getDefaultPageTitle());
+            $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
+            $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
 
             if ($moduleData['md_pagecontent'] !== null) {
                 $this->pageContent->setBody($moduleData['md_pagecontent']);
@@ -228,17 +227,6 @@ abstract class Core
             }
             $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.tpl');
         }
-    }
-
-    /**
-     * Добавляет в разметку мета-теги OpenGraph
-     *
-     * @param OgType $ogType
-     * @param string $value
-     */
-    public function addOGMeta(OgType $ogType, string $value): void
-    {
-        $this->pageContent->getHead()->addCustomMeta('og:' . $ogType->getValue(), $value);
     }
 
     public function errorsExceptionsHandler($e): void

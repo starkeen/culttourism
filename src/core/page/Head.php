@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace app\core\page;
 
+use app\constant\OgType;
+
 class Head
 {
     /**
@@ -139,6 +141,17 @@ class Head
         if ($content !== '') {
             $this->customTags[$name] = trim(html_entity_decode(strip_tags($content)));
         }
+    }
+
+    /**
+     * Добавляет в разметку мета-теги OpenGraph
+     *
+     * @param OgType $ogType
+     * @param string $value
+     */
+    public function addOGMeta(OgType $ogType, string $value): void
+    {
+        $this->addCustomMeta('og:' . $ogType->getValue(), $value);
     }
 
     public function getCustomMetas(): array

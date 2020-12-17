@@ -170,20 +170,18 @@ class Page extends Core
         if ($object['tr_sight']) {
             $this->pageContent->getHead()->addDescription('Достопримечательности ' . $city['pc_inwheretext']);
         }
-        if (isset($object['gps_dec'])) {
+        if (!empty($object['pt_latitude']) && !empty($object['pt_longitude'])) {
             $this->pageContent->getHead()->addDescription('GPS-координаты');
-
             $this->pageContent->getHead()->addCustomMeta('place:location:latitude', $object['pt_latitude']);
             $this->pageContent->getHead()->addCustomMeta('place:location:longitude', $object['pt_longitude']);
-
             $this->pageContent->getHead()->addMicroData(
                 'geo',
                 [
                     '@type' => 'GeoCoordinates',
                     'latitude' => $object['pt_latitude'],
                     'longitude' => $object['pt_longitude'],
-                ])
-            ;
+                ]
+            );
         }
         $this->pageContent->getHead()->addDescription("{$object['tp_short']} {$city['pc_inwheretext']}");
         $this->pageContent->getHead()->addDescription($object['esc_name']);
@@ -194,11 +192,11 @@ class Page extends Core
             $this->pageContent->getHead()->addKeyword('координаты GPS');
         }
 
-        $this->addOGMeta(OgType::TYPE(), 'article');
-        $this->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
-        $this->addOGMeta(OgType::TITLE(), $object['esc_name']);
-        $this->addOGMeta(OgType::DESCRIPTION(), $short);
-        $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
+        $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'article');
+        $this->pageContent->getHead()->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
+        $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $object['esc_name']);
+        $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $short);
+        $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
         $objImage = null;
         if ((int) $object['pt_photo_id'] !== 0) {
             $ph = new MPhotos($this->db);
@@ -207,7 +205,7 @@ class Page extends Core
             if (strpos($photo['ph_src'], '/') !== 0) {
                 $objImage = $photo['ph_src'];
             }
-            $this->addOGMeta(OgType::IMAGE(), $objImage);
+            $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
         }
 
         if (!empty($object['pt_description'])) {
@@ -305,14 +303,14 @@ class Page extends Core
                 $this->pageContent->getHead()->addKeyword($row['pc_title_synonym']);
             }
 
-            $this->addOGMeta(OgType::TYPE(), 'article');
-            $this->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
-            $this->addOGMeta(OgType::TITLE(), 'Достопримечательности ' . $row['pc_inwheretext']);
-            $this->addOGMeta(
+            $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'article');
+            $this->pageContent->getHead()->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
+            $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), 'Достопримечательности ' . $row['pc_inwheretext']);
+            $this->pageContent->getHead()->addOGMeta(
                 OgType::DESCRIPTION(),
                 $row['pc_description'] . ($row['pc_announcement'] ? '. ' . $row['pc_announcement'] : '')
             );
-            $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
+            $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
             if ($row['pc_coverphoto_id']) {
                 $ph = new MPhotos($this->db);
                 $photo = $ph->getItemByPk($row['pc_coverphoto_id']);
@@ -320,7 +318,7 @@ class Page extends Core
                         _SITE_URL,
                         '/'
                     ) . $photo['ph_src'] : $photo['ph_src'];
-                $this->addOGMeta(OgType::IMAGE(), $cityImage);
+                $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $cityImage);
             } else {
                 $cityImage = null;
             }
