@@ -202,9 +202,8 @@ abstract class Core
             $this->basepath = _URL_ROOT;
             $this->pageContent->setUrlCss(basename($_css_files[0] ?? '/'));
             $this->pageContent->setUrlJs(basename($_js_files[0] ?? '/'));
-            $this->smarty->assign('page', $this);
+            $this->smarty->assign('user', $this->webUser);
             $this->smarty->assign('pageContent', $this->pageContent);
-            $this->smarty->assign('debug_info', '');
         }
         switch ($errorHttpCode) {
             case self::HTTP_CODE_301: {
