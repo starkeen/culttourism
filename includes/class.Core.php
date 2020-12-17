@@ -101,7 +101,6 @@ abstract class Core
         $this->auth->checkSession('web');
 
         $this->pageContent->getHead()->setTitleDelimiter($this->globalConfig->getTitleDelimiter());
-        $this->pageContent->getHead()->addTitleElement('Культурный туризм');
 
         $this->pageContent->setJsResources($this->globalConfig->getJsResources());
         $this->pageContent->setUrlCss($this->globalConfig->getUrlCss());
