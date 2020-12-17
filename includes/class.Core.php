@@ -69,10 +69,6 @@ abstract class Core
     public $pageHeaders;
 
     public $url = '';
-    public $module_id = _INDEXPAGE_URI;
-    public $md_id; //id of module in database
-    public $page_id = '';
-    private $id_id;
     public $basepath = '';
     public $lastedit;
     public $lastedit_timestamp = 0;
@@ -132,7 +128,6 @@ abstract class Core
             if ($moduleData['md_redirect'] !== null) {
                 $this->processError(self::HTTP_CODE_301, $moduleData['md_redirect']);
             }
-            $this->url = $moduleData['md_url'];
             $this->pageContent->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
             if ($moduleData['md_title']) {
                 $this->pageContent->getHead()->addTitleElement($moduleData['md_title']);
@@ -152,10 +147,7 @@ abstract class Core
             if ($moduleData['md_pagecontent'] !== null) {
                 $this->pageContent->setBody($moduleData['md_pagecontent']);
             }
-            $this->md_id = $moduleData['md_id'];
-            $this->module_id = $this->siteRequest->getModuleKey();
-            $this->page_id = $this->siteRequest->getLevel1();
-            $this->id_id = $this->siteRequest->getLevel2();
+
             $this->pageContent->getHead()->setRobotsIndexing($moduleData['md_robots']);
             $this->lastedit = $moduleData['md_timestamp'];
             $this->lastedit_timestamp = strtotime($moduleData['md_timestamp']);
