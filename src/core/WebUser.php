@@ -50,6 +50,14 @@ class WebUser
     }
 
     /**
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $_SESSION['user_name'] ?? null;
+    }
+
+    /**
      * @return int|string
      */
     public function getHash()

@@ -485,7 +485,7 @@ class Page extends Core
         $this->smarty->assign('addregion', $newcity);
         $this->smarty->assign('already', $already);
         $this->smarty->assign('freeplace', mb_strlen($newcity) >= 5 ? $newcity : null);
-        $this->smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : null);
+        $this->smarty->assign('adminlogined', $this->webUser->getId());
         $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/add.sm.html'));
     }
 
@@ -530,7 +530,7 @@ class Page extends Core
         $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), 'https://culttourism.ru/data/images/pages/map-example-500.png');
 
         $this->smarty->assign('tcity', $cities);
-        $this->smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : 0);
+        $this->smarty->assign('adminlogined', $this->webUser->getId() ?? 0);
 
         if ($this->webUser->isEditor()) {
             $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html'));

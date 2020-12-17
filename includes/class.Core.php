@@ -77,7 +77,6 @@ abstract class Core
 
     public $basepath = '';
 
-    public $user = ['userid' => null];
     public $custom_css;
     public $robots_indexing = 'index,follow';
     public $lastedit;
@@ -167,14 +166,6 @@ abstract class Core
             $this->lastedit = $moduleData['md_timestamp'];
             $this->lastedit_timestamp = strtotime($moduleData['md_timestamp']);
             $this->expiredate = $moduleData['md_expiredate'];
-
-            if (isset($_SESSION['user'])) {
-                $this->user['object'] = $_SESSION['user'];
-            }
-            if (isset($_SESSION['user_name'])) {
-                $this->user['username'] = $_SESSION['user_name'];
-                $this->user['userid'] = $_SESSION['user_id'];
-            }
         }
     }
 

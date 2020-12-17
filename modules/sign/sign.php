@@ -90,8 +90,8 @@ class Page extends Core
     private function getFormLogin()
     {
         if (isset($_SESSION['user_id'])) {
-            $this->smarty->assign('username', $_SESSION['user_name']);
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/sign/authuser.sm.html');
+            $this->smarty->assign('username', $this->webUser->getName());
+            return $this->smarty->fetch(_DIR_TEMPLATES . '/sign/authuser.tpl');
         } else {
             $this->smarty->assign('baseurl', _SITE_URL);
             $this->smarty->assign('authkey', 'ewtheqryb35yqb356y4ery');
