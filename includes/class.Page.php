@@ -157,7 +157,7 @@ class Page extends Core
         $this->pageContent->getHead()->addTitleElement($city['pc_title_unique']);
         $this->pageContent->getHead()->addTitleElement($object['esc_name']);
 
-        $this->addCustomMeta('business:contact_data:locality', $city['pc_title_unique']);
+        $this->pageContent->getHead()->addCustomMeta('business:contact_data:locality', $city['pc_title_unique']);
 
         $this->pageContent->getHead()->addMicroData('@type', 'Place');
         $this->pageContent->getHead()->addMicroData('name', $object['esc_name']);
@@ -173,8 +173,8 @@ class Page extends Core
         if (isset($object['gps_dec'])) {
             $this->pageContent->getHead()->addDescription('GPS-координаты');
 
-            $this->addCustomMeta('place:location:latitude', $object['pt_latitude']);
-            $this->addCustomMeta('place:location:longitude', $object['pt_longitude']);
+            $this->pageContent->getHead()->addCustomMeta('place:location:latitude', $object['pt_latitude']);
+            $this->pageContent->getHead()->addCustomMeta('place:location:longitude', $object['pt_longitude']);
 
             $this->pageContent->getHead()->addMicroData(
                 'geo',
@@ -211,11 +211,11 @@ class Page extends Core
         }
 
         if (!empty($object['pt_description'])) {
-            $this->addCustomMeta('business:contact_data:website', $object['pt_website']);
+            $this->pageContent->getHead()->addCustomMeta('business:contact_data:website', $object['pt_website']);
             $this->pageContent->getHead()->addMicroData('url', $object['pt_website']);
         }
         if (!empty($object['pt_description'])) {
-            $this->addCustomMeta('business:contact_data:phone_number', $object['pt_phone']);
+            $this->pageContent->getHead()->addCustomMeta('business:contact_data:phone_number', $object['pt_phone']);
             $this->pageContent->getHead()->addMicroData('telephone', $object['pt_phone']);
         }
         if (!empty($object['pt_worktime'])) {

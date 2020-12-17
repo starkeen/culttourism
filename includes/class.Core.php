@@ -238,34 +238,7 @@ abstract class Core
      */
     public function addOGMeta(OgType $ogType, string $value): void
     {
-        $this->addCustomMeta('og:' . $ogType->getValue(), $value);
-    }
-
-    /**
-     * Добавление произвольного мета-тега
-     *
-     * @param string $key
-     * @param string|null $value
-     */
-    public function addCustomMeta(string $key, ?string $value): void
-    {
-        $val = trim(html_entity_decode(strip_tags($value)));
-        if (empty($val)) {
-            return;
-        }
-
-        $this->metaTagsCustom[$key] = $val;
-    }
-
-    /**
-     * Получение набора кастомных мета-тегов
-     *
-     * @return array
-     */
-    public function getCustomMetas(): array
-    {
-        ksort($this->metaTagsCustom);
-        return $this->metaTagsCustom;
+        $this->pageContent->getHead()->addCustomMeta('og:' . $ogType->getValue(), $value);
     }
 
     public function errorsExceptionsHandler($e): void

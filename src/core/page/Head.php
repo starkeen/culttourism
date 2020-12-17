@@ -34,9 +34,12 @@ class Head
     /**
      * @var array
      */
-    private $microMarking = [
-        '@context' => 'http://schema.org',
-    ];
+    private $microMarking = [];
+
+    /**
+     * @var array
+     */
+    private $customTags = [];
 
     public function addTitleElement(string $element): void
     {
@@ -125,5 +128,23 @@ class Head
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $name
+     * @param string $content
+     */
+    public function addCustomMeta(string $name, string $content): void
+    {
+        if ($content !== '') {
+            $this->customTags[$name] = trim(html_entity_decode(strip_tags($content)));
+        }
+    }
+
+    public function getCustomMetas(): array
+    {
+        ksort($this->customTags);
+
+        return array_filter($this->customTags);
     }
 }
