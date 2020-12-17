@@ -3,6 +3,7 @@
 use app\constant\OgType;
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\utils\Urls;
 
 class Page extends Core
 {
@@ -201,10 +202,7 @@ class Page extends Core
         if ((int) $object['pt_photo_id'] !== 0) {
             $ph = new MPhotos($this->db);
             $photo = $ph->getItemByPk($object['pt_photo_id']);
-            $objImage = rtrim(_SITE_URL, '/') . $photo['ph_src'];
-            if (strpos($photo['ph_src'], '/') !== 0) {
-                $objImage = $photo['ph_src'];
-            }
+            $objImage = Urls::getAbsoluteURL($photo['ph_src']);
             $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
         }
 
@@ -314,10 +312,7 @@ class Page extends Core
             if ($row['pc_coverphoto_id']) {
                 $ph = new MPhotos($this->db);
                 $photo = $ph->getItemByPk($row['pc_coverphoto_id']);
-                $cityImage = strpos($photo['ph_src'], '/') === 0 ? rtrim(
-                        _SITE_URL,
-                        '/'
-                    ) . $photo['ph_src'] : $photo['ph_src'];
+                $cityImage = Urls::getAbsoluteURL($photo['ph_src']);
                 $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $cityImage);
             } else {
                 $cityImage = null;

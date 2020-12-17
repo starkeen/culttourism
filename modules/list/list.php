@@ -3,6 +3,7 @@
 use app\constant\OgType;
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\utils\Urls;
 
 class Page extends Core
 {
@@ -44,7 +45,7 @@ class Page extends Core
             $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $list['ls_title']);
             $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $list['ls_description']);
             if (!empty($list['ls_image'])) {
-                $objImage = $this->getAbsoluteURL($list['ls_image']);
+                $objImage = Urls::getAbsoluteURL($list['ls_image']);
                 $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
             }
             $this->pageContent->getHead()->setCanonicalUrl('/list/' . $slug . '.html');

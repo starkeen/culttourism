@@ -8,6 +8,7 @@ use app\core\SiteRequest;
 use app\core\WebUser;
 use app\db\MyDB;
 use app\sys\TemplateEngine;
+use app\utils\Urls;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -122,13 +123,13 @@ abstract class Core
         $this->pageContent->getHead()->addOGMeta(OgType::SITE_NAME(), $this->globalConfig->getDefaultPageTitle());
         $this->pageContent->getHead()->addOGMeta(OgType::LOCALE(), 'ru_RU');
         $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'website');
-        $this->pageContent->getHead()->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $_SERVER['REQUEST_URI']);
+        $this->pageContent->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($_SERVER['REQUEST_URI']));
         $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), _SITE_URL . 'img/logo/culttourism-head.jpg');
         $this->pageContent->getHead()->addMicroData('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
         if ($moduleData['md_photo_id']) {
             $ph = new MPhotos($this->db);
             $photo = $ph->getItemByPk($moduleData['md_photo_id']);
-            $objImage = $this->getAbsoluteURL($photo['ph_src']);
+            $objImage = Urls::getAbsoluteURL($photo['ph_src']);
             $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
             $this->pageContent->getHead()->addMicroData('image', $objImage);
         }
@@ -287,19 +288,6 @@ abstract class Core
                 $this->processError(self::HTTP_CODE_301, $redirectUrl);
             }
         }
-    }
-
-    /**
-     * @param string $path
-     *
-     * @return string
-     */
-    public function getAbsoluteURL(string $path): string
-    {
-        return strpos($path, '/') === 0 ? rtrim(
-                _SITE_URL,
-                '/'
-            ) . $path : $path;
     }
 
     /**

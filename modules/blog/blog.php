@@ -2,6 +2,7 @@
 
 use app\constant\MonthName;
 use app\constant\OgType;
+use app\utils\Urls;
 
 class Page extends Core
 {
@@ -123,7 +124,7 @@ class Page extends Core
 
         $this->lastedit_timestamp = $entry['last_update'];
 
-        $this->pageContent->getHead()->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $entry['br_canonical']);
+        $this->pageContent->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($entry['br_canonical']));
         $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'article');
         $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $entry['br_title']);
         $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $entry['br_text']);

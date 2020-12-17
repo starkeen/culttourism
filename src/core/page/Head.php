@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\core\page;
 
 use app\constant\OgType;
+use app\utils\Urls;
 
 class Head
 {
@@ -91,7 +92,7 @@ class Head
      */
     public function getCanonicalUrl(): ?string
     {
-        return $this->canonicalUrl !== null ? rtrim(_SITE_URL, '/') . $this->canonicalUrl : null;
+        return $this->canonicalUrl !== null ? Urls::getAbsoluteURL($this->canonicalUrl) : null;
     }
 
     /**
