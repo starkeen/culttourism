@@ -11,7 +11,7 @@
         <meta property="fb:pages" content="251308854921643" />
         <meta property="fb:admins" content="787133747" />
         <meta property="fb:app_id" content="345000545624253"/>
-        {foreach from=$$pageContent->getHead()->getCustomMetas() key=property item=content}
+        {foreach from=$pageContent->getHead()->getCustomMetas() key=property item=content}
             <meta property="{$property}" content="{$content|truncate:800:"…"}"/>
         {/foreach}
         <meta name="robots" content="index, follow"/>
