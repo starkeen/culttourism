@@ -14,7 +14,7 @@ class Page extends Core
     /**
      * @inheritDoc
      */
-    protected function compileContent(): void
+    public function compileContent(): void
     {
         $id = $this->siteRequest->getLevel2();
         $this->smarty->caching = false;

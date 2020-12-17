@@ -15,7 +15,7 @@ class Page extends Core
     /**
      * @inheritDoc
      */
-    protected function compileContent(): void
+    public function compileContent(): void
     {
         if ($this->siteRequest->getLevel2() !== null) {
             $this->processError(Core::HTTP_CODE_404);

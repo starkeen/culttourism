@@ -43,6 +43,11 @@ class Head
      */
     private $customTags = [];
 
+    /**
+     * @var bool
+     */
+    private $isEditorMode = false;
+
     public function addTitleElement(string $element): void
     {
         $this->titleElements[] = $element;

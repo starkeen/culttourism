@@ -7,4 +7,5 @@ namespace PHPSTORM_META {
     override(\app\core\page\Content::getUrlCss(), map(['' => '@']));
     override(\app\core\page\Head::getMicroDataJSON(), map(['' => '@']));
     override(\app\core\page\Head::getCustomMetas(), map(['' => '@']));
+    override(\app\core\WebUser::isGuest(), map(['' => '@']));
 }

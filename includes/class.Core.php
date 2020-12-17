@@ -5,6 +5,7 @@ use app\core\GlobalConfig;
 use app\core\page\Content;
 use app\core\page\Headers;
 use app\core\SiteRequest;
+use app\core\WebUser;
 use app\db\MyDB;
 use app\sys\TemplateEngine;
 use Psr\Log\LoggerInterface;
@@ -93,7 +94,7 @@ abstract class Core
     /**
      * Инициализация базовых элементов всех страниц
      */
-    private function init(): void
+    public function init(): void
     {
         $this->auth->checkSession('web');
 
@@ -174,7 +175,7 @@ abstract class Core
     /**
      * Определение типа страницы внутри модуля и формирование контента
      */
-    abstract protected function compileContent(): void;
+    abstract public function compileContent(): void;
 
     /**
      * @return bool|null
@@ -208,34 +209,13 @@ abstract class Core
         return session_id();
     }
 
-
-    public function display(): void
-    {
-        $this->init();
-        $this->compileContent();
-
-        if ($this->siteRequest->isAjax()) {
-            echo $this->pageContent->getBody();
-        } else {
-            $this->smarty->assign('page', $this);
-            $this->smarty->assign('pageContent', $this->pageContent);
-            $this->smarty->caching = false;
-            if (_ER_REPORT || isset($_GET['debug'])) {
-                $this->smarty->assign('debug_info', $this->db->getDebugInfoText());
-            } else {
-                $this->smarty->assign('debug_info', '');
-            }
-            $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.tpl');
-        }
-    }
-
     public function errorsExceptionsHandler($e): void
     {
-        $msg = "Error: " . $e->getMessage() . "\n"
+        $msg = 'Error: ' . $e->getMessage() . PHP_EOL
             . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
             . 'URI: ' . ($_SERVER['REQUEST_URI'] ?? 'undefined') . "\n"
-            . "\n__________________________\n\n\n"
-            . 'trace: ' . print_r($e->getTrace(), true) . "\n";
+            . PHP_EOL .  '__________________________' . PHP_EOL . PHP_EOL . PHP_EOL
+            . 'trace: ' . print_r($e->getTrace(), true) . PHP_EOL;
 
         mail('starkeen@gmail.com', 'Error on ' . _URL_ROOT, $msg);
         if (ob_get_length()) {

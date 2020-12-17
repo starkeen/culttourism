@@ -8,7 +8,7 @@ class Page extends Core
     /**
      * @inheritDoc
      */
-    protected function compileContent(): void
+    public function compileContent(): void
     {
         $page_id = $this->siteRequest->getLevel1();
         $id = $this->siteRequest->getLevel2();

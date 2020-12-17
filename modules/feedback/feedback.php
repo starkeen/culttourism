@@ -11,7 +11,7 @@ class Page extends Core
     /**
      * @inheritDoc
      */
-    protected function compileContent(): void
+    public function compileContent(): void
     {
         if ($this->siteRequest->getLevel1() === null) {
             $this->getCommon();

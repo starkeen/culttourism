@@ -8,7 +8,7 @@ class Page extends Core
     /**
      * @inheritDoc
      */
-    protected function compileContent(): void
+    public function compileContent(): void
     {
         if ($this->siteRequest->getLevel1() === 'in') {
             $this->pageContent->setBody($this->getIn());

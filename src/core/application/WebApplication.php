@@ -8,6 +8,8 @@ use app\core\page\Content;
 use app\core\page\Head;
 use app\core\page\Headers;
 use app\core\SiteRequest;
+use app\core\WebUser;
+use app\sys\TemplateEngine;
 use Auth;
 use Page;
 
@@ -28,6 +30,16 @@ class WebApplication extends Application
      */
     private $content;
 
+    /**
+     * @var WebUser
+     */
+    private $user;
+
+    /**
+     * @var TemplateEngine
+     */
+    private $templateEngine;
+
     public function __construct()
     {
         parent::__construct();
@@ -35,6 +47,8 @@ class WebApplication extends Application
         $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
         $this->headers = new Headers();
         $this->content = new Content(new Head());
+        $this->user = new WebUser(new Auth($this->db));
+        $this->templateEngine = new TemplateEngine();
     }
 
     public function init(): void
@@ -67,7 +81,7 @@ class WebApplication extends Application
         $page = Page::getInstance($this->db, $this->request);
         $page->smarty = $this->smarty;
         $page->logger = $this->logger;
-        $page->auth = new Auth($this->db);
+        $page->auth = $this->getUser()->getAuth();
         $page->pageHeaders = $this->headers;
         $page->pageContent = $this->content;
 
@@ -114,8 +128,32 @@ class WebApplication extends Application
         }
 
         $this->headers->flush();
-        $page->display();
+
+        $this->display($page);
 
         exit();
+    }
+
+    /**
+     * @param Page $page
+     */
+    private function display(Page $page): void
+    {
+        $page->init();
+        $page->compileContent();
+
+        if ($this->request->isAjax()) {
+            echo $this->content->getBody();
+        } else {
+            $this->templateEngine->assign('user', $this->getUser());
+            $this->templateEngine->assign('pageContent', $this->content);
+
+            $this->templateEngine->display(_DIR_TEMPLATES . '/_main/main.html.tpl');
+        }
+    }
+
+    private function getUser(): WebUser
+    {
+        return $this->user;
     }
 }

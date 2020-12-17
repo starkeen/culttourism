@@ -36,7 +36,7 @@ class Page extends Core
     /**
      * @inheritDoc
      */
-    protected function compileContent(): void
+    public function compileContent(): void
     {
         if (!$this->pageContent->getBody()) {
             $this->pageContent->setBody($this->getPageByURL($this->siteRequest));
@@ -208,11 +208,11 @@ class Page extends Core
             $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
         }
 
-        if (!empty($object['pt_description'])) {
+        if (!empty($object['pt_website'])) {
             $this->pageContent->getHead()->addCustomMeta('business:contact_data:website', $object['pt_website']);
             $this->pageContent->getHead()->addMicroData('url', $object['pt_website']);
         }
-        if (!empty($object['pt_description'])) {
+        if (!empty($object['pt_phone'])) {
             $this->pageContent->getHead()->addCustomMeta('business:contact_data:phone_number', $object['pt_phone']);
             $this->pageContent->getHead()->addMicroData('telephone', $object['pt_phone']);
         }

@@ -9,7 +9,7 @@ class Page extends Core
     /**
      * @inheritDoc
      */
-    protected function compileContent(): void
+    public function compileContent(): void
     {
         $id = urldecode($this->siteRequest->getLevel2());
         if (strpos($id, '?') !== false) {

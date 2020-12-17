@@ -8,7 +8,7 @@ class Page extends Core
     /**
      * @inheritDoc
      */
-    protected function compileContent(): void
+    public function compileContent(): void
     {
         $bg = new MBlogEntries($this->db);
         $ns = new MNewsItems($this->db);

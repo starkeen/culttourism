@@ -5,8 +5,12 @@ use app\db\MyDB;
 class Auth
 {
     const SECRET_STRING = 'И вновь продолжается бой. И гёл. Если очень захотеть, можно в космос полететь, и на Марсе будут яблони цвести';
-    /** @var MyDB|null */
+
+    /**
+     * @var MyDB
+     */
     private $db;
+
     private $key_lifetime_hours = 2592000; //3600 * 24 * 30;
     public $key;
     private $session;
@@ -54,7 +58,7 @@ class Auth
     /**
      * @return string
      */
-    public function getKey()
+    private function getKey(): string
     {
         if (isset($_COOKIE['apikey'])) {
             $this->key = trim($_COOKIE['apikey']);

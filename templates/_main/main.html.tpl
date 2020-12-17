@@ -31,7 +31,7 @@
                 defer="defer"></script>
         <script type="text/javascript" src="https://yastatic.net/pcode-native/loaders/loader.js" defer="defer"></script>
         <script type="text/javascript" src="/js/{$pageContent->getUrlJs()}" defer="defer"></script>
-        {if $page->getUserId()}
+        {if !$user->isGuest()}
             <script type="text/javascript" src="/addons/ckeditor/ckeditor.js" defer="defer"></script>
             <script type="text/javascript" src="/addons/ckeditor/adapters/jquery.js" defer="defer"></script>
             <script type="text/javascript" src="/addons/jquery.ui/jquery.ui.core.js" defer="defer"></script>
@@ -109,11 +109,7 @@
             </div><!-- #content-->
         </div><!-- #wrapper -->
         <footer id="footer">
-            <div id="footer_conters">
-            </div>
-            <div id="footer_debug">
-                {$debug_info}
-            </div>
+            <div id="footer_conters"></div>
         </footer><!-- #footer -->
         <!-- Запрос на восстановление регистрационной информации -->
     </body>
