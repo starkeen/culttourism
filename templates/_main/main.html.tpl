@@ -39,9 +39,9 @@
             <script type="text/javascript" src="/addons/jquery.ui/jquery.ui.datepicker-ru.js" defer="defer"></script>
             <link rel="stylesheet" href="/addons/jquery.ui/ui-lightness/jquery-ui-1.8.2.custom.css" type="text/css"/>
         {/if}
-        {if !empty($page->getJSONLD())}
+        {if !empty($pageContent->getHead()->getMicroDataJSON())}
             <script type="application/ld+json">
-                        {json_encode($page->getJSONLD())}
+                {$pageContent->getHead()->getMicroDataJSON()}
             </script>
         {/if}
     </head>

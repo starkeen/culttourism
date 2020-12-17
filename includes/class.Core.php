@@ -63,9 +63,7 @@ abstract class Core
 
     public $url = '';
     private $metaTagsCustom = [];
-    private $metaTagsJSONLD = [
-        '@context' => 'http://schema.org',
-    ];
+
     public $module_id = _INDEXPAGE_URI;
     public $md_id; //id of module in database
     public $page_id = '';
@@ -121,13 +119,13 @@ abstract class Core
         $this->addOGMeta(OgType::TYPE(), 'website');
         $this->addOGMeta(OgType::URL(), rtrim(_SITE_URL, '/') . $_SERVER['REQUEST_URI']);
         $this->addOGMeta(OgType::IMAGE(), _SITE_URL . 'img/logo/culttourism-head.jpg');
-        $this->addDataLD('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
+        $this->pageContent->getHead()->addMicroData('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
         if ($moduleData['md_photo_id']) {
             $ph = new MPhotos($this->db);
             $photo = $ph->getItemByPk($moduleData['md_photo_id']);
             $objImage = $this->getAbsoluteURL($photo['ph_src']);
             $this->addOGMeta(OgType::IMAGE(), $objImage);
-            $this->addDataLD('image', $objImage);
+            $this->pageContent->getHead()->addMicroData('image', $objImage);
         }
 
         if (!empty($moduleData)) {
@@ -268,35 +266,6 @@ abstract class Core
     {
         ksort($this->metaTagsCustom);
         return $this->metaTagsCustom;
-    }
-
-    /**
-     * Добавляет данные в набор JSON+LD
-     *
-     * @param string $key
-     * @param string $value
-     */
-    public function addDataLD($key, $value): void
-    {
-        if (is_scalar($value)) {
-            $val = trim(html_entity_decode(strip_tags($value)));
-        } elseif (is_array($value)) {
-            $val = array_filter($value);
-        }
-        if (empty($val)) {
-            return;
-        }
-        $this->metaTagsJSONLD[$key] = $val;
-    }
-
-    /**
-     * Данные для блока ld+json
-     * @return array
-     */
-    public function getJSONLD(): array
-    {
-        ksort($this->metaTagsJSONLD);
-        return !empty($this->metaTagsJSONLD['@type']) ? $this->metaTagsJSONLD : [];
     }
 
     public function errorsExceptionsHandler($e): void

@@ -159,16 +159,13 @@ class Page extends Core
 
         $this->addCustomMeta('business:contact_data:locality', $city['pc_title_unique']);
 
-        $this->addDataLD('@type', 'Place');
-        $this->addDataLD('name', $object['esc_name']);
-        $this->addDataLD('description', $short);
-        $this->addDataLD(
-            'address',
-            [
-                '@type' => 'PostalAddress',
-                'addressLocality' => $city['pc_title_unique'],
-            ]
-        );
+        $this->pageContent->getHead()->addMicroData('@type', 'Place');
+        $this->pageContent->getHead()->addMicroData('name', $object['esc_name']);
+        $this->pageContent->getHead()->addMicroData('description', $short);
+        $this->pageContent->getHead()->addMicroData('address', [
+            '@type' => 'PostalAddress',
+            'addressLocality' => $city['pc_title_unique'],
+        ]);
 
         if ($object['tr_sight']) {
             $this->pageContent->getHead()->addDescription('Достопримечательности ' . $city['pc_inwheretext']);
@@ -179,14 +176,14 @@ class Page extends Core
             $this->addCustomMeta('place:location:latitude', $object['pt_latitude']);
             $this->addCustomMeta('place:location:longitude', $object['pt_longitude']);
 
-            $this->addDataLD(
+            $this->pageContent->getHead()->addMicroData(
                 'geo',
                 [
                     '@type' => 'GeoCoordinates',
                     'latitude' => $object['pt_latitude'],
                     'longitude' => $object['pt_longitude'],
-                ]
-            );
+                ])
+            ;
         }
         $this->pageContent->getHead()->addDescription("{$object['tp_short']} {$city['pc_inwheretext']}");
         $this->pageContent->getHead()->addDescription($object['esc_name']);
@@ -215,14 +212,14 @@ class Page extends Core
 
         if (!empty($object['pt_description'])) {
             $this->addCustomMeta('business:contact_data:website', $object['pt_website']);
-            $this->addDataLD('url', $object['pt_website']);
+            $this->pageContent->getHead()->addMicroData('url', $object['pt_website']);
         }
         if (!empty($object['pt_description'])) {
             $this->addCustomMeta('business:contact_data:phone_number', $object['pt_phone']);
-            $this->addDataLD('telephone', $object['pt_phone']);
+            $this->pageContent->getHead()->addMicroData('telephone', $object['pt_phone']);
         }
         if (!empty($object['pt_worktime'])) {
-            $this->addDataLD('openingHours', $object['pt_worktime']);
+            $this->pageContent->getHead()->addMicroData('openingHours', $object['pt_worktime']);
         }
 
         $this->pageContent->setCustomJsModule('point');

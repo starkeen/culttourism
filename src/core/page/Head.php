@@ -31,6 +31,13 @@ class Head
      */
     private $canonicalUrl;
 
+    /**
+     * @var array
+     */
+    private $microMarking = [
+        '@context' => 'http://schema.org',
+    ];
+
     public function addTitleElement(string $element): void
     {
         $this->titleElements[] = $element;
@@ -83,5 +90,40 @@ class Head
     public function setCanonicalUrl(string $canonicalUrl): void
     {
         $this->canonicalUrl = $canonicalUrl;
+    }
+
+    /**
+     * Добавляет данные в набор JSON+LD
+     *
+     * @param string $key
+     * @param string|array $value
+     */
+    public function addMicroData(string $key, $value): void
+    {
+        if (is_scalar($value)) {
+            $val = trim(html_entity_decode(strip_tags($value)));
+        } elseif (is_array($value)) {
+            $val = array_filter($value);
+        }
+        if (!empty($val)) {
+            $this->microMarking[$key] = $val;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getMicroDataJSON(): ?string
+    {
+        $result = null;
+
+        if (!empty($this->microMarking['@type'])) {
+            $data = $this->microMarking;
+            $data['@context'] = 'http://schema.org';
+            ksort($data);
+            $result = json_encode($data);
+        }
+
+        return $result;
     }
 }
