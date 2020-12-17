@@ -57,6 +57,8 @@ class Page extends Core
         if ($url !== '') {
             $this->checkRedirect($url);
 
+            $this->pageContent->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
+
             $regs = [];
             $url_parts_array = !empty($url) ? explode('/', $url) : [];
             $urlParts = array_pop($url_parts_array);
@@ -70,7 +72,7 @@ class Page extends Core
                 $this->pageHeaders->add('Location: ' . $url);
                 $this->pageHeaders->flush();
                 exit();
-            } elseif (preg_match('/object([0-9]+)\.html/i', $urlParts, $regs)) {
+            } elseif (preg_match('/object(\d+)\.html/i', $urlParts, $regs)) {
                 $this->showPageObject((int) $regs[1]);
             } elseif (preg_match('/([a-z0-9_-]+)\.html/i', $urlParts, $regs)) {
                 return $this->getPageObjectBySlug($regs[1]);
@@ -78,7 +80,7 @@ class Page extends Core
                 return $this->getPageCity($url);
             }
         } else {
-            return false;
+            throw new RuntimeException('Ошибка в роутинге городов и объектов');
         }
     }
 
@@ -124,7 +126,7 @@ class Page extends Core
             'utf-8'
         ) : $shortDescr;
         $object['esc_name'] = htmlentities($object['pt_name'], ENT_QUOTES, 'utf-8');
-        $object['map_zoom'] = ($object['pt_latlon_zoom']) ? $object['pt_latlon_zoom'] : 14;
+        $object['map_zoom'] = $object['pt_latlon_zoom'] ?: 14;
         if ($object['pt_latitude'] && $object['pt_longitude']) {
             $object_lat_short = mb_substr($object['pt_latitude'], 0, 8);
             $object_lon_short = mb_substr($object['pt_longitude'], 0, 8);
@@ -238,7 +240,7 @@ class Page extends Core
      *
      * @return string
      */
-    private function getPageCity($url): string
+    private function getPageCity(string $url): string
     {
         $urlParts = explode('/', $url);
         $urlFiltered = array_map(
@@ -299,7 +301,7 @@ class Page extends Core
             $this->pageContent->getHead()->addKeyword('достопримечательности ' . $row['pc_inwheretext']);
             $this->pageContent->getHead()->addKeyword('Координаты GPS');
             $this->pageContent->getHead()->addKeyword($row['pc_title_translit']);
-            if ($row['pc_title_english'] && $row['pc_title_english'] != $row['pc_title_translit']) {
+            if ($row['pc_title_english'] && $row['pc_title_english'] !== $row['pc_title_translit']) {
                 $this->pageContent->getHead()->addKeyword($row['pc_title_english']);
             }
             if ($row['pc_title_synonym']) {
@@ -349,7 +351,7 @@ class Page extends Core
     /**
      * @param int $id
      */
-    private function showPageObject($id): void
+    private function showPageObject(int $id): void
     {
         if (!$id) {
             $this->processError(Core::HTTP_CODE_404);
@@ -367,17 +369,8 @@ class Page extends Core
         $ua = $_SERVER['HTTP_USER_AGENT'] ?? 'ua-undefined';
         $referer = $_SERVER['HTTP_REFERER'] ?? 'referer-undefined';
 
-        $skip = false;
-        foreach (self::BOT_MARKERS as $marker) {
-            if (stripos($ua, $marker) !== false) {
-                $skip = true;
-            }
-        }
-
-        if (true || !$skip) {
-            $logEntry = date('Y-m-d H:i:s') . "\t" . $referer . "\t" . $ua . "\n";
-            file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX);
-        }
+        $logEntry = date('Y-m-d H:i:s') . "\t" . $referer . "\t" . $ua . "\n";
+        file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX);
 
         $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
         $this->pageHeaders->add('Location: ' . $object['url_canonical']);
@@ -388,7 +381,7 @@ class Page extends Core
     /**
      * @param string $url
      */
-    private function showPageMap($url): void
+    private function showPageMap(string $url): void
     {
         $pc = new MPageCities($this->db);
         $city = $pc->getCityByUrl(str_replace('/map.html', '', $url));
