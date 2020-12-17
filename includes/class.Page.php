@@ -152,7 +152,7 @@ class Page extends Core
 
         //------------------  s t a t i s t i c s  ------------------------
         $sp = new MStatpoints($this->db);
-        $sp->add($object['pt_id'], $this->getUserHash());
+        $sp->add($object['pt_id'], $this->webUser->getHash());
 
         $this->pageContent->getHead()->addTitleElement($city['pc_title_unique']);
         $this->pageContent->getHead()->addTitleElement($object['esc_name']);
@@ -270,19 +270,19 @@ class Page extends Core
                 exit();
             }
 
-            $points_data = $pts->getPointsByCity($row['pc_id'], $this->checkEdit());
+            $points_data = $pts->getPointsByCity($row['pc_id'], $this->webUser->isEditor());
 
             if ($points_data['last_update'] > $this->lastedit_timestamp) {
                 $this->lastedit_timestamp = $points_data['last_update'];
             }
-            if ($this->checkEdit()) {
+            if ($this->webUser->isEditor()) {
                 $this->lastedit_timestamp = 0;
             }
 
             $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
 
             $sc = new MStatcity($this->db);
-            $sc->add($row['pc_id'], $this->getUserHash());
+            $sc->add($row['pc_id'], $this->webUser->getHash());
 
             $this->pageContent->getHead()->addTitleElement($row['pc_title_unique'] . ': достопримечательности');
             $this->pageContent->getHead()->addDescription($row['pc_title_unique'] . ' - что посмотреть');
@@ -333,7 +333,7 @@ class Page extends Core
             $this->smarty->assign('ptypes', []);
             $this->pageContent->setCustomJsModule('city');
 
-            if ($this->checkEdit()) {
+            if ($this->webUser->isEditor()) {
                 return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.edit.sm.html');
             } else {
                 return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.show.sm.html');

@@ -102,7 +102,7 @@ class Page extends Core
         if ($cid !== $nid) {
             $this->processError(Core::HTTP_CODE_404);
         }
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         $out = $pp->updateByPk(
@@ -129,7 +129,7 @@ class Page extends Core
 
     private function setFormPointAddr($pid): bool
     {
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         $p = new MPagePoints($this->db);
@@ -143,7 +143,7 @@ class Page extends Core
 
     private function setFormPointBest($pid): bool
     {
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         $state = cut_trash_int(!empty($_POST['nstate']) && $_POST['nstate'] === 'checked');
@@ -153,7 +153,7 @@ class Page extends Core
 
     private function setFormPointGPS($pid)
     {
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
 
@@ -215,7 +215,7 @@ class Page extends Core
 
     private function getChangeTypeForm()
     {
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         $point_id = cut_trash_int($_GET['pid']);
@@ -238,7 +238,7 @@ class Page extends Core
 
     private function setPointType($pid)
     {
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         $ppid = (int) $_POST['pid'];
@@ -262,7 +262,7 @@ class Page extends Core
 
     private function getPointNew($id)
     {
-        if ($this->checkEdit()) {
+        if ($this->webUser->isEditor()) {
             if ($id) {
                 $pc = new MPageCities($this->db);
                 $city = $pc->getItemByPk($id);
@@ -282,7 +282,7 @@ class Page extends Core
         if (!$pid) {
             $this->processError(Core::HTTP_CODE_404);
         }
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         $ppid = (int) $_POST['pid'];
@@ -306,7 +306,7 @@ class Page extends Core
         if (!$cid) {
             $this->processError(Core::HTTP_CODE_404);
         }
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         $pts = new MPagePoints($this->db);
@@ -338,7 +338,7 @@ class Page extends Core
         if ($id != $nid) {
             $this->processError(Core::HTTP_CODE_404);
         }
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         $pp = new MPagePoints($this->db);
@@ -367,7 +367,7 @@ class Page extends Core
         if ($id != $nid) {
             $this->processError(Core::HTTP_CODE_404);
         }
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         $pp = new MPagePoints($this->db);
@@ -404,11 +404,11 @@ class Page extends Core
         $object['gps_dec'] = '';
 
         $sp = new MStatpoints($this->db);
-        $sp->add($object['pt_id'], $this->getUserHash());
+        $sp->add($object['pt_id'], $this->webUser->getHash());
 
         $this->smarty->assign('object', $object);
 
-        if ($this->checkEdit()) {
+        if ($this->webUser->isEditor()) {
             return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
         } else {
             return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
@@ -431,11 +431,11 @@ class Page extends Core
         $object['page_link'] = $object['url_canonical'];
 
         $sp = new MStatpoints($this->db);
-        $sp->add($object['pt_id'], $this->getUserHash());
+        $sp->add($object['pt_id'], $this->webUser->getHash());
 
         $this->smarty->assign('object', $object);
 
-        if ($this->checkEdit()) {
+        if ($this->webUser->isEditor()) {
             return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
         } else {
             return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
@@ -445,7 +445,7 @@ class Page extends Core
 //-------------------------------------------------------------- CITY ----------
     private function setFormCityGPS($cid): ?bool
     {
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         $pc = new MPageCities($this->db);
@@ -495,7 +495,7 @@ class Page extends Core
         if ($id != $nid) {
             $this->processError(Core::HTTP_CODE_404);
         }
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         $pc = new MPageCities($this->db);
@@ -523,7 +523,7 @@ class Page extends Core
         if ($id != $nid) {
             $this->processError(Core::HTTP_CODE_404);
         }
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
 

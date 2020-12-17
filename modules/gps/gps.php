@@ -68,7 +68,7 @@ class Page extends Core
                     $export_type = '';
                 }
 
-                $hash = $this->getUserHash();
+                $hash = $this->webUser->getHash();
                 $this->db->sql = "INSERT INTO $dbse (se_citypage_id, se_points, se_type, se_userhash, se_date) VALUES ";
                 $sql_pnts = [];
                 foreach ($list_points as $pnt_id) {

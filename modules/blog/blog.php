@@ -52,7 +52,7 @@ class Page extends Core
     {
         $dbb = $this->db->getTableName('blogentries');
         $dbu = $this->db->getTableName('users');
-        $show_full_admin = $this->checkEdit();
+        $show_full_admin = $this->webUser->isEditor();
         $show_full_sql = '';
         if (!$show_full_admin) {
             $show_full_sql = "HAVING br_showed = 1\n";
@@ -277,7 +277,7 @@ class Page extends Core
 
     private function deleteBlogEntry($bid)
     {
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             return false;
         }
         $brid = cut_trash_int($_POST['brid']);
@@ -290,7 +290,7 @@ class Page extends Core
 
     private function getFormBlog($br_id = null)
     {
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->webUser->isEditor()) {
             return false;
         }
         if ($br_id) {
@@ -323,7 +323,7 @@ class Page extends Core
 
     private function saveFormBlog()
     {
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             return false;
         }
 

@@ -153,7 +153,7 @@ class Page extends Core
         $sc = new MSearchCache($this->db);
         $sc->add(
             [
-                'sc_session' => $this->getUserHash(),
+                'sc_session' => $this->webUser->getHash(),
                 'sc_query' => $query,
                 'sc_sr_id' => null,
             ]
@@ -201,8 +201,7 @@ class Page extends Core
                 }
 
                 $this->db->sql = "INSERT INTO $dbsc SET
-                            sc_date = now(), sc_session = '" . $this->getUserHash(
-                    ) . "', sc_query = '$q', sc_sr_id = null";
+                            sc_date = now(), sc_session = '" . $this->webUser->getHash() . "', sc_query = '$q', sc_sr_id = null";
                 $this->db->exec();
 
                 $this->db->sql = "SELECT c.pc_id, c.pc_title, u.url, c.pc_text, c.pc_rank, 100 AS weight

@@ -48,4 +48,25 @@ class WebUser
 
         return null;
     }
+
+    /**
+     * @return int|string
+     */
+    public function getHash()
+    {
+        if (isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0) {
+            return (int) $_SESSION['user_id'];
+        }
+
+        return session_id();
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function isEditor(): ?bool
+    {
+        //проверяет возможность редактирования
+        return isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0;
+    }
 }

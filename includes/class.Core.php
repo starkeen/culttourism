@@ -182,26 +182,6 @@ abstract class Core
      */
     abstract public function compileContent(): void;
 
-    /**
-     * @return bool|null
-     */
-    public function checkEdit(): ?bool
-    {
-        //проверяет возможность редактирования
-        return isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0;
-    }
-
-    /**
-     * @return int|string
-     */
-    public function getUserHash() {
-        if (isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0) {
-            return (int) $_SESSION['user_id'];
-        }
-
-        return session_id();
-    }
-
     public function errorsExceptionsHandler($e): void
     {
         $msg = 'Error: ' . $e->getMessage() . PHP_EOL

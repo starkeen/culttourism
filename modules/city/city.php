@@ -149,7 +149,7 @@ class Page extends Core
         $pc = new MPageCities($this->db);
 
         if (isset($_POST['act'])) {
-            if (!$this->checkEdit()) {
+            if (!$this->webUser->isEditor()) {
                 $this->processError(Core::HTTP_CODE_403);
             }
             $uid = $this->webUser->getId();
@@ -259,7 +259,7 @@ class Page extends Core
     //**************************************** РЕДАКТИРОВАНИЕ ******************
     private function detailCity(): void
     {
-        if (!$this->checkEdit()) {
+        if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         if (!isset($_GET['city_id'])) {
@@ -497,7 +497,7 @@ class Page extends Core
         $dbrc = $this->db->getTableName('ref_country');
         $dbrr = $this->db->getTableName('ref_region');
         $dbws = $this->db->getTableName('wordstat');
-        $where = (!$this->checkEdit()) ? "WHERE city.pc_text is not null" : '';
+        $where = (!$this->webUser->isEditor()) ? "WHERE city.pc_text is not null" : '';
         $this->db->sql = "SELECT city.pc_id, city.pc_title, city.pc_latitude, city.pc_longitude,
                             city.pc_city_id, city.pc_region_id, city.pc_country_id,
                             url.url,
@@ -532,7 +532,7 @@ class Page extends Core
         $this->smarty->assign('tcity', $cities);
         $this->smarty->assign('adminlogined', isset($this->user['userid']) ? $this->user['userid'] : 0);
 
-        if ($this->checkEdit()) {
+        if ($this->webUser->isEditor()) {
             $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html'));
         } else {
             $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html'));
