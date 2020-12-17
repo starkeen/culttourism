@@ -146,6 +146,8 @@ abstract class Core
             $this->pageContent->getHead()->addDescription($this->globalConfig->getDefaultPageDescription());
             $this->pageContent->getHead()->addDescription($moduleData['md_description']);
 
+            $this->pageContent->getHead()->setCanonicalUrl('/' . $moduleData['md_url'] . '/');
+
             $this->addOGMeta(OgType::TITLE(), $this->globalConfig->getDefaultPageTitle());
             $this->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
             $this->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
