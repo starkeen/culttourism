@@ -43,6 +43,11 @@ abstract class Core
     public $auth;
 
     /**
+     * @var WebUser
+     */
+    public $webUser;
+
+    /**
      * @var LoggerInterface
      */
     public $logger;
@@ -184,18 +189,6 @@ abstract class Core
     {
         //проверяет возможность редактирования
         return isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getUserId(): ?int
-    {
-        if (isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0) {
-            return (int) $_SESSION['user_id'];
-        }
-
-        return null;
     }
 
     /**

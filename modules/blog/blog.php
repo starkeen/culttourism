@@ -337,7 +337,7 @@ class Page extends Core
                     'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
                     'br_active' => $_POST['nact'] === 'true' ? 1 : 0,
                     'br_url' => $_POST['nurl'],
-                    'br_us_id' => $this->getUserId(),
+                    'br_us_id' => $this->webUser->getId(),
                 ]
             );
         } elseif ($_POST['brid'] > 0) {

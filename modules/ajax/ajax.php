@@ -108,7 +108,7 @@ class Page extends Core
         $out = $pp->updateByPk(
             $cid,
             [
-                'pt_lastup_user' => $this->getUserId(),
+                'pt_lastup_user' => $this->webUser->getId(),
                 'pt_lastup_date' => $pp->now(),
                 'pt_website' => $_POST['nwebsite'],
                 'pt_email' => $_POST['nemail'],
@@ -346,7 +346,7 @@ class Page extends Core
             $nid,
             [
                 'pt_name' => $_POST['nname'],
-                'pt_lastup_user' => $this->getUserId(),
+                'pt_lastup_user' => $this->webUser->getId(),
             ]
         );
         if ($state) {
@@ -375,7 +375,7 @@ class Page extends Core
             $nid,
             [
                 'pt_description' => $_POST['ndesc'],
-                'pt_lastup_user' => $this->getUserId(),
+                'pt_lastup_user' => $this->webUser->getId(),
             ]
         );
         if ($state) {

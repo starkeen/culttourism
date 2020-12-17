@@ -152,7 +152,7 @@ class Page extends Core
             if (!$this->checkEdit()) {
                 $this->processError(Core::HTTP_CODE_403);
             }
-            $uid = $this->getUserId();
+            $uid = $this->webUser->getId();
             switch ($_POST['act']) {
                 case 'add':
                     $cf_id = (int) $_POST['cf'];
@@ -295,7 +295,7 @@ class Page extends Core
                     'pc_title_translit' => $_POST['translit'],
                     'pc_website' => $_POST['web'],
                     'pc_coverphoto_id' => (int) $_POST['photo_id'],
-                    'pc_lastup_user' => $this->getUserId(),
+                    'pc_lastup_user' => $this->webUser->getId(),
                 ]
             );
             $city = $pc->getItemByPk($city_id);
@@ -351,7 +351,7 @@ class Page extends Core
 
         $this->lastedit_timestamp = $citypage['last_update'];
 
-        $this->smarty->assign('adminlogined', isset($this->user['userid']) ? $this->getUserId() : 0);
+        $this->smarty->assign('adminlogined', $this->webUser->getId() ?: 0);
         $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/details.sm.html'));
     }
 
@@ -378,7 +378,7 @@ class Page extends Core
                     'pc_title_translit' => translit($_POST['city_name']),
                     'pc_title_english' => translit($_POST['city_name']),
                     'pc_inwheretext' => $_POST['city_name'],
-                    'pc_add_user' => $this->getUserId(),
+                    'pc_add_user' => $this->webUser->getId(),
                 ]
             );
             if ($cid > 0) {

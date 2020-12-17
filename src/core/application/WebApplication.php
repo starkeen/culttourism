@@ -82,6 +82,7 @@ class WebApplication extends Application
         $page->smarty = $this->smarty;
         $page->logger = $this->logger;
         $page->auth = $this->getUser()->getAuth();
+        $page->webUser = $this->getUser();
         $page->pageHeaders = $this->headers;
         $page->pageContent = $this->content;
 
