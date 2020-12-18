@@ -2,6 +2,7 @@
 
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\NotFoundException;
 use app\includes\ReCaptcha;
 use app\utils\MyKCaptcha;
 use GuzzleHttp\Client;
@@ -20,7 +21,7 @@ class Page extends Core
         } elseif ($this->siteRequest->getLevel1() === 'newpoint') {
             $this->getAdd();
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 

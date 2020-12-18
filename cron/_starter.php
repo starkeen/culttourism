@@ -14,7 +14,7 @@ $app->run();
 $logger = $app->getLogger();
 
 $db = $app->getDb();
-$smarty = $app->getSmarty();
+$smarty = $app->getTemplateEngine();
 $sp = new MSysProperties($db);
 $cr = new MCron($db);
 

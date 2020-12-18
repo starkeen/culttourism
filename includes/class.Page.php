@@ -3,6 +3,7 @@
 use app\constant\OgType;
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\NotFoundException;
 use app\utils\Urls;
 
 class Page extends Core
@@ -17,6 +18,7 @@ class Page extends Core
 
     /**
      * @inheritDoc
+     * @throws NotFoundException
      */
     public function compileContent(): void
     {
@@ -24,7 +26,7 @@ class Page extends Core
             $this->pageContent->setBody($this->getPageByURL($this->siteRequest));
         }
         if (!$this->pageContent->getBody()) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 
@@ -32,6 +34,7 @@ class Page extends Core
      * @param SiteRequest $request
      *
      * @return bool|string|void
+     * @throws NotFoundException
      */
     public function getPageByURL(SiteRequest $request)
     {
@@ -55,7 +58,7 @@ class Page extends Core
                 $this->pageHeaders->flush();
                 exit();
             } elseif (preg_match('/object(\d+)\.html/i', $urlParts, $regs)) {
-                $this->processError(Core::HTTP_CODE_404);
+                throw new NotFoundException();
             } elseif (preg_match('/([a-z0-9_-]+)\.html/i', $urlParts, $regs)) {
                 return $this->getPageObjectBySlug($regs[1]);
             } else {
@@ -213,6 +216,7 @@ class Page extends Core
      * @param string $url
      *
      * @return string
+     * @throws NotFoundException
      */
     private function getPageCity(string $url): string
     {
@@ -315,7 +319,7 @@ class Page extends Core
                 return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.show.sm.html');
             }
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 

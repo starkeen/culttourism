@@ -2,6 +2,7 @@
 
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\NotFoundException;
 use models\MLinks;
 
 class Page extends Core
@@ -13,6 +14,7 @@ class Page extends Core
 
     /**
      * @inheritDoc
+     * @throws NotFoundException
      */
     public function compileContent(): void
     {
@@ -31,7 +33,7 @@ class Page extends Core
             if ($id == '' && isset($_GET['id']) && (int) $_GET['id']) {
                 $this->pageContent->setBody($this->getPoint((int) $_GET['id']));
             } elseif ($id === 's' && isset($_GET['id'])) {
-                $this->pageContent->setBody($this->getPointBySlugline(str_replace('.html', '', $_GET['id'])));
+                $this->pageContent->setBody($this->getPointBySlugLine(str_replace('.html', '', $_GET['id'])));
             } elseif ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
                 $this->pageContent->setBody($this->savePointTitle((int) $_GET['id']));
             } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
@@ -58,7 +60,7 @@ class Page extends Core
             if ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
                 $this->pageContent->setBody($this->saveCityTitle((int) $_GET['id']));
             } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
-                $this->pageContent->setBody($this->saveCityDescr((int) $_GET['id']));
+                $this->pageContent->setBody($this->saveCityDescription((int) $_GET['id']));
             } elseif ($id === 'getformGPS' && isset($_GET['cid']) && (int) $_GET['cid']) {
                 $this->pageContent->setBody($this->getFormCityGPS((int) $_GET['cid']));
             } elseif ($id === 'saveformGPS') {
@@ -75,10 +77,10 @@ class Page extends Core
             if ($id === 'gps') {
                 $this->pageContent->setBody($this->getTextPage(31));
             } else {
-                $this->processError(Core::HTTP_CODE_404);
+                throw new NotFoundException();
             }
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 
@@ -90,17 +92,22 @@ class Page extends Core
         return '<h3>Экспорт данных GPS</h3>' . $md['md_pagecontent'];
     }
 
-//-------------------------------------------------------------- POINTS ----------
+    /**
+     * -------------------------------------------------------------- POINTS ----------
+     * @param int $cid
+     * @return bool|null
+     * @throws NotFoundException
+     */
     private function savePointContacts(int $cid): ?bool
     {
         if ($cid === 0) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         $pp = new MPagePoints($this->db);
 
         $nid = (int) $_POST['cid'];
         if ($cid !== $nid) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
@@ -277,10 +284,15 @@ class Page extends Core
         }
     }
 
+    /**
+     * @param $pid
+     * @return false|int
+     * @throws NotFoundException
+     */
     private function deletePoint($pid)
     {
         if (!$pid) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
@@ -301,10 +313,15 @@ class Page extends Core
         }
     }
 
+    /**
+     * @param $cid
+     * @return int
+     * @throws NotFoundException
+     */
     private function savePointNew($cid): int
     {
         if (!$cid) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
@@ -329,14 +346,19 @@ class Page extends Core
         return $pts->insert($add_item);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     * @throws NotFoundException
+     */
     private function savePointTitle($id)
     {
         if (!$id) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         $nid = (int) $_POST['id'];
         if ($id != $nid) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
@@ -354,18 +376,23 @@ class Page extends Core
             $point = $pp->getItemByPk($nid);
             return $point['pt_name'];
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     * @throws NotFoundException
+     */
     private function savePointDescr($id)
     {
         if (!$id) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         $nid = (int) $_POST['id'];
         if ($id != $nid) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
@@ -383,14 +410,19 @@ class Page extends Core
             $point = $pp->getItemByPk($nid);
             return $point['pt_description'];
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 
+    /**
+     * @param $id
+     * @return false|string
+     * @throws NotFoundException
+     */
     private function getPoint($id)
     {
         if (!$id) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
 
         $pts = new MPagePoints($this->db);
@@ -415,14 +447,19 @@ class Page extends Core
         }
     }
 
-    private function getPointBySlugline($slugline)
+    /**
+     * @param $slugLine
+     * @return false|string
+     * @throws NotFoundException
+     */
+    private function getPointBySlugLine($slugLine)
     {
-        if (!$slugline) {
-            $this->processError(Core::HTTP_CODE_404);
+        if (!$slugLine) {
+            throw new NotFoundException();
         }
 
         $pts = new MPagePoints($this->db);
-        $objects = $pts->searchSlugline($slugline);
+        $objects = $pts->searchSlugline($slugLine);
         $object = $objects[0] ?? false;
         if (!$object) {
             return false;
@@ -486,14 +523,19 @@ class Page extends Core
         return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/citylatlon.form.sm.html');
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     * @throws NotFoundException
+     */
     private function saveCityTitle($id)
     {
         if (!$id) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         $nid = (int) $_POST['id'];
         if ($id != $nid) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
@@ -510,18 +552,23 @@ class Page extends Core
             $city = $pc->getItemByPk($nid);
             return $city['pc_title'];
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 
-    private function saveCityDescr($id)
+    /**
+     * @param $id
+     * @return mixed
+     * @throws NotFoundException
+     */
+    private function saveCityDescription($id)
     {
         if (!$id) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         $nid = (int) $_POST['id'];
         if ($id != $nid) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
@@ -539,7 +586,7 @@ class Page extends Core
             $city = $pc->getItemByPk($nid);
             return $city['pc_text'];
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 

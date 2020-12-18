@@ -3,16 +3,18 @@
 use app\api\yandex_search\Factory;
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\NotFoundException;
 
 class Page extends Core
 {
     /**
      * @inheritDoc
+     * @throws NotFoundException
      */
     public function compileContent(): void
     {
         if ($this->siteRequest->getLevel2() !== null) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         if ($this->siteRequest->getLevel1() === 'suggest' && isset($_GET['query'])) {
             $this->getSuggests();

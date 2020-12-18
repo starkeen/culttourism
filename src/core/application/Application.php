@@ -26,7 +26,7 @@ abstract class Application
     /**
      * @var TemplateEngine
      */
-    protected $smarty;
+    protected $templateEngine;
 
     public function __construct()
     {
@@ -37,7 +37,7 @@ abstract class Application
         $sentryLogger = new SentryLogger(SENTRY_DSN);
         $this->logger = new Logger($sentryLogger);
 
-        $this->smarty = new TemplateEngine();
+        $this->templateEngine = new TemplateEngine();
     }
 
     public function init(): void
@@ -71,8 +71,8 @@ abstract class Application
      * @deprecated
      * @return TemplateEngine
      */
-    public function getSmarty(): TemplateEngine
+    public function getTemplateEngine(): TemplateEngine
     {
-        return $this->smarty;
+        return $this->templateEngine;
     }
 }

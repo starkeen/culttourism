@@ -2,11 +2,13 @@
 
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\NotFoundException;
 
 class Page extends Core
 {
     /**
      * @inheritDoc
+     * @throws NotFoundException
      */
     public function compileContent(): void
     {
@@ -37,7 +39,7 @@ class Page extends Core
             exit();
         } //==========================  E X I T  ================================
         else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 

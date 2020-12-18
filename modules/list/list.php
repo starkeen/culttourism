@@ -3,6 +3,7 @@
 use app\constant\OgType;
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\NotFoundException;
 use app\utils\Urls;
 
 class Page extends Core
@@ -33,6 +34,10 @@ class Page extends Core
         }
     }
 
+    /**
+     * @param string $slug
+     * @throws NotFoundException
+     */
     private function prepareListBySlug(string $slug): void
     {
         $lst = new MLists($this->db);
@@ -60,7 +65,7 @@ class Page extends Core
 
             $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/list/list.sm.html'));
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 

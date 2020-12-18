@@ -2,6 +2,7 @@
 
 use app\constant\MonthName;
 use app\constant\OgType;
+use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 use app\utils\Urls;
 
@@ -10,6 +11,7 @@ class Page extends Core
     /**
      * @inheritDoc
      * @throws RedirectException
+     * @throws NotFoundException
      */
     public function compileContent(): void
     {
@@ -47,7 +49,7 @@ class Page extends Core
                 )
             );
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 
@@ -97,6 +99,7 @@ class Page extends Core
      * @param int    $year
      * @param int    $month
      * @return string
+     * @throws NotFoundException
      */
     private function getOneEntry(string $id, int $year, int $month): string
     {
@@ -111,10 +114,10 @@ class Page extends Core
         } elseif ($bid = $this->checkURL($id)) {
             $entry = $this->getEntryByID($bid);
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         if (empty($entry['br_title'])) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         $this->pageContent->getHead()->addTitleElement($entry['br_title']);
         $this->pageContent->getHead()->addDescription($entry['br_title']);
@@ -229,6 +232,12 @@ class Page extends Core
         }
     }
 
+    /**
+     * @param $y
+     * @param $m
+     * @param $d
+     * @return false|int
+     */
     private function checkDate($y, $m, $d)
     {
         $dbb = $this->db->getTableName('blogentries');
@@ -250,6 +259,10 @@ class Page extends Core
         }
     }
 
+    /**
+     * @param $id
+     * @return false|mixed|null
+     */
     private function getEntryByID($id)
     {
         $dbb = $this->db->getTableName('blogentries');
@@ -278,6 +291,10 @@ class Page extends Core
         return $out;
     }
 
+    /**
+     * @param $bid
+     * @return false|PDOStatement
+     */
     private function deleteBlogEntry($bid)
     {
         if (!$this->webUser->isEditor()) {
@@ -291,6 +308,11 @@ class Page extends Core
         return $bg->deleteByPk($brid);
     }
 
+    /**
+     * @param null $br_id
+     * @return false|string
+     * @throws SmartyException
+     */
     private function getFormBlog($br_id = null)
     {
         if (!$this->webUser->webUser->isEditor()) {
@@ -324,6 +346,10 @@ class Page extends Core
         }
     }
 
+    /**
+     * @return bool|int|mixed
+     * @throws NotFoundException
+     */
     private function saveFormBlog()
     {
         if (!$this->webUser->isEditor()) {
@@ -355,13 +381,8 @@ class Page extends Core
                 ]
             );
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
-    }
-
-    private function getMonthName(int $month): string
-    {
-        return \app\constant\MonthName::NAMES[$month];
     }
 
     public static function getInstance($db, $mod = null)

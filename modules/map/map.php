@@ -4,11 +4,13 @@ use app\cache\Cache;
 use app\constant\OgType;
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\NotFoundException;
 
 class Page extends Core
 {
     /**
      * @inheritDoc
+     * @throws NotFoundException
      */
     public function compileContent(): void
     {
@@ -34,7 +36,7 @@ class Page extends Core
             $this->showCityPointsGPX((int) $_GET['cid']);
         } //==========================  E X I T  ================================
         else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 
@@ -93,10 +95,14 @@ class Page extends Core
         exit();
     }
 
+    /**
+     * @param $cid
+     * @throws NotFoundException
+     */
     private function getYMapsMLRegion($cid): void
     {
         if (!$cid) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
 
         $pt = new MPagePoints($this->db);
@@ -200,10 +206,14 @@ class Page extends Core
         exit();
     }
 
+    /**
+     * @param $cid
+     * @throws NotFoundException
+     */
     private function showCityPointsGPX($cid): void
     {
         if (!$cid) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         $pt = new MPagePoints($this->db);
         $pts = $pt->getPointsByCity($cid);

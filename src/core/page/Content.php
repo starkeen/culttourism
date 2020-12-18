@@ -95,9 +95,9 @@ class Content
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUrlRss(): string
+    public function getUrlRss(): ?string
     {
         return $this->urlRss;
     }

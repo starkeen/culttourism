@@ -2,6 +2,7 @@
 
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 
 class Page extends Core
@@ -9,6 +10,7 @@ class Page extends Core
     /**
      * @inheritDoc
      * @throws RedirectException
+     * @throws NotFoundException
      */
     public function compileContent(): void
     {
@@ -23,7 +25,7 @@ class Page extends Core
         } elseif ($this->siteRequest->getLevel1() === 'form') {
             $this->pageContent->setBody($this->getFormLogin());
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 

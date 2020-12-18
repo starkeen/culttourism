@@ -59,7 +59,7 @@ if ($isAdmin) {
     $adm_menu_items[] = ['link' => 'settings.php', 'title' => 'Настройки сайта', 'ico' => 'ico.a_refs.gif'];
 }
 
-$smarty = $app->getSmarty();
+$smarty = $app->getTemplateEngine();
 
 $smarty->assign('adm_menu', $adm_menu_items);
 if (isset($_SESSION['user_name'])) {

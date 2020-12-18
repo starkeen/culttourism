@@ -3,11 +3,13 @@
 use app\constant\OgType;
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\NotFoundException;
 
 class Page extends Core
 {
     /**
      * @inheritDoc
+     * @throws NotFoundException
      */
     public function compileContent(): void
     {
@@ -23,12 +25,16 @@ class Page extends Core
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
             $this->getBlockWeather($_GET['lat'], $_GET['lon']);
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 
-    //****************************************  БЛОК  ПОГОДЫ  ******************
-    private function getBlockWeather($lat, $lon)
+    /**
+     **************************************  БЛОК  ПОГОДЫ  *****************
+     * @param $lat
+     * @param $lon
+     */
+    private function getBlockWeather($lat, $lon): void
     {
         $out = ['state' => false, 'content' => '', 'color' => ''];
         $weather_data = [
@@ -68,7 +74,7 @@ class Page extends Core
                 $weather_data['temperature'] = '+' . $weather_data['temperature'];
             }
             if (isset($response->main->temp_min) && isset($response->main->temp_max)) {
-                if (round($response->main->temp_min) != round($response->main->temp_max)) {
+                if (round($response->main->temp_min) !== round($response->main->temp_max)) {
                     $weather_data['temperature_min'] = round($response->main->temp_min - 273.15);
                     $weather_data['temperature_max'] = round($response->main->temp_max - 273.15);
                     if ($weather_data['temperature_min'] > 0) {
@@ -90,7 +96,7 @@ class Page extends Core
                 $weather_data['weather_text'] = $response->weather[0]->main;
                 $weather_data['weather_descr'] = $response->weather[0]->description;
                 $weather_data['weather_icon'] = $response->weather[0]->icon;
-                $cond = $this->getWeaterConditionsByCode($weather_data['weather_id']);
+                $cond = $this->getWeatherConditionsByCode($weather_data['weather_id']);
                 if ($cond) {
                     $weather_data['weather_text'] = $cond['main'];
                     $weather_data['weather_descr'] = $cond['description'];
@@ -128,8 +134,12 @@ class Page extends Core
         exit();
     }
 
-    //**************************************  ПОГОДА ПО КОДУ  ******************
-    private function getWeaterConditionsByCode($code)
+    /**
+     ************************************  ПОГОДА ПО КОДУ  *****************
+     * @param $code
+     * @return array|false
+     */
+    private function getWeatherConditionsByCode($code)
     {
         $wc = new MWeatherCodes($this->db);
         $row = $wc->getItemByPk($code);
@@ -140,7 +150,9 @@ class Page extends Core
         }
     }
 
-    //****************************************  ТАБЛИЦА МЕТА  ******************
+    /**
+     **************************************  ТАБЛИЦА МЕТА  *****************
+     */
     private function metaCity(): void
     {
         $dbcd = $this->db->getTableName('city_data');
@@ -186,7 +198,7 @@ class Page extends Core
                     $pc->updateByPk(
                         $city_id,
                         [
-                            'pc_lastup_user' => $uid
+                            'pc_lastup_user' => $uid,
                         ]
                     );
                     echo $row['cf_title'];
@@ -204,7 +216,7 @@ class Page extends Core
                     $pc->updateByPk(
                         $city_id,
                         [
-                            'pc_lastup_user' => $uid
+                            'pc_lastup_user' => $uid,
                         ]
                     );
                     echo 'ok';
@@ -226,7 +238,7 @@ class Page extends Core
                     $pc->updateByPk(
                         $city_id,
                         [
-                            'pc_lastup_user' => $uid
+                            'pc_lastup_user' => $uid,
                         ]
                     );
                     echo 'ok';
@@ -242,7 +254,7 @@ class Page extends Core
                                 ORDER BY cf_order";
             $this->db->execute(
                 [
-                    ':pc_id' => (int) $_GET['id']
+                    ':pc_id' => (int) $_GET['id'],
                 ]
             );
             $metas = $this->db->fetchAll();
@@ -251,23 +263,26 @@ class Page extends Core
             header('Content-Type: text/html; charset=utf-8');
             $this->smarty->display(_DIR_TEMPLATES . '/city/meta.sm.html');
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         exit();
     }
 
-    //**************************************** РЕДАКТИРОВАНИЕ ******************
+    /**
+     ************************************** РЕДАКТИРОВАНИЕ *****************
+     * @throws NotFoundException
+     */
     private function detailCity(): void
     {
         if (!$this->webUser->isEditor()) {
             $this->processError(Core::HTTP_CODE_403);
         }
         if (!isset($_GET['city_id'])) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
         $city_id = isset($_GET['city_id']) ? (int) $_GET['city_id'] : 0;
         if (!$city_id) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
 
         $ph = new MPhotos($this->db);
@@ -355,16 +370,16 @@ class Page extends Core
         $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/details.sm.html'));
     }
 
-    //**************************************** ДОБАВЛЕНИЕ ******************
-    private function addCity()
+    /**
+     ************************************** ДОБАВЛЕНИЕ *****************
+     */
+    private function addCity(): void
     {
         $newcity = '';
         $inbase = [];
         $already = [];
         $pc = new MPageCities($this->db);
         if (isset($_POST) && !empty($_POST)) {
-            $dbc = $this->db->getTableName('pagecity');
-            $dbu = $this->db->getTableName('region_url');
             $cid = $pc->insert(
                 [
                     'pc_title' => $_POST['city_name'],
@@ -489,8 +504,10 @@ class Page extends Core
         $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/add.sm.html'));
     }
 
-    //**************************************** СПИСОК **********************
-    private function pageCity()
+    /**
+     ************************************** СПИСОК *********************
+     */
+    private function pageCity(): void
     {
         $dbc = $this->db->getTableName('pagecity');
         $dbr = $this->db->getTableName('region_url');

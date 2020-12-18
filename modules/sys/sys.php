@@ -2,6 +2,7 @@
 
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 use app\sys\DeployBitbucket;
 use GuzzleHttp\Client;
@@ -15,11 +16,12 @@ class Page extends Core
 
     /**
      * @inheritDoc
+     * @throws NotFoundException
      */
     public function compileContent(): void
     {
         if ($this->siteRequest->getLevel2() !== null) {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
 
         if ($this->siteRequest->getLevel1() === null && empty($this->siteRequest->getGET())) {
@@ -29,7 +31,7 @@ class Page extends Core
         } elseif ($this->siteRequest->getLevel1() === 'static' && $this->siteRequest->getGETParam('type') !== null && $this->siteRequest->getGETParam('pack') !== null) {
             $this->getStatic(trim($this->siteRequest->getGETParam('type')), trim($this->siteRequest->getGETParam('pack')));
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 
@@ -54,6 +56,7 @@ class Page extends Core
 
     /**
      * @param string|null $key
+     * @throws NotFoundException
      */
     private function getBitbucket(string $key = null): void
     {
@@ -102,10 +105,10 @@ class Page extends Core
                 echo 'ok';
                 exit();
             } else {
-                $this->processError(Core::HTTP_CODE_404);
+                throw new NotFoundException();
             }
         } else {
-            $this->processError(Core::HTTP_CODE_404);
+            throw new NotFoundException();
         }
     }
 

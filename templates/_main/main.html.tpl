@@ -23,7 +23,9 @@
         <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
         <link rel="search" href="/search/"/>
+        {if $pageContent->getUrlRss() !== null}
         <link rel="alternate" href="{$pageContent->getUrlRss()}" type="application/rss+xml" title="RSS blog"/>
+        {/if}
         {if $pageContent->getHead()->getCanonicalUrl()}
             <link rel="canonical" href="{$pageContent->getHead()->getCanonicalUrl()}"/>
         {/if}
