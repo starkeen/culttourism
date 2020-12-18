@@ -10,6 +10,7 @@ use app\db\MyDB;
 use app\sys\Logger;
 use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
+use ErrorException;
 use MSysProperties;
 
 abstract class Application
@@ -38,6 +39,9 @@ abstract class Application
         $exceptionHandler = new ExceptionsHandler($this->logger);
         set_exception_handler([$exceptionHandler, 'errorsExceptionsHandler']);
         register_shutdown_function([$exceptionHandler, 'shutdown']);
+        set_error_handler(static function ($severity, $message, $filename, $lineno) {
+            throw new ErrorException($message, 0, $severity, $filename, $lineno);
+        });
 
         $this->db = FactoryDB::db();
 
