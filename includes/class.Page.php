@@ -15,25 +15,6 @@ class Page extends Core
         'android-app%3A',
     ];
 
-    private const BOT_MARKERS =  [
-        'YandexMetrika',
-        'Googlebot',
-        'YandexBot',
-        'bingbot',
-        'MegaIndex',
-        'MJ12bot',
-        'openstat',
-        'statdom',
-        'Yahoo! Slurp',
-        'SurveyBot',
-        'curl',
-        'wget',
-        'package http',
-        'Xenu Link Sleuth',
-        'archive.org_bot',
-        'Mail.RU_Bot',
-    ];
-
     /**
      * @inheritDoc
      */
@@ -74,7 +55,7 @@ class Page extends Core
                 $this->pageHeaders->flush();
                 exit();
             } elseif (preg_match('/object(\d+)\.html/i', $urlParts, $regs)) {
-                $this->showPageObject((int) $regs[1]);
+                $this->processError(Core::HTTP_CODE_404);
             } elseif (preg_match('/([a-z0-9_-]+)\.html/i', $urlParts, $regs)) {
                 return $this->getPageObjectBySlug($regs[1]);
             } else {
@@ -336,36 +317,6 @@ class Page extends Core
         } else {
             $this->processError(Core::HTTP_CODE_404);
         }
-    }
-
-    /**
-     * @param int $id
-     */
-    private function showPageObject(int $id): void
-    {
-        if (!$id) {
-            $this->processError(Core::HTTP_CODE_404);
-        }
-
-        $pts = new MPagePoints($this->db);
-        $object = $pts->getItemByPk($id);
-
-        if (!$object || (int) $object['pt_active'] === 0) {
-            $this->processError(Core::HTTP_CODE_404);
-        }
-
-        // фиксируем статистику старых адресов точек
-        $logFile = _DIR_VAR . '/logs/old_objects/' . $id . '.txt';
-        $ua = $_SERVER['HTTP_USER_AGENT'] ?? 'ua-undefined';
-        $referer = $_SERVER['HTTP_REFERER'] ?? 'referer-undefined';
-
-        $logEntry = date('Y-m-d H:i:s') . "\t" . $referer . "\t" . $ua . "\n";
-        file_put_contents($logFile, $logEntry, FILE_APPEND | LOCK_EX);
-
-        $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
-        $this->pageHeaders->add('Location: ' . $object['url_canonical']);
-        $this->pageHeaders->flush();
-        exit();
     }
 
     /**
