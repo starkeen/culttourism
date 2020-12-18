@@ -82,16 +82,11 @@ class Page extends Core
         $passw = trim($_POST['userpass']);
 
         if ($this->auth->checkMailPassword($email, $passw)) {
-            if (isset($_SESSION['user_referer'])) {
-                header('Location: ' . $_SESSION['user_referer']);
-                exit();
-            } else {
-                header('Location: ' . _SITE_URL);
-                exit();
-            }
+            $returnUrl = $_SESSION['user_referer'] ?? _SITE_URL;
         } else {
-            throw new RedirectException('/sign/in/');
+            $returnUrl = '/sign/in/';
         }
+        throw new RedirectException($returnUrl);
     }
 
     private function getFormLogin()

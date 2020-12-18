@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\core\application;
 
+use app\core\ModuleFetcher;
 use app\core\page\Content;
 use app\core\page\Head;
 use app\core\page\Headers;
@@ -38,6 +39,11 @@ class WebApplication extends Application
      */
     private $user;
 
+    /**
+     * @var ModuleFetcher
+     */
+    private $moduleFetcher;
+
     public function __construct()
     {
         parent::__construct();
@@ -46,6 +52,7 @@ class WebApplication extends Application
         $this->headers = new Headers();
         $this->content = new Content(new Head());
         $this->user = new WebUser(new Auth($this->db));
+        $this->moduleFetcher = new ModuleFetcher($this->db);
     }
 
     public function init(): void
@@ -66,16 +73,7 @@ class WebApplication extends Application
             exit();
         }
 
-        $module_id = $this->request->getModuleKey();
-
-        $includeModulePath = _DIR_INCLUDES . '/class.Page.php';
-        $customModulePath = sprintf('%s/%s/%s.php', _DIR_MODULES, $module_id, $module_id);
-        if (file_exists($customModulePath)) {
-            $includeModulePath = $customModulePath;
-        }
-        include($includeModulePath);
-
-        $page = Page::getInstance($this->db, $this->request);
+        $page = $this->moduleFetcher->getPageModule($this->request);
         $page->smarty = $this->templateEngine;
         $page->logger = $this->logger;
         $page->auth = $this->getUser()->getAuth();
@@ -83,7 +81,7 @@ class WebApplication extends Application
         $page->pageHeaders = $this->headers;
         $page->pageContent = $this->content;
 
-        $this->headers->add('X-Powered-By: html');
+        $this->headers->add('X-Powered-By: culttourism');
         $this->headers->add('Content-Type: text/html; charset=utf-8');
 
         if (_CACHE_DAYS !== 0 && !$this->request->isAjax()) {
