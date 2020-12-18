@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace app\core\module;
 
-use app\core\module\BaseModule;
 use app\core\SiteRequest;
 use app\db\MyDB;
-use app\modules\BlogModule;
 use Page;
 
 class ModuleFetcher
@@ -18,11 +16,18 @@ class ModuleFetcher
     private $db;
 
     /**
-     * @param MyDB $db
+     * @var ModuleInterface[]
      */
-    public function __construct(MyDB $db)
+    private $modules;
+
+    /**
+     * @param MyDB $db
+     * @param ModuleInterface[] $modules
+     */
+    public function __construct(MyDB $db, array $modules)
     {
         $this->db = $db;
+        $this->modules = $modules;
     }
 
     /**
@@ -44,10 +49,15 @@ class ModuleFetcher
     }
 
     /**
-     * @return BaseModule
+     * @param SiteRequest $request
+     * @return ModuleInterface
      */
-    public function getModule(): BaseModule
+    public function getModule(SiteRequest $request): ModuleInterface
     {
-        return new BlogModule();
+        foreach ($this->modules as $module) {
+            if ($module->isApplicable($request)) {
+                return $module;
+            }
+        }
     }
 }

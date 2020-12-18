@@ -9,10 +9,13 @@ use app\core\page\Content;
 use app\core\page\Head;
 use app\core\page\Headers;
 use app\core\SiteRequest;
+use app\core\SiteResponse;
 use app\core\WebUser;
 use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
+use app\modules\BlogModule;
+use app\modules\RedirectsModule;
 use Auth;
 use MRedirects;
 use Page;
@@ -36,6 +39,11 @@ class WebApplication extends Application
     private $content;
 
     /**
+     * @var SiteResponse
+     */
+    private $response;
+
+    /**
      * @var WebUser
      */
     private $user;
@@ -52,8 +60,13 @@ class WebApplication extends Application
         $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
         $this->headers = new Headers();
         $this->content = new Content(new Head());
+        $this->response = new SiteResponse();
         $this->user = new WebUser(new Auth($this->db));
-        $this->moduleFetcher = new ModuleFetcher($this->db);
+        $modules =  [
+            new RedirectsModule($this->db),
+            new BlogModule($this->db),
+        ];
+        $this->moduleFetcher = new ModuleFetcher($this->db, $modules);
     }
 
     public function init(): void
@@ -74,8 +87,8 @@ class WebApplication extends Application
             exit();
         }
 
-        $module = $this->moduleFetcher->getModule();
-        $module->process();
+        $module = $this->moduleFetcher->getModule($this->request);
+        $module->process($this->request, $this->response);
 
         $page = $this->moduleFetcher->getPageModule($this->request);
         $page->smarty = $this->templateEngine;

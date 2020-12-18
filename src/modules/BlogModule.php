@@ -4,10 +4,28 @@ declare(strict_types=1);
 
 namespace app\modules;
 
-use app\core\module\BaseModule;
+use app\core\module\ModuleInterface;
+use app\core\SiteRequest;
+use app\core\SiteResponse;
+use app\db\MyDB;
 
-class BlogModule extends BaseModule
+class BlogModule implements ModuleInterface
 {
-    public function process(): void
+    /**
+     * @var MyDB
+     */
+    private $db;
+
+    public function __construct(MyDB $db)
+    {
+        $this->db = $db;
+    }
+
+    public function process(SiteRequest $request, SiteResponse $response): void
     {}
+
+    public function isApplicable(SiteRequest $request): bool
+    {
+        return true;
+    }
 }
