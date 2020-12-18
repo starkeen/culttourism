@@ -7,12 +7,10 @@ namespace app\core\application;
 use app\core\ExceptionsHandler;
 use app\db\FactoryDB;
 use app\db\MyDB;
-use app\exceptions\BaseApplicationException;
 use app\sys\Logger;
 use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
 use MSysProperties;
-use Throwable;
 
 abstract class Application
 {
@@ -34,19 +32,20 @@ abstract class Application
     public function __construct()
     {
         error_reporting(E_ALL & ~E_DEPRECATED);
-
-        $this->db = FactoryDB::db();
-
         $sentryLogger = new SentryLogger(SENTRY_DSN);
         $this->logger = new Logger($sentryLogger);
+
+        $exceptionHandler = new ExceptionsHandler($this->logger);
+        set_exception_handler([$exceptionHandler, 'errorsExceptionsHandler']);
+        register_shutdown_function([$exceptionHandler, 'shutdown']);
+
+        $this->db = FactoryDB::db();
 
         $this->templateEngine = new TemplateEngine();
     }
 
     public function init(): void
     {
-        set_exception_handler([ExceptionsHandler::class, 'errorsExceptionsHandler']);
-        register_shutdown_function([ExceptionsHandler::class, 'shutdown']);
         $sp = new MSysProperties($this->db);
         $releaseKey = $sp->getByName('git_hash');
         $this->logger->setReleaseKey($releaseKey);

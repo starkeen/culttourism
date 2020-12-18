@@ -4,20 +4,34 @@ declare(strict_types=1);
 
 namespace app\core;
 
+use app\sys\Logger;
 use Throwable;
 
 class ExceptionsHandler
 {
     /**
-     * @param Throwable $e
+     * @var Logger
      */
-    public static function errorsExceptionsHandler(Throwable $e): void
+    private $logger;
+
+    /**
+     * @param Logger $logger
+     */
+    public function __construct(Logger $logger)
     {
-        $msg = 'Error: ' . $e->getMessage() . PHP_EOL
-            . 'file: ' . $e->getFile() . ':' . $e->getLine() . PHP_EOL
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param Throwable $exception
+     */
+    public function errorsExceptionsHandler(Throwable $exception): void
+    {
+        $msg = 'Error: ' . $exception->getMessage() . PHP_EOL
+            . 'file: ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL
             . 'URI: ' . ($_SERVER['REQUEST_URI'] ?? 'undefined') . PHP_EOL . PHP_EOL
             . '__________________________' . PHP_EOL . PHP_EOL . PHP_EOL
-            . 'trace: ' . print_r($e->getTrace(), true) . PHP_EOL;
+            . 'trace: ' . print_r($exception->getTrace(), true) . PHP_EOL;
 
         mail('starkeen@gmail.com', 'Error on ' . _URL_ROOT, $msg);
         if (ob_get_length()) {
@@ -25,7 +39,7 @@ class ExceptionsHandler
         }
     }
 
-    public static function shutdown(): void
+    public function shutdown(): void
     {
         $error = error_get_last();
         if (null !== $error && $error['type'] !== E_DEPRECATED) {
