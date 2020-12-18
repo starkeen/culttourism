@@ -128,8 +128,6 @@ class WebApplication extends Application
             $page->lastedit = null;
         }
 
-        $this->headers->flush();
-
         $this->display($page);
 
         exit();
@@ -142,6 +140,8 @@ class WebApplication extends Application
     {
         $page->init();
         $page->compileContent();
+
+        $this->headers->flush();
 
         if ($this->request->isAjax()) {
             echo $this->content->getBody();
