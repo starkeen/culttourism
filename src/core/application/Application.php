@@ -31,7 +31,7 @@ abstract class Application
 
     public function __construct()
     {
-        error_reporting(E_ALL & ~E_DEPRECATED);
+        error_reporting(E_ALL);
         $sentryLogger = new SentryLogger(SENTRY_DSN);
         $this->logger = new Logger($sentryLogger);
 

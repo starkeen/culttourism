@@ -42,7 +42,7 @@ class ExceptionsHandler
     public function shutdown(): void
     {
         $error = error_get_last();
-        if (null !== $error && $error['type'] !== E_DEPRECATED) {
+        if (null !== $error) {
             $msg = 'Error: ' . $error['message'] . PHP_EOL
                 . 'date: ' . date('d.m.Y H:i:s') . PHP_EOL
                 . 'file: ' . $error['file'] . ':' . $error['line'] . PHP_EOL
