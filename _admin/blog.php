@@ -23,13 +23,13 @@ if (!isset($_GET['id']) && !isset($_GET['act'])) {
     $smarty->assign('bloglist', $bloglist);
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/blog/admin.all.sm.html'));
 } elseif (isset($_GET['id']) && !isset($_GET['act'])) {
-    $id = intval($_GET['id']);
+    $id = (int) $_GET['id'];
     if (isset($_POST) && !empty($_POST)) {
         if (isset($_POST['to_save'])) {
             $br_title = cut_trash_string($_POST['br_title']);
             $br_url = cut_trash_string($_POST['br_url']);
             $br_text = cut_trash_html($_POST['br_text']);
-            $br_active = cut_trash_int($_POST['br_active']);
+            $br_active = (int) $_POST['br_active'];
             $db->sql = "UPDATE $dbb SET
                         br_title = '$br_title', br_text = '$br_text', br_url = '$br_url', br_active = '$br_active'
                         WHERE br_id = '$id'";
@@ -63,8 +63,8 @@ elseif (!isset($_GET['id']) && isset($_GET['act'])) {
             $br_title = cut_trash_string($_POST['br_title']);
             $br_url = cut_trash_string($_POST['br_url']);
             $br_text = cut_trash_html($_POST['br_text']);
-            $br_active = cut_trash_int($_POST['br_active']);
-            $br_us_id = cut_trash_int($_SESSION['user_id']);
+            $br_active = (int) $_POST['br_active'];
+            $br_us_id = (int) $_SESSION['user_id'];
             $db->sql = "INSERT INTO $dbb SET
                         br_title = '$br_title', br_text = '$br_text', br_url = '$br_url', br_active = '$br_active', br_us_id = '$br_us_id', br_date = now()";
             if ($db->exec())

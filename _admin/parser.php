@@ -32,7 +32,7 @@ if (isset($_GET['act'])) {
                             'cp_email' => $out['data']['email'],
                             'cp_city' => isset($_GET['city']) ? $_GET['city'] : '',
                             'cp_type_id' => 0,
-                            'cp_citypage_id' => isset($_GET['pcid']) ? intval($_GET['pcid']) : 0,
+                            'cp_citypage_id' => isset($_GET['pcid']) ? (int) $_GET['pcid'] : 0,
                             'cp_latitude' => $out['data']['geo_lat'],
                             'cp_longitude' => $out['data']['geo_lon'],
                             'cp_zoom' => $out['data']['geo_zoom'],

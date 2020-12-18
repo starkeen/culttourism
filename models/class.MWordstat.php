@@ -241,7 +241,7 @@ class MWordstat extends Model {
                             SET ws_weight = -1
                             WHERE ws_rep_id = :report";
         $this->_db->execute(array(
-            ':report' => intval($report_id),
+            ':report' => (int) $report_id,
         ));
     }
 
@@ -252,7 +252,7 @@ class MWordstat extends Model {
     public function deleteTown($town_id) {
         $this->_db->sql = "DELETE FROM $this->_table_name ws_city_id = :town";
         $this->_db->execute(array(
-            ':town' => intval($town_id),
+            ':town' => (int) $town_id,
         ));
     }
 

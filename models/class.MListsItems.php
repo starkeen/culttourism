@@ -17,7 +17,7 @@ class MListsItems extends Model
             'li_order',
             'li_active',
         ];
-        $this->_list_id = intval($lid);
+        $this->_list_id = (int) $lid;
         parent::__construct($db);
         $this->addRelatedTable('lists');
         $this->addRelatedTable('pagepoints');
@@ -28,7 +28,7 @@ class MListsItems extends Model
 
     public function setField($field, $pt_id, $val)
     {
-        if (in_array($field, $this->_table_fields)) {
+        if (in_array($field, $this->_table_fields, true)) {
             $row = $this->getRowForPointId($pt_id);
             $this->updateByPk(
                 $row['li_id'],

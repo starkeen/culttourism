@@ -21,8 +21,8 @@ if (!isset($_GET['cid'])) {//===================================================
     if (isset($_POST['to_save'])) {
         $cnt_title = cut_trash_string($_POST['cnt_title']);
         $cnt_text = cut_trash_html($_POST['cnt_text']);
-        $cnt_active = cut_trash_int($_POST['cnt_active']);
-        $cnt_sort = cut_trash_int($_POST['cnt_sort']);
+        $cnt_active = (int) $_POST['cnt_active'];
+        $cnt_sort = (int) $_POST['cnt_sort'];
 
         $db->sql = "INSERT INTO $dbc
                     (cnt_title, cnt_text, cnt_active, cnt_sort, cnt_datefrom)
@@ -48,13 +48,13 @@ if (!isset($_GET['cid'])) {//===================================================
     $smarty->assign('is_edit', false);
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/counters.item.sm.html'));
 } elseif (is_numeric($_GET['cid'])) {//============================================= РЕДАКТИРОВАТЬ
-    $cid = intval($_GET['cid']);
+    $cid = (int) $_GET['cid'];
 
     if (isset($_POST['to_save'])) {
         $cnt_title = cut_trash_string($_POST['cnt_title']);
         $cnt_text = cut_trash_html($_POST['cnt_text']);
-        $cnt_active = cut_trash_int($_POST['cnt_active']);
-        $cnt_sort = cut_trash_int($_POST['cnt_sort']);
+        $cnt_active = (int) $_POST['cnt_active'];
+        $cnt_sort = (int) $_POST['cnt_sort'];
 
         $db->sql = "UPDATE $dbc
                     SET

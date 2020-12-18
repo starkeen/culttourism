@@ -167,7 +167,7 @@ class Page extends Core
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
         }
-        $state = cut_trash_int(!empty($_POST['nstate']) && $_POST['nstate'] === 'checked');
+        $state = (int) (!empty($_POST['nstate']) && $_POST['nstate'] === 'checked');
         $p = new MPagePoints($this->db);
 
         return $p->updateByPk($pid, ['pt_is_best' => $state]);
@@ -251,7 +251,7 @@ class Page extends Core
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
         }
-        $point_id = cut_trash_int($_GET['pid']);
+        $point_id = (int) $_GET['pid'];
         if (!$point_id) {
             throw new AccessDeniedException();
         }

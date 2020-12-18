@@ -16,16 +16,16 @@ if (!isset($_GET['user_id']) && !isset($_GET['act'])) {
     $smarty->assign('userlist', $userlist);
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/users.list.sm.html'));
 } elseif (isset($_GET['user_id']) && !isset($_GET['act'])) {
-    $us_id = intval($_GET['user_id']);
+    $us_id = (int) $_GET['user_id'];
     if (isset($_POST['to_save'])) {
         $us_name = cut_trash_string($_POST['us_name']);
         $us_login = cut_trash_word($_POST['us_login']);
         $us_pass1 = cut_trash_word($_POST['us_pass1']);
         $us_pass2 = cut_trash_word($_POST['us_pass2']);
         $us_email = cut_trash_string($_POST['us_email']);
-        $us_male = cut_trash_int($_POST['us_male']);
-        $us_admin = (isset($_POST['us_admin'])) ? cut_trash_int($_POST['us_admin']) : null;
-        $us_active = (isset($_POST['us_active'])) ? cut_trash_int($_POST['us_active']) : null;
+        $us_male = (int) $_POST['us_male'];
+        $us_admin = (isset($_POST['us_admin'])) ? (int) $_POST['us_admin'] : null;
+        $us_active = (isset($_POST['us_active'])) ? (int) $_POST['us_active'] : null;
         $db->sql = "UPDATE $dbu
                     SET us_name = '$us_name',
                     us_login = '$us_login',
@@ -68,11 +68,11 @@ elseif (!isset($_GET['user_id']) && isset($_GET['act']) && $_GET['act'] == 'add'
         $us_email = cut_trash_string($_POST['us_email']);
         $user['us_email'] = $us_email;
         if (isset($_POST['us_male'])) {
-            $us_male = cut_trash_int($_POST['us_male']);
+            $us_male = (int) $_POST['us_male'];
             $user['us_male'] = $us_male;
         } else
             $us_male = null;
-        $us_admin = cut_trash_int($_POST['us_admin']);
+        $us_admin = (int) $_POST['us_admin'];
         if ($us_pass1 != $us_pass2)
             $error = 'Введенные пароли не совпадают!';
         elseif (strlen($us_name) == 0)

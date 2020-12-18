@@ -62,7 +62,7 @@ class MNewsItems extends Model {
                             ORDER BY ni_pubdate DESC
                             LIMIT :limit";
         $this->_db->execute(array(
-            ':limit' => intval($limit),
+            ':limit' => (int) $limit,
         ));
         while ($row = $this->_db->fetch()) {
             $row['ni_text'] = strip_tags(html_entity_decode($row['ni_text'], ENT_QUOTES));

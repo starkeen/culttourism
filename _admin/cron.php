@@ -21,11 +21,11 @@ if (!isset($_GET['crid']) && !isset($_GET['act'])) {
 }
 //-------------------------------------------------------------------------
 elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'edit') {
-    $crid = intval($_GET['crid']);
+    $crid = (int) $_GET['crid'];
 
     if (isset($_POST) && !empty($_POST)) {
-        $ch_act = intval($_POST['ch_act']);
-        $ch_run = intval($_POST['ch_run']);
+        $ch_act = (int) $_POST['ch_act'];
+        $ch_run = (int) $_POST['ch_run'];
         $period = cut_trash_string($_POST['period']);
         $next_time = cut_trash_string($_POST['next_time']);
         $next_day = cut_trash_string($_POST['next_day']);
@@ -53,7 +53,7 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'edit') {
 }
 //-------------------------------------------------------------------------
 elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'run') {
-    $crid = cut_trash_int($_GET['crid']);
+    $crid = (int) $_GET['crid'];
     $db->sql = "SELECT cr_id, cr_script, DATE_FORMAT(cr_period, '%d %H:%i') as period FROM $dbcron WHERE cr_id = '$crid'";
     if ($db->exec()) {
         $job = $db->fetch();
@@ -85,8 +85,8 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'run') {
     exit();
 }
 //-------------------------------------------------------------------------
-elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'stop') {
-    $crid = intval($_GET['crid']);
+elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] === 'stop') {
+    $crid = (int) $_GET['crid'];
     $db->sql = "UPDATE $dbcron SET
                 cr_active='0', cr_isrun='0'
                 WHERE cr_id = '$crid'";

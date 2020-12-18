@@ -77,7 +77,7 @@ class MBlogEntries extends Model
                              LIMIT :limit";
         $this->_db->execute(
             [
-                ':limit' => intval($limit),
+                ':limit' => (int) $limit,
             ]
         );
         $patern = "/(.*?)<\/p>/i";

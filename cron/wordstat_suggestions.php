@@ -31,8 +31,8 @@ if (!empty($reps_to_reset)) {
 $reps_to_del = array();
 foreach ($reps as $rep) {
     $city = trim(str_replace('достопримечательности', '', $rep['word']));
-    $repid = intval($rep['rep_id']);
-    $ws->setWeight($repid, $city, intval($rep['weight']));
+    $repid = (int) $rep['rep_id'];
+    $ws->setWeight($repid, $city, (int) $rep['weight']);
     $reps_to_del[$repid] = $repid;
 }
 

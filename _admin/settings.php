@@ -6,13 +6,13 @@ $smarty->assign('title', 'Настройки сайта');
 
 $sp = new MSysProperties($db);
 
-if (isset($_GET['rid']) && intval($_GET['rid']) != 0) {
+if (isset($_GET['rid']) && (int) $_GET['rid'] != 0) {
     $dbs = $db->getTableName('siteprorerties');
-    $rid = cut_trash_int($_GET['rid']);
+    $rid = (int) $_GET['rid'];
 
     if (isset($_POST) && !empty($_POST)) {
         foreach ($_POST['param'] as $sid => $sval) {
-            $sp->updateByPk(intval($sid), array(
+            $sp->updateByPk((int) $sid, array(
                 'sp_value' => htmlentities(cut_trash_text($sval), ENT_QUOTES, 'UTF-8'),
             ));
         }

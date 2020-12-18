@@ -10,7 +10,7 @@ $dbm = $db->getTableName('modules');
 $dbp = $db->getTableName('pages');
 
 if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
-    $md_id = intval($_GET['id']);
+    $md_id = (int) $_GET['id'];
 
     if (isset($_POST['sender'])) {
         //================================ SAVE DATA ===========================
@@ -22,18 +22,18 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
         }
         $md_title = cut_trash_string($_POST['md_title']);
         $md_name = cut_trash_string($_POST['md_name']);
-        $md_pid = cut_trash_int($_POST['md_pid']);
+        $md_pid = (int) $_POST['md_pid'];
         $md_url = cut_trash_string($_POST['md_url']);
-        $md_redirect_flg = cut_trash_int($_POST['md_redirect_flg']);
+        $md_redirect_flg = (int) $_POST['md_redirect_flg'];
         $md_redirect = cut_trash_string($_POST['md_redirect']);
         $md_keywords = cut_trash_string($_POST['md_keywords']);
         $md_description = cut_trash_string($_POST['md_description']);
         $md_pagecontent = isset($_POST['md_pagecontent']) ? cut_trash_html($_POST['md_pagecontent']) : '';
-        $md_active = cut_trash_int($_POST['md_active']);
-        $md_counters = cut_trash_int($_POST['md_counters']);
-        $md_css = cut_trash_int($_POST['md_css']);
+        $md_active = (int) $_POST['md_active'];
+        $md_counters = (int) $_POST['md_counters'];
+        $md_css = (int) $_POST['md_css'];
         $md_robots = cut_trash_string($_POST['md_robots']);
-        $md_sort = cut_trash_int($_POST['md_sort']);
+        $md_sort = (int) $_POST['md_sort'];
 
         if ($md_redirect_flg !== 0 && strlen($md_redirect) != 0) {
             $redir = "'$md_redirect'";

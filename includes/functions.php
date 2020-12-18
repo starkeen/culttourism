@@ -21,11 +21,6 @@ function getGUID(): string
     return (md5(uniqid(mt_rand(), 1)));
 }
 
-function cut_trash_int($data): int
-{
-    return (int) $data;
-}
-
 function cut_trash_string($data): string
 {
     return (trim((string) $data));
@@ -55,17 +50,6 @@ function cut_trash_float($data): float
     $text = str_replace(',', '.', trim($data));
 
     return (float) $text;
-}
-
-function transSQLdate($date)
-{
-    //приводит дату к виду "2008-02-15" из нормального
-    [$d, $m, $y] = explode('.', $date);
-    if (strlen($y) == 2) {
-        $y = "20$y";
-    }
-
-    return "$y-$m-$d";
 }
 
 /**

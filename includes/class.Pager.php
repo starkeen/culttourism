@@ -17,12 +17,12 @@ class Pager
         $this->show_selector = $show_selector;
         $this->show_total = $show_total;
 
-        $cur_page = (isset($_GET['page'])) ? cut_trash_int($_GET['page']) : 0;
+        $cur_page = (isset($_GET['page'])) ? (int) $_GET['page'] : 0;
         $cnt_items = count($all);
         $this->cnt_total = $cnt_items;
 
         if (isset($_GET['pager_perpage']) && (int) $_GET['pager_perpage'] != 0) {
-            $this->items_per_page = cut_trash_int($_GET['pager_perpage']);
+            $this->items_per_page = (int) $_GET['pager_perpage'];
             $this->items_per_max = $this->items_per_page + 5;
         }
         $cnt_pages = ceil($cnt_items / $this->items_per_page);

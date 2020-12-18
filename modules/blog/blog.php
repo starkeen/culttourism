@@ -4,6 +4,7 @@ use app\constant\MonthName;
 use app\constant\OgType;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
+use app\utils\Dates;
 use app\utils\Urls;
 
 class Page extends Core
@@ -280,7 +281,7 @@ class Page extends Core
                     LIMIT 1";
         $res = $this->db->execute(
             [
-                ':id' => intval($id),
+                ':id' => (int) $id,
             ]
         );
         if (!$res) {
@@ -300,7 +301,7 @@ class Page extends Core
         if (!$this->webUser->isEditor()) {
             return false;
         }
-        $brid = cut_trash_int($_POST['brid']);
+        $brid = (int) $_POST['brid'];
         if (!$brid || !$bid || $brid != $bid) {
             return false;
         }
@@ -363,7 +364,7 @@ class Page extends Core
                 [
                     'br_title' => $_POST['ntitle'],
                     'br_text' => $_POST['ntext'],
-                    'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
+                    'br_date' => Dates::normalToSQL($_POST['ndate']) . ' ' . $_POST['ntime'],
                     'br_active' => $_POST['nact'] === 'true' ? 1 : 0,
                     'br_url' => $_POST['nurl'],
                     'br_us_id' => $this->webUser->getId(),
@@ -375,7 +376,7 @@ class Page extends Core
                 [
                     'br_title' => $_POST['ntitle'],
                     'br_text' => $_POST['ntext'],
-                    'br_date' => transSQLdate($_POST['ndate']) . ' ' . $_POST['ntime'],
+                    'br_date' => Dates::normalToSQL($_POST['ndate']) . ' ' . $_POST['ntime'],
                     'br_active' => $_POST['nact'] === 'true' ? 1 : 0,
                     'br_url' => $_POST['nurl'],
                 ]
