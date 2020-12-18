@@ -60,7 +60,7 @@ class WebApplication extends Application
         $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
         $this->headers = new Headers();
         $this->content = new Content(new Head());
-        $this->response = new SiteResponse();
+        $this->response = new SiteResponse($this->headers, $this->content);
         $this->user = new WebUser(new Auth($this->db));
         $modules =  [
             new RedirectsModule($this->db),
