@@ -246,6 +246,7 @@ abstract class Core
             }
                 break;
         }
+        $this->pageHeaders->flush();
         if ($this->siteRequest->isAjax()) {
             echo $this->pageContent->getBody();
         } else {
