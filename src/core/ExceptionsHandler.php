@@ -11,7 +11,7 @@ class ExceptionsHandler
     /**
      * @param Throwable $e
      */
-    public function errorsExceptionsHandler(Throwable $e): void
+    public static function errorsExceptionsHandler(Throwable $e): void
     {
         $msg = 'Error: ' . $e->getMessage() . PHP_EOL
             . 'file: ' . $e->getFile() . ':' . $e->getLine() . PHP_EOL

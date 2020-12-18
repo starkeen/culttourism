@@ -137,6 +137,12 @@ class Content
             $resourceKey = 'res_js_' . $this->customJsModule;
             $this->urlJs = $this->jsResources[$resourceKey];
         }
+        if ($this->urlJs === null) {
+            $jsFiles = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
+            if (!empty($jsFiles)) {
+                $this->urlJs = basename($jsFiles[0]);
+            }
+        }
 
         return !_ER_REPORT ? '/js/' . $this->urlJs : '/sys/static/?type=js&pack=' . $pack;
     }
@@ -146,6 +152,13 @@ class Content
      */
     public function getUrlCss(): string
     {
+        if ($this->urlCss === null) {
+            $cssFiles = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
+            if (!empty($cssFiles)) {
+                $this->urlCss = basename($cssFiles[0]);
+            }
+        }
+
         return !_ER_REPORT ? '/css/' . $this->urlCss : '/sys/static/?type=css&pack=common';
     }
 

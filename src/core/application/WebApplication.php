@@ -149,7 +149,6 @@ class WebApplication extends Application
             $this->headers->add('Content-Type: text/html; charset=utf-8');
             $this->headers->add('HTTP/1.0 404 Not Found');
 
-            $this->prepareStaticLinks();
             $this->content->getHead()->addTitleElement('404 Not Found - страница не найдена на сервере');
             $this->content->setH1('Не найдено');
             $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
@@ -164,7 +163,6 @@ class WebApplication extends Application
             $this->headers->add('Content-Type: text/html; charset=utf-8');
             $this->headers->add('HTTP/1.1 403 Forbidden');
 
-            $this->prepareStaticLinks();
             $this->content->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
             $this->content->setH1('Запрещено');
             $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
@@ -177,7 +175,6 @@ class WebApplication extends Application
             $this->headers->add('Status: 503 Service Temporarily Unavailable');
             $this->headers->add('Retry-After: 300');
 
-            $this->prepareStaticLinks();
             $this->content->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
             $this->content->setH1('Сервис временно недоступен');
             $this->content->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html'));
@@ -198,21 +195,5 @@ class WebApplication extends Application
     private function getUser(): WebUser
     {
         return $this->user;
-    }
-
-    /**
-     * Подготовка ссылок на статические ресурсы для страниц с ошибками
-     */
-    private function prepareStaticLinks(): void
-    {
-        $cssFiles = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
-        $jsFiles = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
-
-        if (!empty($cssFiles)) {
-            $this->content->setUrlCss(basename($cssFiles[0] ?? '/'));
-        }
-        if (!empty($jsFiles)) {
-            $this->content->setUrlJs(basename($jsFiles[0] ?? '/'));
-        }
     }
 }
