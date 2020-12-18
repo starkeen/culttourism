@@ -178,6 +178,8 @@ class WebApplication extends Application
             $this->content->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
             $this->content->setH1('Сервис временно недоступен');
             $this->content->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html'));
+
+            $page->logger->error($exception->getMessage());
         }
 
         $this->headers->flush();
