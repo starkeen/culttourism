@@ -12,31 +12,6 @@ use MLogErrors;
 class Logging
 {
     /**
-     * @param int $type
-     *
-     * @return bool
-     */
-    public static function writeError(int $type): bool
-    {
-        $db = FactoryDB::db();
-        $le = new MLogErrors($db);
-        if ((int) $type !== Core::HTTP_CODE_301 && !strpos($_SERVER['REQUEST_URI'], 'precomposed')) {
-            $le->insert(
-                [
-                    'le_type' => (string) $type,
-                    'le_date' => $le->now(),
-                    'le_url' => $_SERVER['REQUEST_URI'],
-                    'le_ip' => $_SERVER['REMOTE_ADDR'],
-                    'le_browser' => $_SERVER['HTTP_USER_AGENT'] ?? null,
-                    'le_script' => $_SERVER['SCRIPT_FILENAME'],
-                    'le_referer' => $_SERVER['HTTP_REFERER'] ?? 'undefined',
-                ]
-            );
-        }
-        return true;
-    }
-
-    /**
      * @param string $module
      * @param string $action
      * @param array $data

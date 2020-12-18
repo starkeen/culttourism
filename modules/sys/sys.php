@@ -2,6 +2,7 @@
 
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\RedirectException;
 use app\sys\DeployBitbucket;
 use GuzzleHttp\Client;
 
@@ -22,7 +23,7 @@ class Page extends Core
         }
 
         if ($this->siteRequest->getLevel1() === null && empty($this->siteRequest->getGET())) {
-            $this->processError(Core::HTTP_CODE_301, '/');
+            throw new RedirectException('/');
         } elseif ($this->siteRequest->getLevel1() === 'bitbucket' && $this->siteRequest->getGETParam('key') !== null) {
             $this->getBitbucket(trim($_GET['key']));
         } elseif ($this->siteRequest->getLevel1() === 'static' && $this->siteRequest->getGETParam('type') !== null && $this->siteRequest->getGETParam('pack') !== null) {

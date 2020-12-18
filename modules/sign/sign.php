@@ -2,11 +2,13 @@
 
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\RedirectException;
 
 class Page extends Core
 {
     /**
      * @inheritDoc
+     * @throws RedirectException
      */
     public function compileContent(): void
     {
@@ -43,6 +45,9 @@ class Page extends Core
         return $this->smarty->fetch(_DIR_TEMPLATES . '/sign/up.sm.html');
     }
 
+    /**
+     * @throws RedirectException
+     */
     private function doOut(): void
     {
         $this->auth->deleteKey();
@@ -50,25 +55,25 @@ class Page extends Core
         $_SESSION['user_id'] = null;
         $_SESSION['user_name'] = null;
         $_SESSION['user_auth'] = null;
-        if ($_SERVER['HTTP_REFERER']) {
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-            exit();
-        } else {
-            header('Location: /');
-            exit();
-        }
+
+        $returnUrl = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';
+        throw new RedirectException($returnUrl);
     }
 
+    /**
+     * @param string $key
+     * @throws RedirectException
+     */
     private function doCheck(string $key): void
     {
         if (isset($_SERVER['HTTP_REFERER']) && !isset($_SESSION['user_referer'])) {
             $_SESSION['user_referer'] = $_SERVER['HTTP_REFERER'];
         }
         if (!$key) {
-            $this->processError(Core::HTTP_CODE_301, 'sign/in/');
+            throw new RedirectException('/sign/in/');
         }
         if (!isset($_POST) || empty($_POST)) {
-            $this->processError(Core::HTTP_CODE_301, 'sign/in/');
+            throw new RedirectException('/sign/in/');
         }
 
         $email = trim($_POST['email']);
@@ -83,7 +88,7 @@ class Page extends Core
                 exit();
             }
         } else {
-            $this->processError(Core::HTTP_CODE_301, 'sign/in/');
+            throw new RedirectException('/sign/in/');
         }
     }
 

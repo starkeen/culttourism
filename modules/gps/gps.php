@@ -2,11 +2,13 @@
 
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\RedirectException;
 
 class Page extends Core
 {
     /**
      * @inheritDoc
+     * @throws RedirectException
      */
     public function compileContent(): void
     {
@@ -97,7 +99,7 @@ class Page extends Core
                 echo $file_content;
                 exit();
             } else {
-                $this->processError(Core::HTTP_CODE_301, '../');
+                throw new RedirectException('/');
             }
         } //==========================  E X I T  ================================
         else {

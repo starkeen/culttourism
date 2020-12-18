@@ -9,6 +9,7 @@ use app\core\page\Head;
 use app\core\page\Headers;
 use app\core\SiteRequest;
 use app\core\WebUser;
+use app\exceptions\RedirectException;
 use app\sys\TemplateEngine;
 use Auth;
 use Page;
@@ -139,7 +140,12 @@ class WebApplication extends Application
     private function display(Page $page): void
     {
         $page->init();
-        $page->compileContent();
+        try {
+            $page->compileContent();
+        } catch (RedirectException $exception) {
+            $this->headers->add('HTTP/1.1 301 Moved Permanently');
+            $this->headers->add('Location: ' . $exception->getTargetUrl());
+        }
 
         $this->headers->flush();
 

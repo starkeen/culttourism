@@ -2,12 +2,14 @@
 
 use app\constant\MonthName;
 use app\constant\OgType;
+use app\exceptions\RedirectException;
 use app\utils\Urls;
 
 class Page extends Core
 {
     /**
      * @inheritDoc
+     * @throws RedirectException
      */
     public function compileContent(): void
     {
@@ -28,7 +30,7 @@ class Page extends Core
             $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
             $this->pageContent->setBody($this->deleteBlogEntry((int) $_GET['bid']));
         } elseif ($this->siteRequest->getLevel1() === 'blog') {
-            $this->processError(Core::HTTP_CODE_301, '/blog/');
+            throw new RedirectException('/blog/');
         } elseif ($this->siteRequest->getLevel3() !== null ) { //одна запись
             $this->pageContent->setBody(
                 $this->getOneEntry(

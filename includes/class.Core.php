@@ -7,6 +7,7 @@ use app\core\page\Headers;
 use app\core\SiteRequest;
 use app\core\WebUser;
 use app\db\MyDB;
+use app\exceptions\RedirectException;
 use app\sys\TemplateEngine;
 use app\utils\Urls;
 use Psr\Log\LoggerInterface;
@@ -126,7 +127,7 @@ abstract class Core
 
         if (!empty($moduleData)) {
             if ($moduleData['md_redirect'] !== null) {
-                $this->processError(self::HTTP_CODE_301, $moduleData['md_redirect']);
+                throw new RedirectException($moduleData['md_redirect']);
             }
             $this->pageContent->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
             if ($moduleData['md_title']) {
@@ -181,24 +182,16 @@ abstract class Core
      */
     public function processError(int $errorHttpCode = self::HTTP_CODE_404, $errorData = null): void
     {
-        if ($errorHttpCode !== self::HTTP_CODE_301) {
-            $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
-            $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
-            $this->pageContent->setUrlRss('');
-            $this->basepath = _URL_ROOT;
-            $this->pageContent->setUrlCss(basename($_css_files[0] ?? '/'));
-            $this->pageContent->setUrlJs(basename($_js_files[0] ?? '/'));
-            $this->smarty->assign('user', $this->webUser);
-            $this->smarty->assign('pageContent', $this->pageContent);
-        }
+        $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
+        $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
+        $this->pageContent->setUrlRss('');
+        $this->basepath = _URL_ROOT;
+        $this->pageContent->setUrlCss(basename($_css_files[0] ?? '/'));
+        $this->pageContent->setUrlJs(basename($_js_files[0] ?? '/'));
+        $this->smarty->assign('user', $this->webUser);
+        $this->smarty->assign('pageContent', $this->pageContent);
+
         switch ($errorHttpCode) {
-            case self::HTTP_CODE_301: {
-                $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
-                $this->pageHeaders->add('Location: ' . $errorData);
-                $this->pageHeaders->flush();
-                exit();
-            }
-                break;
             case self::HTTP_CODE_403: {
                 $errorContext = [
                     'srv' => $_SERVER ?? [],
@@ -262,7 +255,7 @@ abstract class Core
         foreach ($redirects as $redirect) {
             $redirectUrl = preg_filter($redirect['rd_from'], $redirect['rd_to'], $url);
             if ($redirectUrl !== null) {
-                $this->processError(self::HTTP_CODE_301, $redirectUrl);
+                throw new RedirectException($redirectUrl);
             }
         }
     }
