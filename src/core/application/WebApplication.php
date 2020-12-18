@@ -12,9 +12,9 @@ use app\core\WebUser;
 use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
-use app\sys\TemplateEngine;
 use Auth;
 use Page;
+use Throwable;
 
 class WebApplication extends Application
 {
@@ -46,7 +46,6 @@ class WebApplication extends Application
         $this->headers = new Headers();
         $this->content = new Content(new Head());
         $this->user = new WebUser(new Auth($this->db));
-        $this->templateEngine = new TemplateEngine();
     }
 
     public function init(): void
@@ -143,19 +142,15 @@ class WebApplication extends Application
             $this->headers->add('HTTP/1.1 301 Moved Permanently');
             $this->headers->add('Location: ' . $exception->getTargetUrl());
         } catch (NotFoundException $exception) {
-            $errorContext = [
+            $this->logger->notice('Ошибка 404', [
                 'srv' => $_SERVER ?? [],
-            ];
-            $this->logger->notice('Ошибка 404', $errorContext);
+            ]);
 
             $this->headers->add('Content-Type: text/html; charset=utf-8');
             $this->headers->add('HTTP/1.0 404 Not Found');
 
-            $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
-            $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
+            $this->prepareStaticLinks();
             $page->basepath = _URL_ROOT;
-            $this->content->setUrlCss(basename($_css_files[0] ?? '/'));
-            $this->content->setUrlJs(basename($_js_files[0] ?? '/'));
             $this->content->getHead()->addTitleElement('404 Not Found - страница не найдена на сервере');
             $this->content->setH1('Не найдено');
             $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
@@ -163,24 +158,32 @@ class WebApplication extends Application
             $this->templateEngine->assign('suggestions', []);
             $this->content->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html'));
         } catch (AccessDeniedException $exception) {
-            $errorContext = [
+            $this->logger->notice('Ошибка 403', [
                 'srv' => $_SERVER ?? [],
-            ];
-            $this->logger->notice('Ошибка 403', $errorContext);
+            ]);
 
             $this->headers->add('Content-Type: text/html; charset=utf-8');
             $this->headers->add('HTTP/1.1 403 Forbidden');
 
-            $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
-            $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
+            $this->prepareStaticLinks();
             $page->basepath = _URL_ROOT;
-            $this->content->setUrlCss(basename($_css_files[0] ?? '/'));
-            $this->content->setUrlJs(basename($_js_files[0] ?? '/'));
             $this->content->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
             $this->content->setH1('Запрещено');
             $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
             $this->templateEngine->assign('host', _SITE_URL);
             $this->content->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html'));
+        } catch (Throwable $exception) {
+            $this->headers->add('Content-Type: text/html; charset=utf-8');
+            $this->headers->add('Content-Type: text/html; charset=utf-8');
+            $this->headers->add('HTTP/1.1 503 Service Temporarily Unavailable');
+            $this->headers->add('Status: 503 Service Temporarily Unavailable');
+            $this->headers->add('Retry-After: 300');
+
+            $this->prepareStaticLinks();
+            $page->basepath = _URL_ROOT;
+            $this->content->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
+            $this->content->setH1('Сервис временно недоступен');
+            $this->content->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html'));
         }
 
         $this->headers->flush();
@@ -198,5 +201,21 @@ class WebApplication extends Application
     private function getUser(): WebUser
     {
         return $this->user;
+    }
+
+    /**
+     * Подготовка ссылок на статические ресурсы для страниц с ошибками
+     */
+    private function prepareStaticLinks(): void
+    {
+        $cssFiles = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
+        $jsFiles = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
+
+        if (!empty($cssFiles)) {
+            $this->content->setUrlCss(basename($cssFiles[0] ?? '/'));
+        }
+        if (!empty($jsFiles)) {
+            $this->content->setUrlJs(basename($jsFiles[0] ?? '/'));
+        }
     }
 }

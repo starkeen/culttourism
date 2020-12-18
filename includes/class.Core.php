@@ -7,6 +7,7 @@ use app\core\page\Headers;
 use app\core\SiteRequest;
 use app\core\WebUser;
 use app\db\MyDB;
+use app\exceptions\BaseApplicationException;
 use app\exceptions\RedirectException;
 use app\sys\TemplateEngine;
 use app\utils\Urls;
@@ -17,11 +18,6 @@ use Psr\Log\LoggerInterface;
  */
 abstract class Core
 {
-    public const HTTP_CODE_301 = 301;
-    public const HTTP_CODE_403 = 403;
-    public const HTTP_CODE_404 = 404;
-    public const HTTP_CODE_503 = 503;
-
     private static $hInstances = []; // хэш экземпляров классов
 
     /**
@@ -91,6 +87,7 @@ abstract class Core
     /**
      * Инициализация базовых элементов всех страниц
      * @throws RedirectException
+     * @throws BaseApplicationException
      */
     public function init(): void
     {
@@ -104,7 +101,7 @@ abstract class Core
         $this->pageContent->setUrlRss($this->globalConfig->getUrlRSS());
 
         if (!$this->globalConfig->isSiteActive()) {
-            $this->processError(self::HTTP_CODE_503);
+            throw new BaseApplicationException();
         }
 
         $md = new MModules($this->db);
@@ -162,6 +159,10 @@ abstract class Core
      */
     abstract public function compileContent(): void;
 
+    /**
+     * @param $e
+     * @throws BaseApplicationException
+     */
     public function errorsExceptionsHandler($e): void
     {
         $msg = 'Error: ' . $e->getMessage() . PHP_EOL
@@ -174,47 +175,13 @@ abstract class Core
         if (ob_get_length()) {
             ob_end_clean();
         }
-        $this->processError(self::HTTP_CODE_503);
+        throw new BaseApplicationException($e);
     }
 
     /**
-     * @param int $errorHttpCode
-     * @param mixed|null $errorData
+     * @param string $url
+     * @throws RedirectException
      */
-    public function processError(int $errorHttpCode = self::HTTP_CODE_404, $errorData = null): void
-    {
-        $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
-        $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
-        $this->pageContent->setUrlRss('');
-        $this->basepath = _URL_ROOT;
-        $this->pageContent->setUrlCss(basename($_css_files[0] ?? '/'));
-        $this->pageContent->setUrlJs(basename($_js_files[0] ?? '/'));
-        $this->smarty->assign('user', $this->webUser);
-        $this->smarty->assign('pageContent', $this->pageContent);
-
-        switch ($errorHttpCode) {
-            case self::HTTP_CODE_503: {
-                $this->pageHeaders->add('Content-Type: text/html; charset=utf-8');
-                $this->pageHeaders->add('Content-Type: text/html; charset=utf-8');
-                $this->pageHeaders->add('HTTP/1.1 503 Service Temporarily Unavailable');
-                $this->pageHeaders->add('Status: 503 Service Temporarily Unavailable');
-                $this->pageHeaders->add('Retry-After: 300');
-
-                $this->pageContent->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
-                $this->pageContent->setH1('Сервис временно недоступен');
-                $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html'));
-            }
-                break;
-        }
-        $this->pageHeaders->flush();
-        if ($this->siteRequest->isAjax()) {
-            echo $this->pageContent->getBody();
-        } else {
-            $this->smarty->display(_DIR_TEMPLATES . '/_main/main.html.tpl');
-        }
-        exit();
-    }
-
     protected function checkRedirect(string $url): void
     {
         $redirectModel = new MRedirects($this->db);

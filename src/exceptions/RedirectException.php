@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\exceptions;
 
-class RedirectException extends LogicException
+class RedirectException extends LogicApplicationException
 {
     private $target;
 

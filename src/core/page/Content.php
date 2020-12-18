@@ -138,7 +138,7 @@ class Content
             $this->urlJs = $this->jsResources[$resourceKey];
         }
 
-        return !_ER_REPORT ? $this->urlJs : '../sys/static/?type=js&pack=' . $pack;
+        return !_ER_REPORT ? '/js/' . $this->urlJs : '/sys/static/?type=js&pack=' . $pack;
     }
 
     /**
@@ -146,7 +146,7 @@ class Content
      */
     public function getUrlCss(): string
     {
-        return !_ER_REPORT ? $this->urlCss : '../sys/static/?type=css&pack=common';
+        return !_ER_REPORT ? '/css/' . $this->urlCss : '/sys/static/?type=css&pack=common';
     }
 
     public function setCustomJsModule(string $module): void

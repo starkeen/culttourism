@@ -6,6 +6,6 @@ namespace app\exceptions;
 
 use Exception;
 
-abstract class LogicException extends Exception
+abstract class LogicApplicationException extends Exception
 {
 }

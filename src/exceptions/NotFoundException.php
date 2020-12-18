@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\exceptions;
 
-class NotFoundException extends LogicException
+class NotFoundException extends LogicApplicationException
 {
     public function __construct()
     {

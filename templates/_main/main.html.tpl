@@ -19,7 +19,7 @@
         {/if}
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta name="revisit-after" content="7 days"/>
-        <link rel="stylesheet" href="/css/{$pageContent->getUrlCss()}" type="text/css" media="screen, projection, print"/>
+        <link rel="stylesheet" href="{$pageContent->getUrlCss()}" type="text/css" media="screen, projection, print"/>
         <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
         <link rel="search" href="/search/"/>
@@ -34,7 +34,7 @@
                 src="https://api-maps.yandex.ru/2.1/?apikey=74d288bb-04a5-43b1-bf52-e90eeccd2683&lang=ru_RU&coordorder=longlat"
                 defer="defer"></script>
         <script type="text/javascript" src="https://yastatic.net/pcode-native/loaders/loader.js" defer="defer"></script>
-        <script type="text/javascript" src="/js/{$pageContent->getUrlJs()}" defer="defer"></script>
+        <script type="text/javascript" src="{$pageContent->getUrlJs()}" defer="defer"></script>
         {if !$user->isGuest()}
             <script type="text/javascript" src="/addons/ckeditor/ckeditor.js" defer="defer"></script>
             <script type="text/javascript" src="/addons/ckeditor/adapters/jquery.js" defer="defer"></script>
