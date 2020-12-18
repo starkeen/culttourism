@@ -77,7 +77,6 @@ abstract class Core
      */
     protected function __construct(MyDB $db, SiteRequest $request)
     {
-        set_exception_handler([$this, 'errorsExceptionsHandler']);
         $this->db = $db;
         $this->siteRequest = $request;
         $this->globalConfig = new GlobalConfig($this->db);
@@ -157,25 +156,6 @@ abstract class Core
      * Определение типа страницы внутри модуля и формирование контента
      */
     abstract public function compileContent(): void;
-
-    /**
-     * @param $e
-     * @throws BaseApplicationException
-     */
-    public function errorsExceptionsHandler($e): void
-    {
-        $msg = 'Error: ' . $e->getMessage() . PHP_EOL
-            . 'file: ' . $e->getFile() . ':' . $e->getLine() . "\n"
-            . 'URI: ' . ($_SERVER['REQUEST_URI'] ?? 'undefined') . "\n"
-            . PHP_EOL .  '__________________________' . PHP_EOL . PHP_EOL . PHP_EOL
-            . 'trace: ' . print_r($e->getTrace(), true) . PHP_EOL;
-
-        mail('starkeen@gmail.com', 'Error on ' . _URL_ROOT, $msg);
-        if (ob_get_length()) {
-            ob_end_clean();
-        }
-        throw new BaseApplicationException($e);
-    }
 
     /**
      * @param string $url

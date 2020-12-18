@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace app\core\application;
 
+use app\core\ExceptionsHandler;
 use app\db\FactoryDB;
 use app\db\MyDB;
+use app\exceptions\BaseApplicationException;
 use app\sys\Logger;
 use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
 use MSysProperties;
+use Throwable;
 
 abstract class Application
 {
@@ -42,6 +45,7 @@ abstract class Application
 
     public function init(): void
     {
+        set_exception_handler([ExceptionsHandler::class, 'errorsExceptionsHandler']);
         $sp = new MSysProperties($this->db);
         $releaseKey = $sp->getByName('git_hash');
         $this->logger->setReleaseKey($releaseKey);
