@@ -63,8 +63,6 @@ abstract class Core
      */
     public $pageHeaders;
 
-    public $url = '';
-
     public $lastedit;
     public $lastedit_timestamp = 0;
     public $expiredate;

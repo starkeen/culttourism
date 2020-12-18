@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
-namespace app\core;
+namespace app\core\module;
 
+use app\core\module\BaseModule;
+use app\core\SiteRequest;
 use app\db\MyDB;
+use app\modules\BlogModule;
 use Page;
 
 class ModuleFetcher
@@ -38,5 +41,13 @@ class ModuleFetcher
         include($includeModulePath);
 
         return new Page($this->db, $request);
+    }
+
+    /**
+     * @return BaseModule
+     */
+    public function getModule(): BaseModule
+    {
+        return new BlogModule();
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\core\application;
 
-use app\core\ModuleFetcher;
+use app\core\module\ModuleFetcher;
 use app\core\page\Content;
 use app\core\page\Head;
 use app\core\page\Headers;
@@ -73,6 +73,9 @@ class WebApplication extends Application
             $this->headers->flush();
             exit();
         }
+
+        $module = $this->moduleFetcher->getModule();
+        $module->process();
 
         $page = $this->moduleFetcher->getPageModule($this->request);
         $page->smarty = $this->templateEngine;
