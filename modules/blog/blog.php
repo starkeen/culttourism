@@ -385,9 +385,4 @@ class Page extends Core
             throw new NotFoundException();
         }
     }
-
-    public static function getInstance($db, $mod = null)
-    {
-        return self::getInstanceOf(__CLASS__, $db, $mod);
-    }
 }

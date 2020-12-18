@@ -643,9 +643,4 @@ class Page extends Core
             throw new NotFoundException();
         }
     }
-
-    public static function getInstance(MyDB $db, SiteRequest $request): self
-    {
-        return self::getInstanceOf(__CLASS__, $db, $request);
-    }
 }

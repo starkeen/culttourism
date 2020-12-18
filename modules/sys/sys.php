@@ -123,15 +123,4 @@ class Page extends Core
 
         return new DeployBitbucket($guzzle, $this->logger, SENTRY_RELEASE_DSN, $config);
     }
-
-    /**
-     * @param MyDB $db
-     * @param SiteRequest $request
-     *
-     * @return self
-     */
-    public static function getInstance(MyDB $db, SiteRequest $request): self
-    {
-        return self::getInstanceOf(__CLASS__, $db, $request);
-    }
 }

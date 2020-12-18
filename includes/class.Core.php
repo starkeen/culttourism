@@ -75,7 +75,7 @@ abstract class Core
      * @param MyDB $db
      * @param SiteRequest $request
      */
-    protected function __construct(MyDB $db, SiteRequest $request)
+    public function __construct(MyDB $db, SiteRequest $request)
     {
         $this->db = $db;
         $this->siteRequest = $request;
@@ -171,30 +171,5 @@ abstract class Core
                 throw new RedirectException($redirectUrl);
             }
         }
-    }
-
-    /**
-     * запрещаем клонировать экземпляр класса
-     * @throws RuntimeException
-     */
-    protected function __clone()
-    {
-        throw new RuntimeException('Can not clone singleton');
-    }
-
-    /**
-     * @param string $sClassname
-     * @param MyDB $db
-     * @param SiteRequest $request
-     *
-     * @return self
-     */
-    protected static function getInstanceOf(string $sClassname, MyDB $db, SiteRequest $request): self
-    {
-        if (!isset(self::$hInstances[$sClassname])) {
-            self::$hInstances[$sClassname] = new $sClassname($db, $request); // создаем экземпляр
-        }
-
-        return self::$hInstances[$sClassname];
     }
 }

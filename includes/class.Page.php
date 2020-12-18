@@ -334,15 +334,4 @@ class Page extends Core
         $this->pageHeaders->flush();
         exit();
     }
-
-    /**
-     * @param MyDb $db
-     * @param SiteRequest $request
-     *
-     * @return Core
-     */
-    public static function getInstance(MyDb $db, SiteRequest $request): Core
-    {
-        return self::getInstanceOf(__CLASS__, $db, $request);
-    }
 }

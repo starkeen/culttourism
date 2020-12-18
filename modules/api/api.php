@@ -246,9 +246,4 @@ class Page extends Core
             )
         );
     }
-
-    public static function getInstance(MyDB $db, SiteRequest $request): self
-    {
-        return self::getInstanceOf(__CLASS__, $db, $request);
-    }
 }

@@ -266,9 +266,4 @@ class Page extends Core
         header('Cache-Control: no-store, no-cache, must-revalidate');
         header('Expires: ' . date('r'));
     }
-
-    public static function getInstance(MyDB $db, SiteRequest $request): self
-    {
-        return self::getInstanceOf(__CLASS__, $db, $request);
-    }
 }

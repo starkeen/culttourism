@@ -100,9 +100,4 @@ class Page extends Core
             return $this->smarty->fetch(_DIR_TEMPLATES . '/sign/authform.sm.html');
         }
     }
-
-    public static function getInstance(MyDB $db, SiteRequest $request): self
-    {
-        return self::getInstanceOf(__CLASS__, $db, $request);
-    }
 }

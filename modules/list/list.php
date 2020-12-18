@@ -88,15 +88,4 @@ class Page extends Core
         $this->smarty->assign('index_lists', $indexLists);
         $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/list/index.sm.html'));
     }
-
-    /**
-     * @param MyDB $db
-     * @param SiteRequest $request
-     *
-     * @return self
-     */
-    public static function getInstance(MyDB $db, SiteRequest $request): self
-    {
-        return self::getInstanceOf(__CLASS__, $db, $request);
-    }
 }

@@ -213,9 +213,4 @@ class Page extends Core
         $captcha->captcha();
         exit();
     }
-
-    public static function getInstance(MyDB $db, SiteRequest $request): self
-    {
-        return self::getInstanceOf(__CLASS__, $db, $request);
-    }
 }

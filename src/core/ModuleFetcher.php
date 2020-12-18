@@ -37,6 +37,6 @@ class ModuleFetcher
         }
         include($includeModulePath);
 
-        return Page::getInstance($this->db, $request);
+        return new Page($this->db, $request);
     }
 }
