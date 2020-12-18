@@ -2,6 +2,7 @@
 
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
 use models\MLinks;
 
@@ -89,6 +90,7 @@ class Page extends Core
     {
         $mds = new MModules($this->db);
         $md = $mds->getItemByPk($pg_id);
+
         return '<h3>Экспорт данных GPS</h3>' . $md['md_pagecontent'];
     }
 
@@ -97,6 +99,7 @@ class Page extends Core
      * @param int $cid
      * @return bool|null
      * @throws NotFoundException
+     * @throws AccessDeniedException
      */
     private function savePointContacts(int $cid): ?bool
     {
@@ -110,7 +113,7 @@ class Page extends Core
             throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $out = $pp->updateByPk(
             $cid,
@@ -128,16 +131,22 @@ class Page extends Core
             $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $cid);
             $linksModel = new MLinks($this->db);
             $linksModel->deleteByPoint($cid);
+
             return true;
         } else {
             return false;
         }
     }
 
+    /**
+     * @param $pid
+     * @return bool
+     * @throws AccessDeniedException
+     */
     private function setFormPointAddr($pid): bool
     {
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $p = new MPagePoints($this->db);
         $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $pid);
@@ -148,20 +157,31 @@ class Page extends Core
         return $p->updateByPk($pid, ['pt_adress' => $_POST['addr']]);
     }
 
+    /**
+     * @param $pid
+     * @return bool
+     * @throws AccessDeniedException
+     */
     private function setFormPointBest($pid): bool
     {
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $state = cut_trash_int(!empty($_POST['nstate']) && $_POST['nstate'] === 'checked');
         $p = new MPagePoints($this->db);
+
         return $p->updateByPk($pid, ['pt_is_best' => $state]);
     }
 
+    /**
+     * @param $pid
+     * @return false|string
+     * @throws AccessDeniedException
+     */
     private function setFormPointGPS($pid)
     {
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
 
         $p = new MPagePoints($this->db);
@@ -187,6 +207,7 @@ class Page extends Core
             } else {
                 $point_lon_w = "W$point_lon_short";
             }
+
             return "$point_lat_w $point_lon_w";
         } else {
             return false;
@@ -217,17 +238,22 @@ class Page extends Core
         }
         $point['zoom'] = ($point['pt_latlon_zoom'] != 0) ? $point['pt_latlon_zoom'] : 13;
         $this->smarty->assign('point', $point);
+
         return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/changelatlon.form.sm.html');
     }
 
+    /**
+     * @return false|string
+     * @throws AccessDeniedException
+     */
     private function getChangeTypeForm()
     {
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $point_id = cut_trash_int($_GET['pid']);
         if (!$point_id) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $p = new MPagePoints($this->db);
         $pts = new MRefPointtypes($this->db);
@@ -240,18 +266,24 @@ class Page extends Core
 
         $this->smarty->assign('point', $point);
         $this->smarty->assign('alltypes', $types);
+
         return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/changetype.form.sm.html');
     }
 
+    /**
+     * @param $pid
+     * @return mixed
+     * @throws AccessDeniedException
+     */
     private function setPointType($pid)
     {
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $ppid = (int) $_POST['pid'];
         $type = (int) $_POST['ntype'];
         if ($pid != $ppid || !$type) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
 
         $p = new MPagePoints($this->db);
@@ -264,9 +296,15 @@ class Page extends Core
             ]
         );
         $newtype = $pts->getItemByPk($type);
+
         return $newtype['tp_icon'];
     }
 
+    /**
+     * @param $id
+     * @return false|string
+     * @throws AccessDeniedException
+     */
     private function getPointNew($id)
     {
         if ($this->webUser->isEditor()) {
@@ -278,9 +316,10 @@ class Page extends Core
                 $city_title = '';
             }
             $this->smarty->assign('city_title', $city_title);
+
             return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.sm.html');
         } else {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
     }
 
@@ -288,6 +327,7 @@ class Page extends Core
      * @param $pid
      * @return false|int
      * @throws NotFoundException
+     * @throws AccessDeniedException
      */
     private function deletePoint($pid)
     {
@@ -295,11 +335,11 @@ class Page extends Core
             throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $ppid = (int) $_POST['pid'];
         if ($pid != $ppid) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $pp = new MPagePoints($this->db);
         $state = $pp->deleteByPk($ppid);
@@ -317,6 +357,7 @@ class Page extends Core
      * @param $cid
      * @return int
      * @throws NotFoundException
+     * @throws AccessDeniedException
      */
     private function savePointNew($cid): int
     {
@@ -324,7 +365,7 @@ class Page extends Core
             throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $pts = new MPagePoints($this->db);
         $add_item = [
@@ -343,6 +384,7 @@ class Page extends Core
             $add_item['pt_latitude'] = trim($_POST['nlat']);
             $add_item['pt_longitude'] = trim($_POST['nlon']);
         }
+
         return $pts->insert($add_item);
     }
 
@@ -350,6 +392,7 @@ class Page extends Core
      * @param $id
      * @return mixed
      * @throws NotFoundException
+     * @throws AccessDeniedException
      */
     private function savePointTitle($id)
     {
@@ -361,7 +404,7 @@ class Page extends Core
             throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $pp = new MPagePoints($this->db);
         $state = $pp->updateByPk(
@@ -374,6 +417,7 @@ class Page extends Core
         if ($state) {
             $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $nid);
             $point = $pp->getItemByPk($nid);
+
             return $point['pt_name'];
         } else {
             throw new NotFoundException();
@@ -384,6 +428,7 @@ class Page extends Core
      * @param $id
      * @return mixed
      * @throws NotFoundException
+     * @throws AccessDeniedException
      */
     private function savePointDescr($id)
     {
@@ -395,7 +440,7 @@ class Page extends Core
             throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $pp = new MPagePoints($this->db);
         $state = $pp->updateByPk(
@@ -408,6 +453,7 @@ class Page extends Core
         if ($state) {
             $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $nid);
             $point = $pp->getItemByPk($nid);
+
             return $point['pt_description'];
         } else {
             throw new NotFoundException();
@@ -479,11 +525,14 @@ class Page extends Core
         }
     }
 
-//-------------------------------------------------------------- CITY ----------
+    /**
+     * -------------------------------------------------------------- CITY ----------
+     * @throws AccessDeniedException
+     */
     private function setFormCityGPS($cid): ?bool
     {
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $pc = new MPageCities($this->db);
         $state = $pc->updateByPk(
@@ -520,6 +569,7 @@ class Page extends Core
         }
 
         $this->smarty->assign('city', $city);
+
         return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/citylatlon.form.sm.html');
     }
 
@@ -527,6 +577,7 @@ class Page extends Core
      * @param $id
      * @return mixed
      * @throws NotFoundException
+     * @throws AccessDeniedException
      */
     private function saveCityTitle($id)
     {
@@ -538,7 +589,7 @@ class Page extends Core
             throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         $pc = new MPageCities($this->db);
         $state = $pc->updateByPk(
@@ -550,6 +601,7 @@ class Page extends Core
         if ($state) {
             $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_CITIES, $nid);
             $city = $pc->getItemByPk($nid);
+
             return $city['pc_title'];
         } else {
             throw new NotFoundException();
@@ -560,6 +612,7 @@ class Page extends Core
      * @param $id
      * @return mixed
      * @throws NotFoundException
+     * @throws AccessDeniedException
      */
     private function saveCityDescription($id)
     {
@@ -571,7 +624,7 @@ class Page extends Core
             throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
 
         $pc = new MPageCities($this->db);
@@ -584,6 +637,7 @@ class Page extends Core
         if ($state) {
             $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_CITIES, $nid);
             $city = $pc->getItemByPk($nid);
+
             return $city['pc_text'];
         } else {
             throw new NotFoundException();

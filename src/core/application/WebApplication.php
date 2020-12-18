@@ -9,6 +9,7 @@ use app\core\page\Head;
 use app\core\page\Headers;
 use app\core\SiteRequest;
 use app\core\WebUser;
+use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 use app\sys\TemplateEngine;
@@ -135,8 +136,8 @@ class WebApplication extends Application
      */
     private function display(Page $page): void
     {
-        $page->init();
         try {
+            $page->init();
             $page->compileContent();
         } catch (RedirectException $exception) {
             $this->headers->add('HTTP/1.1 301 Moved Permanently');
@@ -161,6 +162,25 @@ class WebApplication extends Application
             $this->templateEngine->assign('host', _SITE_URL);
             $this->templateEngine->assign('suggestions', []);
             $this->content->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html'));
+        } catch (AccessDeniedException $exception) {
+            $errorContext = [
+                'srv' => $_SERVER ?? [],
+            ];
+            $this->logger->notice('Ошибка 403', $errorContext);
+
+            $this->headers->add('Content-Type: text/html; charset=utf-8');
+            $this->headers->add('HTTP/1.1 403 Forbidden');
+
+            $_css_files = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
+            $_js_files = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
+            $page->basepath = _URL_ROOT;
+            $this->content->setUrlCss(basename($_css_files[0] ?? '/'));
+            $this->content->setUrlJs(basename($_js_files[0] ?? '/'));
+            $this->content->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
+            $this->content->setH1('Запрещено');
+            $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+            $this->templateEngine->assign('host', _SITE_URL);
+            $this->content->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html'));
         }
 
         $this->headers->flush();

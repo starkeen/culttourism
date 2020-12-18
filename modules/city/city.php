@@ -3,6 +3,7 @@
 use app\constant\OgType;
 use app\core\SiteRequest;
 use app\db\MyDB;
+use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
 
 class Page extends Core
@@ -152,6 +153,7 @@ class Page extends Core
 
     /**
      **************************************  ТАБЛИЦА МЕТА  *****************
+     * @throws AccessDeniedException
      */
     private function metaCity(): void
     {
@@ -162,7 +164,7 @@ class Page extends Core
 
         if (isset($_POST['act'])) {
             if (!$this->webUser->isEditor()) {
-                $this->processError(Core::HTTP_CODE_403);
+                throw new AccessDeniedException();
             }
             $uid = $this->webUser->getId();
             switch ($_POST['act']) {
@@ -271,11 +273,12 @@ class Page extends Core
     /**
      ************************************** РЕДАКТИРОВАНИЕ *****************
      * @throws NotFoundException
+     * @throws AccessDeniedException
      */
     private function detailCity(): void
     {
         if (!$this->webUser->isEditor()) {
-            $this->processError(Core::HTTP_CODE_403);
+            throw new AccessDeniedException();
         }
         if (!isset($_GET['city_id'])) {
             throw new NotFoundException();

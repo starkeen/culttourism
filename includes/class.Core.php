@@ -90,6 +90,7 @@ abstract class Core
 
     /**
      * Инициализация базовых элементов всех страниц
+     * @throws RedirectException
      */
     public function init(): void
     {
@@ -192,22 +193,6 @@ abstract class Core
         $this->smarty->assign('pageContent', $this->pageContent);
 
         switch ($errorHttpCode) {
-            case self::HTTP_CODE_403: {
-                $errorContext = [
-                    'srv' => $_SERVER ?? [],
-                ];
-                $this->logger->notice('Ошибка 403', $errorContext);
-
-                $this->pageHeaders->add('Content-Type: text/html; charset=utf-8');
-                $this->pageHeaders->add('HTTP/1.1 403 Forbidden');
-
-                $this->pageContent->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
-                $this->pageContent->setH1('Запрещено');
-                $this->smarty->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-                $this->smarty->assign('host', _SITE_URL);
-                $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html'));
-            }
-                break;
             case self::HTTP_CODE_503: {
                 $this->pageHeaders->add('Content-Type: text/html; charset=utf-8');
                 $this->pageHeaders->add('Content-Type: text/html; charset=utf-8');
