@@ -307,16 +307,16 @@ class Page extends Core
             $this->smarty->assign('points', $points_data['points']);
             $this->smarty->assign('points_sight', $points_data['points_sight']);
             $this->smarty->assign('points_servo', $points_data['points_service']);
-            $this->smarty->assign('page_url', $this->basepath);
+            $this->smarty->assign('page_url', _URL_ROOT);
             $this->smarty->assign('page_image', $cityImage);
             $this->smarty->assign('types_select', $points_data['types']);
             $this->smarty->assign('ptypes', []);
             $this->pageContent->setCustomJsModule('city');
 
             if ($this->webUser->isEditor()) {
-                return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.edit.sm.html');
+                return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.edit.tpl');
             } else {
-                return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.show.sm.html');
+                return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.show.tpl');
             }
         } else {
             throw new NotFoundException();

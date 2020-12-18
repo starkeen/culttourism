@@ -361,7 +361,7 @@ class Page extends Core
         $yandex = $this->db->fetch();
 
         $this->smarty->assign('city', $citypage);
-        $this->smarty->assign('baseurl', $this->basepath);
+        $this->smarty->assign('baseurl', _URL_ROOT);
         $this->smarty->assign('meta', $meta);
         $this->smarty->assign('photos', $photos['items']);
         $this->smarty->assign('ref_meta', $ref_meta);
@@ -370,7 +370,7 @@ class Page extends Core
         $this->lastedit_timestamp = $citypage['last_update'];
 
         $this->smarty->assign('adminlogined', $this->webUser->getId() ?: 0);
-        $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/details.sm.html'));
+        $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/details.tpl'));
     }
 
     /**

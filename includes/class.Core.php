@@ -66,7 +66,7 @@ abstract class Core
     public $pageHeaders;
 
     public $url = '';
-    public $basepath = '';
+
     public $lastedit;
     public $lastedit_timestamp = 0;
     public $expiredate;
@@ -80,7 +80,6 @@ abstract class Core
         set_exception_handler([$this, 'errorsExceptionsHandler']);
         $this->db = $db;
         $this->siteRequest = $request;
-        $this->basepath = _URL_ROOT;
         $this->globalConfig = new GlobalConfig($this->db);
     }
 

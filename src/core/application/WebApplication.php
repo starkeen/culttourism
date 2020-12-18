@@ -150,7 +150,6 @@ class WebApplication extends Application
             $this->headers->add('HTTP/1.0 404 Not Found');
 
             $this->prepareStaticLinks();
-            $page->basepath = _URL_ROOT;
             $this->content->getHead()->addTitleElement('404 Not Found - страница не найдена на сервере');
             $this->content->setH1('Не найдено');
             $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
@@ -166,7 +165,6 @@ class WebApplication extends Application
             $this->headers->add('HTTP/1.1 403 Forbidden');
 
             $this->prepareStaticLinks();
-            $page->basepath = _URL_ROOT;
             $this->content->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
             $this->content->setH1('Запрещено');
             $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
@@ -180,7 +178,6 @@ class WebApplication extends Application
             $this->headers->add('Retry-After: 300');
 
             $this->prepareStaticLinks();
-            $page->basepath = _URL_ROOT;
             $this->content->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
             $this->content->setH1('Сервис временно недоступен');
             $this->content->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html'));
