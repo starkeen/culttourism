@@ -46,6 +46,7 @@ abstract class Application
     public function init(): void
     {
         set_exception_handler([ExceptionsHandler::class, 'errorsExceptionsHandler']);
+        register_shutdown_function([ExceptionsHandler::class, 'shutdown']);
         $sp = new MSysProperties($this->db);
         $releaseKey = $sp->getByName('git_hash');
         $this->logger->setReleaseKey($releaseKey);
