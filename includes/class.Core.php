@@ -18,8 +18,6 @@ use Psr\Log\LoggerInterface;
  */
 abstract class Core
 {
-    private static $hInstances = []; // хэш экземпляров классов
-
     /**
      * @var MyDB
      */
@@ -156,20 +154,4 @@ abstract class Core
      * Определение типа страницы внутри модуля и формирование контента
      */
     abstract public function compileContent(): void;
-
-    /**
-     * @param string $url
-     * @throws RedirectException
-     */
-    protected function checkRedirect(string $url): void
-    {
-        $redirectModel = new MRedirects($this->db);
-        $redirects = $redirectModel->getActive();
-        foreach ($redirects as $redirect) {
-            $redirectUrl = preg_filter($redirect['rd_from'], $redirect['rd_to'], $url);
-            if ($redirectUrl !== null) {
-                throw new RedirectException($redirectUrl);
-            }
-        }
-    }
 }

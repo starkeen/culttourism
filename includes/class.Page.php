@@ -40,8 +40,6 @@ class Page extends Core
     {
         $url = $request->getUrl();
         if ($url !== '') {
-            $this->checkRedirect($url);
-
             $this->pageContent->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
 
             $regs = [];
