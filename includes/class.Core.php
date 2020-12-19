@@ -5,6 +5,7 @@ use app\core\GlobalConfig;
 use app\core\page\Content;
 use app\core\page\Headers;
 use app\core\SiteRequest;
+use app\core\SiteResponse;
 use app\core\WebUser;
 use app\db\MyDB;
 use app\exceptions\BaseApplicationException;
@@ -62,6 +63,11 @@ abstract class Core
      * @var Headers
      */
     public $pageHeaders;
+
+    /**
+     * @var SiteResponse
+     */
+    public $response;
 
     public $lastedit;
     public $lastedit_timestamp = 0;

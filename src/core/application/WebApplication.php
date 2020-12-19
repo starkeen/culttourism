@@ -97,48 +97,7 @@ class WebApplication extends Application
         $page->webUser = $this->getUser();
         $page->pageHeaders = $this->headers;
         $page->pageContent = $this->content;
-
-        $this->headers->add('X-Powered-By: culttourism');
-        $this->headers->add('Content-Type: text/html; charset=utf-8');
-
-        if (_CACHE_DAYS !== 0 && !$this->request->isAjax()) {
-            $this->headers->add('Expires: ' . $page->expiredate);
-            $this->headers->add('Last-Modified: ' . $page->lastedit);
-            $this->headers->add('Cache-Control: public, max-age=' . _CACHE_DAYS * 3600);
-
-            $headers = getallheaders();
-            if (isset($headers['If-Modified-Since'])) {
-                // Разделяем If-Modified-Since (Netscape < v6 отдаёт их неправильно)
-                $modifiedSince = explode(';', $headers['If-Modified-Since']);
-                // Преобразуем запрос клиента If-Modified-Since в таймштамп
-                $modifiedSince = strtotime($modifiedSince[0]);
-                $lastModified = strtotime($page->lastedit);
-                // Сравниваем время последней модификации контента с кэшем клиента
-                if ($lastModified <= $modifiedSince) {
-                    $this->headers->add('HTTP/1.1 304 Not Modified');
-                    $this->headers->flush();
-                    exit();
-                }
-            }
-        } elseif ($page->lastedit_timestamp > 0 && !$this->request->isAjax()) {
-            $this->headers->add('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp) . ' GMT');
-            $this->headers->add('Cache-control: public');
-            $this->headers->add('Pragma: cache');
-            $this->headers->add('Expires: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp + 60 * 60 * 24 * 7) . ' GMT');
-            $headers = getallheaders();
-            if (isset($headers['If-Modified-Since'])) {
-                $modifiedSince = explode(';', $headers['If-Modified-Since']);
-                if (strtotime($modifiedSince[0]) >= $page->lastedit_timestamp) {
-                    $this->headers->add('HTTP/1.1 304 Not Modified');
-                    $this->headers->flush();
-                    exit();
-                }
-            }
-        } else {
-            $this->headers->add('Cache-Control: no-store, no-cache, must-revalidate');
-            $this->headers->add('Expires: ' . date('r'));
-            $page->lastedit = null;
-        }
+        $page->response = $this->response;
 
         $this->display($page, $module);
 
@@ -198,6 +157,48 @@ class WebApplication extends Application
             $this->content->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html'));
 
             $page->logger->error($exception->getMessage());
+        }
+
+        $this->headers->add('X-Powered-By: culttourism');
+        $this->headers->add('Content-Type: text/html; charset=utf-8');
+
+        if (_CACHE_DAYS !== 0 && !$this->request->isAjax()) {
+            $this->headers->add('Expires: ' . $page->expiredate);
+            $this->headers->add('Last-Modified: ' . $page->lastedit);
+            $this->headers->add('Cache-Control: public, max-age=' . _CACHE_DAYS * 3600);
+
+            $headers = getallheaders();
+            if (isset($headers['If-Modified-Since'])) {
+                // Разделяем If-Modified-Since (Netscape < v6 отдаёт их неправильно)
+                $modifiedSince = explode(';', $headers['If-Modified-Since']);
+                // Преобразуем запрос клиента If-Modified-Since в таймштамп
+                $modifiedSince = strtotime($modifiedSince[0]);
+                $lastModified = strtotime($page->lastedit);
+                // Сравниваем время последней модификации контента с кэшем клиента
+                if ($lastModified <= $modifiedSince) {
+                    $this->headers->add('HTTP/1.1 304 Not Modified');
+                    $this->headers->flush();
+                    exit();
+                }
+            }
+        } elseif ($page->lastedit_timestamp > 0 && !$this->request->isAjax()) {
+            $this->headers->add('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp) . ' GMT');
+            $this->headers->add('Cache-control: public');
+            $this->headers->add('Pragma: cache');
+            $this->headers->add('Expires: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp + 60 * 60 * 24 * 7) . ' GMT');
+            $headers = getallheaders();
+            if (isset($headers['If-Modified-Since'])) {
+                $modifiedSince = explode(';', $headers['If-Modified-Since']);
+                if (strtotime($modifiedSince[0]) >= $page->lastedit_timestamp) {
+                    $this->headers->add('HTTP/1.1 304 Not Modified');
+                    $this->headers->flush();
+                    exit();
+                }
+            }
+        } else {
+            $this->headers->add('Cache-Control: no-store, no-cache, must-revalidate');
+            $this->headers->add('Expires: ' . date('r'));
+            $page->lastedit = null;
         }
 
         $this->headers->flush();
