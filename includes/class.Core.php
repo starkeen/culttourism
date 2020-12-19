@@ -141,7 +141,9 @@ abstract class Core
 
             $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $this->globalConfig->getDefaultPageTitle());
             $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
-            $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->response->getLastEditTimestamp());
+            if ($this->response->getLastEditTimestamp() !== null) {
+                $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->response->getLastEditTimestamp());
+            }
 
             if ($moduleData['md_pagecontent'] !== null) {
                 $this->pageContent->setBody($moduleData['md_pagecontent']);
