@@ -52,7 +52,7 @@ class Page extends Core
      */
     private function doOut(): void
     {
-        $this->auth->deleteKey();
+        $this->webUser->getAuth()->deleteKey();
         $_SESSION['user'] = null;
         $_SESSION['user_id'] = null;
         $_SESSION['user_name'] = null;
@@ -81,7 +81,7 @@ class Page extends Core
         $email = trim($_POST['email']);
         $passw = trim($_POST['userpass']);
 
-        if ($this->auth->checkMailPassword($email, $passw)) {
+        if ($this->webUser->getAuth()->checkMailPassword($email, $passw)) {
             $returnUrl = $_SESSION['user_referer'] ?? _SITE_URL;
         } else {
             $returnUrl = '/sign/in/';

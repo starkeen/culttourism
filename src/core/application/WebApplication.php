@@ -80,7 +80,6 @@ class WebApplication extends Application
         $page = $this->moduleFetcher->getPageModule($this->request);
         $page->smarty = $this->templateEngine;
         $page->logger = $this->logger;
-        $page->auth = $this->getUser()->getAuth();
         $page->webUser = $this->getUser();
         $page->response = $this->response;
 

@@ -35,11 +35,6 @@ abstract class Core
     public $smarty;
 
     /**
-     * @var Auth
-     */
-    public $auth;
-
-    /**
      * @var WebUser
      */
     public $webUser;
@@ -77,7 +72,7 @@ abstract class Core
      */
     public function init(): void
     {
-        $this->auth->checkSession('web');
+        $this->webUser->getAuth()->checkSession('web');
 
         $this->response->getContent()->getHead()->setTitleDelimiter($this->globalConfig->getTitleDelimiter());
 

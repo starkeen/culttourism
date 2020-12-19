@@ -26,7 +26,7 @@ class Page extends Core
             $id = substr($id, 0, strpos($id, '?'));
         }
         $this->id = $id;
-        $this->auth->setService('ajax');
+        $this->webUser->getAuth()->setService('ajax');
 
         $this->mDataCheck = new MDataCheck($this->db);
 

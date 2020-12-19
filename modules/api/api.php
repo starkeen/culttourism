@@ -19,7 +19,7 @@ class Page extends Core
             $id = substr($id, 0, strpos($id, '?'));
         }
         $this->id = $id;
-        $this->auth->setService('api');
+        $this->webUser->getAuth()->setService('api');
 
         //========================  I N D E X  ================================
         if ($page_id == '0') {//карта

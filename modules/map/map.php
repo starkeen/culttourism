@@ -22,13 +22,13 @@ class Page extends Core
             $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/map/map.sm.html'));
         } //====================  M A P   E N T R Y  ============================
         elseif ($this->siteRequest->getLevel1() === 'common') {
-            $this->auth->setService('map');
+            $this->webUser->getAuth()->setService('map');
             $this->getYMapsMLCommon($_GET);
         } elseif ($this->siteRequest->getLevel1() === 'city' && isset($_GET['cid']) && (int) $_GET['cid'] > 0) {
-            $this->auth->setService('map');
+            $this->webUser->getAuth()->setService('map');
             $this->getYMapsMLRegion((int) $_GET['cid']);
         } elseif ($this->siteRequest->getLevel1() === 'list' && isset($_GET['lid']) && (int) $_GET['lid'] > 0) {
-            $this->auth->setService('map');
+            $this->webUser->getAuth()->setService('map');
             $this->getYMapsMLList((int) $_GET['lid']);
         } elseif ($this->siteRequest->getLevel1() === 'gpx' && isset($_GET['cid']) && (int) $_GET['cid']) {
             $this->showCityPointsGPX((int) $_GET['cid']);
