@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\core\application;
 
 use app\core\module\ModuleFetcher;
+use app\core\module\ModuleInterface;
 use app\core\page\Content;
 use app\core\page\Head;
 use app\core\page\Headers;
@@ -88,7 +89,6 @@ class WebApplication extends Application
         }
 
         $module = $this->moduleFetcher->getModule($this->request);
-        $module->process($this->request, $this->response);
 
         $page = $this->moduleFetcher->getPageModule($this->request);
         $page->smarty = $this->templateEngine;
@@ -140,19 +140,21 @@ class WebApplication extends Application
             $page->lastedit = null;
         }
 
-        $this->display($page);
+        $this->display($page, $module);
 
         exit();
     }
 
     /**
      * @param Page $page
+     * @param ModuleInterface $module
      */
-    private function display(Page $page): void
+    private function display(Page $page, ModuleInterface $module): void
     {
         try {
             $page->init();
             $this->checkRedirect($this->request);
+            $module->process($this->request, $this->response);
             $page->compileContent();
         } catch (RedirectException $exception) {
             $this->headers->add('HTTP/1.1 301 Moved Permanently');
