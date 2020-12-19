@@ -164,10 +164,10 @@ class WebApplication extends Application
         $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
 
         if ($page->response->getLastEditTimestamp() > 0 && !$this->request->isAjax()) {
-            $this->response->getHeaders()->add('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->response->getLastEditTimestamp()) . ' GMT');
+            $this->response->getHeaders()->add('Last-Modified: ' . $page->response->getLastEditTimeGMT());
             $this->response->getHeaders()->add('Cache-control: public');
             $this->response->getHeaders()->add('Pragma: cache');
-            $this->response->getHeaders()->add('Expires: ' . gmdate('D, d M Y H:i:s', $page->response->getLastEditTimestamp() + 60 * 60 * 24 * 7) . ' GMT');
+            $this->response->getHeaders()->add('Expires: ' . $page->response->getExpiresTimeGMT());
             if ($this->request->getHeader('If-Modified-Since') !== null) {
                 $modifiedSince = explode(';', $this->request->getHeader('If-Modified-Since'));
                 if (strtotime($modifiedSince[0]) >= $page->response->getLastEditTimestamp()) {

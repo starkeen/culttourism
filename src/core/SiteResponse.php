@@ -9,6 +9,8 @@ use app\core\page\Headers;
 
 class SiteResponse
 {
+    private const EXPIRES_HEADER_SHIFT = 60 * 60 * 24 * 7;
+
     /**
      * @var Headers
      */
@@ -67,6 +69,14 @@ class SiteResponse
     }
 
     /**
+     * @return string|null
+     */
+    public function getExpiresTimeGMT(): ?string
+    {
+        return $this->lastEditTimestamp !== null ? gmdate('D, d M Y H:i:s', $this->lastEditTimestamp + self::EXPIRES_HEADER_SHIFT) . ' GMT' : null;
+    }
+
+    /**
      * @param int $timestamp
      */
     public function setLastEditTimestamp(int $timestamp): void
@@ -90,6 +100,6 @@ class SiteResponse
      */
     public function setLastEditTimestampToFuture(): void
     {
-        $this->lastEditTimestamp = strtotime('+2 month');
+        $this->lastEditTimestamp = time() + self::EXPIRES_HEADER_SHIFT;
     }
 }
