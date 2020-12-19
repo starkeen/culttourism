@@ -26,6 +26,6 @@ class BlogModule implements ModuleInterface
 
     public function isApplicable(SiteRequest $request): bool
     {
-        return true;
+        return false;
     }
 }
