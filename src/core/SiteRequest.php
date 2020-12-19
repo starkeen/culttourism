@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace app\core;
 
+use RuntimeException;
+
 class SiteRequest
 {
     /**
@@ -137,10 +139,18 @@ class SiteRequest
     public function getHeader(string $name): ?string
     {
         if ($this->headers === null) {
-            $this->headers = getallheaders();
+            $headers = getallheaders();
+            if ($headers === false) {
+                throw new RuntimeException('Не удалось получить заголовки запроса');
+            }
+            $this->headers = [];
+            foreach ($headers as $key => $value) {
+                $key = strtolower($key);
+                $this->headers[$key] = $value;
+            }
         }
 
-        return $this->headers[$name] ?? null;
+        return $this->headers[strtolower($name)] ?? null;
     }
 
     private function parseRequest(): void
@@ -154,7 +164,7 @@ class SiteRequest
         $requestURIParamsList = array_filter($requestURIParamsList);
 
         if (isset($requestURIParamsList[0])) {
-            $host_id = $requestURIParamsList[0];
+            $hostId = $requestURIParamsList[0];
         }
         if (isset($requestURIParamsList[1])) {
             $this->moduleId = $requestURIParamsList[1];
