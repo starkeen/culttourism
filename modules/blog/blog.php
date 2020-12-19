@@ -21,16 +21,16 @@ class Page extends Core
         if ($this->siteRequest->getLevel1() === null) {
             $this->pageContent->setBody($this->getAllEntries()); //все записи
         } elseif ($this->siteRequest->getLevel1() === 'addform') { //форма добавления записи в блог
-            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2030));
+            $this->response->setLastEditTimestampToFuture();
             $this->pageContent->setBody($this->getFormBlog());
         } elseif ($this->siteRequest->getLevel1() === 'editform' && isset($_GET['brid']) && (int) $_GET['brid']) {
-            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2030));
+            $this->response->setLastEditTimestampToFuture();
             $this->pageContent->setBody($this->getFormBlog((int) $_GET['brid']));
         } elseif ($this->siteRequest->getLevel1() === 'saveform') {
-            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2030));
+            $this->response->setLastEditTimestampToFuture();
             $this->pageContent->setBody($this->saveFormBlog());
         } elseif ($this->siteRequest->getLevel1() === 'delentry' && (int) $_GET['bid']) {
-            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2030));
+            $this->response->setLastEditTimestampToFuture();
             $this->pageContent->setBody($this->deleteBlogEntry((int) $_GET['bid']));
         } elseif ($this->siteRequest->getLevel1() === 'blog') {
             throw new RedirectException('/blog/');
@@ -79,12 +79,10 @@ class Page extends Core
         $entry = [];
         while ($row = $this->db->fetch()) {
             $entry[$row['br_id']] = $row;
-            if ($row['last_update'] > $this->response->getLastEditTimestamp()) {
-                $this->response->setLastEditTimestamp($row['last_update']);
-            }
+            $this->response->setMaxLastEditTimestamp($row['last_update']);
         }
         if ($show_full_admin) {
-            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2038));
+            $this->response->setLastEditTimestampToFuture();
         }
 
         $this->pageContent->getHead()->setCanonicalUrl('/blog/');
@@ -191,9 +189,7 @@ class Page extends Core
         $entry = [];
         while ($row = $this->db->fetch()) {
             $entry[$row['bg_month']][$row['br_id']] = $row;
-            if ($row['last_update'] > $this->response->getLastEditTimestamp()) {
-                $this->response->setLastEditTimestamp($row['last_update']);
-            }
+            $this->response->setLastEditTimestamp($row['last_update']);
         }
         $this->smarty->assign('entries', $entry);
 
@@ -331,7 +327,7 @@ class Page extends Core
             $this->db->exec();
             $entry = $this->db->fetch();
             $this->smarty->assign('entry', $entry);
-            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2030));
+            $this->response->setLastEditTimestampToFuture();
             return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.sm.html');
         } else {
             $entry = [
@@ -342,7 +338,7 @@ class Page extends Core
                 'br_url' => date('d')
             ];
             $this->smarty->assign('entry', $entry);
-            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2030));
+            $this->response->setLastEditTimestampToFuture();
             return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.sm.html');
         }
     }

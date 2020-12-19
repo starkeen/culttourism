@@ -59,10 +59,29 @@ class SiteResponse
     }
 
     /**
-     * @param int $lastEditTimestamp
+     * @param int $timestamp
      */
-    public function setLastEditTimestamp(int $lastEditTimestamp): void
+    public function setLastEditTimestamp(int $timestamp): void
     {
-        $this->lastEditTimestamp = $lastEditTimestamp;
+        $this->lastEditTimestamp = $timestamp;
+    }
+
+    /**
+     * Установить метку времени последнего редактирования только если она больше текущей
+     * @param int $timestamp
+     */
+    public function setMaxLastEditTimestamp(int $timestamp): void
+    {
+        if ($timestamp > $this->lastEditTimestamp) {
+            $this->lastEditTimestamp = $timestamp;
+        }
+    }
+
+    /**
+     * Установить метку времени последнего редактирования на максимально далёкую дату
+     */
+    public function setLastEditTimestampToFuture(): void
+    {
+        $this->lastEditTimestamp = strtotime('+2 month');
     }
 }

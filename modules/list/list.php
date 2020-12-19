@@ -78,9 +78,7 @@ class Page extends Core
 
         $indexLists = [];
         foreach ($lst->getActive() as $list) {
-            if ($list['last_update'] > $this->response->getLastEditTimestamp()) {
-                $this->response->setLastEditTimestamp($list['last_update']);
-            }
+            $this->response->setMaxLastEditTimestamp($list['last_update']);
             $indexLists[] = $list;
         }
 

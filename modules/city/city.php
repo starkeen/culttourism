@@ -23,7 +23,7 @@ class Page extends Core
         } elseif ($this->siteRequest->getLevel1() === 'meta') {
             $this->metaCity();
         } elseif ($this->siteRequest->getLevel1() === 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
-            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 1, 2050));
+            $this->response->setLastEditTimestampToFuture();
             $this->getBlockWeather($_GET['lat'], $_GET['lon']);
         } else {
             throw new NotFoundException();
@@ -542,9 +542,7 @@ class Page extends Core
         $this->db->exec();
         while ($row = $this->db->fetch()) {
             $row['pc_pagepath'] = strip_tags($row['pc_pagepath']);
-            if ($row['last_update'] > $this->response->getLastEditTimestamp()) {
-                $this->response->setLastEditTimestamp($row['last_update']);
-            }
+            $this->response->setMaxLastEditTimestamp($row['last_update']);
             $cities[] = $row;
         }
 

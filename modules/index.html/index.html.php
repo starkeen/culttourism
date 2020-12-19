@@ -15,15 +15,13 @@ class Page extends Core
 
         $blog = $bg->getLastWithTS($this->globalConfig->getIndexStatCountBlog());
         $blogentries = $blog['blogentries'];
-        if ($blog['max_ts'] > $this->response->getLastEditTimestamp()) {
-            $this->response->setLastEditTimestamp($blog['max_ts']);
-        }
+
+        $this->response->setLastEditTimestamp($blog['max_ts']);
 
         $news = $ns->getLastWithTS($this->globalConfig->getIndexStatCountNews());
         $newsentries = $news['entries'];
-        if ($news['max_ts'] > $this->response->getLastEditTimestamp()) {
-            $this->response->setLastEditTimestamp($news['max_ts']);
-        }
+
+        $this->response->setMaxLastEditTimestamp($news['max_ts']);
 
         $this->smarty->assign('hello_text', $this->pageContent->getBody());
         $this->smarty->assign('stat', $this->globalConfig->getIndexStatText());

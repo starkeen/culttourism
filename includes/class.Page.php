@@ -252,9 +252,7 @@ class Page extends Core
 
             $points_data = $pts->getPointsByCity($row['pc_id'], $this->webUser->isEditor());
 
-            if ($points_data['last_update'] > $this->response->getLastEditTimestamp()) {
-                $this->response->setLastEditTimestamp($points_data['last_update']);
-            }
+            $this->response->setMaxLastEditTimestamp($points_data['last_update']);
             if ($this->webUser->isEditor()) {
                 $this->response->setLastEditTimestamp(0);
             }

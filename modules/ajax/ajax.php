@@ -56,7 +56,7 @@ class Page extends Core
             } elseif ($id === 'savebest') {
                 $this->pageContent->setBody($this->setFormPointBest((int) $_GET['id']));
             }
-            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 1, 2050));
+            $this->response->setLastEditTimestampToFuture();
         } elseif ($this->siteRequest->getLevel1() === 'city') {
             if ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
                 $this->pageContent->setBody($this->saveCityTitle((int) $_GET['id']));
@@ -67,7 +67,7 @@ class Page extends Core
             } elseif ($id === 'saveformGPS') {
                 $this->pageContent->setBody($this->setFormCityGPS((int) $_GET['cid']));
             }
-            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 1, 2050));
+            $this->response->setLastEditTimestampToFuture();
         } elseif ($this->siteRequest->getLevel1() === 'pointtype') {
             if ($id === 'getform') {
                 $this->pageContent->setBody($this->getChangeTypeForm());
