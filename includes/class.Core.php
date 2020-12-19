@@ -60,11 +60,6 @@ abstract class Core
     public $pageContent;
 
     /**
-     * @var Headers
-     */
-    public $pageHeaders;
-
-    /**
      * @var SiteResponse
      */
     public $response;

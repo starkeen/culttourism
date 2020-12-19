@@ -51,9 +51,9 @@ class Page extends Core
                 return $this->getPageCity($url);
             } elseif (in_array($urlParts, self::REDIRECT_SUFFIXES, true)) {
                 $url = substr($url, 0, stripos($url, $urlParts));
-                $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
-                $this->pageHeaders->add('Location: ' . $url);
-                $this->pageHeaders->flush();
+                $this->response->getHeaders()->add('HTTP/1.1 301 Moved Permanently');
+                $this->response->getHeaders()->add('Location: ' . $url);
+                $this->response->getHeaders()->flush();
                 exit();
             } elseif (preg_match('/object(\d+)\.html/i', $urlParts, $regs)) {
                 throw new NotFoundException();
@@ -89,9 +89,9 @@ class Page extends Core
         }
         $this->pageContent->getHead()->setCanonicalUrl($object['url_canonical']);
         if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] !== $object['url_canonical']) {
-            $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
-            $this->pageHeaders->add('Location: ' . $object['url_canonical']);
-            $this->pageHeaders->flush();
+            $this->response->getHeaders()->add('HTTP/1.1 301 Moved Permanently');
+            $this->response->getHeaders()->add('Location: ' . $object['url_canonical']);
+            $this->response->getHeaders()->flush();
             exit();
         }
 
@@ -226,9 +226,9 @@ class Page extends Core
         $urlFiltered = '/' . implode('/', array_filter($urlFiltered));
         $lastPart = array_pop($urlParts);
         if ($lastPart === 'index.html') {
-            $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
-            $this->pageHeaders->add('Location: ' . str_replace('index.html', '', $url));
-            $this->pageHeaders->flush();
+            $this->response->getHeaders()->add('HTTP/1.1 301 Moved Permanently');
+            $this->response->getHeaders()->add('Location: ' . str_replace('index.html', '', $url));
+            $this->response->getHeaders()->flush();
             exit();
         }
 
@@ -243,9 +243,9 @@ class Page extends Core
             //--------------------  c a n o n i c a l  ------------------------
             $this->pageContent->getHead()->setCanonicalUrl($row['url_canonical']);
             if ($row['url_canonical'] !== ($url . '/')) {
-                $this->pageHeaders->add('HTTP/1.1 301 Moved Permanently');
-                $this->pageHeaders->add('Location: ' . $row['url_canonical']);
-                $this->pageHeaders->flush();
+                $this->response->getHeaders()->add('HTTP/1.1 301 Moved Permanently');
+                $this->response->getHeaders()->add('Location: ' . $row['url_canonical']);
+                $this->response->getHeaders()->flush();
                 exit();
             }
 
@@ -322,8 +322,8 @@ class Page extends Core
     {
         $pc = new MPageCities($this->db);
         $city = $pc->getCityByUrl(str_replace('/map.html', '', $url));
-        $this->pageHeaders->add("Location: /map/#center={$city['pc_longitude']},{$city['pc_latitude']}&zoom={$city['pc_latlon_zoom']}");
-        $this->pageHeaders->flush();
+        $this->response->getHeaders()->add("Location: /map/#center={$city['pc_longitude']},{$city['pc_latitude']}&zoom={$city['pc_latlon_zoom']}");
+        $this->response->getHeaders()->flush();
         exit();
     }
 }
