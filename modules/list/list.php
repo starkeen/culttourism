@@ -60,10 +60,10 @@ class Page extends Core
 
             $listItems = new MListsItems($this->db, $list['ls_id']);
 
-            $this->smarty->assign('list', $list);
-            $this->smarty->assign('list_items', $listItems->getActive());
+            $this->templateEngine->assign('list', $list);
+            $this->templateEngine->assign('list_items', $listItems->getActive());
 
-            $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/list/list.sm.html'));
+            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/list/list.sm.html'));
         } else {
             throw new NotFoundException();
         }
@@ -82,8 +82,8 @@ class Page extends Core
             $indexLists[] = $list;
         }
 
-        $this->smarty->assign('index_text', $this->response->getContent()->getBody());
-        $this->smarty->assign('index_lists', $indexLists);
-        $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/list/index.sm.html'));
+        $this->templateEngine->assign('index_text', $this->response->getContent()->getBody());
+        $this->templateEngine->assign('index_lists', $indexLists);
+        $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/list/index.sm.html'));
     }
 }

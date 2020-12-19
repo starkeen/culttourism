@@ -137,17 +137,17 @@ class Page extends Core
                 $this->logger->warning('Ошибка в поиске', $loggerContext);
             }
 
-            $this->smarty->assign('search', $query);
-            $this->smarty->assign('error', $errorText);
-            $this->smarty->assign('result', $result);
-            $this->smarty->assign('meta', $resultMeta);
+            $this->templateEngine->assign('search', $query);
+            $this->templateEngine->assign('error', $errorText);
+            $this->templateEngine->assign('result', $result);
+            $this->templateEngine->assign('meta', $resultMeta);
         } else {
-            $this->smarty->assign('search', '');
-            $this->smarty->assign('error', '');
-            $this->smarty->assign('result', '');
-            $this->smarty->assign('meta', []);
+            $this->templateEngine->assign('search', '');
+            $this->templateEngine->assign('error', '');
+            $this->templateEngine->assign('result', '');
+            $this->templateEngine->assign('meta', []);
         }
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
     }
 
     private function log(string $query): void
@@ -168,7 +168,7 @@ class Page extends Core
             $q = cut_trash_string($_GET['q']);
 
             $q = $this->db->getEscapedString($q);
-            $this->smarty->assign('search', $q);
+            $this->templateEngine->assign('search', $q);
             $this->response->getContent()->getHead()->addTitleElement($q);
 
             if (mb_strlen($q) >= 2) {
@@ -265,15 +265,15 @@ class Page extends Core
                         $result[$row['pc_id']]['descr']
                     );
                 }
-                $this->smarty->assign('result', $result);
+                $this->templateEngine->assign('result', $result);
             } else {
-                $this->smarty->assign('error', 'Слишком короткий запрос');
+                $this->templateEngine->assign('error', 'Слишком короткий запрос');
             }
         } else {
-            $this->smarty->assign('search', '');
-            $this->smarty->assign('error', '');
-            $this->smarty->assign('result', '');
+            $this->templateEngine->assign('search', '');
+            $this->templateEngine->assign('error', '');
+            $this->templateEngine->assign('result', '');
         }
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/search/search.sm.html');
     }
 }

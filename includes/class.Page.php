@@ -200,12 +200,12 @@ class Page extends Core
 
         $this->response->getContent()->setCustomJsModule('point');
 
-        $this->smarty->assign('object', $object);
-        $this->smarty->assign('city', $city);
-        $this->smarty->assign('page_image', $objImage);
-        $this->smarty->assign('lists', $li->getListsForPointId($object['pt_id']));
+        $this->templateEngine->assign('object', $object);
+        $this->templateEngine->assign('city', $city);
+        $this->templateEngine->assign('page_image', $objImage);
+        $this->templateEngine->assign('lists', $li->getListsForPointId($object['pt_id']));
 
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.sm.html');
     }
 
     /**
@@ -295,20 +295,20 @@ class Page extends Core
                 $cityImage = null;
             }
 
-            $this->smarty->assign('city', $row);
-            $this->smarty->assign('points', $points_data['points']);
-            $this->smarty->assign('points_sight', $points_data['points_sight']);
-            $this->smarty->assign('points_servo', $points_data['points_service']);
-            $this->smarty->assign('page_url', _URL_ROOT);
-            $this->smarty->assign('page_image', $cityImage);
-            $this->smarty->assign('types_select', $points_data['types']);
-            $this->smarty->assign('ptypes', []);
+            $this->templateEngine->assign('city', $row);
+            $this->templateEngine->assign('points', $points_data['points']);
+            $this->templateEngine->assign('points_sight', $points_data['points_sight']);
+            $this->templateEngine->assign('points_servo', $points_data['points_service']);
+            $this->templateEngine->assign('page_url', _URL_ROOT);
+            $this->templateEngine->assign('page_image', $cityImage);
+            $this->templateEngine->assign('types_select', $points_data['types']);
+            $this->templateEngine->assign('ptypes', []);
             $this->response->getContent()->setCustomJsModule('city');
 
             if ($this->webUser->isEditor()) {
-                return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.edit.tpl');
+                return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/pagecity.edit.tpl');
             } else {
-                return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.show.tpl');
+                return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/pagecity.show.tpl');
             }
         } else {
             throw new NotFoundException();

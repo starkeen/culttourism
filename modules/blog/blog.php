@@ -87,10 +87,10 @@ class Page extends Core
 
         $this->response->getContent()->getHead()->setCanonicalUrl('/blog/');
 
-        $this->smarty->assign('entries', $entry);
-        $this->smarty->assign('blogadmin', $show_full_admin);
+        $this->templateEngine->assign('entries', $entry);
+        $this->templateEngine->assign('blogadmin', $show_full_admin);
 
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.all.tpl');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/blog.all.tpl');
     }
 
     /**
@@ -136,9 +136,9 @@ class Page extends Core
             $this->response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $entry['br_picture']);
         }
 
-        $this->smarty->assign('entry', $entry);
+        $this->templateEngine->assign('entry', $entry);
 
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.one.tpl');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/blog.one.tpl');
     }
 
     /**
@@ -191,17 +191,17 @@ class Page extends Core
             $entry[$row['bg_month']][$row['br_id']] = $row;
             $this->response->setLastEditTimestamp($row['last_update']);
         }
-        $this->smarty->assign('entries', $entry);
+        $this->templateEngine->assign('entries', $entry);
 
         $this->db->sql = "SELECT DISTINCT DATE_FORMAT(bg.br_date,'%Y') as bg_year FROM $dbb AS bg ORDER BY bg_year";
         $this->db->exec();
         while ($row = $this->db->fetch()) {
             $years[] = $row['bg_year'];
         }
-        $this->smarty->assign('years', $years);
-        $this->smarty->assign('cur_year', $year);
+        $this->templateEngine->assign('years', $years);
+        $this->templateEngine->assign('cur_year', $year);
 
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/blog.calendar.tpl');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/blog.calendar.tpl');
     }
 
     /**
@@ -326,9 +326,9 @@ class Page extends Core
                         LIMIT 1";
             $this->db->exec();
             $entry = $this->db->fetch();
-            $this->smarty->assign('entry', $entry);
+            $this->templateEngine->assign('entry', $entry);
             $this->response->setLastEditTimestampToFuture();
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.sm.html');
         } else {
             $entry = [
                 'br_day' => date('d.m.Y'),
@@ -337,9 +337,9 @@ class Page extends Core
                 'bg_month' => date('m'),
                 'br_url' => date('d')
             ];
-            $this->smarty->assign('entry', $entry);
+            $this->templateEngine->assign('entry', $entry);
             $this->response->setLastEditTimestampToFuture();
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.sm.html');
         }
     }
 

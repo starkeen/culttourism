@@ -45,7 +45,7 @@ class Page extends Core
 
     private function getApi0()
     {
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/api/map0.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/map0.sm.html');
     }
 
     private function getApi1()
@@ -95,8 +95,8 @@ class Page extends Core
             $points[] = $pt;
         }
 
-        $this->smarty->assign('points', $points);
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/api/api1.sm.html');
+        $this->templateEngine->assign('points', $points);
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api1.sm.html');
     }
 
     private function getApi2($id)
@@ -117,8 +117,8 @@ class Page extends Core
                     LIMIT 1";
         $db->exec();
         $pt = $db->fetch();
-        $this->smarty->assign('object', $pt);
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/api/api2.sm.html');
+        $this->templateEngine->assign('object', $pt);
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api2.sm.html');
     }
 
     private function getApi3($center)
@@ -201,10 +201,10 @@ class Page extends Core
                 $points[] = $pt;
             }
         }
-        $this->smarty->assign('current', $this->getApi3("$c_lat,$c_lon"));
-        $this->smarty->assign('points', $points);
+        $this->templateEngine->assign('current', $this->getApi3("$c_lat,$c_lon"));
+        $this->templateEngine->assign('points', $points);
         header("Content-type: application/xml");
-        echo $this->smarty->fetch(_DIR_TEMPLATES . '/api/api4.sm.xml');
+        echo $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api4.sm.xml');
         exit();
     }
 
@@ -230,9 +230,9 @@ class Page extends Core
         $pt['pt_description'] = trim(
             strip_tags(html_entity_decode(str_replace($line_breaks, "\n", $pt['pt_description']), ENT_QUOTES, "UTF-8"))
         );
-        $this->smarty->assign('point', $pt);
+        $this->templateEngine->assign('point', $pt);
         header("Content-type: application/xml");
-        echo $this->smarty->fetch(_DIR_TEMPLATES . '/api/api5.sm.xml');
+        echo $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api5.sm.xml');
         exit();
     }
 

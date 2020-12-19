@@ -174,18 +174,18 @@ class Page extends Core
     private function getCommonForm(array $data): string
     {
         foreach ($data as $k => $v) {
-            $this->smarty->assign($k, $v);
+            $this->templateEngine->assign($k, $v);
         }
 
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/feedpage.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/feedpage.sm.html');
     }
 
     private function getCommonSuccess($data)
     {
         foreach ($data as $k => $v) {
-            $this->smarty->assign($k, $v);
+            $this->templateEngine->assign($k, $v);
         }
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/feedsuccess.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/feedsuccess.sm.html');
     }
 
     /**
@@ -194,16 +194,16 @@ class Page extends Core
     private function getAddingForm(): string
     {
         $this->response->getContent()->getHead()->addTitleElement('Добавить объект (музей, гостиницу, кафе и др.)');
-        $this->smarty->assign('recaptcha_key', ReCaptcha::KEY);
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addpoint.sm.html');
+        $this->templateEngine->assign('recaptcha_key', ReCaptcha::KEY);
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/addpoint.sm.html');
     }
 
     private function getAddingSuccess($title, $descr, $region)
     {
-        $this->smarty->assign('add_title', $title);
-        $this->smarty->assign('add_descr', nl2br($descr));
-        $this->smarty->assign('add_region', $region);
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addsuccess.sm.html');
+        $this->templateEngine->assign('add_title', $title);
+        $this->templateEngine->assign('add_descr', nl2br($descr));
+        $this->templateEngine->assign('add_region', $region);
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/addsuccess.sm.html');
     }
 
     private function showCaptcha(): void

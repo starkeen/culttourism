@@ -23,11 +23,11 @@ class Page extends Core
 
         $this->response->setMaxLastEditTimestamp($news['max_ts']);
 
-        $this->smarty->assign('hello_text', $this->response->getContent()->getBody());
-        $this->smarty->assign('stat', $this->globalConfig->getIndexStatText());
-        $this->smarty->assign('blogentries', $blogEntries);
-        $this->smarty->assign('agrnewsentries', $newsEntries);
+        $this->templateEngine->assign('hello_text', $this->response->getContent()->getBody());
+        $this->templateEngine->assign('stat', $this->globalConfig->getIndexStatText());
+        $this->templateEngine->assign('blogentries', $blogEntries);
+        $this->templateEngine->assign('agrnewsentries', $newsEntries);
 
-        $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/index.html/index.sm.html'));
+        $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/index.html/index.sm.html'));
     }
 }

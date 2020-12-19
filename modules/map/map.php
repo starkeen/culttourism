@@ -19,7 +19,7 @@ class Page extends Core
         //========================  I N D E X  ================================
         if ($this->siteRequest->getLevel1() === null) {
             $this->response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
-            $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/map/map.sm.html'));
+            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/map/map.sm.html'));
         } //====================  M A P   E N T R Y  ============================
         elseif ($this->siteRequest->getLevel1() === 'common') {
             $this->webUser->getAuth()->setService('map');
@@ -84,12 +84,12 @@ class Page extends Core
             $bounds['max_lon'] += $bounds['delta_lon'];
         }
 
-        $this->smarty->assign('ptypes', $pointTypes);
-        $this->smarty->assign('bounds', $bounds);
-        $this->smarty->assign('points', $points);
+        $this->templateEngine->assign('ptypes', $pointTypes);
+        $this->templateEngine->assign('bounds', $bounds);
+        $this->templateEngine->assign('points', $points);
 
         $this->sendYMLHeaders();
-        echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
+        echo $this->templateEngine->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
         exit();
     }
 
@@ -128,12 +128,12 @@ class Page extends Core
             $city = array_merge($city, $pc->getCitiesSomeCountry($this_city['pc_country_id']));
         }
 
-        $this->smarty->assign('ptypes', $pointTypes);
-        $this->smarty->assign('points', $points);
-        $this->smarty->assign('city', $city);
+        $this->templateEngine->assign('ptypes', $pointTypes);
+        $this->templateEngine->assign('points', $points);
+        $this->templateEngine->assign('city', $city);
 
         $this->sendYMLHeaders();
-        echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML1.sm.xml');
+        echo $this->templateEngine->fetch(_DIR_TEMPLATES . '/_XML/YMapsML1.sm.xml');
         exit();
     }
 
@@ -195,12 +195,12 @@ class Page extends Core
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
         }
 
-        $this->smarty->assign('ptypes', $pointTypes);
-        $this->smarty->assign('bounds', $bounds);
-        $this->smarty->assign('points', $points);
+        $this->templateEngine->assign('ptypes', $pointTypes);
+        $this->templateEngine->assign('bounds', $bounds);
+        $this->templateEngine->assign('points', $points);
 
         $this->sendYMLHeaders();
-        echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
+        echo $this->templateEngine->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
         exit();
     }
 
@@ -216,10 +216,10 @@ class Page extends Core
         $pt = new MPagePoints($this->db);
         $pts = $pt->getPointsByCity($cid);
 
-        $this->smarty->assign('points', $pts['points']);
+        $this->templateEngine->assign('points', $pts['points']);
 
         header('Content-type: application/xml');
-        echo $this->smarty->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
+        echo $this->templateEngine->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
         exit();
     }
 

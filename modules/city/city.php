@@ -126,9 +126,9 @@ class Page extends Core
             } else {
                 $weather_data['winddirect'] = 'сев';
             }
-            $this->smarty->assign('weather_data', $weather_data);
+            $this->templateEngine->assign('weather_data', $weather_data);
             $out['state'] = true;
-            $out['content'] = $this->smarty->fetch(_DIR_TEMPLATES . '/city/weather.block.sm.html');
+            $out['content'] = $this->templateEngine->fetch(_DIR_TEMPLATES . '/city/weather.block.sm.html');
         }
         header("Content-type: application/json");
         echo json_encode($out);
@@ -261,9 +261,9 @@ class Page extends Core
             );
             $metas = $this->db->fetchAll();
 
-            $this->smarty->assign('metas', $metas);
+            $this->templateEngine->assign('metas', $metas);
             header('Content-Type: text/html; charset=utf-8');
-            $this->smarty->display(_DIR_TEMPLATES . '/city/meta.sm.html');
+            $this->templateEngine->display(_DIR_TEMPLATES . '/city/meta.sm.html');
         } else {
             throw new NotFoundException();
         }
@@ -360,18 +360,18 @@ class Page extends Core
         );
         $yandex = $this->db->fetch();
 
-        $this->smarty->assign('city', $citypage);
-        $this->smarty->assign('baseurl', _URL_ROOT);
-        $this->smarty->assign('meta', $meta);
-        $this->smarty->assign('photos', $photos['items']);
-        $this->smarty->assign('ref_meta', $ref_meta);
-        $this->smarty->assign('yandex', $yandex);
+        $this->templateEngine->assign('city', $citypage);
+        $this->templateEngine->assign('baseurl', _URL_ROOT);
+        $this->templateEngine->assign('meta', $meta);
+        $this->templateEngine->assign('photos', $photos['items']);
+        $this->templateEngine->assign('ref_meta', $ref_meta);
+        $this->templateEngine->assign('yandex', $yandex);
 
         $this->response->setLastEditTimestamp($citypage['last_update']);
 
-        $this->smarty->assign('adminlogined', $this->webUser->getId() ?: 0);
+        $this->templateEngine->assign('adminlogined', $this->webUser->getId() ?: 0);
 
-        $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/details.tpl'));
+        $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/details.tpl'));
     }
 
     /**
@@ -500,12 +500,12 @@ class Page extends Core
             //-------------------------------------------------------------------
         }
 
-        $this->smarty->assign('inbase', $inbase);
-        $this->smarty->assign('addregion', $newcity);
-        $this->smarty->assign('already', $already);
-        $this->smarty->assign('freeplace', mb_strlen($newcity) >= 5 ? $newcity : null);
-        $this->smarty->assign('adminlogined', $this->webUser->getId());
-        $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/add.sm.html'));
+        $this->templateEngine->assign('inbase', $inbase);
+        $this->templateEngine->assign('addregion', $newcity);
+        $this->templateEngine->assign('already', $already);
+        $this->templateEngine->assign('freeplace', mb_strlen($newcity) >= 5 ? $newcity : null);
+        $this->templateEngine->assign('adminlogined', $this->webUser->getId());
+        $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/add.sm.html'));
     }
 
     /**
@@ -548,13 +548,13 @@ class Page extends Core
 
         $this->response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), 'https://culttourism.ru/data/images/pages/map-example-500.png');
 
-        $this->smarty->assign('tcity', $cities);
-        $this->smarty->assign('adminlogined', $this->webUser->getId() ?? 0);
+        $this->templateEngine->assign('tcity', $cities);
+        $this->templateEngine->assign('adminlogined', $this->webUser->getId() ?? 0);
 
         if ($this->webUser->isEditor()) {
-            $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html'));
+            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html'));
         } else {
-            $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html'));
+            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html'));
         }
     }
 }

@@ -20,7 +20,7 @@ class Page extends Core
     public function compileContent(): void
     {
         $id = $this->siteRequest->getLevel2();
-        $this->smarty->caching = false;
+        $this->templateEngine->caching = false;
         $id = urldecode($id);
         if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
@@ -237,9 +237,9 @@ class Page extends Core
             $point['tp_icon'] = 'star.png';
         }
         $point['zoom'] = ($point['pt_latlon_zoom'] != 0) ? $point['pt_latlon_zoom'] : 13;
-        $this->smarty->assign('point', $point);
+        $this->templateEngine->assign('point', $point);
 
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/changelatlon.form.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_ajax/changelatlon.form.sm.html');
     }
 
     /**
@@ -264,10 +264,10 @@ class Page extends Core
             $types[$i]['current'] = ($type['tp_id'] == $point['pt_type_id']) ? 1 : 0;
         }
 
-        $this->smarty->assign('point', $point);
-        $this->smarty->assign('alltypes', $types);
+        $this->templateEngine->assign('point', $point);
+        $this->templateEngine->assign('alltypes', $types);
 
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/changetype.form.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_ajax/changetype.form.sm.html');
     }
 
     /**
@@ -315,9 +315,9 @@ class Page extends Core
             } else {
                 $city_title = '';
             }
-            $this->smarty->assign('city_title', $city_title);
+            $this->templateEngine->assign('city_title', $city_title);
 
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.sm.html');
         } else {
             throw new AccessDeniedException();
         }
@@ -484,12 +484,12 @@ class Page extends Core
         $sp = new MStatpoints($this->db);
         $sp->add($object['pt_id'], $this->webUser->getHash());
 
-        $this->smarty->assign('object', $object);
+        $this->templateEngine->assign('object', $object);
 
         if ($this->webUser->isEditor()) {
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
         } else {
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
         }
     }
 
@@ -516,12 +516,12 @@ class Page extends Core
         $sp = new MStatpoints($this->db);
         $sp->add($object['pt_id'], $this->webUser->getHash());
 
-        $this->smarty->assign('object', $object);
+        $this->templateEngine->assign('object', $object);
 
         if ($this->webUser->isEditor()) {
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
         } else {
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
         }
     }
 
@@ -568,9 +568,9 @@ class Page extends Core
             $city['map_point'] = -1;
         }
 
-        $this->smarty->assign('city', $city);
+        $this->templateEngine->assign('city', $city);
 
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/_ajax/citylatlon.form.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_ajax/citylatlon.form.sm.html');
     }
 
     /**

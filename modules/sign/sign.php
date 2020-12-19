@@ -37,14 +37,14 @@ class Page extends Core
         } else {
             $uniq_key = $_SESSION['userkey'];
         }
-        $this->smarty->assign('key', $uniq_key);
-        $this->smarty->assign('url', _SITE_URL);
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/sign/in.sm.html');
+        $this->templateEngine->assign('key', $uniq_key);
+        $this->templateEngine->assign('url', _SITE_URL);
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/in.sm.html');
     }
 
     private function getUp()
     {
-        return $this->smarty->fetch(_DIR_TEMPLATES . '/sign/up.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/up.sm.html');
     }
 
     /**
@@ -92,12 +92,12 @@ class Page extends Core
     private function getFormLogin()
     {
         if (isset($_SESSION['user_id'])) {
-            $this->smarty->assign('username', $this->webUser->getName());
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/sign/authuser.tpl');
+            $this->templateEngine->assign('username', $this->webUser->getName());
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/authuser.tpl');
         } else {
-            $this->smarty->assign('baseurl', _SITE_URL);
-            $this->smarty->assign('authkey', 'ewtheqryb35yqb356y4ery');
-            return $this->smarty->fetch(_DIR_TEMPLATES . '/sign/authform.sm.html');
+            $this->templateEngine->assign('baseurl', _SITE_URL);
+            $this->templateEngine->assign('authkey', 'ewtheqryb35yqb356y4ery');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/authform.sm.html');
         }
     }
 }

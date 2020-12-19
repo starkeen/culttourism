@@ -74,8 +74,8 @@ class Page extends Core
                 $res = $bb->deploy($req);
 
                 if (!empty($res)) {
-                    $this->smarty->cleanCompiled();
-                    $this->smarty->cleanCache();
+                    $this->templateEngine->cleanCompiled();
+                    $this->templateEngine->cleanCache();
 
                     $sr = new StaticResources();
                     $static = $sr->rebuildAll();

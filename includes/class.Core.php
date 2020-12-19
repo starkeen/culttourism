@@ -32,7 +32,7 @@ abstract class Core
     /**
      * @var TemplateEngine
      */
-    public $smarty;
+    public $templateEngine;
 
     /**
      * @var WebUser
