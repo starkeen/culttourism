@@ -23,13 +23,13 @@ class Page extends Core
 
         //========================  I N D E X  ================================
         if ($page_id == '0') {//карта
-            $this->pageContent->setBody($this->getApi0());
+            $this->response->getContent()->setBody($this->getApi0());
         } elseif ($page_id == '1' && isset($_GET['center'])) {//список
-            $this->pageContent->setBody($this->getApi1());
+            $this->response->getContent()->setBody($this->getApi1());
         } elseif ($page_id == '2' && isset($_GET['id'])) {//место
-            $this->pageContent->setBody($this->getApi2((int) $_GET['id']));
+            $this->response->getContent()->setBody($this->getApi2((int) $_GET['id']));
         } elseif ($page_id == '3' && isset($_GET['center'])) {//адрес
-            $this->pageContent->setBody($this->getApi3($_GET['center']));
+            $this->response->getContent()->setBody($this->getApi3($_GET['center']));
         } elseif ($page_id == '4' && isset($_GET['center'])) {//список xml
             $this->getApi4();
         } elseif ($page_id == '5' && isset($_GET['id'])) {//место xml

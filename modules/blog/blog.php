@@ -19,23 +19,23 @@ class Page extends Core
         $this->id = $this->siteRequest->getLevel2();
 
         if ($this->siteRequest->getLevel1() === null) {
-            $this->pageContent->setBody($this->getAllEntries()); //все записи
+            $this->response->getContent()->setBody($this->getAllEntries()); //все записи
         } elseif ($this->siteRequest->getLevel1() === 'addform') { //форма добавления записи в блог
             $this->response->setLastEditTimestampToFuture();
-            $this->pageContent->setBody($this->getFormBlog());
+            $this->response->getContent()->setBody($this->getFormBlog());
         } elseif ($this->siteRequest->getLevel1() === 'editform' && isset($_GET['brid']) && (int) $_GET['brid']) {
             $this->response->setLastEditTimestampToFuture();
-            $this->pageContent->setBody($this->getFormBlog((int) $_GET['brid']));
+            $this->response->getContent()->setBody($this->getFormBlog((int) $_GET['brid']));
         } elseif ($this->siteRequest->getLevel1() === 'saveform') {
             $this->response->setLastEditTimestampToFuture();
-            $this->pageContent->setBody($this->saveFormBlog());
+            $this->response->getContent()->setBody($this->saveFormBlog());
         } elseif ($this->siteRequest->getLevel1() === 'delentry' && (int) $_GET['bid']) {
             $this->response->setLastEditTimestampToFuture();
-            $this->pageContent->setBody($this->deleteBlogEntry((int) $_GET['bid']));
+            $this->response->getContent()->setBody($this->deleteBlogEntry((int) $_GET['bid']));
         } elseif ($this->siteRequest->getLevel1() === 'blog') {
             throw new RedirectException('/blog/');
         } elseif ($this->siteRequest->getLevel3() !== null ) { //одна запись
-            $this->pageContent->setBody(
+            $this->response->getContent()->setBody(
                 $this->getOneEntry(
                     $this->siteRequest->getLevel3(),
                     (int) $this->siteRequest->getLevel1(),
@@ -43,7 +43,7 @@ class Page extends Core
                 )
             );
         } elseif ($this->siteRequest->getLevel1() !== null) { //календарь
-            $this->pageContent->setBody(
+            $this->response->getContent()->setBody(
                 $this->getCalendar(
                     (int) $this->siteRequest->getLevel1(),
                     $this->siteRequest->getLevel2() !== null ? (int) $this->siteRequest->getLevel2() : null
@@ -85,7 +85,7 @@ class Page extends Core
             $this->response->setLastEditTimestampToFuture();
         }
 
-        $this->pageContent->getHead()->setCanonicalUrl('/blog/');
+        $this->response->getContent()->getHead()->setCanonicalUrl('/blog/');
 
         $this->smarty->assign('entries', $entry);
         $this->smarty->assign('blogadmin', $show_full_admin);
@@ -118,22 +118,22 @@ class Page extends Core
         if (empty($entry['br_title'])) {
             throw new NotFoundException();
         }
-        $this->pageContent->getHead()->addTitleElement($entry['br_title']);
-        $this->pageContent->getHead()->addDescription($entry['br_title']);
-        $this->pageContent->getHead()->addKeyword($entry['br_title']);
-        $this->pageContent->getHead()->addKeyword($entry['br_url']);
-        $this->pageContent->getHead()->addKeyword('месяц ' . $entry['bg_month']);
-        $this->pageContent->getHead()->addKeyword($entry['bg_year'] . ' год');
-        $this->pageContent->getHead()->setCanonicalUrl($entry['br_canonical']);
+        $this->response->getContent()->getHead()->addTitleElement($entry['br_title']);
+        $this->response->getContent()->getHead()->addDescription($entry['br_title']);
+        $this->response->getContent()->getHead()->addKeyword($entry['br_title']);
+        $this->response->getContent()->getHead()->addKeyword($entry['br_url']);
+        $this->response->getContent()->getHead()->addKeyword('месяц ' . $entry['bg_month']);
+        $this->response->getContent()->getHead()->addKeyword($entry['bg_year'] . ' год');
+        $this->response->getContent()->getHead()->setCanonicalUrl($entry['br_canonical']);
 
         $this->response->setLastEditTimestamp($entry['last_update']);
 
-        $this->pageContent->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($entry['br_canonical']));
-        $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'article');
-        $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $entry['br_title']);
-        $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $entry['br_text']);
+        $this->response->getContent()->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($entry['br_canonical']));
+        $this->response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'article');
+        $this->response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $entry['br_title']);
+        $this->response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $entry['br_text']);
         if (!empty($entry['br_picture'])) {
-            $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $entry['br_picture']);
+            $this->response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $entry['br_picture']);
         }
 
         $this->smarty->assign('entry', $entry);
@@ -148,21 +148,21 @@ class Page extends Core
      */
     private function getCalendar(int $year, int $month = null): string
     {
-        $this->pageContent->getHead()->addTitleElement((string) $year);
-        $this->pageContent->getHead()->addKeyword('год ' . $year);
-        $this->pageContent->getHead()->addDescription('Записи в блоге за ' . $year . ' год');
+        $this->response->getContent()->getHead()->addTitleElement((string) $year);
+        $this->response->getContent()->getHead()->addKeyword('год ' . $year);
+        $this->response->getContent()->getHead()->addDescription('Записи в блоге за ' . $year . ' год');
 
         $canonical = '/blog/' . $year . '/';
 
         if ($month !== null) {
             $monthName = MonthName::getMonthName($month);
-            $this->pageContent->getHead()->addTitleElement(mb_convert_case($monthName, MB_CASE_TITLE, 'UTF-8'));
-            $this->pageContent->getHead()->addKeyword('месяц ' . $monthName);
-            $this->pageContent->getHead()->addDescription("Записи в блоге за $monthName");
+            $this->response->getContent()->getHead()->addTitleElement(mb_convert_case($monthName, MB_CASE_TITLE, 'UTF-8'));
+            $this->response->getContent()->getHead()->addKeyword('месяц ' . $monthName);
+            $this->response->getContent()->getHead()->addDescription("Записи в блоге за $monthName");
             $canonical .= sprintf('%02d', $month) . '/';
         }
 
-        $this->pageContent->getHead()->setCanonicalUrl($canonical);
+        $this->response->getContent()->getHead()->setCanonicalUrl($canonical);
 
         $dbb = $this->db->getTableName('blogentries');
         $dbu = $this->db->getTableName('users');

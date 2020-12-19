@@ -371,7 +371,7 @@ class Page extends Core
 
         $this->smarty->assign('adminlogined', $this->webUser->getId() ?: 0);
 
-        $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/details.tpl'));
+        $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/details.tpl'));
     }
 
     /**
@@ -505,7 +505,7 @@ class Page extends Core
         $this->smarty->assign('already', $already);
         $this->smarty->assign('freeplace', mb_strlen($newcity) >= 5 ? $newcity : null);
         $this->smarty->assign('adminlogined', $this->webUser->getId());
-        $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/add.sm.html'));
+        $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/add.sm.html'));
     }
 
     /**
@@ -546,15 +546,15 @@ class Page extends Core
             $cities[] = $row;
         }
 
-        $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), 'https://culttourism.ru/data/images/pages/map-example-500.png');
+        $this->response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), 'https://culttourism.ru/data/images/pages/map-example-500.png');
 
         $this->smarty->assign('tcity', $cities);
         $this->smarty->assign('adminlogined', $this->webUser->getId() ?? 0);
 
         if ($this->webUser->isEditor()) {
-            $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html'));
+            $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html'));
         } else {
-            $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html'));
+            $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html'));
         }
     }
 }

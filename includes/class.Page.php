@@ -22,10 +22,10 @@ class Page extends Core
      */
     public function compileContent(): void
     {
-        if (!$this->pageContent->getBody()) {
-            $this->pageContent->setBody($this->getPageByURL($this->siteRequest));
+        if (!$this->response->getContent()->getBody()) {
+            $this->response->getContent()->setBody($this->getPageByURL($this->siteRequest));
         }
-        if (!$this->pageContent->getBody()) {
+        if (!$this->response->getContent()->getBody()) {
             throw new NotFoundException();
         }
     }
@@ -40,7 +40,7 @@ class Page extends Core
     {
         $url = $request->getUrl();
         if ($url !== '') {
-            $this->pageContent->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
+            $this->response->getContent()->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
 
             $regs = [];
             $url_parts_array = !empty($url) ? explode('/', $url) : [];
@@ -87,7 +87,7 @@ class Page extends Core
         if (!$object) {
             return false;
         }
-        $this->pageContent->getHead()->setCanonicalUrl($object['url_canonical']);
+        $this->response->getContent()->getHead()->setCanonicalUrl($object['url_canonical']);
         if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] !== $object['url_canonical']) {
             $this->response->getHeaders()->add('HTTP/1.1 301 Moved Permanently');
             $this->response->getHeaders()->add('Location: ' . $object['url_canonical']);
@@ -135,27 +135,27 @@ class Page extends Core
         $sp = new MStatpoints($this->db);
         $sp->add($object['pt_id'], $this->webUser->getHash());
 
-        $this->pageContent->getHead()->addTitleElement($city['pc_title_unique']);
-        $this->pageContent->getHead()->addTitleElement($object['esc_name']);
+        $this->response->getContent()->getHead()->addTitleElement($city['pc_title_unique']);
+        $this->response->getContent()->getHead()->addTitleElement($object['esc_name']);
 
-        $this->pageContent->getHead()->addCustomMeta('business:contact_data:locality', $city['pc_title_unique']);
+        $this->response->getContent()->getHead()->addCustomMeta('business:contact_data:locality', $city['pc_title_unique']);
 
-        $this->pageContent->getHead()->addMicroData('@type', 'Place');
-        $this->pageContent->getHead()->addMicroData('name', $object['esc_name']);
-        $this->pageContent->getHead()->addMicroData('description', $short);
-        $this->pageContent->getHead()->addMicroData('address', [
+        $this->response->getContent()->getHead()->addMicroData('@type', 'Place');
+        $this->response->getContent()->getHead()->addMicroData('name', $object['esc_name']);
+        $this->response->getContent()->getHead()->addMicroData('description', $short);
+        $this->response->getContent()->getHead()->addMicroData('address', [
             '@type' => 'PostalAddress',
             'addressLocality' => $city['pc_title_unique'],
         ]);
 
         if ($object['tr_sight']) {
-            $this->pageContent->getHead()->addDescription('Достопримечательности ' . $city['pc_inwheretext']);
+            $this->response->getContent()->getHead()->addDescription('Достопримечательности ' . $city['pc_inwheretext']);
         }
         if (!empty($object['pt_latitude']) && !empty($object['pt_longitude'])) {
-            $this->pageContent->getHead()->addDescription('GPS-координаты');
-            $this->pageContent->getHead()->addCustomMeta('place:location:latitude', $object['pt_latitude']);
-            $this->pageContent->getHead()->addCustomMeta('place:location:longitude', $object['pt_longitude']);
-            $this->pageContent->getHead()->addMicroData(
+            $this->response->getContent()->getHead()->addDescription('GPS-координаты');
+            $this->response->getContent()->getHead()->addCustomMeta('place:location:latitude', $object['pt_latitude']);
+            $this->response->getContent()->getHead()->addCustomMeta('place:location:longitude', $object['pt_longitude']);
+            $this->response->getContent()->getHead()->addMicroData(
                 'geo',
                 [
                     '@type' => 'GeoCoordinates',
@@ -164,41 +164,41 @@ class Page extends Core
                 ]
             );
         }
-        $this->pageContent->getHead()->addDescription("{$object['tp_short']} {$city['pc_inwheretext']}");
-        $this->pageContent->getHead()->addDescription($object['esc_name']);
-        $this->pageContent->getHead()->addDescription($short);
-        $this->pageContent->getHead()->addKeyword($city['pc_title']);
-        $this->pageContent->getHead()->addKeyword($object['esc_name']);
+        $this->response->getContent()->getHead()->addDescription("{$object['tp_short']} {$city['pc_inwheretext']}");
+        $this->response->getContent()->getHead()->addDescription($object['esc_name']);
+        $this->response->getContent()->getHead()->addDescription($short);
+        $this->response->getContent()->getHead()->addKeyword($city['pc_title']);
+        $this->response->getContent()->getHead()->addKeyword($object['esc_name']);
         if (isset($object['gps_dec'])) {
-            $this->pageContent->getHead()->addKeyword('координаты GPS');
+            $this->response->getContent()->getHead()->addKeyword('координаты GPS');
         }
 
-        $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'article');
-        $this->pageContent->getHead()->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
-        $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $object['esc_name']);
-        $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $short);
-        $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->response->getLastEditTimestamp());
+        $this->response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'article');
+        $this->response->getContent()->getHead()->addOGMeta(OgType::URL(), $this->response->getContent()->getHead()->getCanonicalUrl());
+        $this->response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $object['esc_name']);
+        $this->response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $short);
+        $this->response->getContent()->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->response->getLastEditTimestamp());
         $objImage = null;
         if ((int) $object['pt_photo_id'] !== 0) {
             $ph = new MPhotos($this->db);
             $photo = $ph->getItemByPk($object['pt_photo_id']);
             $objImage = Urls::getAbsoluteURL($photo['ph_src']);
-            $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
+            $this->response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
         }
 
         if (!empty($object['pt_website'])) {
-            $this->pageContent->getHead()->addCustomMeta('business:contact_data:website', $object['pt_website']);
-            $this->pageContent->getHead()->addMicroData('url', $object['pt_website']);
+            $this->response->getContent()->getHead()->addCustomMeta('business:contact_data:website', $object['pt_website']);
+            $this->response->getContent()->getHead()->addMicroData('url', $object['pt_website']);
         }
         if (!empty($object['pt_phone'])) {
-            $this->pageContent->getHead()->addCustomMeta('business:contact_data:phone_number', $object['pt_phone']);
-            $this->pageContent->getHead()->addMicroData('telephone', $object['pt_phone']);
+            $this->response->getContent()->getHead()->addCustomMeta('business:contact_data:phone_number', $object['pt_phone']);
+            $this->response->getContent()->getHead()->addMicroData('telephone', $object['pt_phone']);
         }
         if (!empty($object['pt_worktime'])) {
-            $this->pageContent->getHead()->addMicroData('openingHours', $object['pt_worktime']);
+            $this->response->getContent()->getHead()->addMicroData('openingHours', $object['pt_worktime']);
         }
 
-        $this->pageContent->setCustomJsModule('point');
+        $this->response->getContent()->setCustomJsModule('point');
 
         $this->smarty->assign('object', $object);
         $this->smarty->assign('city', $city);
@@ -241,7 +241,7 @@ class Page extends Core
             $this->response->setLastEditTimestamp($row['last_update']);
 
             //--------------------  c a n o n i c a l  ------------------------
-            $this->pageContent->getHead()->setCanonicalUrl($row['url_canonical']);
+            $this->response->getContent()->getHead()->setCanonicalUrl($row['url_canonical']);
             if ($row['url_canonical'] !== ($url . '/')) {
                 $this->response->getHeaders()->add('HTTP/1.1 301 Moved Permanently');
                 $this->response->getHeaders()->add('Location: ' . $row['url_canonical']);
@@ -259,38 +259,38 @@ class Page extends Core
             $sc = new MStatcity($this->db);
             $sc->add($row['pc_id'], $this->webUser->getHash());
 
-            $this->pageContent->getHead()->addTitleElement($row['pc_title_unique'] . ': достопримечательности');
-            $this->pageContent->getHead()->addDescription($row['pc_title_unique'] . ' - что посмотреть');
+            $this->response->getContent()->getHead()->addTitleElement($row['pc_title_unique'] . ': достопримечательности');
+            $this->response->getContent()->getHead()->addDescription($row['pc_title_unique'] . ' - что посмотреть');
             if ($row['pc_description']) {
-                $this->pageContent->getHead()->addDescription($row['pc_description']);
+                $this->response->getContent()->getHead()->addDescription($row['pc_description']);
             }
-            $this->pageContent->getHead()->addDescription('Достопримечательности ' . $row['pc_inwheretext'] . ' с GPS-координатами');
+            $this->response->getContent()->getHead()->addDescription('Достопримечательности ' . $row['pc_inwheretext'] . ' с GPS-координатами');
             if ($row['pc_keywords']) {
-                $this->pageContent->getHead()->addKeyword($row['pc_keywords']);
+                $this->response->getContent()->getHead()->addKeyword($row['pc_keywords']);
             }
-            $this->pageContent->getHead()->addKeyword('достопримечательности ' . $row['pc_inwheretext']);
-            $this->pageContent->getHead()->addKeyword('Координаты GPS');
-            $this->pageContent->getHead()->addKeyword($row['pc_title_translit']);
+            $this->response->getContent()->getHead()->addKeyword('достопримечательности ' . $row['pc_inwheretext']);
+            $this->response->getContent()->getHead()->addKeyword('Координаты GPS');
+            $this->response->getContent()->getHead()->addKeyword($row['pc_title_translit']);
             if ($row['pc_title_english'] && $row['pc_title_english'] !== $row['pc_title_translit']) {
-                $this->pageContent->getHead()->addKeyword($row['pc_title_english']);
+                $this->response->getContent()->getHead()->addKeyword($row['pc_title_english']);
             }
             if ($row['pc_title_synonym']) {
-                $this->pageContent->getHead()->addKeyword($row['pc_title_synonym']);
+                $this->response->getContent()->getHead()->addKeyword($row['pc_title_synonym']);
             }
 
-            $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'article');
-            $this->pageContent->getHead()->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
-            $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), 'Достопримечательности ' . $row['pc_inwheretext']);
-            $this->pageContent->getHead()->addOGMeta(
+            $this->response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'article');
+            $this->response->getContent()->getHead()->addOGMeta(OgType::URL(), $this->response->getContent()->getHead()->getCanonicalUrl());
+            $this->response->getContent()->getHead()->addOGMeta(OgType::TITLE(), 'Достопримечательности ' . $row['pc_inwheretext']);
+            $this->response->getContent()->getHead()->addOGMeta(
                 OgType::DESCRIPTION(),
                 $row['pc_description'] . ($row['pc_announcement'] ? '. ' . $row['pc_announcement'] : '')
             );
-            $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->response->getLastEditTimestamp());
+            $this->response->getContent()->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->response->getLastEditTimestamp());
             if ($row['pc_coverphoto_id']) {
                 $ph = new MPhotos($this->db);
                 $photo = $ph->getItemByPk($row['pc_coverphoto_id']);
                 $cityImage = Urls::getAbsoluteURL($photo['ph_src']);
-                $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $cityImage);
+                $this->response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $cityImage);
             } else {
                 $cityImage = null;
             }
@@ -303,7 +303,7 @@ class Page extends Core
             $this->smarty->assign('page_image', $cityImage);
             $this->smarty->assign('types_select', $points_data['types']);
             $this->smarty->assign('ptypes', []);
-            $this->pageContent->setCustomJsModule('city');
+            $this->response->getContent()->setCustomJsModule('city');
 
             if ($this->webUser->isEditor()) {
                 return $this->smarty->fetch(_DIR_TEMPLATES . '/_pages/pagecity.edit.tpl');

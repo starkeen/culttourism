@@ -15,15 +15,15 @@ class Page extends Core
     public function compileContent(): void
     {
         if ($this->siteRequest->getLevel1() === 'in') {
-            $this->pageContent->setBody($this->getIn());
+            $this->response->getContent()->setBody($this->getIn());
         } elseif ($this->siteRequest->getLevel1() === 'up') {
-            $this->pageContent->setBody($this->getUp());
+            $this->response->getContent()->setBody($this->getUp());
         } elseif ($this->siteRequest->getLevel1() === 'check') {
             $this->doCheck($this->siteRequest->getLevel2());
         } elseif ($this->siteRequest->getLevel1() === 'out') {
             $this->doOut();
         } elseif ($this->siteRequest->getLevel1() === 'form') {
-            $this->pageContent->setBody($this->getFormLogin());
+            $this->response->getContent()->setBody($this->getFormLogin());
         } else {
             throw new NotFoundException();
         }

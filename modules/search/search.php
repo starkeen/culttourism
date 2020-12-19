@@ -21,7 +21,7 @@ class Page extends Core
         } elseif ($this->siteRequest->getLevel1() === 'suggest-object' && isset($_GET['query'])) {
             $this->getObjectSuggests();
         }
-        $this->pageContent->setBody($this->getSearchYandex());
+        $this->response->getContent()->setBody($this->getSearchYandex());
     }
 
     /**
@@ -169,7 +169,7 @@ class Page extends Core
 
             $q = $this->db->getEscapedString($q);
             $this->smarty->assign('search', $q);
-            $this->pageContent->getHead()->addTitleElement($q);
+            $this->response->getContent()->getHead()->addTitleElement($q);
 
             if (mb_strlen($q) >= 2) {
                 $q = mb_strtolower($q);

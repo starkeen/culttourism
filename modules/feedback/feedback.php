@@ -77,10 +77,10 @@ class Page extends Core
                 unset($_SESSION['feedback_referer'], $_SESSION[MyKCaptcha::SESSION_KEY]);
             }
 
-            $this->pageContent->setBody($this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']));
+            $this->response->getContent()->setBody($this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']));
             unset($_POST);
         } else {
-            $this->pageContent->setBody($this->getAddingForm());
+            $this->response->getContent()->setBody($this->getAddingForm());
         }
     }
 
@@ -154,14 +154,14 @@ class Page extends Core
                 unset($_POST);
                 unset($_SESSION[MyKCaptcha::SESSION_KEY]);
                 unset($_SESSION[MyKCaptcha::SESSION_KEY]);
-                $this->pageContent->setBody($this->getCommonSuccess($data));
+                $this->response->getContent()->setBody($this->getCommonSuccess($data));
             } else {
-                $this->pageContent->setBody($this->getCommonForm($data));
+                $this->response->getContent()->setBody($this->getCommonForm($data));
             }
 
             unset($_SESSION[MyKCaptcha::SESSION_KEY]);
         } else {
-            $this->pageContent->setBody($this->getCommonForm($data));
+            $this->response->getContent()->setBody($this->getCommonForm($data));
         }
     }
 
@@ -193,7 +193,7 @@ class Page extends Core
      */
     private function getAddingForm(): string
     {
-        $this->pageContent->getHead()->addTitleElement('Добавить объект (музей, гостиницу, кафе и др.)');
+        $this->response->getContent()->getHead()->addTitleElement('Добавить объект (музей, гостиницу, кафе и др.)');
         $this->smarty->assign('recaptcha_key', ReCaptcha::KEY);
         return $this->smarty->fetch(_DIR_TEMPLATES . '/feedback/addpoint.sm.html');
     }

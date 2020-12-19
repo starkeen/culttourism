@@ -82,7 +82,6 @@ class WebApplication extends Application
         $page->logger = $this->logger;
         $page->auth = $this->getUser()->getAuth();
         $page->webUser = $this->getUser();
-        $page->pageContent = $this->response->getContent();
         $page->response = $this->response;
 
         $this->display($page, $module);

@@ -14,14 +14,12 @@ class Page extends Core
      */
     public function compileContent(): void
     {
-        $this->pageContent->setCustomJsModule($this->siteRequest->getModuleKey());
+        $this->response->getContent()->setCustomJsModule($this->siteRequest->getModuleKey());
 
         //========================  I N D E X  ================================
         if ($this->siteRequest->getLevel1() === null) {
-
-            $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'website');
-
-            $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/map/map.sm.html'));
+            $this->response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
+            $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/map/map.sm.html'));
         } //====================  M A P   E N T R Y  ============================
         elseif ($this->siteRequest->getLevel1() === 'common') {
             $this->auth->setService('map');

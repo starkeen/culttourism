@@ -55,11 +55,6 @@ abstract class Core
     protected $globalConfig;
 
     /**
-     * @var Content
-     */
-    public $pageContent;
-
-    /**
      * @var SiteResponse
      */
     public $response;
@@ -84,12 +79,12 @@ abstract class Core
     {
         $this->auth->checkSession('web');
 
-        $this->pageContent->getHead()->setTitleDelimiter($this->globalConfig->getTitleDelimiter());
+        $this->response->getContent()->getHead()->setTitleDelimiter($this->globalConfig->getTitleDelimiter());
 
-        $this->pageContent->setJsResources($this->globalConfig->getJsResources());
-        $this->pageContent->setUrlCss($this->globalConfig->getUrlCss());
-        $this->pageContent->setUrlJs($this->globalConfig->getUrlJs());
-        $this->pageContent->setUrlRss($this->globalConfig->getUrlRSS());
+        $this->response->getContent()->setJsResources($this->globalConfig->getJsResources());
+        $this->response->getContent()->setUrlCss($this->globalConfig->getUrlCss());
+        $this->response->getContent()->setUrlJs($this->globalConfig->getUrlJs());
+        $this->response->getContent()->setUrlRss($this->globalConfig->getUrlRSS());
 
         if (!$this->globalConfig->isSiteActive()) {
             throw new BaseApplicationException();
@@ -98,49 +93,49 @@ abstract class Core
         $md = new MModules($this->db);
         $moduleData = $md->getModuleByURI($this->siteRequest->getModuleKey());
 
-        $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $this->pageContent->getHead()->getTitle());
-        $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $this->pageContent->getHead()->getDescription());
-        $this->pageContent->getHead()->addOGMeta(OgType::SITE_NAME(), $this->globalConfig->getDefaultPageTitle());
-        $this->pageContent->getHead()->addOGMeta(OgType::LOCALE(), 'ru_RU');
-        $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'website');
-        $this->pageContent->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($_SERVER['REQUEST_URI']));
-        $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), _SITE_URL . 'img/logo/culttourism-head.jpg');
-        $this->pageContent->getHead()->addMicroData('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
+        $this->response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $this->response->getContent()->getHead()->getTitle());
+        $this->response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $this->response->getContent()->getHead()->getDescription());
+        $this->response->getContent()->getHead()->addOGMeta(OgType::SITE_NAME(), $this->globalConfig->getDefaultPageTitle());
+        $this->response->getContent()->getHead()->addOGMeta(OgType::LOCALE(), 'ru_RU');
+        $this->response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
+        $this->response->getContent()->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($_SERVER['REQUEST_URI']));
+        $this->response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), _SITE_URL . 'img/logo/culttourism-head.jpg');
+        $this->response->getContent()->getHead()->addMicroData('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
         if ($moduleData['md_photo_id']) {
             $ph = new MPhotos($this->db);
             $photo = $ph->getItemByPk($moduleData['md_photo_id']);
             $objImage = Urls::getAbsoluteURL($photo['ph_src']);
-            $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
-            $this->pageContent->getHead()->addMicroData('image', $objImage);
+            $this->response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
+            $this->response->getContent()->getHead()->addMicroData('image', $objImage);
         }
 
         if (!empty($moduleData)) {
             if ($moduleData['md_redirect'] !== null) {
                 throw new RedirectException($moduleData['md_redirect']);
             }
-            $this->pageContent->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
+            $this->response->getContent()->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
             if ($moduleData['md_title']) {
-                $this->pageContent->getHead()->addTitleElement($moduleData['md_title']);
+                $this->response->getContent()->getHead()->addTitleElement($moduleData['md_title']);
             }
-            $this->pageContent->setH1($moduleData['md_title']);
-            $this->pageContent->getHead()->addKeyword($this->globalConfig->getDefaultPageKeywords());
-            $this->pageContent->getHead()->addKeyword($moduleData['md_keywords']);
-            $this->pageContent->getHead()->addDescription($this->globalConfig->getDefaultPageDescription());
-            $this->pageContent->getHead()->addDescription($moduleData['md_description']);
+            $this->response->getContent()->setH1($moduleData['md_title']);
+            $this->response->getContent()->getHead()->addKeyword($this->globalConfig->getDefaultPageKeywords());
+            $this->response->getContent()->getHead()->addKeyword($moduleData['md_keywords']);
+            $this->response->getContent()->getHead()->addDescription($this->globalConfig->getDefaultPageDescription());
+            $this->response->getContent()->getHead()->addDescription($moduleData['md_description']);
 
-            $this->pageContent->getHead()->setCanonicalUrl('/' . $moduleData['md_url'] . '/');
+            $this->response->getContent()->getHead()->setCanonicalUrl('/' . $moduleData['md_url'] . '/');
 
-            $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $this->globalConfig->getDefaultPageTitle());
-            $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
+            $this->response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $this->globalConfig->getDefaultPageTitle());
+            $this->response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
             if ($this->response->getLastEditTimestamp() !== null) {
-                $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->response->getLastEditTimestamp());
+                $this->response->getContent()->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->response->getLastEditTimestamp());
             }
 
             if ($moduleData['md_pagecontent'] !== null) {
-                $this->pageContent->setBody($moduleData['md_pagecontent']);
+                $this->response->getContent()->setBody($moduleData['md_pagecontent']);
             }
 
-            $this->pageContent->getHead()->setRobotsIndexing($moduleData['md_robots']);
+            $this->response->getContent()->getHead()->setRobotsIndexing($moduleData['md_robots']);
             $this->response->setLastEditTimestamp(strtotime($moduleData['md_lastedit']));
         }
     }

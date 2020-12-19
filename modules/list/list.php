@@ -20,7 +20,7 @@ class Page extends Core
         $this->id = $id;
         $regs = [];
 
-        $this->pageContent->setCustomJsModule($this->siteRequest->getModuleKey());
+        $this->response->getContent()->setCustomJsModule($this->siteRequest->getModuleKey());
 
         $url_array = explode('/', $this->siteRequest->getLevel1());
         $url_last = array_pop($url_array);
@@ -43,18 +43,18 @@ class Page extends Core
         $lst = new MLists($this->db);
         $list = $lst->getItemBySlugLine($slug);
         if (isset($list['ls_id']) && $list['ls_id'] > 0) {
-            $this->pageContent->setH1($list['ls_title']);
-            $this->pageContent->getHead()->addDescription($list['ls_description']);
-            $this->pageContent->getHead()->addKeyword($list['ls_keywords']);
-            $this->pageContent->getHead()->addTitleElement($list['ls_title']);
-            $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $list['ls_title']);
-            $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $list['ls_description']);
+            $this->response->getContent()->setH1($list['ls_title']);
+            $this->response->getContent()->getHead()->addDescription($list['ls_description']);
+            $this->response->getContent()->getHead()->addKeyword($list['ls_keywords']);
+            $this->response->getContent()->getHead()->addTitleElement($list['ls_title']);
+            $this->response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $list['ls_title']);
+            $this->response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $list['ls_description']);
             if (!empty($list['ls_image'])) {
                 $objImage = Urls::getAbsoluteURL($list['ls_image']);
-                $this->pageContent->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
+                $this->response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
             }
-            $this->pageContent->getHead()->setCanonicalUrl('/list/' . $slug . '.html');
-            $this->pageContent->getHead()->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
+            $this->response->getContent()->getHead()->setCanonicalUrl('/list/' . $slug . '.html');
+            $this->response->getContent()->getHead()->addOGMeta(OgType::URL(), $this->response->getContent()->getHead()->getCanonicalUrl());
 
             $this->response->setLastEditTimestamp($list['last_update']);
 
@@ -63,7 +63,7 @@ class Page extends Core
             $this->smarty->assign('list', $list);
             $this->smarty->assign('list_items', $listItems->getActive());
 
-            $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/list/list.sm.html'));
+            $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/list/list.sm.html'));
         } else {
             throw new NotFoundException();
         }
@@ -71,8 +71,8 @@ class Page extends Core
 
     private function prepareIndex(): void
     {
-        $this->pageContent->getHead()->setCanonicalUrl('/list/');
-        $this->pageContent->getHead()->pageContent->getHead()->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
+        $this->response->getContent()->getHead()->setCanonicalUrl('/list/');
+        $this->response->getContent()->getHead()->addOGMeta(OgType::URL(), $this->response->getContent()->getHead()->getCanonicalUrl());
 
         $lst = new MLists($this->db);
 
@@ -82,8 +82,8 @@ class Page extends Core
             $indexLists[] = $list;
         }
 
-        $this->smarty->assign('index_text', $this->pageContent->getBody());
+        $this->smarty->assign('index_text', $this->response->getContent()->getBody());
         $this->smarty->assign('index_lists', $indexLists);
-        $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/list/index.sm.html'));
+        $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/list/index.sm.html'));
     }
 }

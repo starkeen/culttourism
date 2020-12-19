@@ -14,20 +14,20 @@ class Page extends Core
         $ns = new MNewsItems($this->db);
 
         $blog = $bg->getLastWithTS($this->globalConfig->getIndexStatCountBlog());
-        $blogentries = $blog['blogentries'];
+        $blogEntries = $blog['blogentries'];
 
         $this->response->setLastEditTimestamp($blog['max_ts']);
 
         $news = $ns->getLastWithTS($this->globalConfig->getIndexStatCountNews());
-        $newsentries = $news['entries'];
+        $newsEntries = $news['entries'];
 
         $this->response->setMaxLastEditTimestamp($news['max_ts']);
 
-        $this->smarty->assign('hello_text', $this->pageContent->getBody());
+        $this->smarty->assign('hello_text', $this->response->getContent()->getBody());
         $this->smarty->assign('stat', $this->globalConfig->getIndexStatText());
-        $this->smarty->assign('blogentries', $blogentries);
-        $this->smarty->assign('agrnewsentries', $newsentries);
+        $this->smarty->assign('blogentries', $blogEntries);
+        $this->smarty->assign('agrnewsentries', $newsEntries);
 
-        $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/index.html/index.sm.html'));
+        $this->response->getContent()->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/index.html/index.sm.html'));
     }
 }
