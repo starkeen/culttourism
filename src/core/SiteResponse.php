@@ -20,6 +20,11 @@ class SiteResponse
     private $content;
 
     /**
+     * @var int|null
+     */
+    private $lastEditTimestamp;
+
+    /**
      * @param Headers $headers
      * @param Content $content
      */
@@ -43,5 +48,21 @@ class SiteResponse
     public function getContent(): Content
     {
         return $this->content;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLastEditTimestamp(): ?int
+    {
+        return $this->lastEditTimestamp;
+    }
+
+    /**
+     * @param int $lastEditTimestamp
+     */
+    public function setLastEditTimestamp(int $lastEditTimestamp): void
+    {
+        $this->lastEditTimestamp = $lastEditTimestamp;
     }
 }

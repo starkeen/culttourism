@@ -70,7 +70,7 @@ abstract class Core
     public $response;
 
     public $lastedit;
-    public $lastedit_timestamp = 0;
+
     public $expiredate;
 
     /**
@@ -141,7 +141,7 @@ abstract class Core
 
             $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $this->globalConfig->getDefaultPageTitle());
             $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
-            $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
+            $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->response->getLastEditTimestamp());
 
             if ($moduleData['md_pagecontent'] !== null) {
                 $this->pageContent->setBody($moduleData['md_pagecontent']);
@@ -149,7 +149,7 @@ abstract class Core
 
             $this->pageContent->getHead()->setRobotsIndexing($moduleData['md_robots']);
             $this->lastedit = $moduleData['md_timestamp'];
-            $this->lastedit_timestamp = strtotime($moduleData['md_timestamp']);
+            $this->response->setLastEditTimestamp(strtotime($moduleData['md_timestamp']));
             $this->expiredate = $moduleData['md_expiredate'];
         }
     }

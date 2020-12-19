@@ -56,7 +56,7 @@ class Page extends Core
             $this->pageContent->getHead()->setCanonicalUrl('/list/' . $slug . '.html');
             $this->pageContent->getHead()->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
 
-            $this->lastedit_timestamp = $list['last_update'];
+            $this->response->setLastEditTimestamp($list['last_update']);
 
             $listItems = new MListsItems($this->db, $list['ls_id']);
 
@@ -78,8 +78,8 @@ class Page extends Core
 
         $indexLists = [];
         foreach ($lst->getActive() as $list) {
-            if ($list['last_update'] > $this->lastedit_timestamp) {
-                $this->lastedit_timestamp = $list['last_update'];
+            if ($list['last_update'] > $this->response->getLastEditTimestamp()) {
+                $this->response->setLastEditTimestamp($list['last_update']);
             }
             $indexLists[] = $list;
         }

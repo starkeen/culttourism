@@ -180,14 +180,14 @@ class WebApplication extends Application
                     exit();
                 }
             }
-        } elseif ($page->lastedit_timestamp > 0 && !$this->request->isAjax()) {
-            $this->headers->add('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp) . ' GMT');
+        } elseif ($page->response->getLastEditTimestamp() > 0 && !$this->request->isAjax()) {
+            $this->headers->add('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->response->getLastEditTimestamp()) . ' GMT');
             $this->headers->add('Cache-control: public');
             $this->headers->add('Pragma: cache');
-            $this->headers->add('Expires: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp + 60 * 60 * 24 * 7) . ' GMT');
+            $this->headers->add('Expires: ' . gmdate('D, d M Y H:i:s', $page->response->getLastEditTimestamp() + 60 * 60 * 24 * 7) . ' GMT');
             if ($this->request->getHeader('If-Modified-Since') !== null) {
                 $modifiedSince = explode(';', $this->request->getHeader('If-Modified-Since'));
-                if (strtotime($modifiedSince[0]) >= $page->lastedit_timestamp) {
+                if (strtotime($modifiedSince[0]) >= $page->response->getLastEditTimestamp()) {
                     $this->headers->add('HTTP/1.1 304 Not Modified');
                     $this->headers->flush();
                     exit();

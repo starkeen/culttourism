@@ -21,16 +21,16 @@ class Page extends Core
         if ($this->siteRequest->getLevel1() === null) {
             $this->pageContent->setBody($this->getAllEntries()); //все записи
         } elseif ($this->siteRequest->getLevel1() === 'addform') { //форма добавления записи в блог
-            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2030));
             $this->pageContent->setBody($this->getFormBlog());
         } elseif ($this->siteRequest->getLevel1() === 'editform' && isset($_GET['brid']) && (int) $_GET['brid']) {
-            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2030));
             $this->pageContent->setBody($this->getFormBlog((int) $_GET['brid']));
         } elseif ($this->siteRequest->getLevel1() === 'saveform') {
-            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2030));
             $this->pageContent->setBody($this->saveFormBlog());
         } elseif ($this->siteRequest->getLevel1() === 'delentry' && (int) $_GET['bid']) {
-            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2030));
             $this->pageContent->setBody($this->deleteBlogEntry((int) $_GET['bid']));
         } elseif ($this->siteRequest->getLevel1() === 'blog') {
             throw new RedirectException('/blog/');
@@ -79,12 +79,12 @@ class Page extends Core
         $entry = [];
         while ($row = $this->db->fetch()) {
             $entry[$row['br_id']] = $row;
-            if ($row['last_update'] > $this->lastedit_timestamp) {
-                $this->lastedit_timestamp = $row['last_update'];
+            if ($row['last_update'] > $this->response->getLastEditTimestamp()) {
+                $this->response->setLastEditTimestamp($row['last_update']);
             }
         }
         if ($show_full_admin) {
-            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2038));
         }
 
         $this->pageContent->getHead()->setCanonicalUrl('/blog/');
@@ -128,7 +128,7 @@ class Page extends Core
         $this->pageContent->getHead()->addKeyword($entry['bg_year'] . ' год');
         $this->pageContent->getHead()->setCanonicalUrl($entry['br_canonical']);
 
-        $this->lastedit_timestamp = $entry['last_update'];
+        $this->response->setLastEditTimestamp($entry['last_update']);
 
         $this->pageContent->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($entry['br_canonical']));
         $this->pageContent->getHead()->addOGMeta(OgType::TYPE(), 'article');
@@ -191,8 +191,8 @@ class Page extends Core
         $entry = [];
         while ($row = $this->db->fetch()) {
             $entry[$row['bg_month']][$row['br_id']] = $row;
-            if ($row['last_update'] > $this->lastedit_timestamp) {
-                $this->lastedit_timestamp = $row['last_update'];
+            if ($row['last_update'] > $this->response->getLastEditTimestamp()) {
+                $this->response->setLastEditTimestamp($row['last_update']);
             }
         }
         $this->smarty->assign('entries', $entry);
@@ -331,7 +331,7 @@ class Page extends Core
             $this->db->exec();
             $entry = $this->db->fetch();
             $this->smarty->assign('entry', $entry);
-            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2030));
             return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.sm.html');
         } else {
             $entry = [
@@ -342,7 +342,7 @@ class Page extends Core
                 'br_url' => date('d')
             ];
             $this->smarty->assign('entry', $entry);
-            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 2, 2030);
+            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 2, 2030));
             return $this->smarty->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.sm.html');
         }
     }

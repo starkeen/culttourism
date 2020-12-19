@@ -23,7 +23,7 @@ class Page extends Core
         } elseif ($this->siteRequest->getLevel1() === 'meta') {
             $this->metaCity();
         } elseif ($this->siteRequest->getLevel1() === 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
-            $this->lastedit_timestamp = mktime(0, 0, 0, 1, 1, 2050);
+            $this->response->setLastEditTimestamp(mktime(0, 0, 0, 1, 1, 2050));
             $this->getBlockWeather($_GET['lat'], $_GET['lon']);
         } else {
             throw new NotFoundException();
@@ -367,9 +367,10 @@ class Page extends Core
         $this->smarty->assign('ref_meta', $ref_meta);
         $this->smarty->assign('yandex', $yandex);
 
-        $this->lastedit_timestamp = $citypage['last_update'];
+        $this->response->setLastEditTimestamp($citypage['last_update']);
 
         $this->smarty->assign('adminlogined', $this->webUser->getId() ?: 0);
+
         $this->pageContent->setBody($this->smarty->fetch(_DIR_TEMPLATES . '/city/details.tpl'));
     }
 
@@ -541,8 +542,8 @@ class Page extends Core
         $this->db->exec();
         while ($row = $this->db->fetch()) {
             $row['pc_pagepath'] = strip_tags($row['pc_pagepath']);
-            if ($row['last_update'] > $this->lastedit_timestamp) {
-                $this->lastedit_timestamp = $row['last_update'];
+            if ($row['last_update'] > $this->response->getLastEditTimestamp()) {
+                $this->response->setLastEditTimestamp($row['last_update']);
             }
             $cities[] = $row;
         }

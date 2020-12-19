@@ -129,9 +129,8 @@ class Page extends Core
             ];
         }
 
-
-        $this->lastedit_timestamp = $object['last_update'];
-        $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
+        $this->response->setLastEditTimestamp($object['last_update']);
+        $this->lastedit = gmdate('D, d M Y H:i:s', $this->response->getLastEditTimestamp()) . ' GMT';
 
         //------------------  s t a t i s t i c s  ------------------------
         $sp = new MStatpoints($this->db);
@@ -179,7 +178,7 @@ class Page extends Core
         $this->pageContent->getHead()->addOGMeta(OgType::URL(), $this->pageContent->getHead()->getCanonicalUrl());
         $this->pageContent->getHead()->addOGMeta(OgType::TITLE(), $object['esc_name']);
         $this->pageContent->getHead()->addOGMeta(OgType::DESCRIPTION(), $short);
-        $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
+        $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->response->getLastEditTimestamp());
         $objImage = null;
         if ((int) $object['pt_photo_id'] !== 0) {
             $ph = new MPhotos($this->db);
@@ -240,7 +239,7 @@ class Page extends Core
 
         if (!empty($row) && isset($row['pc_title']) && $row['pc_title'] != '') {
             $row['pc_zoom'] = ($row['pc_latlon_zoom']) ?: 12;
-            $this->lastedit_timestamp = $row['last_update'];
+            $this->response->setLastEditTimestamp($row['last_update']);
 
             //--------------------  c a n o n i c a l  ------------------------
             $this->pageContent->getHead()->setCanonicalUrl($row['url_canonical']);
@@ -253,14 +252,14 @@ class Page extends Core
 
             $points_data = $pts->getPointsByCity($row['pc_id'], $this->webUser->isEditor());
 
-            if ($points_data['last_update'] > $this->lastedit_timestamp) {
-                $this->lastedit_timestamp = $points_data['last_update'];
+            if ($points_data['last_update'] > $this->response->getLastEditTimestamp()) {
+                $this->response->setLastEditTimestamp($points_data['last_update']);
             }
             if ($this->webUser->isEditor()) {
-                $this->lastedit_timestamp = 0;
+                $this->response->setLastEditTimestamp(0);
             }
 
-            $this->lastedit = gmdate('D, d M Y H:i:s', $this->lastedit_timestamp) . ' GMT';
+            $this->lastedit = gmdate('D, d M Y H:i:s', $this->response->getLastEditTimestamp()) . ' GMT';
 
             $sc = new MStatcity($this->db);
             $sc->add($row['pc_id'], $this->webUser->getHash());
@@ -291,7 +290,7 @@ class Page extends Core
                 OgType::DESCRIPTION(),
                 $row['pc_description'] . ($row['pc_announcement'] ? '. ' . $row['pc_announcement'] : '')
             );
-            $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->lastedit_timestamp);
+            $this->pageContent->getHead()->addOGMeta(OgType::UPDATED_TIME(), $this->response->getLastEditTimestamp());
             if ($row['pc_coverphoto_id']) {
                 $ph = new MPhotos($this->db);
                 $photo = $ph->getItemByPk($row['pc_coverphoto_id']);
