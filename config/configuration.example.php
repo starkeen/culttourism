@@ -3,7 +3,6 @@
 define('_AUTH_EXPIRE_HOURS', 1); //auth expiration period after unuse any services in hours
 define('_INDEXPAGE_URI', 'index.html');
 define('_ER_REPORT', true);
-define('_CACHE_DAYS', 0); //days for expire documents, 0 is no-cache
 
 define('_DIR_ROOT', '/www/vhosts/culttourism');
 define('_INI_DELIMITER', ':');                  // use ';' for Windows and ':' for Unix
