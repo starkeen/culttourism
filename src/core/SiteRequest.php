@@ -41,6 +41,11 @@ class SiteRequest
     private $level3;
 
     /**
+     * @var array
+     */
+    private $headers;
+
+    /**
      * @param string $requestUri
      */
     public function __construct(string $requestUri)
@@ -116,9 +121,26 @@ class SiteRequest
         return $_GET;
     }
 
+    /**
+     * @param string $name
+     * @return string|null
+     */
     public function getGETParam(string $name): ?string
     {
         return $_GET[$name] ?? null;
+    }
+
+    /**
+     * @param string $name
+     * @return string|null
+     */
+    public function getHeader(string $name): ?string
+    {
+        if ($this->headers === null) {
+            $this->headers = getallheaders();
+        }
+
+        return $this->headers[$name] ?? null;
     }
 
     private function parseRequest(): void

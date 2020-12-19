@@ -167,11 +167,10 @@ class WebApplication extends Application
             $this->headers->add('Last-Modified: ' . $page->lastedit);
             $this->headers->add('Cache-Control: public, max-age=' . _CACHE_DAYS * 3600);
 
-            $headers = getallheaders();
-            if (isset($headers['If-Modified-Since'])) {
+            if ($this->request->getHeader('If-Modified-Since') !== null) {
                 // Разделяем If-Modified-Since (Netscape < v6 отдаёт их неправильно)
-                $modifiedSince = explode(';', $headers['If-Modified-Since']);
-                // Преобразуем запрос клиента If-Modified-Since в таймштамп
+                $modifiedSince = explode(';', $this->request->getHeader('If-Modified-Since'));
+                // Преобразуем запрос клиента If-Modified-Since в timestamp
                 $modifiedSince = strtotime($modifiedSince[0]);
                 $lastModified = strtotime($page->lastedit);
                 // Сравниваем время последней модификации контента с кэшем клиента
@@ -186,9 +185,8 @@ class WebApplication extends Application
             $this->headers->add('Cache-control: public');
             $this->headers->add('Pragma: cache');
             $this->headers->add('Expires: ' . gmdate('D, d M Y H:i:s', $page->lastedit_timestamp + 60 * 60 * 24 * 7) . ' GMT');
-            $headers = getallheaders();
-            if (isset($headers['If-Modified-Since'])) {
-                $modifiedSince = explode(';', $headers['If-Modified-Since']);
+            if ($this->request->getHeader('If-Modified-Since') !== null) {
+                $modifiedSince = explode(';', $this->request->getHeader('If-Modified-Since'));
                 if (strtotime($modifiedSince[0]) >= $page->lastedit_timestamp) {
                     $this->headers->add('HTTP/1.1 304 Not Modified');
                     $this->headers->flush();
