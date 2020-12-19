@@ -23,27 +23,26 @@ class MModules extends Model
             'md_counters',
             'md_pagecontent',
             'md_photo_id',
-            'md_redirect',
             'md_sort',
-            'md_css',
             'md_robots',
             'md_lastedit',
         ];
         parent::__construct($db);
     }
 
-    public function getModuleByURI($uri)
+    /**
+     * @param string $uri
+     * @return array|null
+     */
+    public function getModuleByURI(string $uri): ?array
     {
-        $this->_db->sql = "SELECT dbm.*,
-                                DATE_FORMAT(dbm.md_lastedit,'%a, %d %b %Y %H:%i:%s GMT') AS md_timestamp,
-                                DATE_FORMAT(date_add(md_lastedit, INTERVAL :cache_days day),'%a, %d %b %Y %H:%i:%s GMT') md_expiredate
+        $this->_db->sql = "SELECT dbm.*
                             FROM $this->_table_name AS dbm
                             WHERE dbm.md_url = :mod_id
                                 AND dbm.md_active = 1";
         $this->_db->execute(
             [
                 ':mod_id' => $uri,
-                ':cache_days' => _CACHE_DAYS,
             ]
         );
         return $this->_db->fetch();
