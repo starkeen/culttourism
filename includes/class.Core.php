@@ -2,13 +2,10 @@
 
 use app\constant\OgType;
 use app\core\GlobalConfig;
-use app\core\page\Content;
-use app\core\page\Headers;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
 use app\core\WebUser;
 use app\db\MyDB;
-use app\exceptions\BaseApplicationException;
 use app\exceptions\RedirectException;
 use app\sys\TemplateEngine;
 use app\utils\Urls;
@@ -67,7 +64,6 @@ abstract class Core
     /**
      * Инициализация базовых элементов всех страниц
      * @throws RedirectException
-     * @throws BaseApplicationException
      */
     public function init(): void
     {
