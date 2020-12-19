@@ -18,7 +18,6 @@ use app\exceptions\RedirectException;
 use app\modules\BlogModule;
 use app\modules\RedirectsModule;
 use Auth;
-use MRedirects;
 use Page;
 use Throwable;
 
@@ -28,16 +27,6 @@ class WebApplication extends Application
      * @var SiteRequest
      */
     private $request;
-
-    /**
-     * @var Headers
-     */
-    private $headers;
-
-    /**
-     * @var Content
-     */
-    private $content;
 
     /**
      * @var SiteResponse
@@ -59,9 +48,7 @@ class WebApplication extends Application
         parent::__construct();
 
         $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
-        $this->headers = new Headers();
-        $this->content = new Content(new Head());
-        $this->response = new SiteResponse($this->headers, $this->content);
+        $this->response = new SiteResponse(new Headers(), new Content(new Head()));
         $this->user = new WebUser(new Auth($this->db));
         $modules =  [
             new RedirectsModule($this->db),
@@ -82,9 +69,9 @@ class WebApplication extends Application
 
         // редиректим на https
         if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] === '')) {
-            $this->headers->add('HTTP/1.1 301 Moved Permanently');
-            $this->headers->add('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-            $this->headers->flush();
+            $this->response->getHeaders()->add('HTTP/1.1 301 Moved Permanently');
+            $this->response->getHeaders()->add('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+            $this->response->getHeaders()->flush();
             exit();
         }
 
@@ -95,8 +82,8 @@ class WebApplication extends Application
         $page->logger = $this->logger;
         $page->auth = $this->getUser()->getAuth();
         $page->webUser = $this->getUser();
-        $page->pageHeaders = $this->headers;
-        $page->pageContent = $this->content;
+        $page->pageHeaders = $this->response->getHeaders();
+        $page->pageContent = $this->response->getContent();
         $page->response = $this->response;
 
         $this->display($page, $module);
@@ -115,77 +102,77 @@ class WebApplication extends Application
             $module->process($this->request, $this->response);
             $page->compileContent();
         } catch (RedirectException $exception) {
-            $this->headers->add('HTTP/1.1 301 Moved Permanently');
-            $this->headers->add('Location: ' . $exception->getTargetUrl());
+            $this->response->getHeaders()->add('HTTP/1.1 301 Moved Permanently');
+            $this->response->getHeaders()->add('Location: ' . $exception->getTargetUrl());
         } catch (NotFoundException $exception) {
             $this->logger->notice('Ошибка 404', [
                 'srv' => $_SERVER ?? [],
             ]);
 
-            $this->headers->add('Content-Type: text/html; charset=utf-8');
-            $this->headers->add('HTTP/1.0 404 Not Found');
+            $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
+            $this->response->getHeaders()->add('HTTP/1.0 404 Not Found');
 
-            $this->content->getHead()->addTitleElement('404 Not Found - страница не найдена на сервере');
-            $this->content->setH1('Не найдено');
+            $this->response->getContent()->getHead()->addTitleElement('404 Not Found - страница не найдена на сервере');
+            $this->response->getContent()->setH1('Не найдено');
             $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
             $this->templateEngine->assign('host', _SITE_URL);
             $this->templateEngine->assign('suggestions', []);
-            $this->content->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html'));
+            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html'));
         } catch (AccessDeniedException $exception) {
             $this->logger->notice('Ошибка 403', [
                 'srv' => $_SERVER ?? [],
             ]);
 
-            $this->headers->add('Content-Type: text/html; charset=utf-8');
-            $this->headers->add('HTTP/1.1 403 Forbidden');
+            $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
+            $this->response->getHeaders()->add('HTTP/1.1 403 Forbidden');
 
-            $this->content->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
-            $this->content->setH1('Запрещено');
+            $this->response->getContent()->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
+            $this->response->getContent()->setH1('Запрещено');
             $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
             $this->templateEngine->assign('host', _SITE_URL);
-            $this->content->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html'));
+            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html'));
         } catch (Throwable $exception) {
-            $this->headers->add('Content-Type: text/html; charset=utf-8');
-            $this->headers->add('Content-Type: text/html; charset=utf-8');
-            $this->headers->add('HTTP/1.1 503 Service Temporarily Unavailable');
-            $this->headers->add('Status: 503 Service Temporarily Unavailable');
-            $this->headers->add('Retry-After: 300');
+            $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
+            $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
+            $this->response->getHeaders()->add('HTTP/1.1 503 Service Temporarily Unavailable');
+            $this->response->getHeaders()->add('Status: 503 Service Temporarily Unavailable');
+            $this->response->getHeaders()->add('Retry-After: 300');
 
-            $this->content->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
-            $this->content->setH1('Сервис временно недоступен');
-            $this->content->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html'));
+            $this->response->getContent()->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
+            $this->response->getContent()->setH1('Сервис временно недоступен');
+            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html'));
 
             $page->logger->error($exception->getMessage());
         }
 
-        $this->headers->add('X-Powered-By: culttourism');
-        $this->headers->add('Content-Type: text/html; charset=utf-8');
+        $this->response->getHeaders()->add('X-Powered-By: culttourism');
+        $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
 
         if ($page->response->getLastEditTimestamp() > 0 && !$this->request->isAjax()) {
-            $this->headers->add('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->response->getLastEditTimestamp()) . ' GMT');
-            $this->headers->add('Cache-control: public');
-            $this->headers->add('Pragma: cache');
-            $this->headers->add('Expires: ' . gmdate('D, d M Y H:i:s', $page->response->getLastEditTimestamp() + 60 * 60 * 24 * 7) . ' GMT');
+            $this->response->getHeaders()->add('Last-Modified: ' . gmdate('D, d M Y H:i:s', $page->response->getLastEditTimestamp()) . ' GMT');
+            $this->response->getHeaders()->add('Cache-control: public');
+            $this->response->getHeaders()->add('Pragma: cache');
+            $this->response->getHeaders()->add('Expires: ' . gmdate('D, d M Y H:i:s', $page->response->getLastEditTimestamp() + 60 * 60 * 24 * 7) . ' GMT');
             if ($this->request->getHeader('If-Modified-Since') !== null) {
                 $modifiedSince = explode(';', $this->request->getHeader('If-Modified-Since'));
                 if (strtotime($modifiedSince[0]) >= $page->response->getLastEditTimestamp()) {
-                    $this->headers->add('HTTP/1.1 304 Not Modified');
-                    $this->headers->flush();
+                    $this->response->getHeaders()->add('HTTP/1.1 304 Not Modified');
+                    $this->response->getHeaders()->flush();
                     exit();
                 }
             }
         } else {
-            $this->headers->add('Cache-Control: no-store, no-cache, must-revalidate');
-            $this->headers->add('Expires: ' . date('r'));
+            $this->response->getHeaders()->add('Cache-Control: no-store, no-cache, must-revalidate');
+            $this->response->getHeaders()->add('Expires: ' . date('r'));
         }
 
-        $this->headers->flush();
+        $this->response->getHeaders()->flush();
 
         if ($this->request->isAjax()) {
-            echo $this->content->getBody();
+            echo $this->response->getContent()->getBody();
         } else {
             $this->templateEngine->assign('user', $this->getUser());
-            $this->templateEngine->assign('pageContent', $this->content);
+            $this->templateEngine->assign('pageContent', $this->response->getContent());
 
             $this->templateEngine->display(_DIR_TEMPLATES . '/_main/main.html.tpl');
         }
