@@ -163,7 +163,7 @@ class WebApplication extends Application
 
         if (_CACHE_DAYS !== 0 && !$this->request->isAjax()) {
             $this->headers->add('Expires: ' . $page->expiredate);
-            $this->headers->add('Last-Modified: ' . $page->lastedit);
+            $this->headers->add('Last-Modified: ' . $page->response->getLastEditTimeGMT());
             $this->headers->add('Cache-Control: public, max-age=' . _CACHE_DAYS * 3600);
 
             if ($this->request->getHeader('If-Modified-Since') !== null) {
@@ -171,9 +171,8 @@ class WebApplication extends Application
                 $modifiedSince = explode(';', $this->request->getHeader('If-Modified-Since'));
                 // Преобразуем запрос клиента If-Modified-Since в timestamp
                 $modifiedSince = strtotime($modifiedSince[0]);
-                $lastModified = strtotime($page->lastedit);
                 // Сравниваем время последней модификации контента с кэшем клиента
-                if ($lastModified <= $modifiedSince) {
+                if ($modifiedSince > $this->response->getLastEditTimestamp()) {
                     $this->headers->add('HTTP/1.1 304 Not Modified');
                     $this->headers->flush();
                     exit();
@@ -195,7 +194,6 @@ class WebApplication extends Application
         } else {
             $this->headers->add('Cache-Control: no-store, no-cache, must-revalidate');
             $this->headers->add('Expires: ' . date('r'));
-            $page->lastedit = null;
         }
 
         $this->headers->flush();

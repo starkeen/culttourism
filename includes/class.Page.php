@@ -130,7 +130,6 @@ class Page extends Core
         }
 
         $this->response->setLastEditTimestamp($object['last_update']);
-        $this->lastedit = gmdate('D, d M Y H:i:s', $this->response->getLastEditTimestamp()) . ' GMT';
 
         //------------------  s t a t i s t i c s  ------------------------
         $sp = new MStatpoints($this->db);
@@ -256,8 +255,6 @@ class Page extends Core
             if ($this->webUser->isEditor()) {
                 $this->response->setLastEditTimestamp(0);
             }
-
-            $this->lastedit = gmdate('D, d M Y H:i:s', $this->response->getLastEditTimestamp()) . ' GMT';
 
             $sc = new MStatcity($this->db);
             $sc->add($row['pc_id'], $this->webUser->getHash());

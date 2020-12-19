@@ -68,9 +68,7 @@ abstract class Core
      * @var SiteResponse
      */
     public $response;
-
-    public $lastedit;
-
+    
     public $expiredate;
 
     /**
@@ -150,7 +148,6 @@ abstract class Core
             }
 
             $this->pageContent->getHead()->setRobotsIndexing($moduleData['md_robots']);
-            $this->lastedit = $moduleData['md_timestamp'];
             $this->response->setLastEditTimestamp(strtotime($moduleData['md_timestamp']));
             $this->expiredate = $moduleData['md_expiredate'];
         }

@@ -59,6 +59,14 @@ class SiteResponse
     }
 
     /**
+     * @return string|null
+     */
+    public function getLastEditTimeGMT(): ?string
+    {
+        return $this->lastEditTimestamp !== null ? gmdate('D, d M Y H:i:s', $this->lastEditTimestamp) . ' GMT' : null;
+    }
+
+    /**
      * @param int $timestamp
      */
     public function setLastEditTimestamp(int $timestamp): void
