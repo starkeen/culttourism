@@ -112,7 +112,6 @@ class WebApplication extends Application
     {
         try {
             $page->init();
-            $this->checkRedirect($this->request);
             $module->process($this->request, $this->response);
             $page->compileContent();
         } catch (RedirectException $exception) {
@@ -208,23 +207,6 @@ class WebApplication extends Application
             $this->templateEngine->assign('pageContent', $this->content);
 
             $this->templateEngine->display(_DIR_TEMPLATES . '/_main/main.html.tpl');
-        }
-    }
-
-    /**
-     * @param SiteRequest $request
-     * @throws RedirectException
-     */
-    private function checkRedirect(SiteRequest $request): void
-    {
-        $url = $request->getUrl();
-        $redirectModel = new MRedirects($this->db);
-        $redirects = $redirectModel->getActive();
-        foreach ($redirects as $redirect) {
-            $redirectUrl = preg_filter($redirect['rd_from'], $redirect['rd_to'], $url);
-            if ($redirectUrl !== null) {
-                throw new RedirectException($redirectUrl);
-            }
         }
     }
 
