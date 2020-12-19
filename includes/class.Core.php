@@ -47,7 +47,7 @@ abstract class Core
     /**
      * @var GlobalConfig
      */
-    protected $globalConfig;
+    public $globalConfig;
 
     /**
      * @var SiteResponse
@@ -62,7 +62,6 @@ abstract class Core
     {
         $this->db = $db;
         $this->siteRequest = $request;
-        $this->globalConfig = new GlobalConfig($this->db);
     }
 
     /**
@@ -73,17 +72,6 @@ abstract class Core
     public function init(): void
     {
         $this->webUser->getAuth()->checkSession('web');
-
-        $this->response->getContent()->getHead()->setTitleDelimiter($this->globalConfig->getTitleDelimiter());
-
-        $this->response->getContent()->setJsResources($this->globalConfig->getJsResources());
-        $this->response->getContent()->setUrlCss($this->globalConfig->getUrlCss());
-        $this->response->getContent()->setUrlJs($this->globalConfig->getUrlJs());
-        $this->response->getContent()->setUrlRss($this->globalConfig->getUrlRSS());
-
-        if (!$this->globalConfig->isSiteActive()) {
-            throw new BaseApplicationException();
-        }
 
         $md = new MModules($this->db);
         $moduleData = $md->getModuleByURI($this->siteRequest->getModuleKey());

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\core\application;
 
+use app\core\GlobalConfig;
 use app\core\module\ModuleFetcher;
 use app\core\module\ModuleInterface;
 use app\core\page\Content;
@@ -13,6 +14,7 @@ use app\core\SiteRequest;
 use app\core\SiteResponse;
 use app\core\WebUser;
 use app\exceptions\AccessDeniedException;
+use app\exceptions\BaseApplicationException;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 use app\modules\BlogModule;
@@ -43,6 +45,11 @@ class WebApplication extends Application
      */
     private $moduleFetcher;
 
+    /**
+     * @var GlobalConfig
+     */
+    private $globalConfig;
+
     public function __construct()
     {
         parent::__construct();
@@ -50,6 +57,7 @@ class WebApplication extends Application
         $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
         $this->response = new SiteResponse(new Headers(), new Content(new Head()));
         $this->user = new WebUser(new Auth($this->db));
+        $this->globalConfig = new GlobalConfig($this->db);
         $modules =  [
             new RedirectsModule($this->db),
             new BlogModule($this->db),
@@ -78,6 +86,7 @@ class WebApplication extends Application
         $module = $this->moduleFetcher->getModule($this->request);
 
         $page = $this->moduleFetcher->getPageModule($this->request);
+        $page->globalConfig = $this->globalConfig;
         $page->templateEngine = $this->templateEngine;
         $page->logger = $this->logger;
         $page->webUser = $this->getUser();
@@ -95,6 +104,15 @@ class WebApplication extends Application
     private function display(Page $page, ModuleInterface $module): void
     {
         try {
+            $this->response->getContent()->getHead()->setTitleDelimiter($this->globalConfig->getTitleDelimiter());
+            $this->response->getContent()->setUrlRss($this->globalConfig->getUrlRSS());
+            $this->response->getContent()->setJsResources($this->globalConfig->getJsResources());
+            $this->response->getContent()->setUrlCss($this->globalConfig->getUrlCss());
+            $this->response->getContent()->setUrlJs($this->globalConfig->getUrlJs());
+            if (!$this->globalConfig->isSiteActive()) {
+                throw new BaseApplicationException();
+            }
+
             $page->init();
             $module->process($this->request, $this->response);
             $page->compileContent();
