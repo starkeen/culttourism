@@ -77,11 +77,8 @@ class WebApplication extends Application
         $this->init();
 
         // редиректим на https
-        if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS'] === '')) {
-            $this->response->getHeaders()->add('HTTP/1.1 301 Moved Permanently');
-            $this->response->getHeaders()->add('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-            $this->response->getHeaders()->flush();
-            exit();
+        if (!_ER_REPORT && !$this->request->isSSL()) {
+            $this->response->getHeaders()->sendRedirect($this->request->getCurrentURL(), true);
         }
 
         $module = $this->moduleFetcher->getModule($this->request);

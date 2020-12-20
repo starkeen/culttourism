@@ -55,6 +55,9 @@ class SiteRequest
         $this->requestUri = $requestUri;
     }
 
+    /**
+     * @return string
+     */
     public function getModuleKey(): string
     {
         if (!$this->parsed) {
@@ -63,14 +66,9 @@ class SiteRequest
         return urldecode($this->moduleId);
     }
 
-    public function getPageId(): ?string
-    {
-        if (!$this->parsed) {
-            $this->parseRequest();
-        }
-        return $this->level1 !== null ?  urldecode($this->level1) : null;
-    }
-
+    /**
+     * @return string|null
+     */
     public function getLevel1(): ?string
     {
         if (!$this->parsed) {
@@ -79,6 +77,9 @@ class SiteRequest
         return $this->level1 !== null ?  urldecode($this->level1) : null;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLevel2(): ?string
     {
         if (!$this->parsed) {
@@ -87,6 +88,9 @@ class SiteRequest
         return $this->level2 !== null ? urldecode($this->level2) : null;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLevel3(): ?string
     {
         if (!$this->parsed) {
@@ -95,12 +99,18 @@ class SiteRequest
         return $this->level3 !== null ?  urldecode($this->level3) : null;
     }
 
+    /**
+     * @return bool
+     */
     public function isAjax(): bool
     {
         return !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
             && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
     }
 
+    /**
+     * @return string
+     */
     public function getUrl(): string
     {
         if (!$this->parsed) {
@@ -118,6 +128,9 @@ class SiteRequest
         return '/' . implode('/', $urlParts);
     }
 
+    /**
+     * @return array
+     */
     public function getGET(): array
     {
         return $_GET;
@@ -130,6 +143,14 @@ class SiteRequest
     public function getGETParam(string $name): ?string
     {
         return $_GET[$name] ?? null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrentURL(): string
+    {
+        return 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     }
 
     /**
@@ -153,6 +174,17 @@ class SiteRequest
         return $this->headers[strtolower($name)] ?? null;
     }
 
+    /**
+     * @return bool
+     */
+    public function isSSL(): bool
+    {
+        return isset($_SERVER['HTTP_X_HTTPS']) && $_SERVER['HTTP_X_HTTPS'] !== '';
+    }
+
+    /**
+     * Разбор запроса на составляющие
+     */
     private function parseRequest(): void
     {
         $requestUri = urldecode($this->requestUri);

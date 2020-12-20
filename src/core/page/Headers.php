@@ -22,4 +22,18 @@ class Headers
             header($header);
         }
     }
+
+    /**
+     * @param string $location
+     * @param bool|null $terminate
+     */
+    public function sendRedirect(string $location, bool $terminate = false): void
+    {
+        $this->add('HTTP/1.1 301 Moved Permanently');
+        $this->add('Location: ' . $location);
+        if ($terminate) {
+            $this->flush();
+            exit();
+        }
+    }
 }
