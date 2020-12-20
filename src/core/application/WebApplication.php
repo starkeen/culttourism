@@ -115,14 +115,12 @@ class WebApplication extends Application
             $module->process($this->request, $this->response);
             $page->compileContent();
         } catch (RedirectException $exception) {
-            $this->response->getHeaders()->add('HTTP/1.1 301 Moved Permanently');
-            $this->response->getHeaders()->add('Location: ' . $exception->getTargetUrl());
+            $this->response->getHeaders()->sendRedirect($exception->getTargetUrl());
         } catch (NotFoundException $exception) {
             $this->logger->notice('Ошибка 404', [
                 'srv' => $_SERVER ?? [],
             ]);
 
-            $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
             $this->response->getHeaders()->add('HTTP/1.0 404 Not Found');
 
             $this->response->getContent()->getHead()->addTitleElement('404 Not Found - страница не найдена на сервере');
@@ -136,7 +134,6 @@ class WebApplication extends Application
                 'srv' => $_SERVER ?? [],
             ]);
 
-            $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
             $this->response->getHeaders()->add('HTTP/1.1 403 Forbidden');
 
             $this->response->getContent()->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
@@ -145,7 +142,6 @@ class WebApplication extends Application
             $this->templateEngine->assign('host', _SITE_URL);
             $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html'));
         } catch (Throwable $exception) {
-            $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
             $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
             $this->response->getHeaders()->add('HTTP/1.1 503 Service Temporarily Unavailable');
             $this->response->getHeaders()->add('Status: 503 Service Temporarily Unavailable');

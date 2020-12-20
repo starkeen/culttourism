@@ -318,8 +318,7 @@ class Page extends Core
             );
             $city = $pc->getItemByPk($city_id);
 
-            header("Location: {$city['url']}");
-            exit();
+            $this->response->getHeaders()->sendRedirect($city['url'], true);
         }
 
         $citypage = $pc->getItemByPk($city_id);
@@ -401,8 +400,7 @@ class Page extends Core
                 ]
             );
             if ($cid > 0) {
-                header("location: /city/detail/?city_id=$cid");
-                exit();
+                $this->response->getHeaders()->sendRedirect('/city/detail/?city_id=' . $cid, true);
             }
         } elseif (!empty($_GET['cityname'])) {
             $newcity = trim($_GET['cityname']);

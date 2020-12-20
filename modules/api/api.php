@@ -35,8 +35,7 @@ class Page extends Core
         } elseif ($page_id == '5' && isset($_GET['id'])) {//место xml
             $this->getApi5((int) $_GET['id']);
         } elseif ($page_id == '') {
-            header("Location: /api/0/");
-            exit();
+            $this->response->getHeaders()->sendRedirect('/api/0/', true);
         } //==========================  E X I T  ================================
         else {
             throw new NotFoundException();

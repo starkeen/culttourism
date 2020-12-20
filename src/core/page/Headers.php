@@ -11,11 +11,17 @@ class Headers
      */
     private $headers = [];
 
+    /**
+     * @param string $header
+     */
     public function add(string $header): void
     {
         $this->headers[] = $header;
     }
 
+    /**
+     * Отправка накопленных заголовков клиенту
+     */
     public function flush(): void
     {
         foreach ($this->headers as $header) {
