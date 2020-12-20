@@ -6,7 +6,6 @@ namespace app\core\application;
 
 use app\core\GlobalConfig;
 use app\core\module\ModuleFetcher;
-use app\core\module\ModuleInterface;
 use app\core\page\Content;
 use app\core\page\Head;
 use app\core\page\Headers;
@@ -19,9 +18,10 @@ use app\exceptions\BaseApplicationException;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 use app\modules\BlogModule;
+use app\modules\CoreModule;
+use app\modules\DefaultModule;
 use app\modules\RedirectsModule;
 use Auth;
-use Page;
 use Throwable;
 
 class WebApplication extends Application
@@ -62,8 +62,10 @@ class WebApplication extends Application
         $modules =  [
             new RedirectsModule($this->db),
             new BlogModule($this->db),
+            new CoreModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
+            new DefaultModule($this->db),
         ];
-        $this->moduleFetcher = new ModuleFetcher($this->db, $modules);
+        $this->moduleFetcher = new ModuleFetcher($modules);
     }
 
     public function init(): void
@@ -83,13 +85,6 @@ class WebApplication extends Application
 
         $module = $this->moduleFetcher->getModule($this->request);
 
-        $page = $this->moduleFetcher->getPageModule($this->request);
-        $page->globalConfig = $this->globalConfig;
-        $page->templateEngine = $this->templateEngine;
-        $page->logger = $this->logger;
-        $page->webUser = $this->getUser();
-        $page->response = $this->response;
-
         try {
             $this->response->getContent()->getHead()->setTitleDelimiter($this->globalConfig->getTitleDelimiter());
             $this->response->getContent()->setUrlRss($this->globalConfig->getUrlRSS());
@@ -100,9 +95,7 @@ class WebApplication extends Application
                 throw new BaseApplicationException();
             }
 
-            $page->init();
             $module->process($this->request, $this->response);
-            $page->compileContent();
         } catch (RedirectException $exception) {
             $this->response->getHeaders()->sendRedirect($exception->getTargetUrl());
         } catch (NotFoundException $exception) {
@@ -140,20 +133,20 @@ class WebApplication extends Application
             $this->response->getContent()->setH1('Сервис временно недоступен');
             $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html'));
 
-            $page->logger->error($exception->getMessage());
+            $this->logger->error($exception->getMessage());
         }
 
         $this->response->getHeaders()->add('X-Powered-By: culttourism');
         $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
 
-        if ($page->response->getLastEditTimestamp() > 0 && !$this->request->isAjax()) {
-            $this->response->getHeaders()->add('Last-Modified: ' . $page->response->getLastEditTimeGMT());
+        if ($this->response->getLastEditTimestamp() > 0 && !$this->request->isAjax()) {
+            $this->response->getHeaders()->add('Last-Modified: ' . $this->response->getLastEditTimeGMT());
             $this->response->getHeaders()->add('Cache-control: public');
             $this->response->getHeaders()->add('Pragma: cache');
-            $this->response->getHeaders()->add('Expires: ' . $page->response->getExpiresTimeGMT());
+            $this->response->getHeaders()->add('Expires: ' . $this->response->getExpiresTimeGMT());
             if ($this->request->getHeader('If-Modified-Since') !== null) {
                 $modifiedSince = explode(';', $this->request->getHeader('If-Modified-Since'));
-                if (strtotime($modifiedSince[0]) >= $page->response->getLastEditTimestamp()) {
+                if (strtotime($modifiedSince[0]) >= $this->response->getLastEditTimestamp()) {
                     $this->response->getHeaders()->add('HTTP/1.1 304 Not Modified');
                     $this->response->getHeaders()->flush();
                     exit();
@@ -169,17 +162,12 @@ class WebApplication extends Application
         if ($this->request->isAjax()) {
             echo $this->response->getContent()->getBody();
         } else {
-            $this->templateEngine->assign('user', $this->getUser());
+            $this->templateEngine->assign('user', $this->user);
             $this->templateEngine->assign('pageContent', $this->response->getContent());
 
             $this->templateEngine->display(_DIR_TEMPLATES . '/_main/main.html.tpl');
         }
 
         exit();
-    }
-
-    private function getUser(): WebUser
-    {
-        return $this->user;
     }
 }

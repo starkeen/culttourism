@@ -30,7 +30,7 @@ class RedirectsModule implements ModuleInterface
      * @inheritDoc
      * @throws RedirectException
      */
-    public function process(SiteRequest $request, SiteResponse $response): void
+    public function isApplicable(SiteRequest $request): bool
     {
         $url = $request->getUrl();
         $redirectModel = new MRedirects($this->db);
@@ -41,13 +41,14 @@ class RedirectsModule implements ModuleInterface
                 throw new RedirectException($redirectUrl);
             }
         }
+
+        return false;
     }
 
     /**
      * @inheritDoc
      */
-    public function isApplicable(SiteRequest $request): bool
+    public function process(SiteRequest $request, SiteResponse $response): void
     {
-        return true;
     }
 }
