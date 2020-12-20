@@ -61,7 +61,7 @@ class WebApplication extends Application
         $this->globalConfig = new GlobalConfig($this->db);
         $modules =  [
             new RedirectsModule($this->db),
-            new BlogModule($this->db),
+            new BlogModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new CoreModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new DefaultModule($this->db),
         ];
@@ -83,9 +83,9 @@ class WebApplication extends Application
             $this->response->getHeaders()->sendRedirect($this->request->getCurrentURL(), true);
         }
 
-        $module = $this->moduleFetcher->getModule($this->request);
-
         try {
+            $module = $this->moduleFetcher->getModule($this->request);
+
             $this->response->getContent()->getHead()->setTitleDelimiter($this->globalConfig->getTitleDelimiter());
             $this->response->getContent()->setUrlRss($this->globalConfig->getUrlRSS());
             $this->response->getContent()->setJsResources($this->globalConfig->getJsResources());

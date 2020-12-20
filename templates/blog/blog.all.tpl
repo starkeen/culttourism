@@ -1,34 +1,38 @@
-{if $blogadmin == true}
+{if $isAdmin}
     <div style="text-align: right;float:right;">
         <a href="#" id="blog_entry_add"><b>добавить запись</b></a>
     </div>
 {/if}
 
 {if $entries}
-    {foreach from=$entries key=beid item=entry}
-        {if ($entry.br_active == 1 && $entry.br_showed == 1) || $blogadmin == true}
+    {foreach from=$entries item=entry}
+        {if $entry->isShown() || $isAdmin}
             <div class="blog_record">
                 <h2 class="blog_title">
-                    <a href="/blog/{$entry.bg_year}/{$entry.bg_month}/{$entry.bg_day}.html">{$entry.br_title}</a>
-                    {if $blogadmin == true}
-                        <a href="#" class="blog_entry_edit" id="blog_edit_{$entry.br_id}"
+                    <a href="{$entry->getRelativeLink()}">{$entry->br_title}</a>
+
+                    {if $isAdmin}
+                        <a href="#" class="blog_entry_edit" id="blog_edit_{$entry->getId()}"
                            title="редактировать запись"><img src="/img/btn/btn.edit.png"/></a>
-                        <a href="#" class="blog_entry_delete" id="blog_delete_{$entry.br_id}"
+                        <a href="#" class="blog_entry_delete" id="blog_delete_{$entry->getId()}"
                            title="удалить запись"><img src="/img/btn/btn.delete.png"/></a>
                     {/if}
                 </h2>
                 <div class="blog_attrs">
                     <img src="/img/ico/ico.calendar.gif" class="textmarker"/>
-                    {$entry.bg_datex}
-                    {if $entry.br_active == 0 && $blogadmin == true}, отключено{/if}
-                    {if $entry.br_showed == 0 && $blogadmin == true}, отложено{/if}
+                    {$entry->getHumanDate()}
+                    {if !$entry->isActive() && $isAdmin}, отключено{/if}
+                    {if !$entry->isShown() && $isAdmin}, отложено{/if}
                 </div>
-                {$entry.br_text}
+                {$entry->getText()}
             </div>
         {/if}
     {/foreach}
+
 {else}
+
     <div class="blog_record">
         Извините, записей нет. <a href="/blog/">Вернуться</a>.
     </div>
+
 {/if}
