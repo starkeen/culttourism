@@ -175,6 +175,7 @@ class SiteRequest
     }
 
     /**
+     * Сделан ли запрос через HTTPS
      * @return bool
      */
     public function isSSL(): bool

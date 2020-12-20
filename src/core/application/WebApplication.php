@@ -90,17 +90,6 @@ class WebApplication extends Application
         $page->webUser = $this->getUser();
         $page->response = $this->response;
 
-        $this->display($page, $module);
-
-        exit();
-    }
-
-    /**
-     * @param Page $page
-     * @param ModuleInterface $module
-     */
-    private function display(Page $page, ModuleInterface $module): void
-    {
         try {
             $this->response->getContent()->getHead()->setTitleDelimiter($this->globalConfig->getTitleDelimiter());
             $this->response->getContent()->setUrlRss($this->globalConfig->getUrlRSS());
@@ -185,6 +174,8 @@ class WebApplication extends Application
 
             $this->templateEngine->display(_DIR_TEMPLATES . '/_main/main.html.tpl');
         }
+
+        exit();
     }
 
     private function getUser(): WebUser
