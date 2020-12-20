@@ -7,6 +7,7 @@ namespace app\modules;
 use app\constant\MonthName;
 use app\constant\OgType;
 use app\core\GlobalConfig;
+use app\core\module\Module;
 use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
@@ -19,33 +20,10 @@ use app\sys\TemplateEngine;
 use app\utils\Dates;
 use app\utils\Urls;
 use MBlogEntries;
-use MModules;
-use MPhotos;
-use PDOStatement;
 
-class BlogModule implements ModuleInterface
+class BlogModule extends Module implements ModuleInterface
 {
     private const MODULE_KEY = 'blog';
-
-    /**
-     * @var MyDB
-     */
-    private $db;
-
-    /**
-     * @var TemplateEngine
-     */
-    private $templateEngine;
-
-    /**
-     * @var WebUser
-     */
-    private $webUser;
-
-    /**
-     * @var GlobalConfig
-     */
-    private $globalConfig;
 
     /**
      * @var BlogRepository
@@ -60,11 +38,17 @@ class BlogModule implements ModuleInterface
      */
     public function __construct(MyDB $db, TemplateEngine $templateEngine, WebUser $webUser, GlobalConfig $globalConfig)
     {
-        $this->db = $db;
-        $this->templateEngine = $templateEngine;
-        $this->webUser = $webUser;
-        $this->globalConfig = $globalConfig;
+        parent::__construct($db, $templateEngine, $webUser, $globalConfig);
+
         $this->blogRepository = new BlogRepository($this->db);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getModuleKey(): string
+    {
+        return self::MODULE_KEY;
     }
 
     /**
@@ -72,21 +56,19 @@ class BlogModule implements ModuleInterface
      * @throws NotFoundException
      * @throws RedirectException
      */
-    public function process(SiteRequest $request, SiteResponse $response): void
+    protected function process(SiteRequest $request, SiteResponse $response): void
     {
-        $this->preProcess($response);
-
         if ($request->getLevel1() === null) {
             $this->fetchAllEntries($response); //все записи
         } elseif ($request->getLevel1() === 'addform') { //форма добавления записи в блог
             $response->setLastEditTimestampToFuture();
-            $response->getContent()->setBody($this->getFormBlog());
+            $this->getFormBlog($response);
         } elseif ($request->getLevel1() === 'editform' && isset($_GET['brid']) && (int) $_GET['brid']) {
             $response->setLastEditTimestampToFuture();
-            $response->getContent()->setBody($this->getFormBlog((int) $_GET['brid']));
+            $this->getFormBlog($response, (int) $_GET['brid']);
         } elseif ($request->getLevel1() === 'saveform') {
             $response->setLastEditTimestampToFuture();
-            $response->getContent()->setBody($this->saveFormBlog());
+            $this->saveFormBlog();
         } elseif ($request->getLevel1() === 'delentry' && (int) $_GET['bid']) {
             $response->setLastEditTimestampToFuture();
             $this->deleteBlogEntry((int) $_GET['bid']);
@@ -108,8 +90,6 @@ class BlogModule implements ModuleInterface
         } else {
             throw new NotFoundException();
         }
-
-        $this->postProcess($response);
     }
 
     /**
@@ -118,73 +98,6 @@ class BlogModule implements ModuleInterface
     public function isApplicable(SiteRequest $request): bool
     {
         return $request->getModuleKey() === self::MODULE_KEY;
-    }
-
-    /**
-     * @deprecated
-     * @param SiteResponse $response
-     * @throws RedirectException
-     */
-    private function preProcess(SiteResponse $response): void
-    {
-        $this->webUser->getAuth()->checkSession('web');
-
-        $md = new MModules($this->db);
-        $moduleData = $md->getModuleByURI(self::MODULE_KEY);
-
-        $response->getContent()->getHead()->addOGMeta(OgType::SITE_NAME(), $this->globalConfig->getDefaultPageTitle());
-        $response->getContent()->getHead()->addOGMeta(OgType::LOCALE(), 'ru_RU');
-        $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
-        $response->getContent()->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($_SERVER['REQUEST_URI']));
-        $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), _SITE_URL . 'img/logo/culttourism-head.jpg');
-        $response->getContent()->getHead()->addMicroData('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
-        if ($moduleData['md_photo_id']) {
-            $ph = new MPhotos($this->db);
-            $photo = $ph->getItemByPk($moduleData['md_photo_id']);
-            $objImage = Urls::getAbsoluteURL($photo['ph_src']);
-            $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
-            $response->getContent()->getHead()->addMicroData('image', $objImage);
-        }
-
-        if (!empty($moduleData)) {
-            if ($moduleData['md_redirect'] !== null) {
-                throw new RedirectException($moduleData['md_redirect']);
-            }
-            $response->getContent()->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
-            if ($moduleData['md_title']) {
-                $response->getContent()->getHead()->addTitleElement($moduleData['md_title']);
-            }
-            $response->getContent()->setH1($moduleData['md_title']);
-            $response->getContent()->getHead()->addKeyword($this->globalConfig->getDefaultPageKeywords());
-            $response->getContent()->getHead()->addKeyword($moduleData['md_keywords']);
-            $response->getContent()->getHead()->addDescription($this->globalConfig->getDefaultPageDescription());
-            $response->getContent()->getHead()->addDescription($moduleData['md_description']);
-
-            $response->getContent()->getHead()->setCanonicalUrl('/' . $moduleData['md_url'] . '/');
-
-            $response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $this->globalConfig->getDefaultPageTitle());
-            $response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());
-            if ($response->getLastEditTimestamp() !== null) {
-                $response->getContent()->getHead()->addOGMeta(OgType::UPDATED_TIME(), (string) $response->getLastEditTimestamp());
-            }
-
-            if ($moduleData['md_pagecontent'] !== null) {
-                $response->getContent()->setBody($moduleData['md_pagecontent']);
-            }
-
-            $response->getContent()->getHead()->setRobotsIndexing($moduleData['md_robots']);
-            $response->setLastEditTimestamp(strtotime($moduleData['md_lastedit']));
-        }
-    }
-
-    /**
-     * @deprecated
-     * @param SiteResponse $response
-     */
-    private function postProcess(SiteResponse $response): void
-    {
-        $response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $response->getContent()->getHead()->getTitle());
-        $response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $response->getContent()->getHead()->getDescription());
     }
 
     /**
@@ -357,9 +270,9 @@ class BlogModule implements ModuleInterface
      * @param $y
      * @param $m
      * @param $d
-     * @return false|int
+     * @return null|int
      */
-    private function checkDate($y, $m, $d)
+    private function checkDate($y, $m, $d): ?int
     {
         $dbb = $this->db->getTableName('blogentries');
         $this->db->sql = "SELECT br_id FROM $dbb WHERE DATE_FORMAT(br_date, '%Y-%c-%e') = :date AND br_active = 1 LIMIT 1";
@@ -372,20 +285,20 @@ class BlogModule implements ModuleInterface
             $row = $this->db->fetch();
             $bid = (int) $row['br_id'];
             if (!$bid) {
-                return false;
+                return null;
             }
 
             return $bid;
         } else {
-            return false;
+            return null;
         }
     }
 
     /**
-     * @param $id
-     * @return false|mixed|null
+     * @param int $id
+     * @return array
      */
-    private function getEntryByID($id)
+    private function getEntryByID(int $id): array
     {
         $dbb = $this->db->getTableName('blogentries');
         $dbu = $this->db->getTableName('users');
@@ -402,12 +315,9 @@ class BlogModule implements ModuleInterface
                     LIMIT 1";
         $res = $this->db->execute(
             [
-                ':id' => (int) $id,
+                ':id' => $id,
             ]
         );
-        if (!$res) {
-            return false;
-        }
         $out = $this->db->fetch();
         $out['br_canonical'] = '/blog/' . $out['bg_year'] . '/' . $out['bg_month'] . '/' . $out['br_url'] . '.html';
 
@@ -415,33 +325,31 @@ class BlogModule implements ModuleInterface
     }
 
     /**
-     * @param $bid
-     * @return false|PDOStatement
+     * @param int $bid
      */
-    private function deleteBlogEntry($bid)
+    private function deleteBlogEntry(int $bid): void
     {
         if (!$this->webUser->isEditor()) {
-            return false;
+            return;
         }
         $brid = (int) $_POST['brid'];
-        if (!$brid || !$bid || $brid != $bid) {
-            return false;
+        if (!$brid || !$bid || $brid !== $bid) {
+            return;
         }
         $bg = new MBlogEntries($this->db);
-
-        return $bg->deleteByPk($brid);
+        $bg->deleteByPk($brid);
     }
 
     /**
-     * @param null $br_id
-     * @return false|string
+     * @param SiteResponse $response
+     * @param int|null $br_id
      */
-    private function getFormBlog($br_id = null)
+    private function getFormBlog(SiteResponse $response, int $br_id = null): void
     {
-        if (!$this->webUser->webUser->isEditor()) {
-            return false;
+        if (!$this->webUser->isEditor()) {
+            return;
         }
-        if ($br_id) {
+        if ($br_id !== null) {
             $dbb = $this->db->getTableName('blogentries');
             $this->db->sql = "SELECT br_id, br_date, br_title, br_text, br_active, br_url,
                         DATE_FORMAT(br_date, '%d.%m.%Y') as br_day,
@@ -453,9 +361,8 @@ class BlogModule implements ModuleInterface
             $this->db->exec();
             $entry = $this->db->fetch();
             $this->templateEngine->assign('entry', $entry);
-            $this->response->setLastEditTimestampToFuture();
 
-            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.sm.html');
+            $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.sm.html');
         } else {
             $entry = [
                 'br_day' => date('d.m.Y'),
@@ -465,26 +372,27 @@ class BlogModule implements ModuleInterface
                 'br_url' => date('d'),
             ];
             $this->templateEngine->assign('entry', $entry);
-            $this->response->setLastEditTimestampToFuture();
 
-            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.sm.html');
+            $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.sm.html');
         }
+
+        $response->getContent()->setBody($body);
     }
 
     /**
      * @return bool|int|mixed
      * @throws NotFoundException
      */
-    private function saveFormBlog()
+    private function saveFormBlog(): void
     {
         if (!$this->webUser->isEditor()) {
-            return false;
+            return;
         }
 
         $bg = new MBlogEntries($this->db);
 
         if ($_POST['brid'] === 'add') {
-            return $bg->insert(
+            $bg->insert(
                 [
                     'br_title' => $_POST['ntitle'],
                     'br_text' => $_POST['ntext'],
@@ -495,7 +403,7 @@ class BlogModule implements ModuleInterface
                 ]
             );
         } elseif ($_POST['brid'] > 0) {
-            return $bg->updateByPk(
+            $bg->updateByPk(
                 (int) $_POST['brid'],
                 [
                     'br_title' => $_POST['ntitle'],

@@ -60,7 +60,7 @@ class CoreModule implements ModuleInterface
     /**
      * @inheritDoc
      */
-    public function process(SiteRequest $request, SiteResponse $response): void
+    public function handle(SiteRequest $request, SiteResponse $response): void
     {
         $page = $this->getPageModule($request);
         $page->response = $response;

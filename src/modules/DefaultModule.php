@@ -26,7 +26,7 @@ class DefaultModule
     /**
      * @inheritDoc
      */
-    public function process(SiteRequest $request, SiteResponse $response): void
+    public function handle(SiteRequest $request, SiteResponse $response): void
     {}
 
     /**

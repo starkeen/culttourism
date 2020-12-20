@@ -95,7 +95,7 @@ class WebApplication extends Application
                 throw new BaseApplicationException();
             }
 
-            $module->process($this->request, $this->response);
+            $module->handle($this->request, $this->response);
         } catch (RedirectException $exception) {
             $this->response->getHeaders()->sendRedirect($exception->getTargetUrl());
         } catch (NotFoundException $exception) {
