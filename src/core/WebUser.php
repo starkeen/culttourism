@@ -14,11 +14,18 @@ class WebUser
     private $auth;
 
     /**
-     * @param Auth $auth
+     * @var SessionStorage
      */
-    public function __construct(Auth $auth)
+    private $sessionStorage;
+
+    /**
+     * @param Auth $auth
+     * @param SessionStorage $sessionStorage
+     */
+    public function __construct(Auth $auth, SessionStorage $sessionStorage)
     {
         $this->auth = $auth;
+        $this->sessionStorage = $sessionStorage;
     }
 
     /**
@@ -42,8 +49,8 @@ class WebUser
      */
     public function getId(): ?int
     {
-        if (isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0) {
-            return (int) $_SESSION['user_id'];
+        if ($this->sessionStorage->getValue('user_id') !== null) {
+            return (int) $this->sessionStorage->getValue('user_id');
         }
 
         return null;
@@ -54,7 +61,7 @@ class WebUser
      */
     public function getName(): ?string
     {
-        return $_SESSION['user_name'] ?? null;
+        return $this->sessionStorage->getValue('user_name');
     }
 
     /**
@@ -62,19 +69,15 @@ class WebUser
      */
     public function getHash()
     {
-        if (isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0) {
-            return (int) $_SESSION['user_id'];
-        }
-
-        return session_id();
+        return $this->getId() ?? session_id();
     }
 
     /**
+     * проверяет возможность редактирования
      * @return bool|null
      */
     public function isEditor(): ?bool
     {
-        //проверяет возможность редактирования
-        return isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] !== 0;
+        return $this->getId() !== null;
     }
 }

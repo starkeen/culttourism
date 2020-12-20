@@ -10,6 +10,7 @@ use app\core\module\ModuleInterface;
 use app\core\page\Content;
 use app\core\page\Head;
 use app\core\page\Headers;
+use app\core\SessionStorage;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
 use app\core\WebUser;
@@ -56,7 +57,7 @@ class WebApplication extends Application
 
         $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
         $this->response = new SiteResponse(new Headers(), new Content(new Head()));
-        $this->user = new WebUser(new Auth($this->db));
+        $this->user = new WebUser(new Auth($this->db), new SessionStorage());
         $this->globalConfig = new GlobalConfig($this->db);
         $modules =  [
             new RedirectsModule($this->db),
