@@ -441,6 +441,9 @@ class MyPDO implements IDB
         if ($errorCode === 1046) {
             throw new TableException('Ошибка PDO: table not found', $errorCode, $exception);
         }
+        if ($errorCode === 1054) {
+            throw new TableException('Ошибка PDO: Unknown column in Field List', $errorCode, $exception);
+        }
         if ($errorCode === 1062) {
             throw new DuplicateKeyException('Ошибка PDO: duplicate key', $errorCode, $exception);
         }
