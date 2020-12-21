@@ -1,4 +1,5 @@
 {if $isAdmin}
+    <script type="text/javascript" src="/js/editor.js" defer="defer"></script>
     <div style="text-align: right;float:right;">
         <a href="#" id="blog_entry_add"><b>добавить запись</b></a>
     </div>
