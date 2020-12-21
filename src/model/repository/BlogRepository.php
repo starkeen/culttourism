@@ -106,6 +106,39 @@ class BlogRepository
 
     /**
      * @param int $id
+     * @return BlogEntry|null
+     */
+    public function getItemByPk(int $id): ?BlogEntry
+    {
+        $result = null;
+        $dbb = $this->db->getTableName('blogentries');
+        $dbu = $this->db->getTableName('users');
+
+        $this->db->sql = "SELECT *
+                          FROM $dbb bg
+                              LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
+                          WHERE br_id = :id";
+        $res = $this->db->execute(
+            [
+                ':id' => $id,
+            ]
+        );
+        if ($res) {
+            $row = $this->db->fetch();
+            if ($row !== null) {
+                $result = new BlogEntry($row);
+                $result->setOwner(new User([
+                    'us_id' => $row['br_us_id'],
+                    'us_name' => $row['us_name'],
+                ]));
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param int $id
      */
     public function deleteItem(int $id): void
     {

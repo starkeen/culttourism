@@ -112,6 +112,22 @@ class BlogEntry extends Entity
     }
 
     /**
+     * @return string
+     */
+    public function getTime(): string
+    {
+        return date('H:i:s', strtotime($this->br_date));
+    }
+
+    /**
+     * @return int
+     */
+    public function getDay(): int
+    {
+        return (int) date('d', strtotime($this->br_date));
+    }
+
+    /**
      * @return int
      */
     public function getMonthNumber(): int

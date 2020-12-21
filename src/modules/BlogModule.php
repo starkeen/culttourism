@@ -223,27 +223,18 @@ class BlogModule extends Module implements ModuleInterface
 
     /**
      * @param SiteResponse $response
-     * @param int|null $br_id
+     * @param int|null $id
+     * @throws AccessDeniedException
      */
-    private function getFormBlog(SiteResponse $response, int $br_id = null): void
+    private function getFormBlog(SiteResponse $response, int $id = null): void
     {
         if (!$this->webUser->isEditor()) {
-            return;
+            throw new AccessDeniedException();
         }
-        if ($br_id !== null) {
-            $dbb = $this->db->getTableName('blogentries');
-            $this->db->sql = "SELECT br_id, br_date, br_title, br_text, br_active, br_url,
-                        DATE_FORMAT(br_date, '%d.%m.%Y') as br_day,
-                        DATE_FORMAT(br_date, '%H:%i') as br_time,
-                        DATE_FORMAT(br_date,'%Y') as bg_year, DATE_FORMAT(br_date,'%m') as bg_month, DATE_FORMAT(br_date,'%d') as bg_day
-                        FROM $dbb
-                        WHERE br_id = '$br_id'
-                        LIMIT 1";
-            $this->db->exec();
-            $entry = $this->db->fetch();
+        if ($id !== null) {
+            $entry = $this->blogRepository->getItemByPk($id);
             $this->templateEngine->assign('entry', $entry);
-
-            $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.sm.html');
+            $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.tpl');
         } else {
             $entry = [
                 'br_day' => date('d.m.Y'),
@@ -253,8 +244,7 @@ class BlogModule extends Module implements ModuleInterface
                 'br_url' => date('d'),
             ];
             $this->templateEngine->assign('entry', $entry);
-
-            $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.sm.html');
+            $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.tpl');
         }
 
         $response->getContent()->setBody($body);
