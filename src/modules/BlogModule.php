@@ -122,6 +122,7 @@ class BlogModule extends Module implements ModuleInterface
     private function fetchAllEntries(SiteResponse $response): void
     {
         $response->getContent()->getHead()->setCanonicalUrl('/blog/');
+        $response->getContent()->getHead()->addOGMeta(OgType::URL(), $response->getContent()->getHead()->getCanonicalUrl());
 
         $entries = $this->blogRepository->getLastEntries(20, $this->webUser->isEditor());
         if ($this->webUser->isEditor()) {
