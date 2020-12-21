@@ -125,29 +125,6 @@ class BlogRepository
      * @param BlogEntry $entry
      * @return int|null
      */
-    public function insert(BlogEntry $entry): ?int
-    {
-        $bg = new MBlogEntries($this->db);
-        $result = $bg->insert(
-            [
-                'br_title' => $entry->br_title,
-                'br_text' => $entry->br_text,
-                'br_date' => $entry->br_date,
-                'br_active' => $entry->br_active,
-                'br_url' => $entry->br_url,
-                'br_us_id' => $entry->getOwner()->us_id,
-            ]
-        );
-        if (is_int($result)) {
-            return $result;
-        }
-        return null;
-    }
-
-    /**
-     * @param BlogEntry $entry
-     * @return int|null
-     */
     public function save(BlogEntry $entry): ?int
     {
         $bg = new MBlogEntries($this->db);
@@ -164,6 +141,62 @@ class BlogRepository
             $result = $bg->insert($row);
         } else {
             $bg->updateByPk($result, $row);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getYears(): array
+    {
+        $dbb = $this->db->getTableName('blogentries');
+        $this->db->sql = "SELECT DISTINCT DATE_FORMAT(bg.br_date,'%Y') as bg_year FROM $dbb AS bg ORDER BY bg_year";
+        $this->db->exec();
+        $years = [];
+        while ($row = $this->db->fetch()) {
+            $years[] = (int) $row['bg_year'];
+        }
+
+        return $years;
+    }
+
+    /**
+     * @param int $year
+     * @param int|null $month
+     * @return array
+     */
+    public function getCalendarItems(int $year, int $month = null): array
+    {
+        $result = [];
+        $dbb = $this->db->getTableName('blogentries');
+        $dbu = $this->db->getTableName('users');
+        $binds = [
+            ':year' => $year,
+        ];
+        $this->db->sql = "SELECT bg.*, us.us_name
+                    FROM $dbb as bg
+                        LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
+                    WHERE br_active = 1
+                        AND DATE_FORMAT(br_date, '%Y') = :year\n";
+        if ($month !== null) {
+            $this->db->sql .= 'AND DATE_FORMAT(br_date, "%c") = :month' . PHP_EOL;
+            $binds[':month'] = $month;
+        }
+        $this->db->sql .= 'AND br_date < NOW()
+                           ORDER BY bg.br_date DESC';
+        $this->db->execute($binds);
+
+        while ($row = $this->db->fetch()) {
+            $entry = new BlogEntry($row);
+            $entry->setOwner(new User([
+                'us_id' => $row['br_us_id'],
+                'us_name' => $row['us_name'],
+            ]));
+
+            $month = $entry->getMonthNumber();
+            $result[$month][] = $entry;
         }
 
         return $result;

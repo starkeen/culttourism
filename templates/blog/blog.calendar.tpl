@@ -5,28 +5,29 @@
     {/foreach}
 </div>
 -->
+
 <h2>Календарь {$cur_year}</h2>
 {if $entries}
     {foreach from=$entries item=inmonth key=mon}
         <h3 class="blog_calmonth" style="margin-top:20px;">
             {if $mon == 1}
-                <a href="/blog/{$cur_year}/{$mon}/">Январь</a>
+                <a href="/blog/{$cur_year}/0{$mon}/">Январь</a>
             {elseif $mon == 2}
-                <a href="/blog/{$cur_year}/{$mon}/">Февраль</a>
+                <a href="/blog/{$cur_year}/0{$mon}/">Февраль</a>
             {elseif $mon == 3}
-                <a href="/blog/{$cur_year}/{$mon}/">Март</a>
+                <a href="/blog/{$cur_year}/0{$mon}/">Март</a>
             {elseif $mon == 4}
-                <a href="/blog/{$cur_year}/{$mon}/">Апрель</a>
+                <a href="/blog/{$cur_year}/0{$mon}/">Апрель</a>
             {elseif $mon == 5}
-                <a href="/blog/{$cur_year}/{$mon}/">Май</a>
+                <a href="/blog/{$cur_year}/0{$mon}/">Май</a>
             {elseif $mon == 6}
-                <a href="/blog/{$cur_year}/{$mon}/">Июнь</a>
+                <a href="/blog/{$cur_year}/0{$mon}/">Июнь</a>
             {elseif $mon == 7}
-                <a href="/blog/{$cur_year}/{$mon}/">Июль</a>
+                <a href="/blog/{$cur_year}/0{$mon}/">Июль</a>
             {elseif $mon == 8}
-                <a href="/blog/{$cur_year}/{$mon}/">Август</a>
+                <a href="/blog/{$cur_year}/0{$mon}/">Август</a>
             {elseif $mon == 9}
-                <a href="/blog/{$cur_year}/{$mon}/">Сентябрь</a>
+                <a href="/blog/{$cur_year}/0{$mon}/">Сентябрь</a>
             {elseif $mon == 10}
                 <a href="/blog/{$cur_year}/{$mon}/">Октябрь</a>
             {elseif $mon == 11}
@@ -35,14 +36,14 @@
                 <a href="/blog/{$cur_year}/{$mon}/">Декабрь</a>
             {/if}
         </h3>
-        {foreach from=$inmonth key=beid item=entry}
+        {foreach from=$inmonth item=entry}
             <div class="blog_record">
                 <h4 class="blog_title">
-                    <a href="/blog/{$entry.bg_year}/{$entry.bg_month}/{$entry.bg_day}.html">{$entry.br_title}</a>
+                    <a href="{$entry->getRelativeLink()}">{$entry->br_title}</a>
                 </h4>
                 <div class="blog_attrs" style="margin-top:1px;">
-                    <img src="/img/ico/ico.calendar.gif" class="textmarker"/>&nbsp;{$entry.br_datex}</div>
-                {$entry.br_text}
+                    <img src="/img/ico/ico.calendar.gif" class="textmarker"/>&nbsp;{$entry->getHumanDate()}</div>
+                {$entry->br_text}
             </div>
         {/foreach}
     {/foreach}

@@ -22,7 +22,6 @@ use app\model\repository\BlogRepository;
 use app\sys\TemplateEngine;
 use app\utils\Dates;
 use app\utils\Urls;
-use MBlogEntries;
 
 class BlogModule extends Module implements ModuleInterface
 {
@@ -208,41 +207,13 @@ class BlogModule extends Module implements ModuleInterface
 
         $response->getContent()->getHead()->setCanonicalUrl($canonical);
 
-        $dbb = $this->db->getTableName('blogentries');
-        $dbu = $this->db->getTableName('users');
-        $binds = [
-            ':year' => $year,
-        ];
-        $this->db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text, us.us_name,
-                        UNIX_TIMESTAMP(bg.br_date) AS last_update,
-                        DATE_FORMAT(bg.br_date,'%Y') as bg_year, DATE_FORMAT(bg.br_date,'%m') as bg_month, 
-                        IF (bg.br_url != '', bg.br_url, DATE_FORMAT(bg.br_date,'%d')) as bg_day,
-                        IF (bg.br_url != '', CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/'), bg.br_url, '.html'), CONCAT(DATE_FORMAT(bg.br_date,'%Y/%m/%d'),'.html')) as br_link,
-                        DATE_FORMAT(bg.br_date,'%d.%m.%Y') as br_datex
-                    FROM $dbb as bg
-                        LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
-                    WHERE br_active = 1
-                        AND DATE_FORMAT(br_date, '%Y') = :year\n";
-        if ($month) {
-            $this->db->sql .= "AND DATE_FORMAT(br_date, '%c') = :month\n";
-            $binds[':month'] = $month;
+        $entries = $this->blogRepository->getCalendarItems($year, $month);
+        $lastMonth = array_key_last($entries);
+        foreach ($entries[$lastMonth] as $entry) {
+            $response->setMaxLastEditTimestamp($entry->getTimestamp());
         }
-        $this->db->sql .= "AND br_date < NOW()
-                    ORDER BY bg.br_date DESC";
-        $this->db->execute($binds);
-        $entry = [];
-        while ($row = $this->db->fetch()) {
-            $entry[$row['bg_month']][$row['br_id']] = $row;
-            $response->setLastEditTimestamp($row['last_update']);
-        }
-        $this->templateEngine->assign('entries', $entry);
-
-        $this->db->sql = "SELECT DISTINCT DATE_FORMAT(bg.br_date,'%Y') as bg_year FROM $dbb AS bg ORDER BY bg_year";
-        $this->db->exec();
-        while ($row = $this->db->fetch()) {
-            $years[] = $row['bg_year'];
-        }
-        $this->templateEngine->assign('years', $years);
+        $this->templateEngine->assign('entries', $entries);
+        $this->templateEngine->assign('years', $this->blogRepository->getYears());
         $this->templateEngine->assign('cur_year', $year);
 
         $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/blog.calendar.tpl');
