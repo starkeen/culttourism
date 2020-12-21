@@ -7,6 +7,8 @@ namespace app\model\repository;
 use app\db\MyDB;
 use app\model\entity\BlogEntry;
 use app\model\entity\User;
+use app\utils\Dates;
+use MBlogEntries;
 
 class BlogRepository
 {
@@ -117,5 +119,53 @@ class BlogRepository
                 ':id' => $id,
             ]
         );
+    }
+
+    /**
+     * @param BlogEntry $entry
+     * @return int|null
+     */
+    public function insert(BlogEntry $entry): ?int
+    {
+        $bg = new MBlogEntries($this->db);
+        $result = $bg->insert(
+            [
+                'br_title' => $entry->br_title,
+                'br_text' => $entry->br_text,
+                'br_date' => $entry->br_date,
+                'br_active' => $entry->br_active,
+                'br_url' => $entry->br_url,
+                'br_us_id' => $entry->getOwner()->us_id,
+            ]
+        );
+        if (is_int($result)) {
+            return $result;
+        }
+        return null;
+    }
+
+    /**
+     * @param BlogEntry $entry
+     * @return int|null
+     */
+    public function save(BlogEntry $entry): ?int
+    {
+        $bg = new MBlogEntries($this->db);
+        $result = $entry->br_id;
+        $row = [
+            'br_title' => $entry->br_title,
+            'br_text' => $entry->br_text,
+            'br_date' => $entry->br_date,
+            'br_active' => $entry->br_active,
+            'br_url' => $entry->br_url,
+            'br_us_id' => $entry->getOwner()->us_id,
+        ];
+        if ($result === null) {
+            $result = $bg->insert($row);
+        } else {
+            $bg->updateByPk($result, $row);
+        }
+
+        return $result;
     }
 }

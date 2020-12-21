@@ -16,6 +16,8 @@ use app\db\MyDB;
 use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
+use app\model\entity\BlogEntry;
+use app\model\entity\User;
 use app\model\repository\BlogRepository;
 use app\sys\TemplateEngine;
 use app\utils\Dates;
@@ -69,6 +71,9 @@ class BlogModule extends Module implements ModuleInterface
             $response->setLastEditTimestampToFuture();
             $this->getFormBlog($response, (int) $_GET['brid']);
         } elseif ($request->getLevel1() === 'saveform') {
+            if (!$this->webUser->isEditor()) {
+                throw new AccessDeniedException();
+            }
             $response->setLastEditTimestampToFuture();
             $this->saveFormBlog();
         } elseif ($request->getLevel1() === 'delentry' && (int) $_GET['bid']) {
@@ -285,41 +290,23 @@ class BlogModule extends Module implements ModuleInterface
     }
 
     /**
-     * @return bool|int|mixed
-     * @throws NotFoundException
+     * Обновление записи в блоге
      */
     private function saveFormBlog(): void
     {
-        if (!$this->webUser->isEditor()) {
-            return;
+        $entry = new BlogEntry([
+            'br_title' => $_POST['ntitle'],
+            'br_text' => $_POST['ntext'],
+            'br_url' => $_POST['nurl'],
+        ]);
+        $entry->br_date = Dates::normalToSQL($_POST['ndate']) . ' ' . $_POST['ntime'];
+        $entry->br_active = $_POST['nact'] === 'true' ? 1 : 0;
+        $entry->setOwner(new User(['us_id' => $this->webUser->getId()]));
+
+        if ($_POST['brid'] > 0) {
+            $entry->br_id = (int) $_POST['brid'];
         }
 
-        $bg = new MBlogEntries($this->db);
-
-        if ($_POST['brid'] === 'add') {
-            $bg->insert(
-                [
-                    'br_title' => $_POST['ntitle'],
-                    'br_text' => $_POST['ntext'],
-                    'br_date' => Dates::normalToSQL($_POST['ndate']) . ' ' . $_POST['ntime'],
-                    'br_active' => $_POST['nact'] === 'true' ? 1 : 0,
-                    'br_url' => $_POST['nurl'],
-                    'br_us_id' => $this->webUser->getId(),
-                ]
-            );
-        } elseif ($_POST['brid'] > 0) {
-            $bg->updateByPk(
-                (int) $_POST['brid'],
-                [
-                    'br_title' => $_POST['ntitle'],
-                    'br_text' => $_POST['ntext'],
-                    'br_date' => Dates::normalToSQL($_POST['ndate']) . ' ' . $_POST['ntime'],
-                    'br_active' => $_POST['nact'] === 'true' ? 1 : 0,
-                    'br_url' => $_POST['nurl'],
-                ]
-            );
-        } else {
-            throw new NotFoundException();
-        }
+        $this->blogRepository->save($entry);
     }
 }
