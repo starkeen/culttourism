@@ -101,4 +101,21 @@ class BlogRepository
 
         return $result;
     }
+
+    /**
+     * @param int $id
+     */
+    public function deleteItem(int $id): void
+    {
+        $dbb = $this->db->getTableName('blogentries');
+
+        $this->db->sql = "DELETE
+                          FROM $dbb bg
+                          WHERE br_id = :id";
+        $this->db->execute(
+            [
+                ':id' => $id,
+            ]
+        );
+    }
 }

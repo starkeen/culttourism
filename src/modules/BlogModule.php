@@ -13,6 +13,7 @@ use app\core\SiteRequest;
 use app\core\SiteResponse;
 use app\core\WebUser;
 use app\db\MyDB;
+use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 use app\model\repository\BlogRepository;
@@ -55,6 +56,7 @@ class BlogModule extends Module implements ModuleInterface
      * @inheritDoc
      * @throws NotFoundException
      * @throws RedirectException
+     * @throws AccessDeniedException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
@@ -71,7 +73,15 @@ class BlogModule extends Module implements ModuleInterface
             $this->saveFormBlog();
         } elseif ($request->getLevel1() === 'delentry' && (int) $_GET['bid']) {
             $response->setLastEditTimestampToFuture();
-            $this->deleteBlogEntry((int) $_GET['bid']);
+            if (!$this->webUser->isEditor()) {
+                throw new AccessDeniedException();
+            }
+            $blogEntryId = (int) $_GET['bid'];
+            $idFromRequest = (int) $_POST['brid'];
+            if ($idFromRequest === 0 || $blogEntryId === 0 || $idFromRequest !== $blogEntryId) {
+                throw new NotFoundException();
+            }
+            $this->blogRepository->deleteItem($idFromRequest);
         } elseif ($request->getLevel1() === 'blog') {
             throw new RedirectException('/blog/');
         } elseif ($request->getLevel3() !== null) { //одна запись
@@ -233,22 +243,6 @@ class BlogModule extends Module implements ModuleInterface
         $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/blog.calendar.tpl');
 
         $response->getContent()->setBody($body);
-    }
-
-    /**
-     * @param int $bid
-     */
-    private function deleteBlogEntry(int $bid): void
-    {
-        if (!$this->webUser->isEditor()) {
-            return;
-        }
-        $brid = (int) $_POST['brid'];
-        if (!$brid || !$bid || $brid !== $bid) {
-            return;
-        }
-        $bg = new MBlogEntries($this->db);
-        $bg->deleteByPk($brid);
     }
 
     /**
