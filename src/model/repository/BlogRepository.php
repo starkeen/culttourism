@@ -61,4 +61,44 @@ class BlogRepository
 
         return $result;
     }
+
+    /**
+     * @param string $key
+     * @param int $month
+     * @param int $year
+     * @return BlogEntry|null
+     */
+    public function getItem(string $key, int $month, int $year): ?BlogEntry
+    {
+        $result = null;
+        $dbb = $this->db->getTableName('blogentries');
+        $dbu = $this->db->getTableName('users');
+
+        $this->db->sql = "SELECT *
+                          FROM $dbb bg
+                              LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
+                          WHERE DATE_FORMAT(br_date, '%Y-%c') = :date_key
+                              AND (bg.br_url = :url_key OR DATE_FORMAT(br_date, '%e') = :day_key)
+                          AND br_active = 1
+                          LIMIT 1";
+        $res = $this->db->execute(
+            [
+                ':date_key' => "$year-$month",
+                ':url_key' => $key,
+                ':day_key' => $key,
+            ]
+        );
+        if ($res) {
+            $row = $this->db->fetch();
+            if ($row !== null) {
+                $result = new BlogEntry($row);
+                $result->setOwner(new User([
+                    'us_id' => $row['br_us_id'],
+                    'us_name' => $row['us_name'],
+                ]));
+            }
+        }
+
+        return $result;
+    }
 }

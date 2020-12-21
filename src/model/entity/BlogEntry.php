@@ -38,14 +38,6 @@ class BlogEntry extends Entity
     }
 
     /**
-     * @return int
-     */
-    public function getTimestamp(): int
-    {
-        return strtotime($this->br_date);
-    }
-
-    /**
      * @return bool
      */
     public function isShown(): bool
@@ -73,7 +65,9 @@ class BlogEntry extends Entity
      * @param User $user
      */
     public function setOwner(User $user): void
-    {}
+    {
+        $this->owner = $user;
+    }
 
     /**
      * @return User|null
@@ -100,6 +94,14 @@ class BlogEntry extends Entity
     }
 
     /**
+     * @return int
+     */
+    public function getTimestamp(): int
+    {
+        return strtotime($this->br_date);
+    }
+
+    /**
      * @return string
      */
     public function getHumanDate(): string
@@ -107,5 +109,21 @@ class BlogEntry extends Entity
         $dateTime = strtotime($this->br_date);
 
         return date('d.m.Y', $dateTime);
+    }
+
+    /**
+     * @return int
+     */
+    public function getMonthNumber(): int
+    {
+        return (int) date('m', strtotime($this->br_date));
+    }
+
+    /**
+     * @return int
+     */
+    public function getYear(): int
+    {
+        return (int) date('Y', strtotime($this->br_date));
     }
 }

@@ -135,38 +135,33 @@ class BlogModule extends Module implements ModuleInterface
      */
     private function processOneEntry(SiteResponse $response, string $id, int $year, int $month): void
     {
-        $id = urldecode($id);
-        $id = substr($id, 0, strpos($id, '.html'));
-        $idn = (int) $id;
+        $decodedId = urldecode($id);
+        $decodedId = substr($decodedId, 0, strpos($decodedId, '.html'));
 
-        $entry = null;
-
-        if ($bid = $this->checkDate($year, $month, $idn)) {
-            $entry = $this->getEntryByID($bid);
-        } elseif ($bid = $this->checkURL($id)) {
-            $entry = $this->getEntryByID($bid);
-        } else {
+        $entry = $this->blogRepository->getItem($decodedId, $month, $year);
+        if ($entry === null) {
             throw new NotFoundException();
         }
-        if (empty($entry['br_title'])) {
+        if (empty($entry->br_title)) {
             throw new NotFoundException();
         }
-        $response->getContent()->getHead()->addTitleElement($entry['br_title']);
-        $response->getContent()->getHead()->addDescription($entry['br_title']);
-        $response->getContent()->getHead()->addKeyword($entry['br_title']);
-        $response->getContent()->getHead()->addKeyword($entry['br_url']);
-        $response->getContent()->getHead()->addKeyword('месяц ' . $entry['bg_month']);
-        $response->getContent()->getHead()->addKeyword($entry['bg_year'] . ' год');
-        $response->getContent()->getHead()->setCanonicalUrl($entry['br_canonical']);
 
-        $response->setLastEditTimestamp($entry['last_update']);
+        $response->getContent()->getHead()->addTitleElement($entry->br_title);
+        $response->getContent()->getHead()->addDescription($entry->br_title);
+        $response->getContent()->getHead()->addKeyword($entry->br_title);
+        $response->getContent()->getHead()->addKeyword($entry->br_url);
+        $response->getContent()->getHead()->addKeyword(MonthName::getMonthName($entry->getMonthNumber()));
+        $response->getContent()->getHead()->addKeyword($entry->getYear() . ' год');
+        $response->getContent()->getHead()->setCanonicalUrl($entry->getRelativeLink());
 
-        $response->getContent()->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($entry['br_canonical']));
+        $response->setLastEditTimestamp($entry->getTimestamp());
+
+        $response->getContent()->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($entry->getRelativeLink()));
         $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'article');
-        $response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $entry['br_title']);
-        $response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $entry['br_text']);
-        if (!empty($entry['br_picture'])) {
-            $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $entry['br_picture']);
+        $response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $entry->br_title);
+        $response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $entry->br_title);
+        if (!empty($entry->br_picture)) {
+            $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $entry->br_picture);
         }
 
         $this->templateEngine->assign('entry', $entry);
@@ -238,90 +233,6 @@ class BlogModule extends Module implements ModuleInterface
         $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/blog.calendar.tpl');
 
         $response->getContent()->setBody($body);
-    }
-
-    /**
-     * @param string $url
-     * @return null|int
-     */
-    private function checkURL(string $url): ?int
-    {
-        $dbb = $this->db->getTableName('blogentries');
-        $this->db->sql = "SELECT br_id FROM $dbb WHERE br_url = :url AND br_active = 1 LIMIT 1";
-        $res = $this->db->execute(
-            [
-                ':url' => $url,
-            ]
-        );
-        if ($res) {
-            $row = $this->db->fetch();
-            $bid = (int) $row['br_id'];
-            if (!$bid) {
-                return null;
-            }
-
-            return $bid;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @param $y
-     * @param $m
-     * @param $d
-     * @return null|int
-     */
-    private function checkDate($y, $m, $d): ?int
-    {
-        $dbb = $this->db->getTableName('blogentries');
-        $this->db->sql = "SELECT br_id FROM $dbb WHERE DATE_FORMAT(br_date, '%Y-%c-%e') = :date AND br_active = 1 LIMIT 1";
-        $res = $this->db->execute(
-            [
-                ':date' => "$y-$m-$d",
-            ]
-        );
-        if ($res) {
-            $row = $this->db->fetch();
-            $bid = (int) $row['br_id'];
-            if (!$bid) {
-                return null;
-            }
-
-            return $bid;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @param int $id
-     * @return array
-     */
-    private function getEntryByID(int $id): array
-    {
-        $dbb = $this->db->getTableName('blogentries');
-        $dbu = $this->db->getTableName('users');
-        $this->db->sql = "SELECT bg.*, us.us_name,
-                        UNIX_TIMESTAMP(bg.br_date) AS last_update,
-                        DATE_FORMAT(bg.br_date,'%d.%m.%Y') as bg_datex,
-                        DATE_FORMAT(bg.br_date,'%Y') as bg_year,
-                        DATE_FORMAT(bg.br_date,'%m') as bg_month
-                    FROM $dbb bg
-                        LEFT JOIN $dbu us ON bg.br_us_id = us.us_id
-                    WHERE br_active = 1
-                        AND br_date < now()
-                        AND br_id = :id
-                    LIMIT 1";
-        $res = $this->db->execute(
-            [
-                ':id' => $id,
-            ]
-        );
-        $out = $this->db->fetch();
-        $out['br_canonical'] = '/blog/' . $out['bg_year'] . '/' . $out['bg_month'] . '/' . $out['br_url'] . '.html';
-
-        return $out;
     }
 
     /**
