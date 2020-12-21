@@ -171,7 +171,7 @@ class BlogRepository
             'br_us_id' => $entry->getOwner()->us_id,
         ];
         if ($result === null) {
-            $result = $bg->insert($row);
+            $result = (int) $bg->insert($row);
         } else {
             $bg->updateByPk($result, $row);
         }
