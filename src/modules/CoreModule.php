@@ -14,6 +14,9 @@ use app\sys\Logger;
 use app\sys\TemplateEngine;
 use Page;
 
+/**
+ * @deprecated
+ */
 class CoreModule implements ModuleInterface
 {
     /**

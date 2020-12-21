@@ -20,6 +20,7 @@ use app\exceptions\RedirectException;
 use app\modules\BlogModule;
 use app\modules\CoreModule;
 use app\modules\DefaultModule;
+use app\modules\MainPageModule;
 use app\modules\RedirectsModule;
 use Auth;
 use Throwable;
@@ -61,6 +62,7 @@ class WebApplication extends Application
         $this->globalConfig = new GlobalConfig($this->db);
         $modules =  [
             new RedirectsModule($this->db),
+            new MainPageModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new BlogModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new CoreModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new DefaultModule($this->db),
