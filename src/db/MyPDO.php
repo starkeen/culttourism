@@ -16,15 +16,42 @@ use PDOStatement;
  */
 class MyPDO implements IDB
 {
-    private static $_instances = false;
+    private const OPTIONS = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::ATTR_TIMEOUT => 600,
+    ];
 
+    /**
+     * @var string|null
+     */
     protected $prefix;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $_sql;
 
-    /** @var PDO */
-    private $_pdo;
+    /**
+     * @var string
+     */
+    private $dbDSN;
+
+    /**
+     * @var string
+     */
+    private $dbUser;
+
+    /**
+     * @var string
+     */
+    private $dbPassword;
+
+    /**
+     * @var PDO
+     */
+    private $pdo;
 
     /** @var PDOStatement */
     private $_stm;
@@ -52,30 +79,31 @@ class MyPDO implements IDB
      * @param string $db_pwd
      * @param string $db_base
      * @param string|null $db_prefix
-     *
-     * @throws MyPDOException
      */
     public function __construct($db_host, $db_user, $db_pwd, $db_base, $db_prefix = null)
     {
         $this->startTimestamp = microtime(true);
+        $this->dbDSN = 'mysql:host=' . $db_host . ';' . 'dbname=' . $db_base . ';charset=utf8';
+        $this->dbUser = $db_user;
+        $this->dbPassword = $db_pwd;
+        $this->prefix = $db_prefix;
+    }
 
-        if (!self::$_instances) {
-            $opts = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-                PDO::ATTR_TIMEOUT => 600,
-            ];
-            $this->prefix = $db_prefix;
+    /**
+     * @return PDO
+     */
+    private function getPDO(): PDO
+    {
+        if ($this->pdo === null) {
             try {
-                $dsn = "mysql:host=$db_host;dbname=$db_base;charset=utf8";
-                $this->_pdo = new PDO($dsn, $db_user, $db_pwd, $opts);
-                self::$_instances = true;
+                $this->pdo = new PDO($this->dbDSN, $this->dbUser, $this->dbPassword, self::OPTIONS);
                 $this->time = microtime(true) - $this->startTimestamp;
             } catch (PDOException $e) {
                 $this->makeException($e);
             }
         }
+
+        return $this->pdo;
     }
 
     /**
@@ -100,7 +128,7 @@ class MyPDO implements IDB
      */
     public function getEscapedString($text): string
     {
-        $out = $this->_pdo->quote($text);
+        $out = $this->getPDO()->quote($text);
 
         if ($this->_cfg_trim_quotes) {
             $out = trim($out, "'");
@@ -124,7 +152,7 @@ class MyPDO implements IDB
 
         $this->time = microtime(true) - $this->startTimestamp;
         try {
-            $this->_stm = $this->_pdo->prepare($this->_sql);
+            $this->_stm = $this->getPDO()->prepare($this->_sql);
             $this->time = microtime(true) - $this->startTimestamp;
         } catch (PDOException $e) {
             $this->makeException($e);
@@ -160,7 +188,7 @@ class MyPDO implements IDB
             if (is_object($this->_stm)) {
                 $this->_affected_rows = $this->_stm->rowCount();
             }
-            $this->_last_inserted_id = $this->_pdo->lastInsertId();
+            $this->_last_inserted_id = $this->getPDO()->lastInsertId();
             $this->_stat_queries_cnt++;
             $this->_stat_worktime_last = microtime(true) - $timer_start;
             $this->_stat_worktime_all += $this->_stat_worktime_last;
@@ -194,16 +222,17 @@ class MyPDO implements IDB
         try {
             $timer_start = microtime(true);
 
-            $this->_stm = $this->_pdo->query($this->_sql);
+            $this->_stm = $this->getPDO()->query($this->_sql);
 
             if (is_object($this->_stm)) {
                 $this->_affected_rows = $this->_stm->rowCount();
             }
-            $this->_last_inserted_id = $this->_pdo->lastInsertId();
+            $this->_last_inserted_id = $this->getPDO()->lastInsertId();
             $this->_stat_queries_cnt++;
             $this->_stat_worktime_last = microtime(true) - $timer_start;
             $this->_stat_worktime_all += $this->_stat_worktime_last;
             $this->time = microtime(true) - $this->startTimestamp;
+
             return $this->_stm;
         } catch (PDOException $e) {
             $this->makeException($e);
@@ -242,6 +271,7 @@ class MyPDO implements IDB
     public function fetchCol($res = null)
     {
         $this->time = microtime(true) - $this->startTimestamp;
+
         return $this->_stm->fetchColumn();
     }
 
@@ -286,7 +316,7 @@ class MyPDO implements IDB
      */
     public function beginTransaction()
     {
-        return $this->_pdo->beginTransaction();
+        return $this->getPDO()->beginTransaction();
     }
 
     /**
@@ -294,7 +324,7 @@ class MyPDO implements IDB
      */
     public function commitTransaction()
     {
-        return $this->_pdo->commit();
+        return $this->getPDO()->commit();
     }
 
     /**
@@ -302,7 +332,7 @@ class MyPDO implements IDB
      */
     public function rollbackTransaction()
     {
-        return $this->_pdo->rollBack();
+        return $this->getPDO()->rollBack();
     }
 
     /**
@@ -345,6 +375,7 @@ class MyPDO implements IDB
         $out .= "<div id='sqlback'>\n" . nl2br($nsql) . "</div>\n";
         header('Content-Type: text/html; charset=utf-8');
         echo $out;
+
         return;
     }
 
@@ -370,6 +401,7 @@ class MyPDO implements IDB
     public function getDebugInfoText(): string
     {
         $data = $this->getDebugInfo();
+
         return "SQL-запросов: {$data['queries']}, время MySQL: "
             . substr($this->_stat_worktime_all, 0, 6) . ' c.';
     }
