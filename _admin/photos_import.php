@@ -31,7 +31,7 @@ switch ($act) {
         $searcher = Factory::buildImageSearcher();
         $searcher->setDocumentsOnPage(10); // больше 10 нельзя в бесплатной версии
         $searcher->setImageColorType(ImageColorType::COLOR());
-        $searcher->setImageSize(ImageSize::XLARGE());
+        $searcher->setImageSize(ImageSize::XXLARGE());
         $searcher->setImageType(ImageType::PHOTO());
         try {
             $result = $searcher->search($query, (int) $page);
