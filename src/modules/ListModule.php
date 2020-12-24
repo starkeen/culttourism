@@ -21,7 +21,7 @@ class ListModule extends Module implements ModuleInterface
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
-        $id = urldecode($request->getLevel2());
+        $id = urldecode($request->getLevel2() ?? '');
         if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
         }

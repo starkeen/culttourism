@@ -571,7 +571,7 @@ class CityModule extends Module implements ModuleInterface
                     ORDER BY rc.ordering, rc.name, rr.ordering, rr.name, url.url, city.pc_title";
         $this->db->exec();
         while ($row = $this->db->fetch()) {
-            $row['pc_pagepath'] = strip_tags($row['pc_pagepath']);
+            $row['pc_pagepath'] = strip_tags($row['pc_pagepath'] ?? '');
             $response->setMaxLastEditTimestamp($row['last_update']);
             $cities[] = $row;
         }

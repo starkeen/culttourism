@@ -93,7 +93,7 @@ class MapModule extends Module implements ModuleInterface
                 mb_substr($points[$i]['pt_description'], 0, $short_end ?: null, 'utf-8'),
                 "\x00..\x1F,.-"
             );
-            $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
+            $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'] ?? '', ENT_QUOTES);
 
             if ($pt['pt_latitude'] > $bounds['max_lat']) {
                 $bounds['max_lat'] = $pt['pt_latitude'];
@@ -150,7 +150,7 @@ class MapModule extends Module implements ModuleInterface
                 mb_substr($points[$i]['pt_description'], 0, $short_end ?: null, 'utf-8'),
                 "\x00..\x1F,.-"
             );
-            $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
+            $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'] ?? '', ENT_QUOTES);
         }
 
         if ((int) $this_city['pc_region_id'] === 0) {
@@ -221,7 +221,7 @@ class MapModule extends Module implements ModuleInterface
                 mb_substr($points[$i]['pt_description'], 0, $shortEnd ?: null, 'utf-8'),
                 "\x00..\x1F,.-"
             );
-            $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
+            $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'] ?? '', ENT_QUOTES);
         }
 
         $this->templateEngine->assign('ptypes', $pointTypes);
