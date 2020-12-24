@@ -22,6 +22,7 @@ use app\modules\CoreModule;
 use app\modules\DefaultModule;
 use app\modules\MainPageModule;
 use app\modules\RedirectsModule;
+use app\modules\SysModule;
 use Auth;
 use Throwable;
 
@@ -64,6 +65,7 @@ class WebApplication extends Application
             new RedirectsModule($this->db),
             new MainPageModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new BlogModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
+            new SysModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new CoreModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new DefaultModule($this->db),
         ];

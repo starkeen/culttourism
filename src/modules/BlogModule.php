@@ -25,8 +25,6 @@ use app\utils\Urls;
 
 class BlogModule extends Module implements ModuleInterface
 {
-    private const MODULE_KEY = 'blog';
-
     /**
      * @var BlogRepository
      */
@@ -50,7 +48,7 @@ class BlogModule extends Module implements ModuleInterface
      */
     protected function getModuleKey(): string
     {
-        return self::MODULE_KEY;
+        return 'blog';
     }
 
     /**
@@ -111,7 +109,7 @@ class BlogModule extends Module implements ModuleInterface
      */
     public function isApplicable(SiteRequest $request): bool
     {
-        return $request->getModuleKey() === self::MODULE_KEY;
+        return $request->getModuleKey() === $this->getModuleKey();
     }
 
     /**

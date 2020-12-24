@@ -1,39 +1,92 @@
 <?php
 
+declare(strict_types=1);
+
+namespace app\modules;
+
+use app\core\module\Module;
+use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
+use app\core\SiteResponse;
+use app\core\GlobalConfig;
+use app\core\WebUser;
 use app\db\MyDB;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 use app\sys\DeployBitbucket;
+use app\sys\Logger;
+use app\sys\TemplateEngine;
 use GuzzleHttp\Client;
+use Mailing;
+use MSysProperties;
+use StaticResources;
 
-/**
- * Модуль служебных и системных процессов
- */
-class Page extends Core
+class SysModule extends Module implements ModuleInterface
 {
     private const SETTINGS_BRANCH_DEPLOY = 9;
 
     /**
-     * @inheritDoc
-     * @throws NotFoundException
+     * @var Logger
      */
-    public function compileContent(): void
+    private $logger;
+
+    /**
+     * @param MyDB $db
+     * @param TemplateEngine $templateEngine
+     * @param WebUser $webUser
+     * @param GlobalConfig $globalConfig
+     * @param Logger $logger
+     */
+    public function __construct(
+        MyDB $db,
+        TemplateEngine $templateEngine,
+        WebUser $webUser,
+        GlobalConfig $globalConfig,
+        Logger $logger
+    ) {
+        parent::__construct($db, $templateEngine, $webUser, $globalConfig);
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param SiteRequest $request
+     * @param SiteResponse $response
+     * @throws NotFoundException
+     * @throws RedirectException
+     */
+    protected function process(SiteRequest $request, SiteResponse $response): void
     {
-        if ($this->siteRequest->getLevel2() !== null) {
+        if ($request->getLevel2() !== null) {
             throw new NotFoundException();
         }
 
-        if ($this->siteRequest->getLevel1() === null && empty($this->siteRequest->getGET())) {
+        if ($request->getLevel1() === null && empty($request->getGET())) {
             throw new RedirectException('/');
-        } elseif ($this->siteRequest->getLevel1() === 'bitbucket' && $this->siteRequest->getGETParam('key') !== null) {
+        } elseif ($request->getLevel1() === 'bitbucket' && $request->getGETParam('key') !== null) {
             $this->getBitbucket(trim($_GET['key']));
-        } elseif ($this->siteRequest->getLevel1() === 'static' && $this->siteRequest->getGETParam('type') !== null && $this->siteRequest->getGETParam('pack') !== null) {
-            $this->getStatic(trim($this->siteRequest->getGETParam('type')), trim($this->siteRequest->getGETParam('pack')));
+        } elseif ($request->getLevel1() === 'static' && $request->getGETParam('type') !== null && $request->getGETParam('pack') !== null) {
+            $this->getStatic(trim($request->getGETParam('type')), trim($request->getGETParam('pack')));
         } else {
             throw new NotFoundException();
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getModuleKey(): string
+    {
+        return 'sys';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isApplicable(SiteRequest $request): bool
+    {
+        return $request->getModuleKey() === $this->getModuleKey();
+    }
+
 
     /**
      * @param string $type
