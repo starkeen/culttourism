@@ -70,3 +70,4 @@ test: vendor
 
 coverage: vendor
 	$(PHPUNIT) --coverage-clover build/clover.xml -c tests/phpunit.xml tests/
+	sed -i 's#$(shell pwd)/##g' build/clover.xml
