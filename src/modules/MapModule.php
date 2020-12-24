@@ -90,7 +90,7 @@ class MapModule extends Module implements ModuleInterface
             $descriptionLength = mb_strlen($pt['pt_description']);
             $short_end = @mb_strpos($pt['pt_description'], ' ', min(50, $descriptionLength), 'utf-8');
             $points[$i]['pt_short'] = trim(
-                mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'),
+                mb_substr($points[$i]['pt_description'], 0, $short_end ?: null, 'utf-8'),
                 "\x00..\x1F,.-"
             );
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
@@ -147,7 +147,7 @@ class MapModule extends Module implements ModuleInterface
             $descriptionLength = mb_strlen($pt['pt_description']);
             $short_end = @mb_strpos($pt['pt_description'], ' ', min(100, $descriptionLength), 'utf-8');
             $points[$i]['pt_short'] = trim(
-                mb_substr($points[$i]['pt_description'], 0, $short_end, 'utf-8'),
+                mb_substr($points[$i]['pt_description'], 0, $short_end ?: null, 'utf-8'),
                 "\x00..\x1F,.-"
             );
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
@@ -218,7 +218,7 @@ class MapModule extends Module implements ModuleInterface
             $descriptionLength = mb_strlen($points[$i]['pt_description']);
             $shortEnd = @mb_strpos($points[$i]['pt_description'], ' ', min(50, $descriptionLength), 'utf-8');
             $points[$i]['pt_short'] = trim(
-                mb_substr($points[$i]['pt_description'], 0, $shortEnd, 'utf-8'),
+                mb_substr($points[$i]['pt_description'], 0, $shortEnd ?: null, 'utf-8'),
                 "\x00..\x1F,.-"
             );
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'], ENT_QUOTES);
