@@ -24,6 +24,7 @@ use app\modules\FeedbackModule;
 use app\modules\MainPageModule;
 use app\modules\MapModule;
 use app\modules\RedirectsModule;
+use app\modules\SignModule;
 use app\modules\SysModule;
 use Auth;
 use Throwable;
@@ -69,6 +70,7 @@ class WebApplication extends Application
             new MapModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new BlogModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new FeedbackModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
+            new SignModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new SysModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new CoreModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new DefaultModule($this->db),

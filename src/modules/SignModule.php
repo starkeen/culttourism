@@ -1,32 +1,54 @@
 <?php
 
+declare(strict_types=1);
+
+namespace app\modules;
+
+use app\core\module\Module;
+use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
-use app\db\MyDB;
+use app\core\SiteResponse;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 
-class Page extends Core
+class SignModule extends Module implements ModuleInterface
 {
     /**
      * @inheritDoc
      * @throws RedirectException
      * @throws NotFoundException
      */
-    public function compileContent(): void
+    protected function process(SiteRequest $request, SiteResponse $response): void
     {
-        if ($this->siteRequest->getLevel1() === 'in') {
-            $this->response->getContent()->setBody($this->getIn());
-        } elseif ($this->siteRequest->getLevel1() === 'up') {
-            $this->response->getContent()->setBody($this->getUp());
-        } elseif ($this->siteRequest->getLevel1() === 'check') {
-            $this->doCheck($this->siteRequest->getLevel2());
-        } elseif ($this->siteRequest->getLevel1() === 'out') {
+        if ($request->getLevel1() === 'in') {
+            $response->getContent()->setBody($this->getIn());
+        } elseif ($request->getLevel1() === 'up') {
+            $response->getContent()->setBody($this->getUp());
+        } elseif ($request->getLevel1() === 'check') {
+            $this->doCheck($request->getLevel2());
+        } elseif ($request->getLevel1() === 'out') {
             $this->doOut();
-        } elseif ($this->siteRequest->getLevel1() === 'form') {
-            $this->response->getContent()->setBody($this->getFormLogin());
+        } elseif ($request->getLevel1() === 'form') {
+            $response->getContent()->setBody($this->getFormLogin());
         } else {
             throw new NotFoundException();
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getModuleKey(): string
+    {
+        return 'sign';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isApplicable(SiteRequest $request): bool
+    {
+        return $request->getModuleKey() === $this->getModuleKey();
     }
 
     private function getIn()
