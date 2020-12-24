@@ -40,7 +40,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
         } else {
             $redir = 'null';
         }
-        $replace_list = array('/', '\\', ' ', '?', '&');
+        $replace_list = ['/', '\\', ' ', '?', '&'];
         $md_url = str_replace($replace_list, '', $md_url);
 
         if ($_POST['actiontype'] != 'add') {
@@ -74,7 +74,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
         $res = $db->exec();
         $row = $db->fetch();
     } else {
-        $row = array();
+        $row = [];
         $row['md_name'] = 'новая страница';
         $row['md_url'] = '';
         $row['md_title'] = '';
@@ -104,13 +104,9 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
     $smarty->assign('mod_item', $row);
     $smarty->assign('site_url', _SITE_URL);
 
-    if (!file_exists(_DIR_MODULES . '/' . $row['md_url'] . '/admin.php')) {
-        $text_edit = true;
-    } else {
-        include(_DIR_MODULES . '/' . $row['md_url'] . '/admin.php');
-        $text_edit = false;
-    }
-    $subpages = array();
+    $text_edit = true;
+
+    $subpages = [];
     if ($md_id != 0) {
         $smarty->assign('mod_id', $md_id);
         $db->sql = "SELECT * FROM $dbp WHERE pg_md_id = '$md_id'";
@@ -129,13 +125,13 @@ $db->sql = "SELECT *
             FROM $dbm
             ORDER BY md_pid, md_sort";
 $db->exec();
-$modules = array();
+$modules = [];
 while ($row = $db->fetch()) {
     if ($row['md_pid'] != 0) {
         $modules[$row['md_pid']]['md_tree'][$row['md_id']] = $row;
     } else {
         $modules[$row['md_id']] = $row;
-        $modules[$row['md_id']]['md_tree'] = NULL;
+        $modules[$row['md_id']]['md_tree'] = null;
     }
 }
 //print_x($modules);
