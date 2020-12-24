@@ -17,6 +17,7 @@ use app\exceptions\AccessDeniedException;
 use app\exceptions\BaseApplicationException;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
+use app\modules\ApiModule;
 use app\modules\BlogModule;
 use app\modules\CityModule;
 use app\modules\CoreModule;
@@ -78,6 +79,7 @@ class WebApplication extends Application
             new FeedbackModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new SignModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new SysModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
+            new ApiModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new CoreModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new DefaultModule($this->db),
         ];

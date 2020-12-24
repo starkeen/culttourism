@@ -1,19 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
+namespace app\modules;
+
+use app\core\module\Module;
+use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
-use app\db\MyDB;
+use app\core\SiteResponse;
 use app\exceptions\NotFoundException;
 
-class Page extends Core
+class ApiModule extends Module implements ModuleInterface
 {
     /**
      * @inheritDoc
      * @throws NotFoundException
      */
-    public function compileContent(): void
+    protected function process(SiteRequest $request, SiteResponse $response): void
     {
-        $page_id = $this->siteRequest->getLevel1();
-        $id = $this->siteRequest->getLevel2();
+        $page_id = $request->getLevel1();
+        $id = $request->getLevel2();
         $id = urldecode($id);
         if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
@@ -23,30 +29,52 @@ class Page extends Core
 
         //========================  I N D E X  ================================
         if ($page_id == '0') {//карта
-            $this->response->getContent()->setBody($this->getApi0());
+            $response->getContent()->setBody($this->getApi0());
         } elseif ($page_id == '1' && isset($_GET['center'])) {//список
-            $this->response->getContent()->setBody($this->getApi1());
+            $response->getContent()->setBody($this->getApi1());
         } elseif ($page_id == '2' && isset($_GET['id'])) {//место
-            $this->response->getContent()->setBody($this->getApi2((int) $_GET['id']));
+            $response->getContent()->setBody($this->getApi2((int) $_GET['id']));
         } elseif ($page_id == '3' && isset($_GET['center'])) {//адрес
-            $this->response->getContent()->setBody($this->getApi3($_GET['center']));
+            $response->getContent()->setBody($this->getApi3($_GET['center']));
         } elseif ($page_id == '4' && isset($_GET['center'])) {//список xml
             $this->getApi4();
         } elseif ($page_id == '5' && isset($_GET['id'])) {//место xml
             $this->getApi5((int) $_GET['id']);
         } elseif ($page_id == '') {
-            $this->response->getHeaders()->sendRedirect('/api/0/', true);
+            $response->getHeaders()->sendRedirect('/api/0/', true);
         } //==========================  E X I T  ================================
         else {
             throw new NotFoundException();
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function getModuleKey(): string
+    {
+        return 'api';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isApplicable(SiteRequest $request): bool
+    {
+        return $request->getModuleKey() === $this->getModuleKey();
+    }
+
+    /**
+     * @return false|string
+     */
     private function getApi0()
     {
         return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/map0.sm.html');
     }
 
+    /**
+     * @return false|string
+     */
     private function getApi1()
     {
         $db = $this->db;
@@ -60,10 +88,10 @@ class Page extends Core
         $c_lon = cut_trash_float($c_lon);
 
         if (isset($_GET['filter'])) {
-            if ($_GET['filter'] == "sights") {
+            if ($_GET['filter'] === "sights") {
                 $filter = "AND rt.tr_sight = 1\n";
             }
-            if ($_GET['filter'] == "useful") {
+            if ($_GET['filter'] === "useful") {
                 $filter = "AND rt.tr_sight = 0\n";
             }
         } else {
@@ -82,7 +110,6 @@ class Page extends Core
                     AND pt.pt_latitude > 0 AND pt.pt_longitude > 0
                     ORDER BY dist_m
                     LIMIT 20";
-        //$db->showSQL();
         $db->exec();
         $points = [];
         while ($pt = $db->fetch()) {
@@ -98,6 +125,10 @@ class Page extends Core
         return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api1.sm.html');
     }
 
+    /**
+     * @param $id
+     * @return false|string
+     */
     private function getApi2($id)
     {
         $db = $this->db;
@@ -120,6 +151,10 @@ class Page extends Core
         return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api2.sm.html');
     }
 
+    /**
+     * @param $center
+     * @return mixed
+     */
     private function getApi3($center)
     {
         [$c_lat, $c_lon] = explode(',', cut_trash_string($center));
@@ -137,6 +172,8 @@ class Page extends Core
         return $json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['text'];
     }
 
+    /**
+     */
     private function getApi4()
     {
         $db = $this->db;
@@ -151,10 +188,10 @@ class Page extends Core
         $points = [];
         if ($c_lat != 0 && $c_lon != 0) {
             if (isset($_GET['filter'])) {
-                if ($_GET['filter'] == "sights") {
+                if ($_GET['filter'] === "sights") {
                     $filter = "AND rt.tr_sight = 1\n";
                 }
-                if ($_GET['filter'] == "useful") {
+                if ($_GET['filter'] === "useful") {
                     $filter = "AND rt.tr_sight = 0\n";
                 }
             } else {
@@ -207,6 +244,9 @@ class Page extends Core
         exit();
     }
 
+    /**
+     * @param $id
+     */
     private function getApi5($id)
     {
         $db = $this->db;
@@ -235,7 +275,14 @@ class Page extends Core
         exit();
     }
 
-    private function calcGeodesicLine($lat1, $lon1, $lat2, $lon2)
+    /**
+     * @param $lat1
+     * @param $lon1
+     * @param $lat2
+     * @param $lon2
+     * @return float
+     */
+    private function calcGeodesicLine($lat1, $lon1, $lat2, $lon2): float
     {
         return round(
             6371 * 1000 * acos(
