@@ -1,6 +1,16 @@
 <phpunit bootstrap="phpunit.php"
          backupGlobals="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         forceCoversAnnotation="false"
          backupStaticAttributes="false">
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../src</directory>
+        </whitelist>
+    </filter>
     <testsuites>
         <testsuite name="all">
             <directory suffix=".php">./</directory>

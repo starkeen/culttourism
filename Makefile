@@ -1,5 +1,5 @@
 PHP = php -d memory_limit=768M
-PHPUNIT = $(PHP) -f vendor/bin/phpunit -- --verbose --fail-on-warning
+PHPUNIT = $(PHP) -dxdebug.mode=coverage -f vendor/bin/phpunit -- --verbose --fail-on-warning
 COMPOSER = COMPOSER_ALLOW_XDEBUG=1 COMPOSER_DISABLE_XDEBUG_WARN=1 $(PHP) -d allow_url_fopen=On -f bin/composer.phar
 SHELL = /bin/bash
 DOCKER_COMPOSE="docker-compose"
@@ -67,3 +67,6 @@ exec:
 
 test: vendor
 	$(PHPUNIT) -c tests/phpunit.xml tests/
+
+coverage: vendor
+	$(PHPUNIT) --coverage-clover build/clover.xml -c tests/phpunit.xml tests/

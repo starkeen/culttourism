@@ -7,7 +7,7 @@ ini_set('display_errors', false);
 $_timer_start_main = microtime(true);
 header('Content-Type: text/html; charset=utf-8');
 include(dirname(__DIR__) . '/config/configuration.php');
-include _DIR_ROOT . '/vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 $app = new CrontabApplication();
 $app->run();
 
