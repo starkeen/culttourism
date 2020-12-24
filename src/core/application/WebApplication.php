@@ -18,6 +18,7 @@ use app\exceptions\BaseApplicationException;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 use app\modules\BlogModule;
+use app\modules\CityModule;
 use app\modules\CoreModule;
 use app\modules\DefaultModule;
 use app\modules\FeedbackModule;
@@ -71,6 +72,7 @@ class WebApplication extends Application
             new MainPageModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new MapModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new ListModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
+            new CityModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new SearchModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new BlogModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new FeedbackModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),

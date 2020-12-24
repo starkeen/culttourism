@@ -1,34 +1,62 @@
 <?php
 
-use app\constant\OgType;
-use app\core\SiteRequest;
-use app\db\MyDB;
-use app\exceptions\AccessDeniedException;
-use app\exceptions\NotFoundException;
+declare(strict_types=1);
 
-class Page extends Core
+namespace app\modules;
+
+use app\core\module\Module;
+use app\core\module\ModuleInterface;
+use app\core\SiteRequest;
+use app\core\SiteResponse;
+use app\exceptions\NotFoundException;
+use app\constant\OgType;
+use app\exceptions\AccessDeniedException;
+use Curl;
+use MPageCities;
+use MPhotos;
+use MWeatherCodes;
+
+class CityModule extends Module implements ModuleInterface
 {
     /**
      * @inheritDoc
      * @throws NotFoundException
+     * @throws AccessDeniedException
      */
-    public function compileContent(): void
+    protected function process(SiteRequest $request, SiteResponse $response): void
     {
-        if ($this->siteRequest->getLevel1() === null) {
-            $this->pageCity();
-        } elseif ($this->siteRequest->getLevel1() === 'add') {
-            $this->addCity();
-        } elseif ($this->siteRequest->getLevel1() === 'detail') {
-            $this->detailCity();
-        } elseif ($this->siteRequest->getLevel1() === 'meta') {
+        if ($request->getLevel1() === null) {
+            $this->pageCity($response);
+        } elseif ($request->getLevel1() === 'add') {
+            $this->addCity($response);
+        } elseif ($request->getLevel1() === 'detail') {
+            $this->detailCity($response);
+        } elseif ($request->getLevel1() === 'meta') {
             $this->metaCity();
-        } elseif ($this->siteRequest->getLevel1() === 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
-            $this->response->setLastEditTimestampToFuture();
+        } elseif ($request->getLevel1() === 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
+            $response->setLastEditTimestampToFuture();
             $this->getBlockWeather($_GET['lat'], $_GET['lon']);
         } else {
             throw new NotFoundException();
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getModuleKey(): string
+    {
+        return 'city';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isApplicable(SiteRequest $request): bool
+    {
+        return $request->getModuleKey() === $this->getModuleKey();
+    }
+
 
     /**
      **************************************  БЛОК  ПОГОДЫ  *****************
@@ -154,6 +182,7 @@ class Page extends Core
     /**
      **************************************  ТАБЛИЦА МЕТА  *****************
      * @throws AccessDeniedException
+     * @throws NotFoundException
      */
     private function metaCity(): void
     {
@@ -272,10 +301,11 @@ class Page extends Core
 
     /**
      ************************************** РЕДАКТИРОВАНИЕ *****************
-     * @throws NotFoundException
+     * @param SiteResponse $response
      * @throws AccessDeniedException
+     * @throws NotFoundException
      */
-    private function detailCity(): void
+    private function detailCity(SiteResponse $response): void
     {
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
@@ -318,7 +348,7 @@ class Page extends Core
             );
             $city = $pc->getItemByPk($city_id);
 
-            $this->response->getHeaders()->sendRedirect($city['url'], true);
+            $response->getHeaders()->sendRedirect($city['url'], true);
         }
 
         $citypage = $pc->getItemByPk($city_id);
@@ -366,17 +396,18 @@ class Page extends Core
         $this->templateEngine->assign('ref_meta', $ref_meta);
         $this->templateEngine->assign('yandex', $yandex);
 
-        $this->response->setLastEditTimestamp($citypage['last_update']);
+        $response->setLastEditTimestamp($citypage['last_update']);
 
         $this->templateEngine->assign('adminlogined', $this->webUser->getId() ?: 0);
 
-        $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/details.tpl'));
+        $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/details.tpl'));
     }
 
     /**
      ************************************** ДОБАВЛЕНИЕ *****************
+     * @param SiteResponse $response
      */
-    private function addCity(): void
+    private function addCity(SiteResponse $response): void
     {
         $newcity = '';
         $inbase = [];
@@ -400,7 +431,7 @@ class Page extends Core
                 ]
             );
             if ($cid > 0) {
-                $this->response->getHeaders()->sendRedirect('/city/detail/?city_id=' . $cid, true);
+                $response->getHeaders()->sendRedirect('/city/detail/?city_id=' . $cid, true);
             }
         } elseif (!empty($_GET['cityname'])) {
             $newcity = trim($_GET['cityname']);
@@ -487,7 +518,7 @@ class Page extends Core
                     $latitude = $latitude . abs($row['ll_lat']);
                     $lolgitude = $row['ll_lon'] >= 0 ? 'E' : 'W';
                     $lolgitude = $lolgitude . abs($row['ll_lon']);
-                    if ($latitude != 'N0' && $lolgitude != 'E0') {
+                    if ($latitude !== 'N0' && $lolgitude !== 'E0') {
                         $inbase[$id]['latlon'] = "{$row['ll_name']}: $latitude, $lolgitude";
                     } else {
                         $inbase[$id]['latlon'] = null;
@@ -503,13 +534,14 @@ class Page extends Core
         $this->templateEngine->assign('already', $already);
         $this->templateEngine->assign('freeplace', mb_strlen($newcity) >= 5 ? $newcity : null);
         $this->templateEngine->assign('adminlogined', $this->webUser->getId());
-        $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/add.sm.html'));
+        $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/add.sm.html'));
     }
 
     /**
      ************************************** СПИСОК *********************
+     * @param SiteResponse $response
      */
-    private function pageCity(): void
+    private function pageCity(SiteResponse $response): void
     {
         $dbc = $this->db->getTableName('pagecity');
         $dbr = $this->db->getTableName('region_url');
@@ -540,19 +572,19 @@ class Page extends Core
         $this->db->exec();
         while ($row = $this->db->fetch()) {
             $row['pc_pagepath'] = strip_tags($row['pc_pagepath']);
-            $this->response->setMaxLastEditTimestamp($row['last_update']);
+            $response->setMaxLastEditTimestamp($row['last_update']);
             $cities[] = $row;
         }
 
-        $this->response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), 'https://culttourism.ru/data/images/pages/map-example-500.png');
+        $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), 'https://culttourism.ru/data/images/pages/map-example-500.png');
 
         $this->templateEngine->assign('tcity', $cities);
         $this->templateEngine->assign('adminlogined', $this->webUser->getId() ?? 0);
 
         if ($this->webUser->isEditor()) {
-            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html'));
+            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html'));
         } else {
-            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html'));
+            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html'));
         }
     }
 }
