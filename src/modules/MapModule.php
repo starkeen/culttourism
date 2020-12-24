@@ -1,36 +1,46 @@
 <?php
 
+declare(strict_types=1);
+
+namespace app\modules;
+
 use app\cache\Cache;
 use app\constant\OgType;
+use app\core\module\Module;
+use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
-use app\db\MyDB;
+use app\core\SiteResponse;
 use app\exceptions\NotFoundException;
+use MListsItems;
+use MPageCities;
+use MPagePoints;
+use MRefPointtypes;
 
-class Page extends Core
+class MapModule extends Module implements ModuleInterface
 {
     /**
      * @inheritDoc
      * @throws NotFoundException
      */
-    public function compileContent(): void
+    protected function process(SiteRequest $request, SiteResponse $response): void
     {
-        $this->response->getContent()->setCustomJsModule($this->siteRequest->getModuleKey());
+        $response->getContent()->setCustomJsModule($request->getModuleKey());
 
         //========================  I N D E X  ================================
-        if ($this->siteRequest->getLevel1() === null) {
-            $this->response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
-            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/map/map.sm.html'));
+        if ($request->getLevel1() === null) {
+            $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
+            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/map/map.sm.html'));
         } //====================  M A P   E N T R Y  ============================
-        elseif ($this->siteRequest->getLevel1() === 'common') {
+        elseif ($request->getLevel1() === 'common') {
             $this->webUser->getAuth()->setService('map');
             $this->getYMapsMLCommon($_GET);
-        } elseif ($this->siteRequest->getLevel1() === 'city' && isset($_GET['cid']) && (int) $_GET['cid'] > 0) {
+        } elseif ($request->getLevel1() === 'city' && isset($_GET['cid']) && (int) $_GET['cid'] > 0) {
             $this->webUser->getAuth()->setService('map');
             $this->getYMapsMLRegion((int) $_GET['cid']);
-        } elseif ($this->siteRequest->getLevel1() === 'list' && isset($_GET['lid']) && (int) $_GET['lid'] > 0) {
+        } elseif ($request->getLevel1() === 'list' && isset($_GET['lid']) && (int) $_GET['lid'] > 0) {
             $this->webUser->getAuth()->setService('map');
             $this->getYMapsMLList((int) $_GET['lid']);
-        } elseif ($this->siteRequest->getLevel1() === 'gpx' && isset($_GET['cid']) && (int) $_GET['cid']) {
+        } elseif ($request->getLevel1() === 'gpx' && isset($_GET['cid']) && (int) $_GET['cid']) {
             $this->showCityPointsGPX((int) $_GET['cid']);
         } //==========================  E X I T  ================================
         else {
@@ -38,6 +48,25 @@ class Page extends Core
         }
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function getModuleKey(): string
+    {
+        return 'map';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isApplicable(SiteRequest $request): bool
+    {
+        return $request->getModuleKey() === $this->getModuleKey();
+    }
+
+    /**
+     * @param $list_id
+     */
     private function getYMapsMLList($list_id): void
     {
         $bounds = [

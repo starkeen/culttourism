@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace app\modules;
 
-use app\core\GlobalConfig;
 use app\core\module\Module;
 use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
-use app\core\WebUser;
-use app\db\MyDB;
 use app\exceptions\NotFoundException;
-use app\sys\TemplateEngine;
 use app\includes\ReCaptcha;
 use app\utils\MyKCaptcha;
 use GuzzleHttp\Client;
@@ -22,21 +18,6 @@ use MFeedback;
 
 class FeedbackModule extends Module implements ModuleInterface
 {
-    /**
-     * @param MyDB $db
-     * @param TemplateEngine $templateEngine
-     * @param WebUser $webUser
-     * @param GlobalConfig $globalConfig
-     */
-    public function __construct(
-        MyDB $db,
-        TemplateEngine $templateEngine,
-        WebUser $webUser,
-        GlobalConfig $globalConfig
-    ) {
-        parent::__construct($db, $templateEngine, $webUser, $globalConfig);
-    }
-
     /**
      * @inheritDoc
      * @throws NotFoundException

@@ -22,6 +22,7 @@ use app\modules\CoreModule;
 use app\modules\DefaultModule;
 use app\modules\FeedbackModule;
 use app\modules\MainPageModule;
+use app\modules\MapModule;
 use app\modules\RedirectsModule;
 use app\modules\SysModule;
 use Auth;
@@ -65,6 +66,7 @@ class WebApplication extends Application
         $modules =  [
             new RedirectsModule($this->db),
             new MainPageModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
+            new MapModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new BlogModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new FeedbackModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new SysModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
