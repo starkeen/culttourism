@@ -87,7 +87,6 @@ class SysModule extends Module implements ModuleInterface
         return $request->getModuleKey() === $this->getModuleKey();
     }
 
-
     /**
      * @param string $type
      * @param string $pack

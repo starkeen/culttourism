@@ -1,34 +1,80 @@
 <?php
 
+declare(strict_types=1);
+
+namespace app\modules;
+
+use app\core\GlobalConfig;
+use app\core\module\Module;
+use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
+use app\core\SiteResponse;
+use app\core\WebUser;
 use app\db\MyDB;
 use app\exceptions\NotFoundException;
+use app\sys\TemplateEngine;
 use app\includes\ReCaptcha;
 use app\utils\MyKCaptcha;
 use GuzzleHttp\Client;
+use Mailing;
+use MCandidatePoints;
+use MFeedback;
 
-class Page extends Core
+class FeedbackModule extends Module implements ModuleInterface
 {
     /**
-     * @inheritDoc
+     * @param MyDB $db
+     * @param TemplateEngine $templateEngine
+     * @param WebUser $webUser
+     * @param GlobalConfig $globalConfig
      */
-    public function compileContent(): void
+    public function __construct(
+        MyDB $db,
+        TemplateEngine $templateEngine,
+        WebUser $webUser,
+        GlobalConfig $globalConfig
+    ) {
+        parent::__construct($db, $templateEngine, $webUser, $globalConfig);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotFoundException
+     */
+    protected function process(SiteRequest $request, SiteResponse $response): void
     {
-        if ($this->siteRequest->getLevel1() === null) {
-            $this->getCommon();
-        } elseif ($this->siteRequest->getLevel1() === 'getcapt') {
+        if ($request->getLevel1() === null) {
+            $this->getCommon($response);
+        } elseif ($request->getLevel1() === 'getcapt') {
             $this->showCaptcha();
-        } elseif ($this->siteRequest->getLevel1() === 'newpoint') {
-            $this->getAdd();
+        } elseif ($request->getLevel1() === 'newpoint') {
+            $this->getAdd($response);
         } else {
             throw new NotFoundException();
         }
     }
 
     /**
+     * @inheritDoc
+     */
+    protected function getModuleKey(): string
+    {
+        return 'feedback';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isApplicable(SiteRequest $request): bool
+    {
+        return $request->getModuleKey() === $this->getModuleKey();
+    }
+
+
+    /**
      * Обработка формы добавления точки
      */
-    private function getAdd(): void
+    private function getAdd(SiteResponse $response): void
     {
         $cp = new MCandidatePoints($this->db);
         if (!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] == null) {
@@ -77,14 +123,17 @@ class Page extends Core
                 unset($_SESSION['feedback_referer'], $_SESSION[MyKCaptcha::SESSION_KEY]);
             }
 
-            $this->response->getContent()->setBody($this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']));
+            $response->getContent()->setBody($this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']));
             unset($_POST);
         } else {
-            $this->response->getContent()->setBody($this->getAddingForm());
+            $response->getContent()->setBody($this->getAddingForm($response));
         }
     }
 
-    private function getCommon(): void
+    /**
+     * @param SiteResponse $response
+     */
+    private function getCommon(SiteResponse $response): void
     {
         $data = [
             'error' => null,
@@ -151,17 +200,15 @@ class Page extends Core
                     'referer' => $referer,
                 ];
                 Mailing::sendLetterCommon($this->globalConfig->getMailFeedback(), 4, $mail_attrs);
-                unset($_POST);
-                unset($_SESSION[MyKCaptcha::SESSION_KEY]);
-                unset($_SESSION[MyKCaptcha::SESSION_KEY]);
-                $this->response->getContent()->setBody($this->getCommonSuccess($data));
+                unset($_POST, $_SESSION[MyKCaptcha::SESSION_KEY], $_SESSION[MyKCaptcha::SESSION_KEY]);
+                $response->getContent()->setBody($this->getCommonSuccess($data));
             } else {
-                $this->response->getContent()->setBody($this->getCommonForm($data));
+                $response->getContent()->setBody($this->getCommonForm($data));
             }
 
             unset($_SESSION[MyKCaptcha::SESSION_KEY]);
         } else {
-            $this->response->getContent()->setBody($this->getCommonForm($data));
+            $response->getContent()->setBody($this->getCommonForm($data));
         }
     }
 
@@ -169,7 +216,6 @@ class Page extends Core
      * @param array $data
      *
      * @return string
-     * @throws SmartyException
      */
     private function getCommonForm(array $data): string
     {
@@ -189,15 +235,22 @@ class Page extends Core
     }
 
     /**
+     * @param SiteResponse $response
      * @return string
      */
-    private function getAddingForm(): string
+    private function getAddingForm(SiteResponse $response): string
     {
-        $this->response->getContent()->getHead()->addTitleElement('Добавить объект (музей, гостиницу, кафе и др.)');
+        $response->getContent()->getHead()->addTitleElement('Добавить объект (музей, гостиницу, кафе и др.)');
         $this->templateEngine->assign('recaptcha_key', ReCaptcha::KEY);
         return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/addpoint.sm.html');
     }
 
+    /**
+     * @param $title
+     * @param $descr
+     * @param $region
+     * @return string
+     */
     private function getAddingSuccess($title, $descr, $region)
     {
         $this->templateEngine->assign('add_title', $title);
