@@ -11,9 +11,7 @@ class SiteRequestTest extends TestCase
 {
     public static function setUpBeforeClass(): void
     {
-        if (!defined('_INDEXPAGE_URI')) {
-            define('_INDEXPAGE_URI', 'ndx');
-        }
+        define('_INDEXPAGE_URI', 'ndx');
     }
 
     /**
