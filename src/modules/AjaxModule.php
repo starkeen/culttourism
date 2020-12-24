@@ -1,12 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
+namespace app\modules;
+
+use app\core\module\Module;
+use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
-use app\db\MyDB;
+use app\core\SiteResponse;
 use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
+use MDataCheck;
+use MModules;
 use models\MLinks;
+use MPageCities;
+use MPagePoints;
+use MRefPointtypes;
+use MStatpoints;
 
-class Page extends Core
+class AjaxModule extends Module implements ModuleInterface
 {
     /**
      * @var MDataCheck
@@ -16,73 +28,90 @@ class Page extends Core
     /**
      * @inheritDoc
      * @throws NotFoundException
+     * @throws AccessDeniedException
      */
-    public function compileContent(): void
+    protected function process(SiteRequest $request, SiteResponse $response): void
     {
-        $id = $this->siteRequest->getLevel2();
-        $this->templateEngine->caching = false;
+        $id = $request->getLevel2();
+
         $id = urldecode($id);
         if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
         }
-        $this->id = $id;
+
         $this->webUser->getAuth()->setService('ajax');
 
         $this->mDataCheck = new MDataCheck($this->db);
 
-        if ($this->siteRequest->getLevel1() === 'point') {
+        if ($request->getLevel1() === 'point') {
             if ($id == '' && isset($_GET['id']) && (int) $_GET['id']) {
-                $this->response->getContent()->setBody($this->getPoint((int) $_GET['id']));
+                $response->getContent()->setBody($this->getPoint((int) $_GET['id']));
             } elseif ($id === 's' && isset($_GET['id'])) {
-                $this->response->getContent()->setBody($this->getPointBySlugLine(str_replace('.html', '', $_GET['id'])));
+                $response->getContent()->setBody($this->getPointBySlugLine(str_replace('.html', '', $_GET['id'])));
             } elseif ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
-                $this->response->getContent()->setBody($this->savePointTitle((int) $_GET['id']));
+                $response->getContent()->setBody($this->savePointTitle((int) $_GET['id']));
             } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
-                $this->response->getContent()->setBody($this->savePointDescr((int) $_GET['id']));
+                $response->getContent()->setBody($this->savePointDescr((int) $_GET['id']));
             } elseif ($id === 'savecontacts' && isset($_GET['cid']) && (int) $_GET['cid']) {
-                $this->response->getContent()->setBody($this->savePointContacts((int) $_GET['cid']));
+                $response->getContent()->setBody($this->savePointContacts((int) $_GET['cid']));
             } elseif ($id === 'getnewform' && isset($_GET['cid'])) {
-                $this->response->getContent()->setBody($this->getPointNew((int) $_GET['cid']));
+                $response->getContent()->setBody($this->getPointNew((int) $_GET['cid']));
             } elseif ($id === 'savenew' && isset($_GET['cid'])) {
-                $this->response->getContent()->setBody($this->savePointNew((int) $_GET['cid']));
+                $response->getContent()->setBody((string) $this->savePointNew((int) $_GET['cid']));
             } elseif ($id === 'delpoint' && isset($_GET['pid'])) {
-                $this->response->getContent()->setBody($this->deletePoint((int) $_GET['pid']));
+                $response->getContent()->setBody((string) $this->deletePoint((int) $_GET['pid']));
             } elseif ($id === 'getformGPS' && isset($_GET['pid'])) {
-                $this->response->getContent()->setBody($this->getFormPointGPS((int) $_GET['pid']));
+                $response->getContent()->setBody($this->getFormPointGPS((int) $_GET['pid']));
             } elseif ($id === 'saveformGPS' && isset($_GET['pid'])) {
-                $this->response->getContent()->setBody($this->setFormPointGPS((int) $_GET['pid']));
+                $response->getContent()->setBody($this->setFormPointGPS((int) $_GET['pid']));
             } elseif ($id === 'saveAddrGPS' && isset($_GET['pid'])) {
-                $this->response->getContent()->setBody($this->setFormPointAddr((int) $_GET['pid']));
+                $response->getContent()->setBody((string) $this->setFormPointAddr((int) $_GET['pid']));
             } elseif ($id === 'savebest') {
-                $this->response->getContent()->setBody($this->setFormPointBest((int) $_GET['id']));
+                $response->getContent()->setBody((string) $this->setFormPointBest((int) $_GET['id']));
             }
-            $this->response->setLastEditTimestampToFuture();
-        } elseif ($this->siteRequest->getLevel1() === 'city') {
+            $response->setLastEditTimestampToFuture();
+        } elseif ($request->getLevel1() === 'city') {
             if ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
-                $this->response->getContent()->setBody($this->saveCityTitle((int) $_GET['id']));
+                $response->getContent()->setBody($this->saveCityTitle((int) $_GET['id']));
             } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
-                $this->response->getContent()->setBody($this->saveCityDescription((int) $_GET['id']));
+                $response->getContent()->setBody($this->saveCityDescription((int) $_GET['id']));
             } elseif ($id === 'getformGPS' && isset($_GET['cid']) && (int) $_GET['cid']) {
-                $this->response->getContent()->setBody($this->getFormCityGPS((int) $_GET['cid']));
+                $response->getContent()->setBody($this->getFormCityGPS((int) $_GET['cid']));
             } elseif ($id === 'saveformGPS') {
-                $this->response->getContent()->setBody($this->setFormCityGPS((int) $_GET['cid']));
+                $response->getContent()->setBody((string) $this->setFormCityGPS((int) $_GET['cid']));
             }
-            $this->response->setLastEditTimestampToFuture();
-        } elseif ($this->siteRequest->getLevel1() === 'pointtype') {
+            $response->setLastEditTimestampToFuture();
+        } elseif ($request->getLevel1() === 'pointtype') {
             if ($id === 'getform') {
-                $this->response->getContent()->setBody($this->getChangeTypeForm());
+                $response->getContent()->setBody($this->getChangeTypeForm());
             } elseif ($id === 'savetype' && isset($_POST['pid']) && (int) $_POST['pid']) {
-                $this->response->getContent()->setBody($this->setPointType((int) $_POST['pid']));
+                $response->getContent()->setBody($this->setPointType((int) $_POST['pid']));
             }
-        } elseif ($this->siteRequest->getLevel1() === 'page') {
+        } elseif ($request->getLevel1() === 'page') {
             if ($id === 'gps') {
-                $this->response->getContent()->setBody($this->getTextPage(31));
+                $response->getContent()->setBody($this->getTextPage(31));
             } else {
                 throw new NotFoundException();
             }
         } else {
             throw new NotFoundException();
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getModuleKey(): string
+    {
+        return 'ajax';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isApplicable(SiteRequest $request): bool
+    {
+        return $request->getModuleKey() === $this->getModuleKey();
     }
 
 //--------------------------------------------------------- TEXT PAGES ---------

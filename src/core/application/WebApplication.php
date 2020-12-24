@@ -17,6 +17,7 @@ use app\exceptions\AccessDeniedException;
 use app\exceptions\BaseApplicationException;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
+use app\modules\AjaxModule;
 use app\modules\ApiModule;
 use app\modules\BlogModule;
 use app\modules\CityModule;
@@ -71,6 +72,7 @@ class WebApplication extends Application
         $modules =  [
             new RedirectsModule($this->db),
             new MainPageModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
+            new AjaxModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new MapModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new ListModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new CityModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),

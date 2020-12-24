@@ -49,8 +49,7 @@ class SysModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param SiteRequest $request
-     * @param SiteResponse $response
+     * @inheritDoc
      * @throws NotFoundException
      * @throws RedirectException
      */
