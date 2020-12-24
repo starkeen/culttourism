@@ -21,6 +21,7 @@ use app\modules\BlogModule;
 use app\modules\CoreModule;
 use app\modules\DefaultModule;
 use app\modules\FeedbackModule;
+use app\modules\ListModule;
 use app\modules\MainPageModule;
 use app\modules\MapModule;
 use app\modules\RedirectsModule;
@@ -69,6 +70,7 @@ class WebApplication extends Application
             new RedirectsModule($this->db),
             new MainPageModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new MapModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
+            new ListModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new SearchModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new BlogModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new FeedbackModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
