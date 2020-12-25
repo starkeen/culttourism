@@ -19,6 +19,12 @@ class SiteRequest
     private $parsed = false;
 
     /**
+     * Домен сайта в запросе
+     * @var string|null
+     */
+    private $hostId;
+
+    /**
      * Идентификатор корневого раздела (модуля)
      * @var string|null
      */
@@ -53,6 +59,17 @@ class SiteRequest
     public function __construct(string $requestUri)
     {
         $this->requestUri = $requestUri;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost(): string
+    {
+        if (!$this->parsed) {
+            $this->parseRequest();
+        }
+        return urldecode($this->hostId);
     }
 
     /**
@@ -188,16 +205,16 @@ class SiteRequest
      */
     private function parseRequest(): void
     {
-        $requestUri = urldecode($this->requestUri);
-        if (strpos($requestUri, '?')) {
-            $requestUri = mb_substr($requestUri, 0, strpos($requestUri, '?'), 'utf-8');
+        $decodedRequestUri = urldecode($this->requestUri);
+        if (strpos($decodedRequestUri, '?')) {
+            $decodedRequestUri = mb_substr($decodedRequestUri, 0, strpos($decodedRequestUri, '?'), 'utf-8');
         }
-        $requestURIArray = explode('/', $requestUri);
+        $requestURIArray = explode('/', $decodedRequestUri);
         $requestURIParamsList = array_values($requestURIArray);
         $requestURIParamsList = array_filter($requestURIParamsList);
 
         if (isset($requestURIParamsList[0])) {
-            $hostId = $requestURIParamsList[0];
+            $this->hostId = $requestURIParamsList[0];
         }
         if (isset($requestURIParamsList[1])) {
             $this->moduleId = $requestURIParamsList[1];
