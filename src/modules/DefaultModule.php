@@ -163,17 +163,12 @@ class DefaultModule implements ModuleInterface
 
         $city = $pcs->getItemByPk($object['pt_citypage_id']);
 
-        $shortDescr = strip_tags($object['pt_description']);
-        $short = mb_strlen($shortDescr) >= self::DESCRIPTION_THRESHOLD ? mb_substr(
-            $shortDescr,
-            0,
-            mb_strpos(
-                $shortDescr,
-                ' ',
-                self::DESCRIPTION_THRESHOLD
-            ),
-            'utf-8'
-        ) : $shortDescr;
+        $shortDescription = strip_tags($object['pt_description']);
+        $short = $shortDescription;
+        if (mb_strlen($shortDescription) >= self::DESCRIPTION_THRESHOLD) {
+            $position = mb_strpos($shortDescription, ' ', self::DESCRIPTION_THRESHOLD) ?? self::DESCRIPTION_THRESHOLD;
+            $short = mb_substr($shortDescription, 0, $position, 'utf-8');
+        }
         $object['esc_name'] = htmlentities($object['pt_name'], ENT_QUOTES, 'utf-8');
         $object['map_zoom'] = $object['pt_latlon_zoom'] ?: 14;
         if ($object['pt_latitude'] && $object['pt_longitude']) {

@@ -64,6 +64,26 @@ class TemplateEngineTest extends TestCase
         );
     }
 
+    public function testCleanCache(): void
+    {
+        $smarty = $this->getSmartyMock();
+        $engine = new TemplateEngine($smarty);
+
+        $smarty->expects(self::once())->method('getCacheDir')->willReturn('cache_dir');
+
+        $engine->cleanCache();
+    }
+
+    public function testCleanCompiled(): void
+    {
+        $smarty = $this->getSmartyMock();
+        $engine = new TemplateEngine($smarty);
+
+        $smarty->expects(self::once())->method('getCompileDir')->willReturn('compile_dir');
+
+        $engine->cleanCompiled();
+    }
+
     /**
      * @return MockObject|Smarty
      */
@@ -82,6 +102,8 @@ class TemplateEngineTest extends TestCase
                 'setCacheLifetime',
                 'setCompileCheck',
                 'setDebugging',
+                'getCompileDir',
+                'getCacheDir',
             ])
             ->getMock();
     }
