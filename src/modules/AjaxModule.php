@@ -51,9 +51,9 @@ class AjaxModule extends Module implements ModuleInterface
             } elseif ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
                 $response->getContent()->setBody($this->savePointTitle((int) $_GET['id']));
             } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
-                $response->getContent()->setBody($this->savePointDescr((int) $_GET['id']));
+                $response->getContent()->setBody($this->savePointDescription((int) $_GET['id']));
             } elseif ($id === 'savecontacts' && isset($_GET['cid']) && (int) $_GET['cid']) {
-                $response->getContent()->setBody($this->savePointContacts((int) $_GET['cid']));
+                $this->savePointContacts((int) $_GET['cid']);
             } elseif ($id === 'getnewform' && isset($_GET['cid'])) {
                 $response->getContent()->setBody($this->getPointNew((int) $_GET['cid']));
             } elseif ($id === 'savenew' && isset($_GET['cid'])) {
@@ -114,11 +114,15 @@ class AjaxModule extends Module implements ModuleInterface
         return $request->getModuleKey() === $this->getModuleKey();
     }
 
-//--------------------------------------------------------- TEXT PAGES ---------
-    private function getTextPage($pg_id): string
+    /**
+     * --------------------------------------------------------- TEXT PAGES ---------
+     * @param int $pgId
+     * @return string
+     */
+    private function getTextPage(int $pgId): string
     {
         $mds = new MModules($this->db);
-        $md = $mds->getItemByPk($pg_id);
+        $md = $mds->getItemByPk($pgId);
 
         return '<h3>Экспорт данных GPS</h3>' . $md['md_pagecontent'];
     }
@@ -162,17 +166,17 @@ class AjaxModule extends Module implements ModuleInterface
             $linksModel->deleteByPoint($cid);
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
-     * @param $pid
+     * @param int $pid
      * @return bool
      * @throws AccessDeniedException
      */
-    private function setFormPointAddr($pid): bool
+    private function setFormPointAddr(int $pid): bool
     {
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
@@ -187,11 +191,11 @@ class AjaxModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param $pid
+     * @param int $pid
      * @return bool
      * @throws AccessDeniedException
      */
-    private function setFormPointBest($pid): bool
+    private function setFormPointBest(int $pid): bool
     {
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
@@ -203,11 +207,11 @@ class AjaxModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param $pid
+     * @param int $pid
      * @return false|string
      * @throws AccessDeniedException
      */
-    private function setFormPointGPS($pid)
+    private function setFormPointGPS(int $pid)
     {
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
@@ -238,16 +242,20 @@ class AjaxModule extends Module implements ModuleInterface
             }
 
             return "$point_lat_w $point_lon_w";
-        } else {
-            return false;
         }
+
+        return false;
     }
 
-    private function getFormPointGPS($pid)
+    /**
+     * @param int $pid
+     * @return string
+     */
+    private function getFormPointGPS(int $pid): string
     {
         $pt = new MPagePoints($this->db);
         $point = $pt->getItemByPk($pid);
-        //print_x($point);
+
         if ($point['pt_latitude'] && $point['pt_longitude']) {
             $point['map_center']['lat'] = $point['pt_latitude'];
             $point['map_center']['lon'] = $point['pt_longitude'];
@@ -265,7 +273,7 @@ class AjaxModule extends Module implements ModuleInterface
             $point['tp_name'] = 'другое';
             $point['tp_icon'] = 'star.png';
         }
-        $point['zoom'] = ($point['pt_latlon_zoom'] != 0) ? $point['pt_latlon_zoom'] : 13;
+        $point['zoom'] = (int) $point['pt_latlon_zoom'] !== 0 ? (int) $point['pt_latlon_zoom'] : 13;
         $this->templateEngine->assign('point', $point);
 
         return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_ajax/changelatlon.form.tpl');
@@ -281,7 +289,7 @@ class AjaxModule extends Module implements ModuleInterface
             throw new AccessDeniedException();
         }
         $point_id = (int) $_GET['pid'];
-        if (!$point_id) {
+        if ($point_id === 0) {
             throw new AccessDeniedException();
         }
         $p = new MPagePoints($this->db);
@@ -290,7 +298,7 @@ class AjaxModule extends Module implements ModuleInterface
         $point = $p->getItemByPk((int) $_GET['pid']);
         $types = $pts->getActive();
         foreach ($types as $i => $type) {
-            $types[$i]['current'] = ($type['tp_id'] == $point['pt_type_id']) ? 1 : 0;
+            $types[$i]['current'] = ((int) $type['tp_id'] === (int) $point['pt_type_id']) ? 1 : 0;
         }
 
         $this->templateEngine->assign('point', $point);
@@ -300,44 +308,44 @@ class AjaxModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param $pid
+     * @param int $pid
      * @return mixed
      * @throws AccessDeniedException
      */
-    private function setPointType($pid)
+    private function setPointType(int $pid)
     {
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
         }
         $ppid = (int) $_POST['pid'];
         $type = (int) $_POST['ntype'];
-        if ($pid != $ppid || !$type) {
+        if ($pid !== $ppid || $type === 0) {
             throw new AccessDeniedException();
         }
 
         $p = new MPagePoints($this->db);
         $pts = new MRefPointtypes($this->db);
 
-        $state = $p->updateByPk(
+        $p->updateByPk(
             $pid,
             [
                 'pt_type_id' => $type,
             ]
         );
-        $newtype = $pts->getItemByPk($type);
+        $newType = $pts->getItemByPk($type);
 
-        return $newtype['tp_icon'];
+        return $newType['tp_icon'];
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return false|string
      * @throws AccessDeniedException
      */
-    private function getPointNew($id)
+    private function getPointNew(int $id)
     {
         if ($this->webUser->isEditor()) {
-            if ($id) {
+            if ($id !== 0) {
                 $pc = new MPageCities($this->db);
                 $city = $pc->getItemByPk($id);
                 $city_title = 'г. ' . $city['pc_title'];
@@ -347,27 +355,27 @@ class AjaxModule extends Module implements ModuleInterface
             $this->templateEngine->assign('city_title', $city_title);
 
             return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.tpl');
-        } else {
-            throw new AccessDeniedException();
         }
+
+        throw new AccessDeniedException();
     }
 
     /**
-     * @param $pid
+     * @param int $pid
      * @return false|int
      * @throws NotFoundException
      * @throws AccessDeniedException
      */
-    private function deletePoint($pid)
+    private function deletePoint(int $pid)
     {
-        if (!$pid) {
+        if ($pid === 0) {
             throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
         }
         $ppid = (int) $_POST['pid'];
-        if ($pid != $ppid) {
+        if ($pid !== $ppid) {
             throw new AccessDeniedException();
         }
         $pp = new MPagePoints($this->db);
@@ -377,18 +385,18 @@ class AjaxModule extends Module implements ModuleInterface
             $linksModel->deleteByPoint($ppid);
 
             return $ppid;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
-     * @param $cid
+     * @param int $cid
      * @return int
      * @throws NotFoundException
      * @throws AccessDeniedException
      */
-    private function savePointNew($cid): int
+    private function savePointNew(int $cid): int
     {
         if (!$cid) {
             throw new NotFoundException();
@@ -418,18 +426,18 @@ class AjaxModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundException
      * @throws AccessDeniedException
      */
-    private function savePointTitle($id)
+    private function savePointTitle(int $id)
     {
-        if (!$id) {
+        if ($id === 0) {
             throw new NotFoundException();
         }
         $nid = (int) $_POST['id'];
-        if ($id != $nid) {
+        if ($id !== $nid) {
             throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
@@ -448,24 +456,24 @@ class AjaxModule extends Module implements ModuleInterface
             $point = $pp->getItemByPk($nid);
 
             return $point['pt_name'];
-        } else {
-            throw new NotFoundException();
         }
+
+        throw new NotFoundException();
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundException
      * @throws AccessDeniedException
      */
-    private function savePointDescr($id)
+    private function savePointDescription(int $id)
     {
-        if (!$id) {
+        if ($id === 0) {
             throw new NotFoundException();
         }
         $nid = (int) $_POST['id'];
-        if ($id != $nid) {
+        if ($id !== $nid) {
             throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
@@ -484,19 +492,19 @@ class AjaxModule extends Module implements ModuleInterface
             $point = $pp->getItemByPk($nid);
 
             return $point['pt_description'];
-        } else {
-            throw new NotFoundException();
         }
+
+        throw new NotFoundException();
     }
 
     /**
-     * @param $id
-     * @return false|string
+     * @param int $id
+     * @return string
      * @throws NotFoundException
      */
-    private function getPoint($id)
+    private function getPoint(int $id): string
     {
-        if (!$id) {
+        if ($id === 0) {
             throw new NotFoundException();
         }
 
@@ -504,7 +512,7 @@ class AjaxModule extends Module implements ModuleInterface
         $object = $pts->getItemByPk($id);
 
         if (!$object) {
-            return false;
+            throw new NotFoundException();
         }
 
         $object['page_link'] = $object['url_canonical'];
@@ -517,19 +525,19 @@ class AjaxModule extends Module implements ModuleInterface
 
         if ($this->webUser->isEditor()) {
             return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.tpl');
-        } else {
-            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.tpl');
         }
+
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.tpl');
     }
 
     /**
-     * @param $slugLine
+     * @param string $slugLine
      * @return false|string
      * @throws NotFoundException
      */
-    private function getPointBySlugLine($slugLine)
+    private function getPointBySlugLine(string $slugLine)
     {
-        if (!$slugLine) {
+        if ($slugLine === '') {
             throw new NotFoundException();
         }
 
@@ -549,16 +557,18 @@ class AjaxModule extends Module implements ModuleInterface
 
         if ($this->webUser->isEditor()) {
             return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.tpl');
-        } else {
-            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.tpl');
         }
+
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.tpl');
     }
 
     /**
      * -------------------------------------------------------------- CITY ----------
+     * @param int $cid
+     * @return bool|null
      * @throws AccessDeniedException
      */
-    private function setFormCityGPS($cid): ?bool
+    private function setFormCityGPS(int $cid): ?bool
     {
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
@@ -575,12 +585,16 @@ class AjaxModule extends Module implements ModuleInterface
 
         if ($state) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
-    private function getFormCityGPS($cid)
+    /**
+     * @param int $cid
+     * @return string
+     */
+    private function getFormCityGPS(int $cid): string
     {
         $pc = new MPageCities($this->db);
         $city = $pc->getItemByPk($cid);
@@ -603,18 +617,18 @@ class AjaxModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundException
      * @throws AccessDeniedException
      */
-    private function saveCityTitle($id)
+    private function saveCityTitle(int $id)
     {
         if (!$id) {
             throw new NotFoundException();
         }
         $nid = (int) $_POST['id'];
-        if ($id != $nid) {
+        if ($id !== $nid) {
             throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
@@ -632,24 +646,24 @@ class AjaxModule extends Module implements ModuleInterface
             $city = $pc->getItemByPk($nid);
 
             return $city['pc_title'];
-        } else {
-            throw new NotFoundException();
         }
+
+        throw new NotFoundException();
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param int $id
+     * @return string
      * @throws NotFoundException
      * @throws AccessDeniedException
      */
-    private function saveCityDescription($id)
+    private function saveCityDescription(int $id): string
     {
-        if (!$id) {
+        if ($id === 0) {
             throw new NotFoundException();
         }
         $nid = (int) $_POST['id'];
-        if ($id != $nid) {
+        if ($id !== $nid) {
             throw new NotFoundException();
         }
         if (!$this->webUser->isEditor()) {
@@ -668,8 +682,8 @@ class AjaxModule extends Module implements ModuleInterface
             $city = $pc->getItemByPk($nid);
 
             return $city['pc_text'];
-        } else {
-            throw new NotFoundException();
         }
+
+        throw new NotFoundException();
     }
 }

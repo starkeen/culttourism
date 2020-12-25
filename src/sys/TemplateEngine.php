@@ -33,9 +33,9 @@ class TemplateEngine
      * @param null $cache_id
      * @param null $compile_id
      * @param null $parent
-     * @return false|string
+     * @return string
      */
-    public function fetch($template = null, $cache_id = null, $compile_id = null, $parent = null)
+    public function fetch($template = null, $cache_id = null, $compile_id = null, $parent = null): string
     {
         return $this->smarty->fetch($template, $cache_id, $compile_id, $parent);
     }
