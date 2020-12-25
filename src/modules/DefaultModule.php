@@ -100,7 +100,6 @@ class DefaultModule implements ModuleInterface
         return true;
     }
 
-
     /**
      * @param SiteRequest $request
      * @param SiteResponse $response
@@ -125,11 +124,17 @@ class DefaultModule implements ModuleInterface
                 $url = substr($url, 0, stripos($url, $urlParts));
                 throw new RedirectException($url);
             } elseif (preg_match('/object(\d+)\.html/i', $urlParts, $regs)) {
-                $objectId = $regs[1];
+                $objectId = (int) $regs[1];
+                if ($objectId > 0 && $objectId < 10000) {
+                    $objectCanonical = $this->getObjectCanonicalById($objectId);
+                    if ($objectCanonical !== null) {
+                        throw new RedirectException($objectCanonical);
+                    }
+                }
                 throw new NotFoundException();
             } elseif (preg_match('/([a-z0-9_-]+)\.html/i', $urlParts, $regs)) {
-                $objectSlug = $regs[1];
-                $body = $this->getPageObjectBySlug($objectSlug, $response);
+                $objectCanonical = $regs[1];
+                $body = $this->getPageObjectBySlug($objectCanonical, $response);
                 $response->getContent()->setBody($body);
             } else {
                 $body = $this->getPageCity($url, $response);
@@ -138,6 +143,20 @@ class DefaultModule implements ModuleInterface
         } else {
             throw new RuntimeException('Ошибка в роутинге городов и объектов');
         }
+    }
+
+    /**
+     * @param int $id
+     * @return string|null
+     */
+    private function getObjectCanonicalById(int $id): ?string
+    {
+        $pts = new MPagePoints($this->db);
+        $object = $pts->getItemByPk($id);
+        if ($object !== null) {
+            return $object['url_canonical'];
+        }
+        return null;
     }
 
     /**
