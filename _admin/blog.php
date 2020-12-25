@@ -81,5 +81,5 @@ elseif (!isset($_GET['id']) && isset($_GET['act'])) {
     $smarty->assign('blogitem', $record);
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/blog/admin.one.tpl'));
 }
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
+$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();

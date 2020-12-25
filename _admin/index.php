@@ -16,6 +16,6 @@ $smarty->assign('yandexSearchLimit', $yandexSearchLimit);
 
 $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES.'/_admin/index.tpl'));
 
-$smarty->display(_DIR_TEMPLATES.'/_admin/admpage.sm.html');
+$smarty->display(_DIR_TEMPLATES.'/_admin/admpage.tpl');
 
 exit();

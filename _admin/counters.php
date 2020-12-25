@@ -46,7 +46,7 @@ if (!isset($_GET['cid'])) {//===================================================
     $smarty->assign('add', true);
     $smarty->assign('cnt', $row);
     $smarty->assign('is_edit', false);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/counters.item.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/counters.item.tpl'));
 } elseif (is_numeric($_GET['cid'])) {//============================================= РЕДАКТИРОВАТЬ
     $cid = (int) $_GET['cid'];
 
@@ -76,9 +76,9 @@ if (!isset($_GET['cid'])) {//===================================================
     $row = $db->fetch();
 
     $smarty->assign('cnt', $row);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/counters.item.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/counters.item.tpl'));
 }
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
+$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();
 ?>

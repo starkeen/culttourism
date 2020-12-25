@@ -138,7 +138,7 @@ while ($row = $db->fetch()) {
 $smarty->assign('mod_list', $modules);
 $smarty->assign('is_admin', $isAdmin);
 
-$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/modules.sm.html'));
+$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/modules.tpl'));
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
+$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();

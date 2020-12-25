@@ -30,7 +30,7 @@ if (isset($_GET['rid']) && (int) $_GET['rid'] != 0) {
         $settings[$row['sp_id']] = $row;
     }
     $smarty->assign('setts', $settings);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/refs.settings.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/refs.settings.tpl'));
 } else {
     $dbrs = $db->getTableName('ref_siteprop');
     $db->sql = "SELECT rs_id, rs_title FROM $dbrs ORDER BY rs_id";
@@ -42,5 +42,5 @@ if (isset($_GET['rid']) && (int) $_GET['rid'] != 0) {
     $smarty->assign('reflist', $reflist);
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/refs.list.tpl'));
 }
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
+$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();

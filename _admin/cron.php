@@ -49,7 +49,7 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'edit') {
     $db->exec();
     $row = $db->fetch();
     $smarty->assign('task', $row);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/cron.item.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/cron.item.tpl'));
 }
 //-------------------------------------------------------------------------
 elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'run') {
@@ -100,5 +100,5 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] === 'stop') 
 } else {
     die('error');
 }
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
+$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();

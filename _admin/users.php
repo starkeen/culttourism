@@ -55,7 +55,7 @@ if (!isset($_GET['user_id']) && !isset($_GET['act'])) {
     $smarty->assign('user', $row);
     $smarty->assign('is_admin', true);
     $smarty->assign('is_edit', true);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/users.item.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/users.item.tpl'));
 }
 elseif (!isset($_GET['user_id']) && isset($_GET['act']) && $_GET['act'] == 'add') {
     if (isset($_POST['to_save'])) {
@@ -94,10 +94,10 @@ elseif (!isset($_GET['user_id']) && isset($_GET['act']) && $_GET['act'] == 'add'
     $smarty->assign('is_edit', false);
     $smarty->assign('is_admin', true);
     $smarty->assign('is_error', $error);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/users.item.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/users.item.tpl'));
 }
 
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
+$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();
 ?>

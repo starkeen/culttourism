@@ -163,7 +163,7 @@ if (isset($_GET['id'], $_GET['act'])) {
     $smarty->assign('referer', $_SERVER['HTTP_REFERER'] ?? 'addpoints.php');
     $smarty->assign('ref_types', $rpt->getActive());
     // -----------   обработка заявки ----------
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/pointadding.item.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/pointadding.item.tpl'));
 } else {
     // -----------   список активных ----------
     $pt = new MRefPointtypes($db);
@@ -199,5 +199,5 @@ if (isset($_GET['id'], $_GET['act'])) {
 }
 
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
+$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();

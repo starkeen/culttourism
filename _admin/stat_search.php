@@ -28,8 +28,8 @@ while ($row = $db->fetch()) {
     $stat[$row['sc_query']] = $row;
 }
 $smarty->assign('requests', $stat);
-$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/stat_search.sm.html'));
+$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/stat_search.tpl'));
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
+$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();
 ?>
