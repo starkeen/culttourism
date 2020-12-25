@@ -111,12 +111,11 @@ class DefaultModule implements ModuleInterface
         $url = $request->getUrl();
         if ($url !== '') {
             $response->getContent()->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
-
             $regs = [];
-            $url_parts_array = !empty($url) ? explode('/', $url) : [];
-            $urlParts = array_pop($url_parts_array);
+            $urlPartsArray = !empty($url) ? explode('/', $url) : [];
+            $urlParts = array_pop($urlPartsArray);
             if ($urlParts === 'map.html') {
-                $this->showPageMap($url, $response);
+                $this->redirectToCityMap($url, $response);
             } elseif ($urlParts === 'index.html') {
                 $body = $this->getPageCity($url, $response);
                 $response->getContent()->setBody($body);
@@ -151,8 +150,7 @@ class DefaultModule implements ModuleInterface
      */
     private function getObjectCanonicalById(int $id): ?string
     {
-        $pts = new MPagePoints($this->db);
-        $object = $pts->getItemByPk($id);
+        $object = $this->getModelPagePoints()->getItemByPk($id);
         if ($object !== null) {
             return $object['url_canonical'];
         }
@@ -171,11 +169,7 @@ class DefaultModule implements ModuleInterface
             throw new NotFoundException();
         }
 
-        $pts = new MPagePoints($this->db);
-        $pcs = new MPageCities($this->db);
-        $li = new MListsItems($this->db);
-
-        $objects = $pts->searchSlugline($slugLine);
+        $objects = $this->getModelPagePoints()->searchSlugline($slugLine);
         if (!isset($objects[0])) {
             throw new NotFoundException();
         }
@@ -185,7 +179,7 @@ class DefaultModule implements ModuleInterface
             $response->getHeaders()->sendRedirect($object['url_canonical'], true);
         }
 
-        $city = $pcs->getItemByPk($object['pt_citypage_id']);
+        $city = $this->getModelPageCities()->getItemByPk($object['pt_citypage_id']);
 
         $shortDescription = strip_tags($object['pt_description']);
         $short = $shortDescription;
@@ -217,8 +211,7 @@ class DefaultModule implements ModuleInterface
         $response->setLastEditTimestamp($object['last_update']);
 
         //------------------  s t a t i s t i c s  ------------------------
-        $sp = new MStatpoints($this->db);
-        $sp->add($object['pt_id'], $this->user->getHash());
+        $this->getModelStatPoints()->add($object['pt_id'], $this->user->getHash());
 
         $response->getContent()->getHead()->addTitleElement($city['pc_title_unique']);
         $response->getContent()->getHead()->addTitleElement($object['esc_name']);
@@ -265,8 +258,7 @@ class DefaultModule implements ModuleInterface
         $response->getContent()->getHead()->addOGMeta(OgType::UPDATED_TIME(), (string) $response->getLastEditTimestamp());
         $objImage = null;
         if ((int) $object['pt_photo_id'] !== 0) {
-            $ph = new MPhotos($this->db);
-            $photo = $ph->getItemByPk($object['pt_photo_id']);
+            $photo = $this->getModelPhotos()->getItemByPk($object['pt_photo_id']);
             $objImage = Urls::getAbsoluteURL($photo['ph_src']);
             $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
         }
@@ -291,7 +283,7 @@ class DefaultModule implements ModuleInterface
                 'object' => $object,
                 'city' => $city,
                 'page_image' => $objImage,
-                'lists' => $li->getListsForPointId($object['pt_id']),
+                'lists' => $this->getModelListItems()->getListsForPointId((int) $object['pt_id']),
             ]
         );
     }
@@ -317,9 +309,7 @@ class DefaultModule implements ModuleInterface
             $response->getHeaders()->sendRedirect(str_replace('index.html', '', $url), true);
         }
 
-        $pcs = new MPageCities($this->db);
-        $pts = new MPagePoints($this->db);
-        $row = $pcs->getCityByUrl($urlFiltered);
+        $row = $this->getModelPageCities()->getCityByUrl($urlFiltered);
 
         if (!empty($row) && isset($row['pc_title']) && $row['pc_title'] != '') {
             $row['pc_zoom'] = ($row['pc_latlon_zoom']) ?: 12;
@@ -331,15 +321,14 @@ class DefaultModule implements ModuleInterface
                 $response->getHeaders()->sendRedirect($row['url_canonical']);
             }
 
-            $points_data = $pts->getPointsByCity($row['pc_id'], $this->user->isEditor());
+            $points_data = $this->getModelPagePoints()->getPointsByCity($row['pc_id'], $this->user->isEditor());
 
             $response->setMaxLastEditTimestamp($points_data['last_update']);
             if ($this->user->isEditor()) {
                 $response->setLastEditTimestamp(0);
             }
 
-            $sc = new MStatcity($this->db);
-            $sc->add($row['pc_id'], $this->user->getHash());
+            $this->getModelStatCity()->add($row['pc_id'], $this->user->getHash());
 
             $response->getContent()->getHead()->addTitleElement($row['pc_title_unique'] . ': достопримечательности');
             $response->getContent()->getHead()->addDescription($row['pc_title_unique'] . ' - что посмотреть');
@@ -369,8 +358,7 @@ class DefaultModule implements ModuleInterface
             );
             $response->getContent()->getHead()->addOGMeta(OgType::UPDATED_TIME(), (string) $response->getLastEditTimestamp());
             if ($row['pc_coverphoto_id']) {
-                $ph = new MPhotos($this->db);
-                $photo = $ph->getItemByPk($row['pc_coverphoto_id']);
+                $photo = $this->getModelPhotos()->getItemByPk($row['pc_coverphoto_id']);
                 $cityImage = Urls::getAbsoluteURL($photo['ph_src']);
                 $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $cityImage);
             } else {
@@ -400,12 +388,60 @@ class DefaultModule implements ModuleInterface
     /**
      * @param string $url
      * @param SiteResponse $response
+     * @throws RedirectException
      */
-    private function showPageMap(string $url, SiteResponse $response): void
+    private function redirectToCityMap(string $url, SiteResponse $response): void
     {
-        $pc = new MPageCities($this->db);
-        $city = $pc->getCityByUrl(str_replace('/map.html', '', $url));
+        $city = $this->getModelPageCities()->getCityByUrl(str_replace('/map.html', '', $url));
         $location = "/map/#center={$city['pc_longitude']},{$city['pc_latitude']}&zoom={$city['pc_latlon_zoom']}";
-        $response->getHeaders()->sendRedirect($location, true);
+        throw new RedirectException($location);
+    }
+
+    /**
+     * @return MPhotos
+     */
+    private function getModelPhotos(): MPhotos
+    {
+        return new MPhotos($this->db);
+    }
+
+    /**
+     * @return MPageCities
+     */
+    private function getModelPageCities(): MPageCities
+    {
+        return new MPageCities($this->db);
+    }
+
+    /**
+     * @return MPagePoints
+     */
+    private function getModelPagePoints(): MPagePoints
+    {
+        return new MPagePoints($this->db);
+    }
+
+    /**
+     * @return MListsItems
+     */
+    private function getModelListItems(): MListsItems
+    {
+        return new MListsItems($this->db);
+    }
+
+    /**
+     * @return MStatcity
+     */
+    private function getModelStatCity(): MStatcity
+    {
+        return new MStatcity($this->db);
+    }
+
+    /**
+     * @return MStatpoints
+     */
+    private function getModelStatPoints(): MStatpoints
+    {
+        return new MStatpoints($this->db);
     }
 }

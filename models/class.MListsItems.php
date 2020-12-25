@@ -65,11 +65,11 @@ class MListsItems extends Model
     /**
      * Списки, где участвует эта точка
      *
-     * @param integer $point_id
+     * @param int $point_id
      *
      * @return array
      */
-    public function getListsForPointId($point_id)
+    public function getListsForPointId(int $point_id)
     {
         $this->_db->sql = "SELECT *
                             FROM $this->_table_name li
