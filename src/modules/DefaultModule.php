@@ -166,7 +166,7 @@ class DefaultModule implements ModuleInterface
         $shortDescription = strip_tags($object['pt_description']);
         $short = $shortDescription;
         if (mb_strlen($shortDescription) >= self::DESCRIPTION_THRESHOLD) {
-            $position = mb_strpos($shortDescription, ' ', self::DESCRIPTION_THRESHOLD) ?? self::DESCRIPTION_THRESHOLD;
+            $position = mb_strpos($shortDescription, ' ', self::DESCRIPTION_THRESHOLD) ?: self::DESCRIPTION_THRESHOLD;
             $short = mb_substr($shortDescription, 0, $position, 'utf-8');
         }
         $object['esc_name'] = htmlentities($object['pt_name'], ENT_QUOTES, 'utf-8');
