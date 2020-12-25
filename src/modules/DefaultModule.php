@@ -12,7 +12,7 @@ use app\core\SiteResponse;
 use app\core\WebUser;
 use app\db\MyDB;
 use app\exceptions\NotFoundException;
-use app\sys\Logger;
+use app\exceptions\RedirectException;
 use app\sys\TemplateEngine;
 use app\utils\Urls;
 use MListsItems;
@@ -70,6 +70,7 @@ class DefaultModule implements ModuleInterface
     /**
      * @inheritDoc
      * @throws NotFoundException
+     * @throws RedirectException
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {
@@ -84,11 +85,9 @@ class DefaultModule implements ModuleInterface
         $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), _SITE_URL . 'img/logo/culttourism-head.jpg');
         $response->getContent()->getHead()->addMicroData('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
 
-        if (!$response->getContent()->getBody()) {
-            $body = $this->getPageByURL($request, $response);
-            $response->getContent()->setBody($body);
-        }
-        if (!$response->getContent()->getBody()) {
+        $this->processPageByURL($request, $response);
+
+        if ($response->getContent()->getBody() === '') {
             throw new NotFoundException();
         }
     }
@@ -105,10 +104,10 @@ class DefaultModule implements ModuleInterface
     /**
      * @param SiteRequest $request
      * @param SiteResponse $response
-     * @return bool|string|void
      * @throws NotFoundException
+     * @throws RedirectException
      */
-    public function getPageByURL(SiteRequest $request, SiteResponse $response)
+    public function processPageByURL(SiteRequest $request, SiteResponse $response): void
     {
         $url = $request->getUrl();
         if ($url !== '') {
@@ -120,16 +119,21 @@ class DefaultModule implements ModuleInterface
             if ($urlParts === 'map.html') {
                 $this->showPageMap($url, $response);
             } elseif ($urlParts === 'index.html') {
-                return $this->getPageCity($url, $response);
+                $body = $this->getPageCity($url, $response);
+                $response->getContent()->setBody($body);
             } elseif (in_array($urlParts, self::REDIRECT_SUFFIXES, true)) {
                 $url = substr($url, 0, stripos($url, $urlParts));
-                $response->getHeaders()->sendRedirect($url, true);
+                throw new RedirectException($url);
             } elseif (preg_match('/object(\d+)\.html/i', $urlParts, $regs)) {
+                $objectId = $regs[1];
                 throw new NotFoundException();
             } elseif (preg_match('/([a-z0-9_-]+)\.html/i', $urlParts, $regs)) {
-                return $this->getPageObjectBySlug($regs[1], $response);
+                $objectSlug = $regs[1];
+                $body = $this->getPageObjectBySlug($objectSlug, $response);
+                $response->getContent()->setBody($body);
             } else {
-                return $this->getPageCity($url, $response);
+                $body = $this->getPageCity($url, $response);
+                $response->getContent()->setBody($body);
             }
         } else {
             throw new RuntimeException('Ошибка в роутинге городов и объектов');
@@ -140,11 +144,12 @@ class DefaultModule implements ModuleInterface
      * @param string $slugLine
      * @param SiteResponse $response
      * @return string
+     * @throws NotFoundException
      */
-    private function getPageObjectBySlug(string $slugLine, SiteResponse $response)
+    private function getPageObjectBySlug(string $slugLine, SiteResponse $response): string
     {
-        if (!$slugLine) {
-            return '';
+        if ($slugLine === '') {
+            throw new NotFoundException();
         }
 
         $pts = new MPagePoints($this->db);
@@ -152,10 +157,10 @@ class DefaultModule implements ModuleInterface
         $li = new MListsItems($this->db);
 
         $objects = $pts->searchSlugline($slugLine);
-        $object = $objects[0] ?? false;
-        if (!$object) {
-            return false;
+        if (!isset($objects[0])) {
+            throw new NotFoundException();
         }
+        $object = $objects[0];
         $response->getContent()->getHead()->setCanonicalUrl($object['url_canonical']);
         if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] !== $object['url_canonical']) {
             $response->getHeaders()->sendRedirect($object['url_canonical'], true);
