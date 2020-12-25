@@ -290,9 +290,8 @@ class CityModule extends Module implements ModuleInterface
             );
             $metas = $this->db->fetchAll();
 
-            $this->templateEngine->assign('metas', $metas);
             header('Content-Type: text/html; charset=utf-8');
-            $this->templateEngine->display(_DIR_TEMPLATES . '/city/meta.tpl');
+            $this->templateEngine->displayPage('city/meta.tpl', ['metas' => $metas]);
         } else {
             throw new NotFoundException();
         }

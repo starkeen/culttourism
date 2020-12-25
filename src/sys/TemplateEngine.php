@@ -89,10 +89,28 @@ class TemplateEngine
      */
     public function getContent(string $template, array $data = []): string
     {
+        $this->assignArray($data);
+
+        return $this->fetch($template);
+    }
+
+    /**
+     * @param string $template
+     * @param array $data
+     */
+    public function displayPage(string $template, array $data = []): void
+    {
+        $this->assignArray($data);
+        $this->display($template);
+    }
+
+    /**
+     * @param array $data
+     */
+    private function assignArray(array $data): void
+    {
         foreach ($data as $key => $value) {
             $this->assign($key, $value);
         }
-
-        return $this->fetch($template);
     }
 }

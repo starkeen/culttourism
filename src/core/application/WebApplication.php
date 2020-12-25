@@ -186,10 +186,13 @@ class WebApplication extends Application
         if ($this->request->isAjax()) {
             echo $this->response->getContent()->getBody();
         } else {
-            $this->templateEngine->assign('user', $this->user);
-            $this->templateEngine->assign('pageContent', $this->response->getContent());
-
-            $this->templateEngine->display(_DIR_TEMPLATES . '/_main/main.html.tpl');
+            $this->templateEngine->displayPage(
+                '_main/main.html.tpl',
+                [
+                    'user' => $this->user,
+                    'pageContent' => $this->response->getContent(),
+                ]
+            );
         }
 
         exit();

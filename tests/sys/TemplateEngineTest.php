@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace tests\sys;
 
 use app\sys\TemplateEngine;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Smarty;
 
@@ -18,21 +19,7 @@ class TemplateEngineTest extends TestCase
 
     public function testContentBuilder(): void
     {
-        $smarty = $this->getMockBuilder(Smarty::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([
-                'assign',
-                'fetch',
-                'display',
-                'setTemplateDir',
-                'setCompileDir',
-                'setCacheDir',
-                'setCaching',
-                'setCacheLifetime',
-                'setCompileCheck',
-                'setDebugging',
-            ])
-            ->getMock();
+        $smarty = $this->getSmartyMock();
 
         $smarty->expects(self::once())->method('setTemplateDir')->with('dir_tpl/');
         $smarty->expects(self::once())->method('setCompileDir')->with('dir_var/templates_c/');
@@ -56,6 +43,46 @@ class TemplateEngineTest extends TestCase
             ]
         );
 
-        self:self::assertEquals('result', $result);
+        self::assertEquals('result', $result);
+    }
+
+    public function testContentDisplayPage(): void
+    {
+        $smarty = $this->getSmartyMock();
+        $engine = new TemplateEngine($smarty);
+
+        $smarty->expects(self::exactly(3))->method('assign');
+        $smarty->expects(self::once())->method('display')->with('template.tpl');
+
+        $engine->displayPage(
+            'template.tpl',
+            [
+                'var1' => 'val1',
+                'var2' => null,
+                'var3' => 12345,
+            ]
+        );
+    }
+
+    /**
+     * @return MockObject|Smarty
+     */
+    private function getSmartyMock(): MockObject
+    {
+        return $this->getMockBuilder(Smarty::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods([
+                'assign',
+                'fetch',
+                'display',
+                'setTemplateDir',
+                'setCompileDir',
+                'setCacheDir',
+                'setCaching',
+                'setCacheLifetime',
+                'setCompileCheck',
+                'setDebugging',
+            ])
+            ->getMock();
     }
 }
