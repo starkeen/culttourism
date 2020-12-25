@@ -53,7 +53,7 @@ class SignModule extends Module implements ModuleInterface
 
     private function getIn()
     {
-        $uniq_key = md5(uniqid(mt_rand(), true));
+        $uniq_key = md5(uniqid((string) mt_rand(), true));
         if (!isset($_SESSION['userkey']) || !$_SESSION['userkey']) {
             $_SESSION['userkey'] = $uniq_key;
         } else {
