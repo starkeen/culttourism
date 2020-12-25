@@ -15,7 +15,6 @@ use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 use app\sys\TemplateEngine;
 use app\utils\Urls;
-use GuzzleHttp\Exception\RequestException;
 use MListsItems;
 use MPageCities;
 use MPagePoints;
@@ -26,7 +25,9 @@ use RuntimeException;
 
 class DefaultModule implements ModuleInterface
 {
-    private const DESCRIPTION_THRESHOLD = 200;
+    private const DESCRIPTION_THRESHOLD = 300; // обрезаем описание в мета-тегах до этой величины
+
+    private const REDIRECT_BY_ID_MAX = 17000; // редирект с урлов в старом формате не выше этого идентификатора
 
     private const REDIRECT_SUFFIXES = [
         'undefined',
@@ -125,7 +126,7 @@ class DefaultModule implements ModuleInterface
                 throw new RedirectException($url);
             } elseif (preg_match('/object(\d+)\.html/i', $urlParts, $regs)) {
                 $objectId = (int) $regs[1];
-                if ($objectId > 0 && $objectId < 10000) {
+                if ($objectId > 0 && $objectId < self::REDIRECT_BY_ID_MAX) {
                     $objectCanonical = $this->getObjectCanonicalById($objectId);
                     if ($objectCanonical !== null) {
                         throw new RedirectException($objectCanonical);
