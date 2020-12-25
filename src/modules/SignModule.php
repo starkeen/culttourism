@@ -61,12 +61,12 @@ class SignModule extends Module implements ModuleInterface
         }
         $this->templateEngine->assign('key', $uniq_key);
         $this->templateEngine->assign('url', _SITE_URL);
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/in.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/in.tpl');
     }
 
     private function getUp()
     {
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/up.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/up.tpl');
     }
 
     /**
@@ -119,7 +119,7 @@ class SignModule extends Module implements ModuleInterface
         } else {
             $this->templateEngine->assign('baseurl', _SITE_URL);
             $this->templateEngine->assign('authkey', 'ewtheqryb35yqb356y4ery');
-            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/authform.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/authform.tpl');
         }
     }
 }

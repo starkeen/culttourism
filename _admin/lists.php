@@ -75,7 +75,7 @@ if (isset($_GET['id'])) {
     exit();
 } else {
     $smarty->assign('lists', $lst->getAll());
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/lists.list.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/lists.list.tpl'));
 }
 
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');

@@ -14,7 +14,7 @@ if (!isset($_GET['user_id']) && !isset($_GET['act'])) {
         $userlist[$row['us_id']] = $row;
     }
     $smarty->assign('userlist', $userlist);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/users.list.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/users.list.tpl'));
 } elseif (isset($_GET['user_id']) && !isset($_GET['act'])) {
     $us_id = (int) $_GET['user_id'];
     if (isset($_POST['to_save'])) {

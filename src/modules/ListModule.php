@@ -88,7 +88,7 @@ class ListModule extends Module implements ModuleInterface
             $this->templateEngine->assign('list', $list);
             $this->templateEngine->assign('list_items', $listItems->getActive());
 
-            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/list/list.sm.html'));
+            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/list/list.tpl'));
         } else {
             throw new NotFoundException();
         }
@@ -112,6 +112,6 @@ class ListModule extends Module implements ModuleInterface
 
         $this->templateEngine->assign('index_text', $response->getContent()->getBody());
         $this->templateEngine->assign('index_lists', $indexLists);
-        $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/list/index.sm.html'));
+        $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/list/index.tpl'));
     }
 }

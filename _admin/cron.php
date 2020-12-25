@@ -17,7 +17,7 @@ if (!isset($_GET['crid']) && !isset($_GET['act'])) {
         $crons[] = $row;
     }
     $smarty->assign('crons', $crons);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/cron.list.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/cron.list.tpl'));
 }
 //-------------------------------------------------------------------------
 elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'edit') {

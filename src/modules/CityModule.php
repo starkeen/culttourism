@@ -156,7 +156,7 @@ class CityModule extends Module implements ModuleInterface
             }
             $this->templateEngine->assign('weather_data', $weather_data);
             $out['state'] = true;
-            $out['content'] = $this->templateEngine->fetch(_DIR_TEMPLATES . '/city/weather.block.sm.html');
+            $out['content'] = $this->templateEngine->fetch(_DIR_TEMPLATES . '/city/weather.block.tpl');
         }
         header("Content-type: application/json");
         echo json_encode($out);
@@ -292,7 +292,7 @@ class CityModule extends Module implements ModuleInterface
 
             $this->templateEngine->assign('metas', $metas);
             header('Content-Type: text/html; charset=utf-8');
-            $this->templateEngine->display(_DIR_TEMPLATES . '/city/meta.sm.html');
+            $this->templateEngine->display(_DIR_TEMPLATES . '/city/meta.tpl');
         } else {
             throw new NotFoundException();
         }
@@ -534,7 +534,7 @@ class CityModule extends Module implements ModuleInterface
         $this->templateEngine->assign('already', $already);
         $this->templateEngine->assign('freeplace', mb_strlen($newcity) >= 5 ? $newcity : null);
         $this->templateEngine->assign('adminlogined', $this->webUser->getId());
-        $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/add.sm.html'));
+        $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/add.tpl'));
     }
 
     /**
@@ -582,9 +582,9 @@ class CityModule extends Module implements ModuleInterface
         $this->templateEngine->assign('adminlogined', $this->webUser->getId() ?? 0);
 
         if ($this->webUser->isEditor()) {
-            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.edit.sm.html'));
+            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.edit.tpl'));
         } else {
-            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.show.sm.html'));
+            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.show.tpl'));
         }
     }
 }

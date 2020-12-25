@@ -268,7 +268,7 @@ class AjaxModule extends Module implements ModuleInterface
         $point['zoom'] = ($point['pt_latlon_zoom'] != 0) ? $point['pt_latlon_zoom'] : 13;
         $this->templateEngine->assign('point', $point);
 
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_ajax/changelatlon.form.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_ajax/changelatlon.form.tpl');
     }
 
     /**
@@ -296,7 +296,7 @@ class AjaxModule extends Module implements ModuleInterface
         $this->templateEngine->assign('point', $point);
         $this->templateEngine->assign('alltypes', $types);
 
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_ajax/changetype.form.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_ajax/changetype.form.tpl');
     }
 
     /**
@@ -346,7 +346,7 @@ class AjaxModule extends Module implements ModuleInterface
             }
             $this->templateEngine->assign('city_title', $city_title);
 
-            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.add.tpl');
         } else {
             throw new AccessDeniedException();
         }
@@ -516,9 +516,9 @@ class AjaxModule extends Module implements ModuleInterface
         $this->templateEngine->assign('object', $object);
 
         if ($this->webUser->isEditor()) {
-            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.tpl');
         } else {
-            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.tpl');
         }
     }
 
@@ -548,9 +548,9 @@ class AjaxModule extends Module implements ModuleInterface
         $this->templateEngine->assign('object', $object);
 
         if ($this->webUser->isEditor()) {
-            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.edit.tpl');
         } else {
-            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.sm.html');
+            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/ajaxpoint.show.tpl');
         }
     }
 
@@ -599,7 +599,7 @@ class AjaxModule extends Module implements ModuleInterface
 
         $this->templateEngine->assign('city', $city);
 
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_ajax/citylatlon.form.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_ajax/citylatlon.form.tpl');
     }
 
     /**

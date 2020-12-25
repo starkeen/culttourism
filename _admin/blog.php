@@ -21,7 +21,7 @@ if (!isset($_GET['id']) && !isset($_GET['act'])) {
         $bloglist[$row['br_id']] = $row;
     }
     $smarty->assign('bloglist', $bloglist);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/blog/admin.all.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/blog/admin.all.tpl'));
 } elseif (isset($_GET['id']) && !isset($_GET['act'])) {
     $id = (int) $_GET['id'];
     if (isset($_POST) && !empty($_POST)) {
@@ -55,7 +55,7 @@ if (!isset($_GET['id']) && !isset($_GET['act'])) {
     $record = $db->fetch();
     $smarty->assign('blogitem', $record);
     $smarty->assign('is_edit', TRUE);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/blog/admin.one.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/blog/admin.one.tpl'));
 }
 elseif (!isset($_GET['id']) && isset($_GET['act'])) {
     if (isset($_POST) && !empty($_POST)) {
@@ -79,7 +79,7 @@ elseif (!isset($_GET['id']) && isset($_GET['act'])) {
     $record['br_active'] = 0;
     $record['bg_datelink'] = date('Y') . '/' . date('m');
     $smarty->assign('blogitem', $record);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/blog/admin.one.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/blog/admin.one.tpl'));
 }
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
 exit();

@@ -16,7 +16,7 @@ if (!isset($_GET['cid'])) {//===================================================
         $list[$row['cnt_id']]['text'] = nl2br(htmlentities($row['cnt_text'], ENT_QUOTES, 'utf-8'));
     }
     $smarty->assign('counters', $list);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/counters.list.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/counters.list.tpl'));
 } elseif ($_GET['cid'] == 'add') {//=============================================== ДОБАВИТЬ
     if (isset($_POST['to_save'])) {
         $cnt_title = cut_trash_string($_POST['cnt_title']);

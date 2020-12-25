@@ -69,7 +69,7 @@ class ApiModule extends Module implements ModuleInterface
      */
     private function getApi0()
     {
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/map0.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/map0.tpl');
     }
 
     /**
@@ -122,7 +122,7 @@ class ApiModule extends Module implements ModuleInterface
         }
 
         $this->templateEngine->assign('points', $points);
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api1.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api1.tpl');
     }
 
     /**
@@ -148,7 +148,7 @@ class ApiModule extends Module implements ModuleInterface
         $db->exec();
         $pt = $db->fetch();
         $this->templateEngine->assign('object', $pt);
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api2.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api2.tpl');
     }
 
     /**

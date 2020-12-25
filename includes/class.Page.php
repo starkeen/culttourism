@@ -199,7 +199,7 @@ class Page extends Core
         $this->templateEngine->assign('page_image', $objImage);
         $this->templateEngine->assign('lists', $li->getListsForPointId($object['pt_id']));
 
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.tpl');
     }
 
     /**

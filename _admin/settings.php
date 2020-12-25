@@ -40,7 +40,7 @@ if (isset($_GET['rid']) && (int) $_GET['rid'] != 0) {
         $reflist[$row['rs_id']] = $row['rs_title'];
     }
     $smarty->assign('reflist', $reflist);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/refs.list.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/refs.list.tpl'));
 }
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.sm.html');
 exit();

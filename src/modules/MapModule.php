@@ -29,7 +29,7 @@ class MapModule extends Module implements ModuleInterface
         //========================  I N D E X  ================================
         if ($request->getLevel1() === null) {
             $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
-            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/map/map.sm.html'));
+            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/map/map.tpl'));
         } //====================  M A P   E N T R Y  ============================
         elseif ($request->getLevel1() === 'common') {
             $this->webUser->getAuth()->setService('map');

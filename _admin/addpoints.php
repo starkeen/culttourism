@@ -195,7 +195,7 @@ if (isset($_GET['id'], $_GET['act'])) {
     $smarty->assign('ref_st', $uv_st->getActive());
     $smarty->assign('matrix', $matrix);
     $smarty->assign('list', $list);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/pointadding.list.sm.html'));
+    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/pointadding.list.tpl'));
 }
 
 

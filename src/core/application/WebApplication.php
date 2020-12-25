@@ -130,7 +130,7 @@ class WebApplication extends Application
             $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
             $this->templateEngine->assign('host', _SITE_URL);
             $this->templateEngine->assign('suggestions', []);
-            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er404.sm.html'));
+            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er404.tpl'));
         } catch (AccessDeniedException $exception) {
             $this->logger->notice('Ошибка 403', [
                 'srv' => $_SERVER ?? [],
@@ -142,7 +142,7 @@ class WebApplication extends Application
             $this->response->getContent()->setH1('Запрещено');
             $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
             $this->templateEngine->assign('host', _SITE_URL);
-            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er403.sm.html'));
+            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er403.tpl'));
         } catch (Throwable $exception) {
             $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
             $this->response->getHeaders()->add('HTTP/1.1 503 Service Temporarily Unavailable');
@@ -151,7 +151,7 @@ class WebApplication extends Application
 
             $this->response->getContent()->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
             $this->response->getContent()->setH1('Сервис временно недоступен');
-            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er503.sm.html'));
+            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er503.tpl'));
 
             $this->logger->error($exception->getMessage());
         }

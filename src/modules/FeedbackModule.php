@@ -204,7 +204,7 @@ class FeedbackModule extends Module implements ModuleInterface
             $this->templateEngine->assign($k, $v);
         }
 
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/feedpage.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/feedpage.tpl');
     }
 
     private function getCommonSuccess($data)
@@ -212,7 +212,7 @@ class FeedbackModule extends Module implements ModuleInterface
         foreach ($data as $k => $v) {
             $this->templateEngine->assign($k, $v);
         }
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/feedsuccess.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/feedsuccess.tpl');
     }
 
     /**
@@ -223,7 +223,7 @@ class FeedbackModule extends Module implements ModuleInterface
     {
         $response->getContent()->getHead()->addTitleElement('Добавить объект (музей, гостиницу, кафе и др.)');
         $this->templateEngine->assign('recaptcha_key', ReCaptcha::KEY);
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/addpoint.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/addpoint.tpl');
     }
 
     /**
@@ -237,7 +237,7 @@ class FeedbackModule extends Module implements ModuleInterface
         $this->templateEngine->assign('add_title', $title);
         $this->templateEngine->assign('add_descr', nl2br($descr));
         $this->templateEngine->assign('add_region', $region);
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/addsuccess.sm.html');
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/addsuccess.tpl');
     }
 
     private function showCaptcha(): void
