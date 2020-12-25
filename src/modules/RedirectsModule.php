@@ -19,6 +19,16 @@ class RedirectsModule implements ModuleInterface
     private $db;
 
     /**
+     * @var MRedirects|null
+     */
+    private $redirectModel;
+
+    /**
+     * @var string|null
+     */
+    private $redirectToUrl;
+
+    /**
      * @param MyDB $db
      */
     public function __construct(MyDB $db)
@@ -28,17 +38,16 @@ class RedirectsModule implements ModuleInterface
 
     /**
      * @inheritDoc
-     * @throws RedirectException
      */
     public function isApplicable(SiteRequest $request): bool
     {
         $url = $request->getUrl();
-        $redirectModel = new MRedirects($this->db);
-        $redirects = $redirectModel->getActive();
+        $redirects = $this->getRedirectsModel()->getActive();
         foreach ($redirects as $redirect) {
             $redirectUrl = preg_filter($redirect['rd_from'], $redirect['rd_to'], $url);
             if ($redirectUrl !== null) {
-                throw new RedirectException($redirectUrl);
+                $this->redirectToUrl = $redirectUrl;
+                return true;
             }
         }
 
@@ -47,8 +56,32 @@ class RedirectsModule implements ModuleInterface
 
     /**
      * @inheritDoc
+     * @throws RedirectException
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {
+        if ($this->redirectToUrl !== null) {
+            throw new RedirectException($this->redirectToUrl);
+        }
+    }
+
+    /**
+     * @return MRedirects
+     */
+    private function getRedirectsModel(): MRedirects
+    {
+        if ($this->redirectModel === null) {
+            $this->redirectModel = new MRedirects($this->db);
+        }
+
+        return $this->redirectModel;
+    }
+
+    /**
+     * @param MRedirects $model
+     */
+    public function setRedirectsModel(MRedirects $model): void
+    {
+        $this->redirectModel = $model;
     }
 }
