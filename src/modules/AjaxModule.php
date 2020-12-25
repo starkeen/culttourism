@@ -422,7 +422,7 @@ class AjaxModule extends Module implements ModuleInterface
             $add_item['pt_longitude'] = trim($_POST['nlon']);
         }
 
-        return $pts->insert($add_item);
+        return (int) $pts->insert($add_item);
     }
 
     /**
