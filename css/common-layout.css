@@ -175,8 +175,6 @@ ul.menu_common li {
     height: 100%;
     text-decoration: none;
     text-shadow: #ffffff 0 1px 6px;
-    -webkit-text-shadow: #ffffff 0 1px 6px;
-    -moz-text-shadow: #ffffff 0 1px 6px;
 }
 
 #mainmenu form {
@@ -233,9 +231,9 @@ ul.menu_common li {
     color: #0e506e;
     background: rgba(255, 255, 255, 0.5);
 
-    -moz-box-shadow: 0px 0px 20px #ffffff;
-    -webkit-box-shadow: 0px 0px 20px #ffffff;
-    box-shadow: 0px 0px 20px #ffffff;
+    -moz-box-shadow: 0 0 20px #ffffff;
+    -webkit-box-shadow: 0 0 20px #ffffff;
+    box-shadow: 0 0 20px #ffffff;
 
     -moz-border-radius: 15px;
     -webkit-border-radius: 15px;
@@ -259,7 +257,6 @@ h1, .h1 {
     font-weight: bold;
     vertical-align: middle;
     padding: 0 0 4px 8px;
-    overflow: hidden;
 }
 
 h2, .h2 {
@@ -299,14 +296,12 @@ h3 a {
 }
 
 ul {
-    list-style: disc;
-    list-style-position: inside;
+    list-style: disc inside;
     margin: 0 3em 18px;
 }
 
 ol {
-    list-style: decimal;
-    list-style-position: inside;
+    list-style: decimal inside;
     margin: 0 3em 18px;
 }
 
@@ -320,7 +315,6 @@ ol {
     height: 48px;
     position: fixed;
     left: 25px;
-    top: 50%;
     top: -100px;
     cursor: pointer;
 }
