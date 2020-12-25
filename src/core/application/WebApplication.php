@@ -61,13 +61,19 @@ class WebApplication extends Application
      */
     private $globalConfig;
 
+    /**
+     * @var SessionStorage
+     */
+    private $session;
+
     public function __construct()
     {
         parent::__construct();
 
+        $this->session = new SessionStorage();
         $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
         $this->response = new SiteResponse(new Headers(), new Content(new Head()));
-        $this->user = new WebUser(new Auth($this->db), new SessionStorage());
+        $this->user = new WebUser(new Auth($this->db), $this->session);
         $this->globalConfig = new GlobalConfig($this->db);
         $modules =  [
             new RedirectsModule($this->db),
@@ -89,7 +95,7 @@ class WebApplication extends Application
 
     public function init(): void
     {
-        session_start();
+        $this->session->start();
         parent::init();
     }
 

@@ -7,6 +7,14 @@ namespace app\core;
 class SessionStorage
 {
     /**
+     * Инициализация сессий
+     */
+    public function start(): void
+    {
+        session_start();
+    }
+
+    /**
      * @param string $name
      * @return string|int|bool|null
      */
