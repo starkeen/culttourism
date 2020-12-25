@@ -94,10 +94,15 @@ class BlogModule extends Module implements ModuleInterface
                 (int) $request->getLevel2()
             );
         } elseif ($request->getLevel1() !== null) { //календарь
+            $year = (int) $request->getLevel1();
+            $month = $request->getLevel2() !== null ? (int) $request->getLevel2() : null;
+            if ($year === 0 || $month === 0) {
+                throw new NotFoundException();
+            }
             $this->processCalendar(
                 $response,
-                (int) $request->getLevel1(),
-                $request->getLevel2() !== null ? (int) $request->getLevel2() : null
+                $year,
+                $month
             );
         } else {
             throw new NotFoundException();
