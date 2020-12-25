@@ -11,6 +11,7 @@ use app\core\SiteResponse;
 use app\exceptions\NotFoundException;
 use app\constant\OgType;
 use app\exceptions\AccessDeniedException;
+use app\exceptions\RedirectException;
 use Curl;
 use MPageCities;
 use MPhotos;
@@ -303,6 +304,7 @@ class CityModule extends Module implements ModuleInterface
      * @param SiteResponse $response
      * @throws AccessDeniedException
      * @throws NotFoundException
+     * @throws RedirectException
      */
     private function detailCity(SiteResponse $response): void
     {
@@ -347,7 +349,7 @@ class CityModule extends Module implements ModuleInterface
             );
             $city = $pc->getItemByPk($city_id);
 
-            $response->getHeaders()->sendRedirect($city['url'], true);
+            throw new RedirectException($city['url']);
         }
 
         $citypage = $pc->getItemByPk($city_id);
@@ -405,6 +407,7 @@ class CityModule extends Module implements ModuleInterface
     /**
      ************************************** ДОБАВЛЕНИЕ *****************
      * @param SiteResponse $response
+     * @throws RedirectException
      */
     private function addCity(SiteResponse $response): void
     {
@@ -430,7 +433,7 @@ class CityModule extends Module implements ModuleInterface
                 ]
             );
             if ($cid > 0) {
-                $response->getHeaders()->sendRedirect('/city/detail/?city_id=' . $cid, true);
+                throw new RedirectException('/city/detail/?city_id=' . $cid);
             }
         } elseif (!empty($_GET['cityname'])) {
             $newcity = trim($_GET['cityname']);

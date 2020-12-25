@@ -15,6 +15,7 @@ use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 use app\sys\TemplateEngine;
 use app\utils\Urls;
+use GuzzleHttp\Exception\RequestException;
 use MListsItems;
 use MPageCities;
 use MPagePoints;
@@ -162,6 +163,7 @@ class DefaultModule implements ModuleInterface
      * @param SiteResponse $response
      * @return string
      * @throws NotFoundException
+     * @throws RedirectException
      */
     private function getPageObjectBySlug(string $slugLine, SiteResponse $response): string
     {
@@ -176,7 +178,7 @@ class DefaultModule implements ModuleInterface
         $object = $objects[0];
         $response->getContent()->getHead()->setCanonicalUrl($object['url_canonical']);
         if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] !== $object['url_canonical']) {
-            $response->getHeaders()->sendRedirect($object['url_canonical'], true);
+            throw new RedirectException($object['url_canonical']);
         }
 
         $city = $this->getModelPageCities()->getItemByPk($object['pt_citypage_id']);
@@ -293,6 +295,7 @@ class DefaultModule implements ModuleInterface
      * @param SiteResponse $response
      * @return string
      * @throws NotFoundException
+     * @throws RedirectException
      */
     private function getPageCity(string $url, SiteResponse $response): string
     {
@@ -306,7 +309,8 @@ class DefaultModule implements ModuleInterface
         $urlFiltered = '/' . implode('/', array_filter($urlFiltered));
         $lastPart = array_pop($urlParts);
         if ($lastPart === 'index.html') {
-            $response->getHeaders()->sendRedirect(str_replace('index.html', '', $url), true);
+            $location = str_replace('index.html', '', $url);
+            throw new RedirectException($location);
         }
 
         $row = $this->getModelPageCities()->getCityByUrl($urlFiltered);
@@ -318,7 +322,7 @@ class DefaultModule implements ModuleInterface
             //--------------------  c a n o n i c a l  ------------------------
             $response->getContent()->getHead()->setCanonicalUrl($row['url_canonical']);
             if ($row['url_canonical'] !== ($url . '/')) {
-                $response->getHeaders()->sendRedirect($row['url_canonical']);
+                throw new RedirectException($row['url_canonical']);
             }
 
             $points_data = $this->getModelPagePoints()->getPointsByCity($row['pc_id'], $this->user->isEditor());

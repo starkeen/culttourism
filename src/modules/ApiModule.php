@@ -9,12 +9,14 @@ use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
 use app\exceptions\NotFoundException;
+use app\exceptions\RedirectException;
 
 class ApiModule extends Module implements ModuleInterface
 {
     /**
      * @inheritDoc
      * @throws NotFoundException
+     * @throws RedirectException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
@@ -41,7 +43,7 @@ class ApiModule extends Module implements ModuleInterface
         } elseif ($page_id == '5' && isset($_GET['id'])) {//место xml
             $this->getApi5((int) $_GET['id']);
         } elseif ($page_id == '') {
-            $response->getHeaders()->sendRedirect('/api/0/', true);
+            throw new RedirectException('/api/0/');
         } //==========================  E X I T  ================================
         else {
             throw new NotFoundException();
