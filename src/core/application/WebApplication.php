@@ -21,7 +21,6 @@ use app\modules\AjaxModule;
 use app\modules\ApiModule;
 use app\modules\BlogModule;
 use app\modules\CityModule;
-use app\modules\CoreModule;
 use app\modules\DefaultModule;
 use app\modules\FeedbackModule;
 use app\modules\ListModule;
