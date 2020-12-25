@@ -266,12 +266,15 @@ class DefaultModule implements ModuleInterface
 
         $response->getContent()->setCustomJsModule('point');
 
-        $this->templateEngine->assign('object', $object);
-        $this->templateEngine->assign('city', $city);
-        $this->templateEngine->assign('page_image', $objImage);
-        $this->templateEngine->assign('lists', $li->getListsForPointId($object['pt_id']));
-
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/pagepoint.tpl');
+        return $this->templateEngine->getContent(
+            '_pages/pagepoint.tpl',
+            [
+                'object' => $object,
+                'city' => $city,
+                'page_image' => $objImage,
+                'lists' => $li->getListsForPointId($object['pt_id']),
+            ]
+        );
     }
 
     /**
@@ -355,24 +358,24 @@ class DefaultModule implements ModuleInterface
                 $cityImage = null;
             }
 
-            $this->templateEngine->assign('city', $row);
-            $this->templateEngine->assign('points', $points_data['points']);
-            $this->templateEngine->assign('points_sight', $points_data['points_sight']);
-            $this->templateEngine->assign('points_servo', $points_data['points_service']);
-            $this->templateEngine->assign('page_url', _URL_ROOT);
-            $this->templateEngine->assign('page_image', $cityImage);
-            $this->templateEngine->assign('types_select', $points_data['types']);
-            $this->templateEngine->assign('ptypes', []);
             $response->getContent()->setCustomJsModule('city');
-
-            if ($this->user->isEditor()) {
-                return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/pagecity.edit.tpl');
-            } else {
-                return $this->templateEngine->fetch(_DIR_TEMPLATES . '/_pages/pagecity.show.tpl');
-            }
-        } else {
-            throw new NotFoundException();
+            $template = $this->user->isEditor() ? '_pages/pagecity.edit.tpl' : '_pages/pagecity.show.tpl';
+            return $this->templateEngine->getContent(
+                $template,
+                [
+                    'city' => $row,
+                    'points' => $points_data['points'],
+                    'points_sight' => $points_data['points_sight'],
+                    'points_servo' => $points_data['points_service'],
+                    'page_url' => _URL_ROOT,
+                    'page_image' => $cityImage,
+                    'types_select' => $points_data['types'],
+                    'ptypes' => [],
+                ]
+            );
         }
+
+        throw new NotFoundException();
     }
 
     /**
