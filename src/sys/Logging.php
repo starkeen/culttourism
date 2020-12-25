@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace app\sys;
 
 use app\db\FactoryDB;
-use Core;
 use MLogActions;
-use MLogErrors;
 
 class Logging
 {

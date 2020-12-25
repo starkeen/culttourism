@@ -82,8 +82,7 @@ class WebApplication extends Application
             new SignModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new SysModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new ApiModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
-            new CoreModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
-            new DefaultModule($this->db),
+            new DefaultModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
         ];
         $this->moduleFetcher = new ModuleFetcher($modules);
     }
