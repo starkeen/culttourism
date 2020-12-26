@@ -17,6 +17,7 @@ use app\exceptions\AccessDeniedException;
 use app\exceptions\BaseApplicationException;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
+use app\modules\AboutModule;
 use app\modules\AjaxModule;
 use app\modules\ApiModule;
 use app\modules\BlogModule;
@@ -84,6 +85,7 @@ class WebApplication extends Application
             new SearchModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new BlogModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new FeedbackModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
+            new AboutModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new SignModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
             new SysModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
             new ApiModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),

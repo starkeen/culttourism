@@ -58,7 +58,6 @@ class CityModule extends Module implements ModuleInterface
         return $request->getModuleKey() === $this->getModuleKey();
     }
 
-
     /**
      **************************************  БЛОК  ПОГОДЫ  *****************
      * @param $lat
