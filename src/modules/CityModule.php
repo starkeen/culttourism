@@ -96,25 +96,26 @@ class CityModule extends Module implements ModuleInterface
             . (float) $lat . '&lon=' . (float) $lon
             . '&APPID=' . $this->globalConfig->getOpenWeatherAPIKey();
         $result = $curl->get($url);
+        if ($result === null) {
+            $result = json_encode(['cod' => 500]);
+        }
         $response = json_decode($result);
 
-        if (is_object($response) && $response->cod == 200) {
+        if (is_object($response) && (int) $response->cod === 200) {
             $weather_data['temperature'] = round($response->main->temp - 273.15);
             if ($weather_data['temperature'] > 0) {
                 $weather_data['temperature'] = '+' . $weather_data['temperature'];
             }
-            if (isset($response->main->temp_min) && isset($response->main->temp_max)) {
-                if (round($response->main->temp_min) !== round($response->main->temp_max)) {
-                    $weather_data['temperature_min'] = round($response->main->temp_min - 273.15);
-                    $weather_data['temperature_max'] = round($response->main->temp_max - 273.15);
-                    if ($weather_data['temperature_min'] > 0) {
-                        $weather_data['temperature_min'] = '+' . $weather_data['temperature_min'];
-                    }
-                    if ($weather_data['temperature_max'] > 0) {
-                        $weather_data['temperature_max'] = '+' . $weather_data['temperature_max'];
-                    }
-                    $weather_data['temp_range'] = $weather_data['temperature_min'] . '&hellip;' . $weather_data['temperature_max'];
+            if (isset($response->main->temp_min, $response->main->temp_max) && round($response->main->temp_min) !== round($response->main->temp_max)) {
+                $weather_data['temperature_min'] = round($response->main->temp_min - 273.15);
+                $weather_data['temperature_max'] = round($response->main->temp_max - 273.15);
+                if ($weather_data['temperature_min'] > 0) {
+                    $weather_data['temperature_min'] = '+' . $weather_data['temperature_min'];
                 }
+                if ($weather_data['temperature_max'] > 0) {
+                    $weather_data['temperature_max'] = '+' . $weather_data['temperature_max'];
+                }
+                $weather_data['temp_range'] = $weather_data['temperature_min'] . '&hellip;' . $weather_data['temperature_max'];
             }
             $weather_data['pressure'] = round($response->main->pressure / 10);
             $weather_data['humidity'] = !empty($response->main->humidity) ? round($response->main->humidity) : null;
@@ -173,7 +174,7 @@ class CityModule extends Module implements ModuleInterface
     {
         $wc = new MWeatherCodes($this->db);
         $row = $wc->getItemByPk($code);
-        if ($row['wc_id'] != 0) {
+        if ((int) $row['wc_id'] !== 0) {
             return ['main' => $row['wc_main'], 'description' => $row['wc_description']];
         } else {
             return false;

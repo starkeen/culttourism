@@ -34,7 +34,7 @@ class Curl
      *
      * @return string
      */
-    public function get($url): ?string
+    public function get(string $url): ?string
     {
         $text = $this->cc->get($url);
         if ($text === null) {
