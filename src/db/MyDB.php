@@ -58,11 +58,27 @@ class MyDB
      */
     private $_stm;
 
+    /**
+     * @var array
+     */
     private $_stm_params = [];
-    private $_last_inserted_id;
-    private $_errors = [];
-    private $_stat_worktime_last = 0;
-    private $_stat_worktime_all = 0;
+
+    private $lastInsertId;
+
+    /**
+     * @var array
+     */
+    private $errors = [];
+
+    /**
+     * @var float
+     */
+    private $statWorktimeLast = 0;
+
+    /**
+     * @var float
+     */
+    private $statWorktimeAll = 0;
 
     /**
      * @var float
@@ -132,9 +148,8 @@ class MyDB
     public function getEscapedString(string $text): string
     {
         $out = $this->getPDO()->quote($text);
-        $out = trim($out, "'");
 
-        return $out;
+        return trim($out, '\'');
     }
 
     /**
@@ -188,9 +203,9 @@ class MyDB
             $this->prepare();
             $this->_stm->execute($this->_stm_params);
 
-            $this->_last_inserted_id = $this->getPDO()->lastInsertId();
-            $this->_stat_worktime_last = microtime(true) - $timer_start;
-            $this->_stat_worktime_all += $this->_stat_worktime_last;
+            $this->lastInsertId = $this->getPDO()->lastInsertId();
+            $this->statWorktimeLast = microtime(true) - $timer_start;
+            $this->statWorktimeAll += $this->statWorktimeLast;
             $this->time = microtime(true) - $this->startTimestamp;
 
             return $this->_stm;
@@ -223,9 +238,9 @@ class MyDB
 
             $this->_stm = $this->getPDO()->query($this->_sql);
 
-            $this->_last_inserted_id = $this->getPDO()->lastInsertId();
-            $this->_stat_worktime_last = microtime(true) - $timer_start;
-            $this->_stat_worktime_all += $this->_stat_worktime_last;
+            $this->lastInsertId = $this->getPDO()->lastInsertId();
+            $this->statWorktimeLast = microtime(true) - $timer_start;
+            $this->statWorktimeAll += $this->statWorktimeLast;
             $this->time = microtime(true) - $this->startTimestamp;
 
             return $this->_stm;
@@ -250,7 +265,7 @@ class MyDB
             }
         } catch (PDOException $e) {
             $this->time = microtime(true) - $this->startTimestamp;
-            $this->_errors[] = $e->getMessage();
+            $this->errors[] = $e->getMessage();
         }
 
         return $out;
@@ -289,7 +304,7 @@ class MyDB
      */
     public function getLastInserted()
     {
-        return $this->_last_inserted_id;
+        return $this->lastInsertId;
     }
 
     /**
@@ -386,7 +401,7 @@ class MyDB
     private function makeException(PDOException $exception): void
     {
         $this->time = microtime(true) - $this->startTimestamp;
-        $this->_errors[] = $exception->getMessage();
+        $this->errors[] = $exception->getMessage();
 
         $errorCode = null !== $exception->errorInfo
             ? $exception->errorInfo[1]
