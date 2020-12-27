@@ -13,6 +13,7 @@ use Sentry\Severity;
 use Sentry\State\Hub;
 use Sentry\State\HubInterface;
 use Sentry\State\Scope;
+use Throwable;
 
 class SentryLogger
 {
@@ -70,6 +71,15 @@ class SentryLogger
         );
 
         return $this->hub->captureMessage($message, $level);
+    }
+
+    /**
+     * @param Throwable $exception
+     * @return string|null
+     */
+    public function captureException(Throwable $exception): ?string
+    {
+        return $this->hub->captureException($exception);
     }
 
     /**

@@ -127,6 +127,7 @@ class WebApplication extends Application
         } catch (NotFoundException $exception) {
             $this->logger->notice('Ошибка 404', [
                 'srv' => $_SERVER ?? [],
+                'trace' => $exception->getTrace(),
             ]);
 
             $this->response->getHeaders()->add('HTTP/1.0 404 Not Found');
@@ -140,6 +141,9 @@ class WebApplication extends Application
         } catch (AccessDeniedException $exception) {
             $this->logger->notice('Ошибка 403', [
                 'srv' => $_SERVER ?? [],
+                'trace' => $exception->getTrace(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
             ]);
 
             $this->response->getHeaders()->add('HTTP/1.1 403 Forbidden');
@@ -159,7 +163,7 @@ class WebApplication extends Application
             $this->response->getContent()->setH1('Сервис временно недоступен');
             $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er503.tpl'));
 
-            $this->logger->error($exception->getMessage());
+            $this->logger->sendSentryException($exception);
         }
 
         $this->response->getHeaders()->add('X-Powered-By: culttourism');

@@ -7,6 +7,7 @@ namespace app\sys;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Sentry\Severity;
+use Throwable;
 
 /**
  * Универсальный сервис отправки логов в контексте приложения
@@ -97,7 +98,15 @@ class Logger implements LoggerInterface
         $this->sentry->setReleaseKey($key);
     }
 
-    private function sendSentry($level, $message, array $context = []):void
+    /**
+     * @param Throwable $exception
+     */
+    public function sendSentryException(Throwable $exception): void
+    {
+        $this->sentry->captureException($exception);
+    }
+
+    private function sendSentry($level, $message, array $context = []): void
     {
         if ($level === LogLevel::NOTICE) {
             $severity = new Severity(LogLevel::WARNING);
