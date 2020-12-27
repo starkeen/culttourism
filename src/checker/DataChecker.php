@@ -118,10 +118,10 @@ class DataChecker
                     'delta_lat' => round(abs($pt['pt_latitude'] - $posLatLon[1]), 5),
                     'delta_lon' => round(abs($pt['pt_longitude'] - $posLatLon[0]), 5),
                     'delta_meters' => Helper::distanceGPS(
-                        $pt['pt_latitude'],
-                        $pt['pt_longitude'],
-                        $posLatLon[1],
-                        $posLatLon[0]
+                        cut_trash_float($pt['pt_latitude']),
+                        cut_trash_float($pt['pt_longitude']),
+                        cut_trash_float($posLatLon[1]),
+                        cut_trash_float($posLatLon[0])
                     ),
                 ];
             }
