@@ -26,22 +26,25 @@ if (!isset($_GET['id']) && !isset($_GET['act'])) {
     $id = (int) $_GET['id'];
     if (isset($_POST) && !empty($_POST)) {
         if (isset($_POST['to_save'])) {
-            $br_title = cut_trash_string($_POST['br_title']);
-            $br_url = cut_trash_string($_POST['br_url']);
-            $br_text = cut_trash_html($_POST['br_text']);
+            $br_title = trim($_POST['br_title']);
+            $br_url = trim($_POST['br_url']);
+            $br_text = trim($_POST['br_text']);
             $br_active = (int) $_POST['br_active'];
             $db->sql = "UPDATE $dbb SET
                         br_title = '$br_title', br_text = '$br_text', br_url = '$br_url', br_active = '$br_active'
                         WHERE br_id = '$id'";
-            if ($db->exec())
+            if ($db->exec()) {
                 header('location:blog.php');
+            }
         }
-        elseif (isset($_POST['to_ret']))
+        elseif (isset($_POST['to_ret'])) {
             header('location:blog.php');
+        }
         if (isset($_POST['to_del'])) {
             $db->sql = "DELETE FROM $dbb WHERE br_id = '$id'";
-            if ($db->exec())
+            if ($db->exec()) {
                 header('location:blog.php');
+            }
         }
     }
     $db->sql = "SELECT bg.br_id, bg.br_title, us.us_name, br_active, br_text, br_url,
@@ -60,9 +63,9 @@ if (!isset($_GET['id']) && !isset($_GET['act'])) {
 elseif (!isset($_GET['id']) && isset($_GET['act'])) {
     if (isset($_POST) && !empty($_POST)) {
         if (isset($_POST['to_save'])) {
-            $br_title = cut_trash_string($_POST['br_title']);
-            $br_url = cut_trash_string($_POST['br_url']);
-            $br_text = cut_trash_html($_POST['br_text']);
+            $br_title = trim($_POST['br_title']);
+            $br_url = trim($_POST['br_url']);
+            $br_text = trim($_POST['br_text']);
             $br_active = (int) $_POST['br_active'];
             $br_us_id = (int) $_SESSION['user_id'];
             $db->sql = "INSERT INTO $dbb SET

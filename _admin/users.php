@@ -18,11 +18,11 @@ if (!isset($_GET['user_id']) && !isset($_GET['act'])) {
 } elseif (isset($_GET['user_id']) && !isset($_GET['act'])) {
     $us_id = (int) $_GET['user_id'];
     if (isset($_POST['to_save'])) {
-        $us_name = cut_trash_string($_POST['us_name']);
-        $us_login = cut_trash_word($_POST['us_login']);
-        $us_pass1 = cut_trash_word($_POST['us_pass1']);
-        $us_pass2 = cut_trash_word($_POST['us_pass2']);
-        $us_email = cut_trash_string($_POST['us_email']);
+        $us_name = trim($_POST['us_name']);
+        $us_login = trim($_POST['us_login']);
+        $us_pass1 = trim($_POST['us_pass1']);
+        $us_pass2 = trim($_POST['us_pass2']);
+        $us_email = trim($_POST['us_email']);
         $us_male = (int) $_POST['us_male'];
         $us_admin = (isset($_POST['us_admin'])) ? (int) $_POST['us_admin'] : null;
         $us_active = (isset($_POST['us_active'])) ? (int) $_POST['us_active'] : null;
@@ -59,13 +59,13 @@ if (!isset($_GET['user_id']) && !isset($_GET['act'])) {
 }
 elseif (!isset($_GET['user_id']) && isset($_GET['act']) && $_GET['act'] == 'add') {
     if (isset($_POST['to_save'])) {
-        $us_name = cut_trash_string($_POST['us_name']);
+        $us_name = trim($_POST['us_name']);
         $user['us_name'] = $us_name;
-        $us_login = cut_trash_word($_POST['us_login']);
+        $us_login = trim($_POST['us_login']);
         $user['us_login'] = $us_login;
-        $us_pass1 = cut_trash_word($_POST['us_pass1']);
-        $us_pass2 = cut_trash_word($_POST['us_pass2']);
-        $us_email = cut_trash_string($_POST['us_email']);
+        $us_pass1 = trim($_POST['us_pass1']);
+        $us_pass2 = trim($_POST['us_pass2']);
+        $us_email = trim($_POST['us_email']);
         $user['us_email'] = $us_email;
         if (isset($_POST['us_male'])) {
             $us_male = (int) $_POST['us_male'];

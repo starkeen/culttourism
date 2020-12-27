@@ -19,8 +19,8 @@ if (!isset($_GET['cid'])) {//===================================================
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/counters.list.tpl'));
 } elseif ($_GET['cid'] == 'add') {//=============================================== ДОБАВИТЬ
     if (isset($_POST['to_save'])) {
-        $cnt_title = cut_trash_string($_POST['cnt_title']);
-        $cnt_text = cut_trash_html($_POST['cnt_text']);
+        $cnt_title = trim($_POST['cnt_title']);
+        $cnt_text = trim($_POST['cnt_text']);
         $cnt_active = (int) $_POST['cnt_active'];
         $cnt_sort = (int) $_POST['cnt_sort'];
 
@@ -51,8 +51,8 @@ if (!isset($_GET['cid'])) {//===================================================
     $cid = (int) $_GET['cid'];
 
     if (isset($_POST['to_save'])) {
-        $cnt_title = cut_trash_string($_POST['cnt_title']);
-        $cnt_text = cut_trash_html($_POST['cnt_text']);
+        $cnt_title = trim($_POST['cnt_title']);
+        $cnt_text = trim($_POST['cnt_text']);
         $cnt_active = (int) $_POST['cnt_active'];
         $cnt_sort = (int) $_POST['cnt_sort'];
 

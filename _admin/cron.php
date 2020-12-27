@@ -26,15 +26,15 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'edit') {
     if (isset($_POST) && !empty($_POST)) {
         $ch_act = (int) $_POST['ch_act'];
         $ch_run = (int) $_POST['ch_run'];
-        $period = cut_trash_string($_POST['period']);
-        $next_time = cut_trash_string($_POST['next_time']);
-        $next_day = cut_trash_string($_POST['next_day']);
+        $period = trim($_POST['period']);
+        $next_time = trim($_POST['next_time']);
+        $next_day = trim($_POST['next_day']);
         $db->sql = "UPDATE $dbcron SET
                     cr_active='$ch_act', cr_period='$period', cr_isrun='$ch_run',
                     cr_datenext='$next_day $next_time'
                     WHERE cr_id = '$crid'";
         if ($db->exec()) {
-            header("Location: cron.php");
+            header('Location: cron.php');
             exit();
         }
     }

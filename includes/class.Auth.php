@@ -5,7 +5,9 @@ use app\db\MyDB;
 
 class Auth
 {
-    const SECRET_STRING = 'И вновь продолжается бой. И гёл. Если очень захотеть, можно в космос полететь, и на Марсе будут яблони цвести';
+    private const SECRET_STRING = 'И вновь продолжается бой. И гёл. Если очень захотеть, можно в космос полететь, и на Марсе будут яблони цвести';
+
+    private const COOKIE_KEY = 'apikey';
 
     /**
      * @var MyDB
@@ -69,12 +71,12 @@ class Auth
      */
     private function getKey(): string
     {
-        $apiKey = $this->cookieStorage->getCookieValue('apikey');
+        $apiKey = $this->cookieStorage->getCookieValue(self::COOKIE_KEY);
         if ($apiKey !== null) {
             $this->key = $apiKey;
         } else {
-            $this->key = md5(uniqid('ct', true) . self::SECRET_STRING);
-            $this->cookieStorage->setCookie('apikey', $this->key, $this->key_lifetime_hours);
+            $this->key = $this->getRandom();
+            $this->cookieStorage->setCookie(self::COOKIE_KEY, $this->key, $this->key_lifetime_hours);
         }
 
         return $this->key;
@@ -118,7 +120,7 @@ class Auth
                     ':uri' => $this->meta['uri'],
                 ]
             );
-            $this->cookieStorage->setCookie('apikey', $this->key, $this->key_lifetime_hours);
+            $this->cookieStorage->setCookie(self::COOKIE_KEY, $this->key, $this->key_lifetime_hours);
         } elseif (isset($row['au_session']) && $row['au_session'] !== $this->session) {
             $this->db->sql = "UPDATE $dba
                                 SET au_date_last_act = NOW(),
@@ -134,7 +136,7 @@ class Auth
                     ':session' => $this->session,
                 ]
             );
-            $this->cookieStorage->setCookie('apikey', $this->key, $this->key_lifetime_hours);
+            $this->cookieStorage->setCookie(self::COOKIE_KEY, $this->key, $this->key_lifetime_hours);
         } else {
             $this->db->sql = "INSERT INTO $dba
                                 SET au_date_last_act = NOW(), au_date_login = NOW(),
@@ -184,7 +186,7 @@ class Auth
         $this->db->execute(
             [
                 ':us_email' => $email,
-                ':us_passwrd' => md5($password),
+                ':us_passwrd' => $this->getPasswordHash($password),
             ]
         );
         $row = $this->db->fetch();
@@ -232,7 +234,7 @@ class Auth
         $this->db->execute(
             [
                 ':us_login' => $login,
-                ':us_passwrd' => md5($password),
+                ':us_passwrd' => $this->getPasswordHash($password),
             ]
         );
         $row = $this->db->fetch();
@@ -336,5 +338,22 @@ class Auth
                 ':key' => $this->key,
             ]
         );
+    }
+
+    /**
+     * @param string $password
+     * @return string
+     */
+    private function getPasswordHash(string $password): string
+    {
+        return md5($password);
+    }
+
+    /**
+     * @return string
+     */
+    private function getRandom(): string
+    {
+        return password_hash(uniqid('ct', true) . self::SECRET_STRING, PASSWORD_BCRYPT);
     }
 }

@@ -1,34 +1,10 @@
 <?php
 
-function getGUID(): string
-{
-    mt_srand((double) microtime() * 1000000);
-
-    return (md5(uniqid(mt_rand(), 1)));
-}
-
-function cut_trash_string($data): string
-{
-    return (trim((string) $data));
-}
-
-function cut_trash_word($data): string
-{
-    return cut_trash_string($data);
-}
-
 function cut_trash_text($data): string
 {
     $text = trim(strip_tags($data));
 
     return htmlspecialchars($text, ENT_QUOTES, "UTF-8");
-}
-
-function cut_trash_html($data): string
-{
-    $text = trim($data);
-
-    return ($text);
 }
 
 function cut_trash_float($data): float
@@ -39,7 +15,7 @@ function cut_trash_float($data): float
 }
 
 /**
- * @param        $word
+ * @param string $word
  * @param string $space
  * @return string
  */

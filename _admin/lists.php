@@ -37,7 +37,7 @@ if (isset($_GET['id'])) {
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/lists.item.tpl'));
 } elseif (isset($_GET['suggest'])) {
     $out = ['query' => '', 'suggestions' => []];
-    $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
+    $out['query'] = htmlentities(trim($_GET['query']), ENT_QUOTES, 'UTF-8');
     $lid = (int) $_GET['lid'];
 
     if (strlen($out['query']) > 4) {

@@ -85,7 +85,7 @@ class ApiModule extends Module implements ModuleInterface
         $dpru = $db->getTableName('region_url');
         $dprt = $db->getTableName('ref_pointtypes');
 
-        [$c_lat, $c_lon] = explode(',', cut_trash_string($_GET['center']));
+        [$c_lat, $c_lon] = explode(',', trim($_GET['center']));
         $c_lat = cut_trash_float($c_lat);
         $c_lon = cut_trash_float($c_lon);
 
@@ -159,7 +159,7 @@ class ApiModule extends Module implements ModuleInterface
      */
     private function getApi3($center)
     {
-        [$c_lat, $c_lon] = explode(',', cut_trash_string($center));
+        [$c_lat, $c_lon] = explode(',', trim($center));
         $c_lat = cut_trash_float($c_lat);
         $c_lon = cut_trash_float($c_lon);
 
@@ -184,7 +184,7 @@ class ApiModule extends Module implements ModuleInterface
         $dpru = $db->getTableName('region_url');
         $dprt = $db->getTableName('ref_pointtypes');
 
-        [$c_lat, $c_lon] = explode(',', cut_trash_string($_GET['center']));
+        [$c_lat, $c_lon] = explode(',', trim($_GET['center']));
         $c_lat = cut_trash_float($c_lat);
         $c_lon = cut_trash_float($c_lon);
         $points = [];

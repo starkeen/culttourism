@@ -81,7 +81,7 @@ class SearchModule extends Module implements ModuleInterface
             'query' => '',
             'suggestions' => [],
         ];
-        $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
+        $out['query'] = htmlentities(trim($_GET['query']), ENT_QUOTES, 'UTF-8');
         $pc = new MPageCities($this->db);
         $variants = $pc->getSuggestion($out['query']);
 
@@ -107,7 +107,7 @@ class SearchModule extends Module implements ModuleInterface
             'query' => '',
             'suggestions' => [],
         ];
-        $out['query'] = htmlentities(cut_trash_string($_GET['query']), ENT_QUOTES, "UTF-8");
+        $out['query'] = htmlentities(trim($_GET['query']), ENT_QUOTES, 'UTF-8');
         $pt = new MPagePoints($this->db);
         $variants = $pt->getSuggestion($out['query']);
 
@@ -127,10 +127,13 @@ class SearchModule extends Module implements ModuleInterface
         exit();
     }
 
-    private function getSearchYandex()
+    /**
+     * @return string
+     */
+    private function getSearchYandex(): string
     {
         if (isset($_GET['q'])) {
-            $query = htmlentities(cut_trash_string(strip_tags($_GET['q'])), ENT_QUOTES, "UTF-8");
+            $query = htmlentities(trim(strip_tags($_GET['q'])), ENT_QUOTES, "UTF-8");
 
             $this->log($query);
 

@@ -56,7 +56,7 @@ if ($act === 'process-redirect') {
     answer($out);
 } elseif ($act === 'process-edit') {
     $id = (int) $_POST['id'];
-    $value = cut_trash_string($_POST['value']);
+    $value = trim($_POST['value']);
     $newValue = null;
     $state = false;
     $record = $linksModel->getItemByPk($id);

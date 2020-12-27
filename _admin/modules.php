@@ -20,22 +20,22 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
         if (!isset($_POST['md_name'])) {
             $_POST['md_name'] = '[не указано]';
         }
-        $md_title = cut_trash_string($_POST['md_title']);
-        $md_name = cut_trash_string($_POST['md_name']);
+        $md_title = trim($_POST['md_title']);
+        $md_name = trim($_POST['md_name']);
         $md_pid = (int) $_POST['md_pid'];
-        $md_url = cut_trash_string($_POST['md_url']);
+        $md_url = trim($_POST['md_url']);
         $md_redirect_flg = (int) $_POST['md_redirect_flg'];
-        $md_redirect = cut_trash_string($_POST['md_redirect']);
-        $md_keywords = cut_trash_string($_POST['md_keywords']);
-        $md_description = cut_trash_string($_POST['md_description']);
-        $md_pagecontent = isset($_POST['md_pagecontent']) ? cut_trash_html($_POST['md_pagecontent']) : '';
+        $md_redirect = trim($_POST['md_redirect']);
+        $md_keywords = trim($_POST['md_keywords']);
+        $md_description = trim($_POST['md_description']);
+        $md_pagecontent = isset($_POST['md_pagecontent']) ? trim($_POST['md_pagecontent']) : '';
         $md_active = (int) $_POST['md_active'];
         $md_counters = (int) $_POST['md_counters'];
         $md_css = (int) $_POST['md_css'];
-        $md_robots = cut_trash_string($_POST['md_robots']);
+        $md_robots = trim($_POST['md_robots']);
         $md_sort = (int) $_POST['md_sort'];
 
-        if ($md_redirect_flg !== 0 && strlen($md_redirect) != 0) {
+        if ($md_redirect_flg !== 0 && strlen($md_redirect) !== 0) {
             $redir = "'$md_redirect'";
         } else {
             $redir = 'null';
@@ -43,7 +43,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
         $replace_list = ['/', '\\', ' ', '?', '&'];
         $md_url = str_replace($replace_list, '', $md_url);
 
-        if ($_POST['actiontype'] != 'add') {
+        if ($_POST['actiontype'] !== 'add') {
             $sql = "UPDATE $dbm
                     SET md_title='$md_title', md_pagecontent = '$md_pagecontent',
                     md_url = '$md_url', md_redirect = $redir,
