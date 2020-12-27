@@ -74,7 +74,7 @@ class Auth
     /**
      * @param string $service
      */
-    public function checkSession($service = 'web')
+    public function checkSession($service = 'web'): void
     {
         $dba = $this->db->getTableName('authorizations');
         $this->db->sql = "SELECT au_session, IF(au_date_expire < NOW(), 1, 0) AS expired FROM $dba
@@ -86,7 +86,7 @@ class Auth
             ]
         );
         $row = $this->db->fetch();
-        if ($row['expired'] == 1) {
+        if ($row !== null && (int) $row['expired'] === 1) {
             $this->db->sql = "DELETE FROM $dba
                               WHERE au_key = :key LIMIT 1";
             $this->db->execute(
