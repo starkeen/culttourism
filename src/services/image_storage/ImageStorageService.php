@@ -27,6 +27,11 @@ class ImageStorageService
      */
     private $photosModel;
 
+    /**
+     * @param string $tmpDir
+     * @param string $photosDirectory
+     * @param MPhotos $photosModel
+     */
     public function __construct(string $tmpDir, string $photosDirectory, MPhotos $photosModel)
     {
         $this->directoryTmp = $tmpDir;
@@ -57,9 +62,7 @@ class ImageStorageService
 
     public function uploadFromFile(string $tmpName): int
     {
-        $id = $this->uploadProcess($tmpName);
-
-        return $id;
+        return $this->uploadProcess($tmpName);
     }
 
     public function bindPhotoToObject(int $photoId, int $objectId): void
@@ -134,7 +137,7 @@ class ImageStorageService
      */
     private function downloadTmp(string $url): string
     {
-        $pathHash = md5($url);
+        $pathHash = password_hash($url, PASSWORD_BCRYPT);
         $resultPath = $this->getTemporaryFilePath($pathHash);
 
         $contextOptions = [

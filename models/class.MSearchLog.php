@@ -13,6 +13,9 @@ class MSearchLog extends Model
      */
     private $recordId;
 
+    /**
+     * @param MyDB $db
+     */
     public function __construct(MyDB $db)
     {
         $this->_table_name = $db->getTableName('search_log');
@@ -118,7 +121,7 @@ class MSearchLog extends Model
         $symbols = preg_replace('|s+|', '', $lower);
         $trimmed = trim($symbols);
 
-        return sha1($trimmed);
+        return password_hash($trimmed, PASSWORD_BCRYPT);
     }
 
     /**

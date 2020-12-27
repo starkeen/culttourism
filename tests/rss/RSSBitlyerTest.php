@@ -44,7 +44,7 @@ class RSSBitlyerTest extends TestCase
                             ->setMethods(['short'])
                             ->getMock();
         $this->bitly->method('short')->willReturnCallback(
-            function ($arg) {
+            static function ($arg) {
                 return sprintf('https://%s.tld/', md5($arg));
             }
         );

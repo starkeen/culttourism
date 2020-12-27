@@ -13,8 +13,11 @@ class MCandidatePoints extends Model
     protected $_table_order = 'cp_date';
     protected $_table_active = 'cp_active';
 
-    protected $types_markers;
+    protected $typesMarkers;
 
+    /**
+     * @param MyDB $db
+     */
     public function __construct(MyDB $db)
     {
         $this->_table_name = $db->getTableName('candidate_points');
@@ -50,7 +53,7 @@ class MCandidatePoints extends Model
         $this->addRelatedTable('data_check');
 
         $rpt = new MRefPointtypes($this->_db);
-        $this->types_markers = $rpt->getMarkers();
+        $this->typesMarkers = $rpt->getMarkers();
     }
 
     /**
@@ -68,7 +71,7 @@ class MCandidatePoints extends Model
         }
         $data['cp_title'] = strip_tags($data['cp_title']);
         if (isset($data['cp_type_id']) && (int) $data['cp_type_id'] === 0) {
-            foreach ($this->types_markers as $type => $markers) {
+            foreach ($this->typesMarkers as $type => $markers) {
                 foreach ((array) $markers as $marker) {
                     if (mb_stripos($data['cp_title'], $marker, 0, 'utf-8') !== false) {
                         $data['cp_type_id'] = $type;
@@ -122,6 +125,10 @@ class MCandidatePoints extends Model
         return $result;
     }
 
+    /**
+     * @param int $id
+     * @return string (60 chars)
+     */
     public function getHash(int $id): string
     {
         $row = $this->getItemByPk($id);
@@ -132,7 +139,7 @@ class MCandidatePoints extends Model
         ];
         $hashString = implode('~|~', $hashData);
 
-        return md5($hashString);
+        return password_hash($hashString, PASSWORD_BCRYPT);
     }
 
     public function getByFilter(array $filter): array
