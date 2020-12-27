@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eed671b2edf5e149bdd6f10d77cba79b",
+    "content-hash": "61621890a8f707c14d5aa2e3544e037e",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -74,16 +74,16 @@
         },
         {
             "name": "composer/package-versions-deprecated",
-            "version": "1.11.99",
+            "version": "1.11.99.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/package-versions-deprecated.git",
-                "reference": "c8c9aa8a14cc3d3bec86d0a8c3fa52ea79936855"
+                "reference": "7413f0b55a051e89485c5cb9f765fe24bb02a7b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/package-versions-deprecated/zipball/c8c9aa8a14cc3d3bec86d0a8c3fa52ea79936855",
-                "reference": "c8c9aa8a14cc3d3bec86d0a8c3fa52ea79936855",
+                "url": "https://api.github.com/repos/composer/package-versions-deprecated/zipball/7413f0b55a051e89485c5cb9f765fe24bb02a7b6",
+                "reference": "7413f0b55a051e89485c5cb9f765fe24bb02a7b6",
                 "shasum": ""
             },
             "require": {
@@ -127,7 +127,7 @@
             "description": "Composer plugin that provides efficient querying for installed package versions (no runtime IO)",
             "support": {
                 "issues": "https://github.com/composer/package-versions-deprecated/issues",
-                "source": "https://github.com/composer/package-versions-deprecated/tree/master"
+                "source": "https://github.com/composer/package-versions-deprecated/tree/1.11.99.1"
             },
             "funding": [
                 {
@@ -143,7 +143,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-08-25T05:50:16+00:00"
+            "time": "2020-11-11T10:22:58+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -727,16 +727,16 @@
         },
         {
             "name": "php-http/discovery",
-            "version": "1.12.0",
+            "version": "1.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/discovery.git",
-                "reference": "4366bf1bc39b663aa87459bd725501d2f1988b6c"
+                "reference": "788f72d64c43dc361e7fcc7464c3d947c64984a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/discovery/zipball/4366bf1bc39b663aa87459bd725501d2f1988b6c",
-                "reference": "4366bf1bc39b663aa87459bd725501d2f1988b6c",
+                "url": "https://api.github.com/repos/php-http/discovery/zipball/788f72d64c43dc361e7fcc7464c3d947c64984a7",
+                "reference": "788f72d64c43dc361e7fcc7464c3d947c64984a7",
                 "shasum": ""
             },
             "require": {
@@ -790,9 +790,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-http/discovery/issues",
-                "source": "https://github.com/php-http/discovery/tree/1.12.0"
+                "source": "https://github.com/php-http/discovery/tree/1.13.0"
             },
-            "time": "2020-09-22T13:31:04+00:00"
+            "time": "2020-11-27T14:49:42+00:00"
         },
         {
             "name": "php-http/httplug",
@@ -858,21 +858,21 @@
         },
         {
             "name": "php-http/message",
-            "version": "1.9.1",
+            "version": "1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/message.git",
-                "reference": "09f3f13af3a1a4273ecbf8e6b27248c002a3db29"
+                "reference": "39db36d5972e9e6d00ea852b650953f928d8f10d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/message/zipball/09f3f13af3a1a4273ecbf8e6b27248c002a3db29",
-                "reference": "09f3f13af3a1a4273ecbf8e6b27248c002a3db29",
+                "url": "https://api.github.com/repos/php-http/message/zipball/39db36d5972e9e6d00ea852b650953f928d8f10d",
+                "reference": "39db36d5972e9e6d00ea852b650953f928d8f10d",
                 "shasum": ""
             },
             "require": {
-                "clue/stream-filter": "^1.4.1",
-                "php": "^7.1",
+                "clue/stream-filter": "^1.5",
+                "php": "^7.1 || ^8.0",
                 "php-http/message-factory": "^1.0.2",
                 "psr/http-message": "^1.0"
             },
@@ -880,13 +880,10 @@
                 "php-http/message-factory-implementation": "1.0"
             },
             "require-dev": {
-                "akeneo/phpspec-skip-example-extension": "^1.0",
-                "coduo/phpspec-data-provider-extension": "^1.0",
-                "ergebnis/composer-normalize": "^2.1",
+                "ergebnis/composer-normalize": "^2.6",
                 "ext-zlib": "*",
                 "guzzlehttp/psr7": "^1.0",
-                "henrikbjorn/phpspec-code-coverage": "^1.0",
-                "phpspec/phpspec": "^2.4",
+                "phpspec/phpspec": "^5.1 || ^6.3",
                 "slim/slim": "^3.0",
                 "zendframework/zend-diactoros": "^1.0"
             },
@@ -899,7 +896,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.8-dev"
+                    "dev-master": "1.10-dev"
                 }
             },
             "autoload": {
@@ -929,9 +926,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-http/message/issues",
-                "source": "https://github.com/php-http/message/tree/1.9.1"
+                "source": "https://github.com/php-http/message/tree/1.10.0"
             },
-            "time": "2020-10-13T06:21:08+00:00"
+            "time": "2020-11-11T10:19:56+00:00"
         },
         {
             "name": "php-http/message-factory",
@@ -1554,23 +1551,23 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "2.5.0",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "bab5b73dbaf5f0ff62317e1611d952764d5514a9"
+                "reference": "62ef344463b2cceab745381214be353ee8ae5fc2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/bab5b73dbaf5f0ff62317e1611d952764d5514a9",
-                "reference": "bab5b73dbaf5f0ff62317e1611d952764d5514a9",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/62ef344463b2cceab745381214be353ee8ae5fc2",
+                "reference": "62ef344463b2cceab745381214be353ee8ae5fc2",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-mbstring": "*",
                 "guzzlehttp/promises": "^1.3",
-                "guzzlehttp/psr7": "^1.6",
+                "guzzlehttp/psr7": "^1.7",
                 "jean85/pretty-package-versions": "^1.2",
                 "php": "^7.1",
                 "php-http/async-client-implementation": "^1.0",
@@ -1591,13 +1588,13 @@
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.16",
                 "monolog/monolog": "^1.3|^2.0",
-                "php-http/mock-client": "^1.3",
+                "php-http/mock-client": "^1.4",
                 "phpstan/extension-installer": "^1.0",
                 "phpstan/phpstan": "^0.12",
                 "phpstan/phpstan-phpunit": "^0.12",
-                "phpunit/phpunit": "^7.5.18",
-                "symfony/phpunit-bridge": "^4.3|^5.0",
-                "vimeo/psalm": "^3.4"
+                "phpunit/phpunit": "^7.5.20",
+                "symfony/phpunit-bridge": "^5.2",
+                "vimeo/psalm": "^4.2"
             },
             "suggest": {
                 "monolog/monolog": "Allow sending log messages to Sentry by using the included Monolog handler."
@@ -1639,7 +1636,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/2.5.0"
+                "source": "https://github.com/getsentry/sentry-php/tree/2.5.1"
             },
             "funding": [
                 {
@@ -1651,7 +1648,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2020-09-14T07:02:40+00:00"
+            "time": "2020-12-11T11:51:58+00:00"
         },
         {
             "name": "smarty/smarty",
@@ -1785,16 +1782,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v5.1.8",
+            "version": "v5.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "97a6a1f9f5bb3a6094833107b58a72bc9a9165cc"
+                "reference": "a77cbec69ea90dea509beef29b79748c0df33a83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/97a6a1f9f5bb3a6094833107b58a72bc9a9165cc",
-                "reference": "97a6a1f9f5bb3a6094833107b58a72bc9a9165cc",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/a77cbec69ea90dea509beef29b79748c0df33a83",
+                "reference": "a77cbec69ea90dea509beef29b79748c0df33a83",
                 "shasum": ""
             },
             "require": {
@@ -1812,6 +1809,7 @@
                 "symfony/http-client-implementation": "1.1"
             },
             "require-dev": {
+                "amphp/amp": "^2.5",
                 "amphp/http-client": "^4.2.1",
                 "amphp/http-tunnel": "^1.0",
                 "amphp/socket": "^1.1",
@@ -1821,7 +1819,8 @@
                 "psr/http-client": "^1.0",
                 "symfony/dependency-injection": "^4.4|^5.0",
                 "symfony/http-kernel": "^4.4.13|^5.1.5",
-                "symfony/process": "^4.4|^5.0"
+                "symfony/process": "^4.4|^5.0",
+                "symfony/stopwatch": "^4.4|^5.0"
             },
             "type": "library",
             "autoload": {
@@ -1849,7 +1848,7 @@
             "description": "Symfony HttpClient component",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v5.1.8"
+                "source": "https://github.com/symfony/http-client/tree/v5.2.1"
             },
             "funding": [
                 {
@@ -1865,7 +1864,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-24T12:01:57+00:00"
+            "time": "2020-12-14T10:56:50+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -1948,21 +1947,22 @@
         },
         {
             "name": "symfony/options-resolver",
-            "version": "v5.1.8",
+            "version": "v5.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/options-resolver.git",
-                "reference": "c6a02905e4ffc7a1498e8ee019db2b477cd1cc02"
+                "reference": "87a2a4a766244e796dd9cb9d6f58c123358cd986"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/c6a02905e4ffc7a1498e8ee019db2b477cd1cc02",
-                "reference": "c6a02905e4ffc7a1498e8ee019db2b477cd1cc02",
+                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/87a2a4a766244e796dd9cb9d6f58c123358cd986",
+                "reference": "87a2a4a766244e796dd9cb9d6f58c123358cd986",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
                 "symfony/deprecation-contracts": "^2.1",
+                "symfony/polyfill-php73": "~1.0",
                 "symfony/polyfill-php80": "^1.15"
             },
             "type": "library",
@@ -1996,7 +1996,7 @@
                 "options"
             ],
             "support": {
-                "source": "https://github.com/symfony/options-resolver/tree/v5.1.8"
+                "source": "https://github.com/symfony/options-resolver/tree/v5.2.1"
             },
             "funding": [
                 {
@@ -2012,7 +2012,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-24T12:01:57+00:00"
+            "time": "2020-10-24T12:08:07+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -4759,7 +4759,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">7.2.0",
+        "php": ">7.3.0",
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-simplexml": "*",
