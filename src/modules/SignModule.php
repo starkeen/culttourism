@@ -146,6 +146,6 @@ class SignModule extends Module implements ModuleInterface
      */
     private function getRandomString(): string
     {
-        return password_hash(uniqid((string) random_int(0, PHP_INT_MAX), true), PASSWORD_BCRYPT);
+        return hash('sha256', uniqid((string) random_int(0, PHP_INT_MAX), true));
     }
 }

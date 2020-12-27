@@ -121,7 +121,7 @@ class MSearchLog extends Model
         $symbols = preg_replace('|s+|', '', $lower);
         $trimmed = trim($symbols);
 
-        return password_hash($trimmed, PASSWORD_BCRYPT);
+        return hash('sha256', $trimmed);
     }
 
     /**

@@ -139,7 +139,7 @@ class MCandidatePoints extends Model
         ];
         $hashString = implode('~|~', $hashData);
 
-        return password_hash($hashString, PASSWORD_BCRYPT);
+        return hash('sha256', $hashString);
     }
 
     public function getByFilter(array $filter): array

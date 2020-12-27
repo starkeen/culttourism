@@ -137,7 +137,7 @@ class ImageStorageService
      */
     private function downloadTmp(string $url): string
     {
-        $pathHash = password_hash($url, PASSWORD_BCRYPT);
+        $pathHash = hash('sha256', $url);
         $resultPath = $this->getTemporaryFilePath($pathHash);
 
         $contextOptions = [
