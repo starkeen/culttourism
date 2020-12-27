@@ -23,6 +23,7 @@ class CityModule extends Module implements ModuleInterface
      * @inheritDoc
      * @throws NotFoundException
      * @throws AccessDeniedException
+     * @throws RedirectException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
@@ -159,7 +160,7 @@ class CityModule extends Module implements ModuleInterface
             $out['state'] = true;
             $out['content'] = $this->templateEngine->fetch(_DIR_TEMPLATES . '/city/weather.block.tpl');
         }
-        header("Content-type: application/json");
+        header('Content-type: application/json');
         echo json_encode($out);
         exit();
     }
@@ -167,17 +168,17 @@ class CityModule extends Module implements ModuleInterface
     /**
      ************************************  ПОГОДА ПО КОДУ  *****************
      * @param $code
-     * @return array|false
+     * @return array|null
      */
-    private function getWeatherConditionsByCode($code)
+    private function getWeatherConditionsByCode($code): ?array
     {
         $wc = new MWeatherCodes($this->db);
         $row = $wc->getItemByPk($code);
-        if ((int) $row['wc_id'] !== 0) {
+        if ($row !== null && (int) $row['wc_id'] !== 0) {
             return ['main' => $row['wc_main'], 'description' => $row['wc_description']];
-        } else {
-            return false;
         }
+
+        return null;
     }
 
     /**
