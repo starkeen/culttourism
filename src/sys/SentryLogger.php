@@ -92,6 +92,7 @@ class SentryLogger
     {
         $result = [];
         foreach($context as $key => $value) {
+            $key = (string) $key;
             $resultKey = $key;
             if ($prefix !== null) {
                 $resultKey = $prefix . '_' . $resultKey;
