@@ -403,7 +403,7 @@ class MyDB
         $this->time = microtime(true) - $this->startTimestamp;
         $this->errors[] = $exception->getMessage();
 
-        $errorCode = null !== $exception->errorInfo
+        $errorCode = null !== $exception->errorInfo && isset($exception->errorInfo[1])
             ? $exception->errorInfo[1]
             : $exception->getCode();
 

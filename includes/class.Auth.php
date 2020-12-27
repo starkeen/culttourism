@@ -181,7 +181,6 @@ class Auth
         $this->db->sql = "SELECT us_id, us_email, us_passwrd, us_name
                             FROM $dbu
                             WHERE us_email = :us_email
-                                AND us_passwrd = :us_passwrd
                                 AND us_active = 1";
         $this->db->execute(
             [
@@ -229,7 +228,6 @@ class Auth
         $this->db->sql = "SELECT us_id, us_login, us_email, us_passwrd, us_name, us_admin
                             FROM $dbu
                             WHERE us_login = :us_login
-                                AND us_passwrd = :us_passwrd
                                 AND us_active = 1";
         $this->db->execute(
             [
