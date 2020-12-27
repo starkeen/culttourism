@@ -75,15 +75,16 @@ abstract class Module
         $response->getContent()->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($_SERVER['REQUEST_URI']));
         $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), _SITE_URL . 'img/logo/culttourism-head.jpg');
         $response->getContent()->getHead()->addMicroData('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
-        if ($moduleData['md_photo_id']) {
-            $ph = new MPhotos($this->db);
-            $photo = $ph->getItemByPk($moduleData['md_photo_id']);
-            $objImage = Urls::getAbsoluteURL($photo['ph_src']);
-            $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
-            $response->getContent()->getHead()->addMicroData('image', $objImage);
-        }
 
         if (!empty($moduleData)) {
+            if ((int) $moduleData['md_photo_id'] !== 0) {
+                $ph = new MPhotos($this->db);
+                $photo = $ph->getItemByPk($moduleData['md_photo_id']);
+                $objImage = Urls::getAbsoluteURL($photo['ph_src']);
+                $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
+                $response->getContent()->getHead()->addMicroData('image', $objImage);
+            }
+
             if ($moduleData['md_redirect'] !== null) {
                 throw new RedirectException($moduleData['md_redirect']);
             }
@@ -127,6 +128,7 @@ abstract class Module
      * Обработка запроса
      * @param SiteRequest $request
      * @param SiteResponse $response
+     * @throws RedirectException
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {
