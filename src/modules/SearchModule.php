@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\modules;
 
+use app\api\yandex_search\Result;
 use app\api\yandex_search\Factory;
 use app\core\GlobalConfig;
 use app\core\module\Module;
@@ -81,7 +82,7 @@ class SearchModule extends Module implements ModuleInterface
             'query' => '',
             'suggestions' => [],
         ];
-        $out['query'] = htmlentities(trim($_GET['query']), ENT_QUOTES, 'UTF-8');
+        $out['query'] = $this->getCleanedQuery($_GET['query']);
         $pc = new MPageCities($this->db);
         $variants = $pc->getSuggestion($out['query']);
 
@@ -93,9 +94,7 @@ class SearchModule extends Module implements ModuleInterface
             ];
         }
 
-        header('Content-type: application/json');
-        echo json_encode($out);
-        exit();
+        $this->echoJson($out);
     }
 
     /**
@@ -107,7 +106,7 @@ class SearchModule extends Module implements ModuleInterface
             'query' => '',
             'suggestions' => [],
         ];
-        $out['query'] = htmlentities(trim($_GET['query']), ENT_QUOTES, 'UTF-8');
+        $out['query'] = $this->getCleanedQuery($_GET['query']);
         $pt = new MPagePoints($this->db);
         $variants = $pt->getSuggestion($out['query']);
 
@@ -122,9 +121,7 @@ class SearchModule extends Module implements ModuleInterface
             ];
         }
 
-        header('Content-type: application/json');
-        echo json_encode($out);
-        exit();
+        $this->echoJson($out);
     }
 
     /**
@@ -132,13 +129,16 @@ class SearchModule extends Module implements ModuleInterface
      */
     private function getSearchYandex(): string
     {
+        $query = '';
+        $errorText = '';
+        $result = [];
+        $resultMeta = [];
+
         if (isset($_GET['q'])) {
-            $query = htmlentities(trim(strip_tags($_GET['q'])), ENT_QUOTES, "UTF-8");
+            $query = $this->getCleanedQuery($_GET['q']);
 
             $this->log($query);
 
-            $errorText = '';
-            $result = [];
             $resultMeta = [
                 'query' => $query,
                 'page' => array_key_exists('page', $_GET) ? (int) $_GET['page'] : 0,
@@ -157,18 +157,8 @@ class SearchModule extends Module implements ModuleInterface
             $searchResult = $yandexSearcher->searchPages($searchKeywords, $resultMeta['page']);
 
             if (!$searchResult->isError()) {
-                foreach ($searchResult->getItems() as $resultItem) {
-                    $titleItemElements = explode($this->globalConfig->getTitleDelimiter(), $resultItem->getTitle());
-                    if (count($titleItemElements) > 1) {
-                        array_pop($titleItemElements);
-                    }
+                $result = $this->makeResults($searchResult);
 
-                    $result[] = [
-                        'title' => str_replace(' , ', ', ', trim(implode(', ', $titleItemElements))),
-                        'descr' => $resultItem->getDescription(),
-                        'url' => $resultItem->getUrl(),
-                    ];
-                }
                 $resultMeta['pages_all'] = $searchResult->getPagesCount();
                 $resultMeta['total'] = $searchResult->getDocumentsCount();
                 $resultMeta['resolution'] = str_replace('нашёл', '', $searchResult->getHumanResolution());
@@ -187,18 +177,38 @@ class SearchModule extends Module implements ModuleInterface
                 ];
                 $this->logger->warning('Ошибка в поиске', $loggerContext);
             }
-
-            $this->templateEngine->assign('search', $query);
-            $this->templateEngine->assign('error', $errorText);
-            $this->templateEngine->assign('result', $result);
-            $this->templateEngine->assign('meta', $resultMeta);
-        } else {
-            $this->templateEngine->assign('search', '');
-            $this->templateEngine->assign('error', '');
-            $this->templateEngine->assign('result', '');
-            $this->templateEngine->assign('meta', []);
         }
+
+        $this->templateEngine->assign('search', $query);
+        $this->templateEngine->assign('error', $errorText);
+        $this->templateEngine->assign('result', $result);
+        $this->templateEngine->assign('meta', $resultMeta);
+
         return $this->templateEngine->fetch(_DIR_TEMPLATES . '/search/search.tpl');
+    }
+
+    /**
+     * @param Result $searchResult
+     * @return array
+     */
+    private function makeResults(Result $searchResult): array
+    {
+        $results = [];
+
+        foreach ($searchResult->getItems() as $resultItem) {
+            $titleItemElements = explode($this->globalConfig->getTitleDelimiter(), $resultItem->getTitle());
+            if (count($titleItemElements) > 1) {
+                array_pop($titleItemElements);
+            }
+
+            $results[] = [
+                'title' => str_replace(' , ', ', ', trim(implode(', ', $titleItemElements))),
+                'descr' => $resultItem->getDescription(),
+                'url' => $resultItem->getUrl(),
+            ];
+        }
+
+        return $results;
     }
 
     /**
@@ -214,5 +224,24 @@ class SearchModule extends Module implements ModuleInterface
                 'sc_sr_id' => null,
             ]
         );
+    }
+
+    /**
+     * @param string $raw
+     * @return string
+     */
+    private function getCleanedQuery(string $raw): string
+    {
+        return htmlentities(trim(strip_tags($raw)), ENT_QUOTES, 'UTF-8');
+    }
+
+    /**
+     * @param array $data
+     */
+    private function echoJson(array $data): void
+    {
+        header('Content-type: application/json');
+        echo json_encode($data);
+        exit();
     }
 }

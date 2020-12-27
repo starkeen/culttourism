@@ -338,15 +338,6 @@ class Auth
     }
 
     /**
-     * @param string $password
-     * @return string
-     */
-    private function getPasswordHash(string $password): string
-    {
-        return password_hash($password . self::SECRET_STRING, PASSWORD_BCRYPT);
-    }
-
-    /**
      * @return string
      */
     private function getRandom(): string
