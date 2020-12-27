@@ -8,13 +8,13 @@ $dbe = $db->getTableName('log_errors');
 
 if (isset($_POST['clear_btn'])) {
     $sql = "TRUNCATE TABLE $dbe";
-    $res = $db->exec($sql);
+    $db->exec($sql);
 }
 
 $db->sql = "SELECT * FROM $dbe ORDER BY le_date";
-$res = $db->exec();
-$records = array();
-while ($row = $db->fetch($res)) {
+$db->exec();
+$records = [];
+while ($row = $db->fetch()) {
     $records[$row['le_id']] = $row;
 }
 $smarty->assign('records', $records);

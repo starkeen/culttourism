@@ -53,22 +53,25 @@ class MyDB
      */
     private $pdo;
 
-    /** @var PDOStatement */
+    /**
+     * @var PDOStatement
+     */
     private $_stm;
 
     private $_stm_params = [];
-    private $_affected_rows = 0;
     private $_last_inserted_id;
     private $_errors = [];
-    private $_cfg_trim_quotes = true;
-    private $_stat_queries_cnt = 0;
     private $_stat_worktime_last = 0;
     private $_stat_worktime_all = 0;
 
-    /** @var float */
+    /**
+     * @var float
+     */
     private $startTimestamp;
 
-    /** @var float */
+    /**
+     * @var float
+     */
     private $time;
 
     /**
@@ -129,10 +132,7 @@ class MyDB
     public function getEscapedString(string $text): string
     {
         $out = $this->getPDO()->quote($text);
-
-        if ($this->_cfg_trim_quotes) {
-            $out = trim($out, "'");
-        }
+        $out = trim($out, "'");
 
         return $out;
     }
@@ -177,7 +177,7 @@ class MyDB
      * @throws DuplicateKeyException
      * @throws MyPDOException
      */
-    public function execute(array $params = [])
+    public function execute(array $params = []): ?PDOStatement
     {
         if (!empty($params)) {
             $this->_stm_params = $params;
@@ -187,11 +187,8 @@ class MyDB
             $timer_start = microtime(true);
             $this->prepare();
             $this->_stm->execute($this->_stm_params);
-            if (is_object($this->_stm)) {
-                $this->_affected_rows = $this->_stm->rowCount();
-            }
+
             $this->_last_inserted_id = $this->getPDO()->lastInsertId();
-            $this->_stat_queries_cnt++;
             $this->_stat_worktime_last = microtime(true) - $timer_start;
             $this->_stat_worktime_all += $this->_stat_worktime_last;
             $this->time = microtime(true) - $this->startTimestamp;
@@ -211,7 +208,7 @@ class MyDB
      *
      * @throws MyPDOException
      */
-    public function exec($data = null)
+    public function exec($data = null): PDOStatement
     {
         if ($data !== null) {
             if (is_string($data)) {
@@ -226,11 +223,7 @@ class MyDB
 
             $this->_stm = $this->getPDO()->query($this->_sql);
 
-            if (is_object($this->_stm)) {
-                $this->_affected_rows = $this->_stm->rowCount();
-            }
             $this->_last_inserted_id = $this->getPDO()->lastInsertId();
-            $this->_stat_queries_cnt++;
             $this->_stat_worktime_last = microtime(true) - $timer_start;
             $this->_stat_worktime_all += $this->_stat_worktime_last;
             $this->time = microtime(true) - $this->startTimestamp;
@@ -242,11 +235,9 @@ class MyDB
     }
 
     /**
-     * @param null $res
-     *
      * @return mixed|null
      */
-    public function fetch($res = null)
+    public function fetch()
     {
         $out = null;
 
@@ -266,11 +257,9 @@ class MyDB
     }
 
     /**
-     * @param null $res
-     *
      * @return mixed
      */
-    public function fetchCol($res = null)
+    public function fetchCol()
     {
         $this->time = microtime(true) - $this->startTimestamp;
 
@@ -278,12 +267,10 @@ class MyDB
     }
 
     /**
-     * @param null $res
-     *
      * @return array
      * @throws MyPDOException
      */
-    public function fetchAll($res = null): array
+    public function fetchAll(): array
     {
         $this->time = microtime(true) - $this->startTimestamp;
         $out = [];
@@ -303,38 +290,6 @@ class MyDB
     public function getLastInserted()
     {
         return $this->_last_inserted_id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAffectedRows(): int
-    {
-        return $this->_affected_rows;
-    }
-
-    /**
-     * @return bool
-     */
-    public function beginTransaction()
-    {
-        return $this->getPDO()->beginTransaction();
-    }
-
-    /**
-     * @return bool
-     */
-    public function commitTransaction()
-    {
-        return $this->getPDO()->commit();
-    }
-
-    /**
-     * @return bool
-     */
-    public function rollbackTransaction()
-    {
-        return $this->getPDO()->rollBack();
     }
 
     /**
@@ -377,14 +332,6 @@ class MyDB
         $out .= "<div id='sqlback'>\n" . nl2br($output) . "</div>\n";
         header('Content-Type: text/html; charset=utf-8');
         echo $out;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDebugInfo(): array
-    {
-        return ['queries' => $this->_stat_queries_cnt, 'worktime' => $this->_stat_worktime_all];
     }
 
     /**
