@@ -31,22 +31,28 @@ if (!isset($_GET['user_id']) && !isset($_GET['act'])) {
                     us_login = '$us_login',
                     us_email = '$us_email',
                     us_male = '$us_male'";
-        if ($us_pass1 == $us_pass2 && strlen($us_pass1) != 0)
+        if ($us_pass1 === $us_pass2 && strlen($us_pass1) != 0) {
             $db->sql .= ",  us_passwrd = MD5('$us_pass1')";
-        if ($us_admin !== null)
+        }
+        if ($us_admin !== null) {
             $db->sql .= ",  us_admin = '$us_admin'";
-        if ($us_active !== null)
+        }
+        if ($us_active !== null) {
             $db->sql .= ",  us_active = '$us_active'";
+        }
         $db->sql .= "\nWHERE us_id = '$us_id'";
-        if ($db->exec())
+        if ($db->exec()) {
             header('location:users.php');
+        }
     }
-    if (isset($_POST['to_ret']))
+    if (isset($_POST['to_ret'])) {
         header('location:users.php');
+    }
     if (isset($_POST['to_del'])) {
         $db->sql = "DELETE FROM $dbu WHERE us_id = '$us_id'";
-        if ($db->exec())
+        if ($db->exec()) {
             header('location:users.php');
+        }
     }
 
     $db->sql = "SELECT * FROM $dbu WHERE us_id='$us_id'";
@@ -56,8 +62,7 @@ if (!isset($_GET['user_id']) && !isset($_GET['act'])) {
     $smarty->assign('is_admin', true);
     $smarty->assign('is_edit', true);
     $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/users.item.tpl'));
-}
-elseif (!isset($_GET['user_id']) && isset($_GET['act']) && $_GET['act'] == 'add') {
+} elseif (!isset($_GET['user_id']) && isset($_GET['act']) && $_GET['act'] === 'add') {
     if (isset($_POST['to_save'])) {
         $us_name = trim($_POST['us_name']);
         $user['us_name'] = $us_name;
@@ -70,27 +75,29 @@ elseif (!isset($_GET['user_id']) && isset($_GET['act']) && $_GET['act'] == 'add'
         if (isset($_POST['us_male'])) {
             $us_male = (int) $_POST['us_male'];
             $user['us_male'] = $us_male;
-        } else
+        } else {
             $us_male = null;
+        }
         $us_admin = (int) $_POST['us_admin'];
-        if ($us_pass1 != $us_pass2)
+        if ($us_pass1 !== $us_pass2) {
             $error = 'Введенные пароли не совпадают!';
-        elseif (strlen($us_name) == 0)
+        } elseif (strlen($us_name) === 0) {
             $error = 'Вы не указали имя пользователя!';
-        elseif (strlen($us_login) == 0)
+        } elseif (strlen($us_login) === 0) {
             $error = 'Вы не указали логин!';
-        elseif (strlen($us_pass1) < 5)
+        } elseif (strlen($us_pass1) < 5) {
             $error = 'Минимальная длина пароля 5 символов!';
-        elseif ($us_male === null)
+        } elseif ($us_male === null) {
             $error = 'Вы не указали пол';
-        else {
+        } else {
             $db->sql = "INSERT INTO $dbu (us_name, us_login, us_passwrd, us_email, us_male, us_admin, us_active)
                         VALUES ('$us_name', '$us_login', MD5('$us_pass1'), '$us_email', '$us_male', '$us_admin', '1')";
-            if ($db->exec())
+            if ($db->exec()) {
                 header('location:users.php');
+            }
         }
     }
-    $smarty->assign('user', array('us_name' => '', 'us_login' => '', 'us_email' => '', 'us_admin' => ''));
+    $smarty->assign('user', ['us_name' => '', 'us_login' => '', 'us_email' => '', 'us_admin' => '']);
     $smarty->assign('is_edit', false);
     $smarty->assign('is_admin', true);
     $smarty->assign('is_error', $error);
@@ -100,4 +107,3 @@ elseif (!isset($_GET['user_id']) && isset($_GET['act']) && $_GET['act'] == 'add'
 
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();
-?>

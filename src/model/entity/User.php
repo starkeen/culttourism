@@ -6,12 +6,12 @@ namespace app\model\entity;
 
 /**
  * @property int $us_id
- * @property int $us_name
- * @property int $us_login
- * @property int $us_passwrd
+ * @property string $us_name
+ * @property string $us_login
+ * @property string $us_passwrd
  * @property int $us_male
  * @property int $us_admin
- * @property int $us_email
+ * @property string $us_email
  * @property int $us_active
  * @property int $us_level_id
  */

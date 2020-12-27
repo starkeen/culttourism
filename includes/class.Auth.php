@@ -346,7 +346,7 @@ class Auth
      */
     private function getPasswordHash(string $password): string
     {
-        return md5($password);
+        return password_hash($password . self::SECRET_STRING, PASSWORD_BCRYPT);
     }
 
     /**
