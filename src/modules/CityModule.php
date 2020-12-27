@@ -13,6 +13,7 @@ use app\constant\OgType;
 use app\exceptions\AccessDeniedException;
 use app\exceptions\RedirectException;
 use Curl;
+use Helper;
 use MPageCities;
 use MPhotos;
 use MWeatherCodes;
@@ -427,8 +428,8 @@ class CityModule extends Module implements ModuleInterface
                     'pc_latitude' => $_POST['latitude'],
                     'pc_longitude' => $_POST['longitude'],
                     'pc_rank' => 0,
-                    'pc_title_translit' => translit($_POST['city_name']),
-                    'pc_title_english' => translit($_POST['city_name']),
+                    'pc_title_translit' => Helper::getTransliteration($_POST['city_name']),
+                    'pc_title_english' => Helper::getTransliteration($_POST['city_name']),
                     'pc_inwheretext' => $_POST['city_name'],
                     'pc_add_user' => $this->webUser->getId(),
                 ]
@@ -505,7 +506,7 @@ class CityModule extends Module implements ModuleInterface
                 $inbase[] = $row;
             }
             foreach ($inbase as $id => $city) {
-                $translit = translit($city['name']);
+                $translit = Helper::getTransliteration($city['name']);
                 $inbase[$id]['translit'] = $translit;
                 $this->db->sql = "SELECT * FROM $dbll WHERE LOWER(ll_name) = LOWER(:name) LIMIT 1";
                 $state = $this->db->execute(
