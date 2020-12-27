@@ -202,13 +202,11 @@ class DeployBitbucket
     }
 
     /**
-     * TODO Вынести Sentry DSN в конфиг
-     *
      * @param string $version
      *
      * @return string|null
      */
-    private function sendToSentry($version = 'master'): ?string
+    private function sendToSentry(string $version = 'master'): ?string
     {
         $requestData = [
             RequestOptions::HEADERS => [
