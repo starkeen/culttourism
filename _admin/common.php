@@ -1,6 +1,7 @@
 <?php
 
 use app\core\application\AdminApplication;
+use app\core\CookieStorage;
 
 error_reporting(E_ALL);
 ini_set('display_errors', 'Off');
@@ -22,7 +23,7 @@ if (!_ER_REPORT && (!isset($_SERVER['HTTP_X_HTTPS']) || $_SERVER['HTTP_X_HTTPS']
 
 $db = $app->getDb();
 
-$ticket = new Auth($db);
+$ticket = new Auth($db, new CookieStorage());
 $ticket->checkSession('admin');
 
 $script = explode('/', $_SERVER['PHP_SELF']);

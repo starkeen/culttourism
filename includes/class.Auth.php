@@ -1,5 +1,6 @@
 <?php
 
+use app\core\CookieStorage;
 use app\db\MyDB;
 
 class Auth
@@ -10,6 +11,11 @@ class Auth
      * @var MyDB
      */
     private $db;
+
+    /**
+     * @var CookieStorage
+     */
+    private $cookieStorage;
 
     private $key_lifetime_hours = 2592000; //3600 * 24 * 30;
     public $key;
@@ -25,10 +31,13 @@ class Auth
 
     /**
      * @param MyDB $db
+     * @param CookieStorage $cookieStorage
      */
-    public function __construct(MyDB $db)
+    public function __construct(MyDB $db, CookieStorage $cookieStorage)
     {
         $this->db = $db;
+        $this->cookieStorage = $cookieStorage;
+
         $this->session = session_id();
         $this->getKey();
         $this->meta['uri'] = trim($_SERVER['REQUEST_URI']);
@@ -42,7 +51,7 @@ class Auth
     /**
      * @param string $service
      */
-    public function setService($service = 'web')
+    public function setService($service = 'web'): void
     {
         $dba = $this->db->getTableName('authorizations');
         $this->db->sql = "UPDATE $dba SET au_service = :service
@@ -60,14 +69,14 @@ class Auth
      */
     private function getKey(): string
     {
-        if (isset($_COOKIE['apikey'])) {
-            $this->key = trim($_COOKIE['apikey']);
+        $apiKey = $this->cookieStorage->getCookieValue('apikey');
+        if ($apiKey !== null) {
+            $this->key = $apiKey;
         } else {
             $this->key = md5(uniqid('ct', true) . self::SECRET_STRING);
-            if (!setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/')) {
-                $this->key = 'x_' . $this->key;
-            }
+            $this->cookieStorage->setCookie('apikey', $this->key, $this->key_lifetime_hours);
         }
+
         return $this->key;
     }
 
@@ -95,7 +104,7 @@ class Auth
                 ]
             );
         }
-        if (isset($row['au_session']) && $row['au_session'] == $this->session) {
+        if (isset($row['au_session']) && $row['au_session'] === $this->session) {
             $this->db->sql = "UPDATE $dba
                                 SET au_date_last_act = NOW(),
                                 au_date_expire = DATE_ADD(now(),INTERVAL :key_lifetime_hours SECOND),
@@ -109,8 +118,8 @@ class Auth
                     ':uri' => $this->meta['uri'],
                 ]
             );
-            setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/');
-        } elseif (isset($row['au_session']) && $row['au_session'] != $this->session) {
+            $this->cookieStorage->setCookie('apikey', $this->key, $this->key_lifetime_hours);
+        } elseif (isset($row['au_session']) && $row['au_session'] !== $this->session) {
             $this->db->sql = "UPDATE $dba
                                 SET au_date_last_act = NOW(),
                                 au_date_expire = DATE_ADD(now(),INTERVAL :key_lifetime_hours SECOND),
@@ -125,7 +134,7 @@ class Auth
                     ':session' => $this->session,
                 ]
             );
-            setcookie('apikey', $this->key, time() + $this->key_lifetime_hours, '/');
+            $this->cookieStorage->setCookie('apikey', $this->key, $this->key_lifetime_hours);
         } else {
             $this->db->sql = "INSERT INTO $dba
                                 SET au_date_last_act = NOW(), au_date_login = NOW(),
@@ -158,12 +167,12 @@ class Auth
     }
 
     /**
-     * @param $email
-     * @param $password
+     * @param string $email
+     * @param string $password
      *
-     * @return bool
+     * @return null|string
      */
-    public function checkMailPassword($email, $password)
+    public function checkMailPassword(string $email, string $password): ?string
     {
         $dbu = $this->db->getTableName('users');
         $dba = $this->db->getTableName('authorizations');
@@ -201,16 +210,17 @@ class Auth
             $_SESSION['user_auth'] = $this->key;
             return $this->key;
         }
-        return false;
+
+        return null;
     }
 
     /**
-     * @param $login
-     * @param $password
+     * @param string $login
+     * @param string $password
      *
-     * @return bool
+     * @return string|null
      */
-    public function checkPassword($login, $password)
+    public function checkPassword(string $login, string $password): ?string
     {
         $dbu = $this->db->getTableName('users');
         $dba = $this->db->getTableName('authorizations');
@@ -252,15 +262,15 @@ class Auth
             return $this->key;
         }
 
-        return false;
+        return null;
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
      * @return bool
      */
-    public function checkKey($key): bool
+    public function checkKey(string $key): bool
     {
         $db = $this->db;
         $dba = $db->getTableName('authorizations');
@@ -296,9 +306,9 @@ class Auth
     }
 
     /**
-     * @param $key
+     * @param string $key
      */
-    public function refreshKey($key)
+    public function refreshKey(string $key): void
     {
         $dba = $this->db->getTableName('authorizations');
         $this->db->sql = "UPDATE $dba SET

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\core\application;
 
+use app\core\CookieStorage;
 use app\core\GlobalConfig;
 use app\core\module\ModuleFetcher;
 use app\core\page\Content;
@@ -73,7 +74,7 @@ class WebApplication extends Application
         $this->session = new SessionStorage();
         $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
         $this->response = new SiteResponse(new Headers(), new Content(new Head()));
-        $this->user = new WebUser(new Auth($this->db), $this->session);
+        $this->user = new WebUser(new Auth($this->db, new CookieStorage()), $this->session);
         $this->globalConfig = new GlobalConfig($this->db);
         $modules =  [
             new RedirectsModule($this->db),
