@@ -12,6 +12,7 @@ use PDOException;
 use PDOStatement;
 
 /**
+ * Обёртка для работы с БД
  */
 class MyDB
 {
@@ -461,5 +462,13 @@ class MyDB
         }
 
         throw new MyPDOException('Ошибка PDO: ' . $errorCode, $errorCode, $exception);
+    }
+
+    /**
+     * @param PDO $pdo
+     */
+    public function setPDO(PDO $pdo): void
+    {
+        $this->pdo = $pdo;
     }
 }
