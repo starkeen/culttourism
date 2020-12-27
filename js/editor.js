@@ -536,7 +536,7 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
             };
             map.events.add('click', mapOnClick);
         } else if (f_point == 1) {//от имеющихся координат объекта
-            myPlacemark = new ymaps.Placemark([c_lon, c_lat], {
+            let myPlacemark = new ymaps.Placemark([c_lon, c_lat], {
                 hintContent: "Перетащите для изменения координат",
                 balloonContent: $("#obj_name").text()
             }, {
@@ -547,7 +547,7 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
                 draggable: true // Метку можно перетаскивать, зажав левую кнопку мыши.
             });
             myPlacemark.events.add("dragend", function () {
-                coords = myPlacemark.geometry.getCoordinates();
+                let coords = myPlacemark.geometry.getCoordinates();
                 $("#obj_lat").val(coords[1]);
                 $("#obj_lon").val(coords[0]);
                 $("#obj_zoom").val(map.getZoom());

@@ -46,7 +46,7 @@ $(document).ready(function () {
 
     //------------------------------------------ FEEDBACK --------------------------
     $("#captchahelp").click(function () {
-        stamp = new Date;
+        let stamp = new Date;
         $("#norobotpic").attr("src", "/feedback/getcapt/" + stamp.getTime());
         return false;
     });
