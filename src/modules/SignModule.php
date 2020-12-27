@@ -13,6 +13,8 @@ use app\exceptions\RedirectException;
 
 class SignModule extends Module implements ModuleInterface
 {
+    private const COOKIE_KEY = 'userkey';
+
     /**
      * @inheritDoc
      * @throws RedirectException
@@ -51,22 +53,33 @@ class SignModule extends Module implements ModuleInterface
         return $request->getModuleKey() === $this->getModuleKey();
     }
 
-    private function getIn()
+    /**
+     * Форма авторизации
+     *
+     * @return string
+     */
+    private function getIn(): string
     {
-        $uniq_key = md5(uniqid((string) mt_rand(), true));
-        if (!isset($_SESSION['userkey']) || !$_SESSION['userkey']) {
-            $_SESSION['userkey'] = $uniq_key;
+        $uniqueKey = $this->getRandomString();
+        if (!isset($_SESSION[self::COOKIE_KEY]) || !$_SESSION[self::COOKIE_KEY]) {
+            $_SESSION[self::COOKIE_KEY] = $uniqueKey;
         } else {
-            $uniq_key = $_SESSION['userkey'];
+            $uniqueKey = $_SESSION[self::COOKIE_KEY];
         }
-        $this->templateEngine->assign('key', $uniq_key);
-        $this->templateEngine->assign('url', _SITE_URL);
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/in.tpl');
+
+        return $this->templateEngine->getContent(_DIR_TEMPLATES . '/sign/in.tpl', [
+            'key' => $uniqueKey,
+            'url' => _SITE_URL,
+        ]);
     }
 
-    private function getUp()
+    /**
+     * Форма регистрации
+     * @return string
+     */
+    private function getUp(): string
     {
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/up.tpl');
+        return $this->templateEngine->getContent(_DIR_TEMPLATES . '/sign/up.tpl');
     }
 
     /**
@@ -108,18 +121,31 @@ class SignModule extends Module implements ModuleInterface
         } else {
             $returnUrl = '/sign/in/';
         }
+
         throw new RedirectException($returnUrl);
     }
 
-    private function getFormLogin()
+    /**
+     * @return string
+     */
+    private function getFormLogin(): string
     {
         if (isset($_SESSION['user_id'])) {
             $this->templateEngine->assign('username', $this->webUser->getName());
             return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/authuser.tpl');
-        } else {
-            $this->templateEngine->assign('baseurl', _SITE_URL);
-            $this->templateEngine->assign('authkey', 'ewtheqryb35yqb356y4ery');
-            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/authform.tpl');
         }
+
+        $this->templateEngine->assign('baseurl', _SITE_URL);
+        $this->templateEngine->assign('authkey', 'ewtheqryb35yqb356y4ery');
+
+        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/authform.tpl');
+    }
+
+    /**
+     * @return string
+     */
+    private function getRandomString(): string
+    {
+        return password_hash(uniqid((string) random_int(0, PHP_INT_MAX), true), PASSWORD_BCRYPT);
     }
 }
