@@ -186,11 +186,10 @@ class Auth
         $this->db->execute(
             [
                 ':us_email' => $email,
-                ':us_passwrd' => $this->getPasswordHash($password),
             ]
         );
         $row = $this->db->fetch();
-        if (!empty($row['us_id'])) {
+        if ($row !== null && !empty($row['us_id']) && password_verify($password, $row['us_passwrd'])) {
             $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
             $this->db->execute(
                 [
@@ -210,6 +209,7 @@ class Auth
             $_SESSION['user_id'] = $row['us_id'];
             $_SESSION['user_name'] = $row['us_name'];
             $_SESSION['user_auth'] = $this->key;
+
             return $this->key;
         }
 
@@ -234,11 +234,10 @@ class Auth
         $this->db->execute(
             [
                 ':us_login' => $login,
-                ':us_passwrd' => $this->getPasswordHash($password),
             ]
         );
         $row = $this->db->fetch();
-        if (!empty($row['us_id'])) {
+        if ($row !== null && !empty($row['us_id']) && password_verify($password, $row['us_passwrd'])) {
             $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
             $this->db->execute(
                 [
