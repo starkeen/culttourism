@@ -109,10 +109,10 @@ class Curl
     }
 
     /**
-     * @param string $option
+     * @param int $option
      * @param string|int $value
      */
-    public function config(string $option, $value): void
+    public function config(int $option, $value): void
     {
         curl_setopt($this->curl, $option, $value);
     }
