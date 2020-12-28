@@ -1,12 +1,14 @@
 <?php
 
+use app\db\MyDB;
+
 class MLists extends Model
 {
     protected $_table_pk = 'ls_id';
     protected $_table_order = 'ls_order';
     protected $_table_active = 'ls_active';
 
-    public function __construct($db)
+    public function __construct(MyDB $db)
     {
         $this->_table_name = $db->getTableName('lists');
         $this->_table_fields = [

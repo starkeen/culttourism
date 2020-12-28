@@ -1,5 +1,6 @@
 <?php
 
+use app\db\MyDB;
 use app\model\criteria\PointCriteria;
 
 class MPagePoints extends Model
@@ -8,7 +9,7 @@ class MPagePoints extends Model
     protected $_table_order = 'pt_id';
     protected $_table_active = 'pt_active';
 
-    public function __construct($db)
+    public function __construct(MyDB $db)
     {
         $this->_table_name = $db->getTableName('pagepoints');
         $this->_table_fields = [
@@ -174,24 +175,6 @@ class MPagePoints extends Model
     }
 
     /**
-     * @param int $limit
-     *
-     * @return array[]
-     */
-    public function getUnslug($limit = 10): array
-    {
-        $this->_db->sql = "SELECT pt_id, pt_name, pc_title, pc_title_english, tr_sight
-                            FROM $this->_table_name pt
-                                LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
-                                LEFT JOIN {$this->_tables_related['ref_pointtypes']} rt ON rt.tp_id = pt.pt_type_id
-                            WHERE pt.pt_slugline = ''
-                            ORDER BY pt.pt_rank DESC
-                            LIMIT $limit";
-        $this->_db->exec();
-        return $this->_db->fetchAll();
-    }
-
-    /**
      * @param $slugline
      *
      * @return array[]
@@ -268,36 +251,6 @@ class MPagePoints extends Model
         }
 
         $this->updateByPk($point['pt_id'], ['pt_slugline' => $name_url]);
-    }
-
-    /**
-     * @return array
-     */
-    public function checkSluglines(): array
-    {
-        $out = [
-            'state' => true,
-            'errors' => [],
-            'doubles' => [],
-        ];
-        $this->_db->sql = "SELECT pt_id, pt_name, pt.pt_slugline, count(*) AS cnt
-                            FROM $this->_table_name pt
-                            WHERE pt.pt_slugline != ''
-                            GROUP BY pt.pt_slugline
-                            HAVING cnt > 1
-                            ORDER BY pt.pt_rank DESC";
-        $this->_db->exec();
-        $out['doubles'] = $this->_db->fetchAll();
-        if (count($out['doubles']) > 0) {
-            $out['state'] = false;
-            foreach ($out['doubles'] as $i => $double) {
-                $out['doubles'][$i]['objects'] = $this->searchSlugline($double['pt_slugline']);
-                foreach ($out['doubles'][$i]['objects'] as $obj) {
-                    $out['errors'][] = "Дублирование Slugline '{$double['pt_slugline']}': {$obj['pt_id']} / {$obj['pt_name']}";
-                }
-            }
-        }
-        return $out;
     }
 
     /**

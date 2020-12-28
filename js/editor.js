@@ -578,7 +578,6 @@ function showMap(c_lat, c_lon, c_zoom, f_point) {
                 results: 1
             }).then(function (res) {
                 var variant = res.GeoObjectCollection.featureMember[0].GeoObject;
-                var addrLocal = variant.name;
                 var addrCity = variant.metaDataProperty.GeocoderMetaData.text;
                 if (addrCity) {
                     $("#obj_addr_searcher").text(addrCity);

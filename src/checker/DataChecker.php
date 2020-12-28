@@ -248,7 +248,7 @@ class DataChecker
         $curl->config(CURLOPT_SSL_VERIFYPEER, false);
 
         $points = $p->getPointsWithoutCoordinates($count);
-        foreach ($points as $i => $pt) {
+        foreach ($points as $pt) {
             $addr = preg_replace('/(\d{3})(\s{1})(\d{3})/', '$1$3', $pt['pt_adress']);
             $response = $api->check(DadataAPI::TYPE_ADDRESS, $addr);
             $result = $response[0];

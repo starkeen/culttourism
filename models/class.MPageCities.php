@@ -119,7 +119,6 @@ class MPageCities extends Model
                                 HAVING delta_sum < 5000
                                 ORDER BY delta_sum
                                 LIMIT 10";
-            //$db->showSQL();
 
             $this->_db->execute(
                 [

@@ -1,14 +1,16 @@
 <?php
 
+use app\db\MyDB;
+
 class MListsItems extends Model
 {
-
     protected $_table_pk = 'li_id';
     protected $_table_order = 'li_order';
     protected $_table_active = 'li_active';
-    private $_list_id = 0;
 
-    public function __construct($db, $lid = 0)
+    private $_list_id;
+
+    public function __construct(MyDB $db, $lid = 0)
     {
         $this->_table_name = $db->getTableName('lists_items');
         $this->_table_fields = [
@@ -174,5 +176,4 @@ class MListsItems extends Model
     {
         return $this->updateByPk($id, [$this->_table_active => 0]);
     }
-
 }

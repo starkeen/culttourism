@@ -8,6 +8,7 @@ abstract class Model
      * @var MyDB
      */
     protected $_db;
+
     protected $_table_name = ''; // таблица с данными
     protected $_table_fields = []; // поля, доступные для редактирования
     protected $_table_pk = 'id'; // первичный ключ
@@ -96,7 +97,6 @@ abstract class Model
                             ORDER BY {$out['order']}
                             LIMIT :offset, :limit";
         $this->_db->execute($out['binds']);
-        //$this->_db->showSQL();exit();
         $out['items'] = $this->_db->fetchAll();
         $this->_db->sql = "SELECT FOUND_ROWS() AS cnt";
         $this->_db->exec();
@@ -288,5 +288,4 @@ abstract class Model
     {
         return isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : 1;
     }
-
 }

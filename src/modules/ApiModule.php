@@ -212,7 +212,6 @@ class ApiModule extends Module implements ModuleInterface
                     AND pt.pt_latitude > 0 AND pt.pt_longitude > 0
                     ORDER BY dist_m
                     LIMIT 20";
-            //$db->showSQL();
             $db->exec();
             $remove_symbols = ["\n", "\t"];
 

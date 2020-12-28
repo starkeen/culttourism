@@ -1,6 +1,7 @@
 <?php
 
 use app\cache\Cache;
+use app\db\MyDB;
 
 class MRedirects extends Model
 {
@@ -8,7 +9,7 @@ class MRedirects extends Model
     protected $_table_order = 'rd_order';
     protected $_table_active = 'rd_active';
 
-    public function __construct($db)
+    public function __construct(MyDB $db)
     {
         $this->_table_name = $db->getTableName('redirects');
         $this->_table_fields = [
@@ -30,5 +31,4 @@ class MRedirects extends Model
         }
         return $redirects;
     }
-
 }

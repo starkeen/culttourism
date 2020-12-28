@@ -1,12 +1,14 @@
 <?php
 
+use app\db\MyDB;
+
 class MBlogEntries extends Model
 {
     protected $_table_pk = 'br_id';
     protected $_table_order = 'br_date';
     protected $_table_active = 'br_active';
 
-    public function __construct($db)
+    public function __construct(MyDB $db)
     {
         $this->_table_name = $db->getTableName('blogentries');
         $this->_table_fields = [
@@ -29,7 +31,7 @@ class MBlogEntries extends Model
      *
      * @return array
      */
-    public function getLastActive($qnt = 10)
+    public function getLastActive($qnt = 10): array
     {
         $this->_db->sql = "SELECT bg.br_id, bg.br_title, bg.br_text, bg.br_date,
                                 REPLACE(bg.br_text, '=\"/', CONCAT('=\"', :site_url1)) AS br_text_absolute,
@@ -58,7 +60,7 @@ class MBlogEntries extends Model
         return $this->_db->fetchAll();
     }
 
-    public function getLastWithTS($limit)
+    public function getLastWithTS($limit): array
     {
         $out = [
             'blogentries' => [],
@@ -98,7 +100,7 @@ class MBlogEntries extends Model
     /**
      * Заменяет все абсолютные ссылки относительными
      */
-    public function repairLinksAbsRel()
+    public function repairLinksAbsRel(): void
     {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET br_text = REPLACE(br_text, '=\"http://" . _URL_ROOT . "/', '=\"/')";
@@ -112,7 +114,7 @@ class MBlogEntries extends Model
     /**
      * По всем записям проставляет главную картинку (ссылку)
      */
-    public function detectPictures()
+    public function detectPictures(): void
     {
         $this->_db->sql = "SELECT bg.*
                             FROM $this->_table_name bg
@@ -140,5 +142,4 @@ class MBlogEntries extends Model
             );
         }
     }
-
 }

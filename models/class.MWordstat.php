@@ -1,14 +1,17 @@
 <?php
 
-class MWordstat extends Model {
+use app\db\MyDB;
 
+class MWordstat extends Model
+{
     protected $_table_pk = 'ws_id';
     protected $_table_order = 'ws_id';
     protected $_table_active = 'ws_id';
 
-    public function __construct($db) {
+    public function __construct(MyDB $db)
+    {
         $this->_table_name = $db->getTableName('wordstat');
-        $this->_table_fields = array(
+        $this->_table_fields = [
             'ws_id',
             'ws_city_id',
             'ws_city_title',
@@ -22,7 +25,7 @@ class MWordstat extends Model {
             'ws_position',
             'ws_position_date',
             'ws_position_last',
-        );
+        ];
         parent::__construct($db);
         $this->addRelatedTable('pagecity');
         $this->addRelatedTable('ref_city');
@@ -34,7 +37,8 @@ class MWordstat extends Model {
      * Статистика по популярности городов в поиске
      * @return array
      */
-    public function getStatPopularity() {
+    public function getStatPopularity(): array
+    {
         $this->_db->sql = "SELECT ws_id, ws_city_title AS city_name,
                                 rr.name AS region_name, co.name AS country_name,
                                 ws_city_id, ws_weight, ws.ws_weight_date,
@@ -53,7 +57,7 @@ class MWordstat extends Model {
                             ORDER BY (ws_weight_max+ws_weight_min)/2 DESC, ws_weight_min DESC, ws_weight_max DESC, ws_weight DESC
                             LIMIT 80";
         $this->_db->exec();
-        $stat = array();
+        $stat = [];
         while ($row = $this->_db->fetch()) {
             if ($row['weight_delta_max'] > $row['weight_delta_min'] && $row['weight_delta_min'] > 10) {
                 $row['weight_delta_sign'] = -1;
@@ -64,6 +68,7 @@ class MWordstat extends Model {
             }
             $stat[] = $row;
         }
+
         return $stat;
     }
 
@@ -71,7 +76,8 @@ class MWordstat extends Model {
      * Статистика по позициям имеющихся страниц
      * @return array
      */
-    public function getStatPositions() {
+    public function getStatPositions(): array
+    {
         $this->_db->sql = "SELECT ws_city_title AS city_name, rr.name AS region_name, co.name AS country_name,
                                 pc.pc_add_date, ws_city_id,
                                 ws_weight, ws.ws_weight_date,
@@ -99,7 +105,7 @@ class MWordstat extends Model {
                             ORDER BY ws_weight_min DESC, ws_position_real DESC
                             LIMIT 100";
         $this->_db->exec();
-        $seo = array();
+        $seo = [];
         while ($row = $this->_db->fetch()) {
             if ($row['weight_delta_max'] > $row['weight_delta_min'] && $row['weight_delta_min'] > 10) {
                 $row['weight_delta_sign'] = -1;
@@ -110,6 +116,7 @@ class MWordstat extends Model {
             }
             $seo[] = $row;
         }
+
         return $seo;
     }
 
@@ -118,7 +125,8 @@ class MWordstat extends Model {
      * @param integer $limit
      * @return array
      */
-    public function getPortionPosition($limit = 10) {
+    public function getPortionPosition($limit = 10): array
+    {
         $this->_db->sql = "SELECT ws_id, ws_city_title
                             FROM $this->_table_name ws
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc
@@ -126,9 +134,10 @@ class MWordstat extends Model {
                             WHERE pc.pc_id IS NOT NULL
                             ORDER BY ws_position_date, pc_rank DESC
                             LIMIT :limit";
-        $this->_db->execute(array(
+        $this->_db->execute([
             ':limit' => $limit,
-        ));
+        ]);
+
         return $this->_db->fetchAll();
     }
 
@@ -137,16 +146,18 @@ class MWordstat extends Model {
      * @param integer $limit
      * @return array
      */
-    public function getPortionWeight($limit = 5) {
+    public function getPortionWeight($limit = 5): array
+    {
         $this->_db->sql = "SELECT ws.*
                             FROM $this->_table_name ws
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_city_id = ws.ws_city_id
                             WHERE ws_rep_id = 0
                             ORDER BY ws_weight_date, pc_rank DESC
                             LIMIT :limit";
-        $this->_db->execute(array(
+        $this->_db->execute([
             ':limit' => $limit,
-        ));
+        ]);
+
         return $this->_db->fetchAll();
     }
 
@@ -156,16 +167,17 @@ class MWordstat extends Model {
      * @param string $city
      * @param integer $weight
      */
-    public function setWeight($rep_id, $city, $weight) {
+    public function setWeight($rep_id, $city, $weight)
+    {
         $this->_db->sql = "UPDATE $this->_table_name
                                 SET ws_weight = :weight, ws_weight_date = NOW(), ws_rep_id = 0
                             WHERE ws_rep_id = :rep_id
                                 AND ws_city_title = :city";
-        $this->_db->execute(array(
+        $this->_db->execute([
             ':rep_id' => $rep_id,
             ':city' => $city,
             ':weight' => $weight,
-        ));
+        ]);
     }
 
     /**
@@ -173,26 +185,29 @@ class MWordstat extends Model {
      * @param array $ids
      * @param integer $report_id
      */
-    public function setProcessingReport($ids, $report_id) {
+    public function setProcessingReport($ids, $report_id)
+    {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET ws_rep_id = :report_id
                             WHERE FIND_IN_SET(CAST(ws_id AS char), :ids)";
-        $this->_db->execute(array(
+        $this->_db->execute([
             ':report_id' => $report_id,
             ':ids' => implode(',', $ids),
-        ));
+        ]);
     }
 
     /**
      * Получить отчёты в работе
      * @return array
      */
-    public function getProcessingReports() {
+    public function getProcessingReports()
+    {
         $this->_db->sql = "SELECT ws_rep_id
                             FROM $this->_table_name
                             WHERE ws_rep_id != 0
                             GROUP BY ws_rep_id";
         $this->_db->exec();
+
         return $this->_db->fetchAll();
     }
 
@@ -200,19 +215,21 @@ class MWordstat extends Model {
      * Сброс очереди отчетов, например если они зависли
      * @param array $rep_ids
      */
-    public function resetQueue($rep_ids) {
+    public function resetQueue($rep_ids)
+    {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET ws_rep_id = 0
                             WHERE FIND_IN_SET(CAST(ws_rep_id AS char), :ids)";
-        $this->_db->execute(array(
+        $this->_db->execute([
             ':ids' => implode(',', $rep_ids),
-        ));
+        ]);
     }
 
     /**
      * Простановка свежих максимумов и минимумов
      */
-    public function updateMaxMin() {
+    public function updateMaxMin()
+    {
         $this->_db->sql = "UPDATE $this->_table_name
                                 SET ws_weight_max = ws_weight, ws_weight_max_date = NOW()
                             WHERE ws_weight > ws_weight_max";
@@ -227,7 +244,8 @@ class MWordstat extends Model {
     /**
      * Сбросить все отчеты по запросам
      */
-    public function resetWeightsAll() {
+    public function resetWeightsAll()
+    {
         $this->_db->sql = "UPDATE $this->_table_name SET ws_weight = -1, ws_rep_id = 0";
         $this->_db->exec();
     }
@@ -236,34 +254,26 @@ class MWordstat extends Model {
      * Сбросить все веса запросов по отчету
      * @param int $report_id
      */
-    public function resetWeightReport($report_id) {
+    public function resetWeightReport($report_id)
+    {
         $this->_db->sql = "UPDATE $this->_table_name
                             SET ws_weight = -1
                             WHERE ws_rep_id = :report";
-        $this->_db->execute(array(
+        $this->_db->execute([
             ':report' => (int) $report_id,
-        ));
-    }
-
-    /**
-     * Удалить город из таблицы
-     * @param int $town_id
-     */
-    public function deleteTown($town_id) {
-        $this->_db->sql = "DELETE FROM $this->_table_name ws_city_id = :town";
-        $this->_db->execute(array(
-            ':town' => (int) $town_id,
-        ));
+        ]);
     }
 
     /**
      * Общее число записей
      * @return int
      */
-    public function getStatTowns() {
+    public function getStatTowns()
+    {
         $this->_db->sql = "SELECT count(*) AS cnt FROM $this->_table_name";
         $this->_db->exec();
         $row = $this->_db->fetch();
+
         return $row['cnt'];
     }
 
@@ -271,7 +281,8 @@ class MWordstat extends Model {
      * Число добавленных страниц
      * @return int
      */
-    public function getStatBase() {
+    public function getStatBase()
+    {
         $this->_db->sql = "SELECT count(*) AS cnt
                             FROM $this->_table_name ws
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc
@@ -279,6 +290,7 @@ class MWordstat extends Model {
                             WHERE pc_id IS NOT NULL";
         $this->_db->exec();
         $row = $this->_db->fetch();
+
         return $row['cnt'];
     }
 
@@ -286,7 +298,8 @@ class MWordstat extends Model {
      * Число необработанных записей по запросам
      * @return int
      */
-    public function getStatRemain() {
+    public function getStatRemain()
+    {
         $this->_db->sql = "SELECT count(*) AS cnt
                             FROM $this->_table_name ws
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc
@@ -295,6 +308,7 @@ class MWordstat extends Model {
                                 AND ws_weight = -1";
         $this->_db->exec();
         $row = $this->_db->fetch();
+
         return $row['cnt'];
     }
 
@@ -302,7 +316,8 @@ class MWordstat extends Model {
      * Число проиндексированных поисковиками записей
      * @return int
      */
-    public function getStatIndexed() {
+    public function getStatIndexed()
+    {
         $this->_db->sql = "SELECT count(*) AS cnt
                             FROM $this->_table_name ws
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc
@@ -311,6 +326,7 @@ class MWordstat extends Model {
                                 AND ws_position IS NOT NULL";
         $this->_db->exec();
         $row = $this->_db->fetch();
+
         return $row['cnt'];
     }
 
@@ -318,13 +334,14 @@ class MWordstat extends Model {
      * Распределение позиций по диапазонам
      * @return array
      */
-    public function getStatPositionsRanges() {
-        $out = array(
+    public function getStatPositionsRanges()
+    {
+        $out = [
             'none' => 0,
             '10' => 0,
             '20' => 0,
             '50' => 0,
-        );
+        ];
         $this->_db->sql = "SELECT count(*) AS cnt, 
                                 IF(ws_position = 0, 0, IF(ws_position > 50, 0, IF(ws_position > 20, 50, IF(ws_position > 10, 20, 10)))) AS xtop
                             FROM $this->_table_name ws
@@ -348,6 +365,7 @@ class MWordstat extends Model {
                 $out['50'] += $row['cnt'];
             }
         }
+
         return $out;
     }
 
@@ -355,13 +373,13 @@ class MWordstat extends Model {
      * Статистика по минимальным датам
      * @return array
      */
-    public function getStatDates() {
+    public function getStatDates(): array
+    {
         $this->_db->sql = "SELECT DATE_FORMAT(MIN(ws_weight_date), '%d.%m.%Y') AS min_weight,
                                 DATE_FORMAT(MIN(ws_position_date), '%d.%m.%Y') AS min_position
                             FROM $this->_table_name ws";
         $this->_db->exec();
-        $row = $this->_db->fetch();
-        return $row;
-    }
 
+        return $this->_db->fetch();
+    }
 }
