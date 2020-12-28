@@ -13,6 +13,9 @@ class MCandidatePoints extends Model
     protected $_table_order = 'cp_date';
     protected $_table_active = 'cp_active';
 
+    /**
+     * @var array
+     */
     protected $typesMarkers;
 
     /**

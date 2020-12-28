@@ -54,6 +54,7 @@ class FeedbackModule extends Module implements ModuleInterface
 
     /**
      * Обработка формы добавления точки
+     * @param SiteResponse $response
      */
     private function getAdd(SiteResponse $response): void
     {
@@ -124,7 +125,7 @@ class FeedbackModule extends Module implements ModuleInterface
             'ftext' => null,
             'fmail' => null,
         ];
-        if ((!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] == null) && isset($_SERVER['HTTP_REFERER'])) {
+        if ((!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] === null) && isset($_SERVER['HTTP_REFERER'])) {
             $_SESSION['feedback_referer'] = $_SERVER['HTTP_REFERER'];
         }
         $referer = !empty($_SESSION['feedback_referer']) ? $_SESSION['feedback_referer'] : null;
@@ -136,7 +137,7 @@ class FeedbackModule extends Module implements ModuleInterface
             $fcapt = $_POST['fcapt'];
             $ftextcheck = cut_trash_text($_POST['ftextcheck']);
 
-            if (isset($_SESSION[MyKCaptcha::SESSION_KEY]) && $fcapt != $_SESSION[MyKCaptcha::SESSION_KEY]) {
+            if (isset($_SESSION[MyKCaptcha::SESSION_KEY]) && $fcapt !== $_SESSION[MyKCaptcha::SESSION_KEY]) {
                 $data['error'] = 'fcapt';
             }
             if ($data['fname'] === 'Сотруднк') {
@@ -161,7 +162,7 @@ class FeedbackModule extends Module implements ModuleInterface
                 $data['error'] = 'fname';
             }
 
-            if ($data['error'] == null) {
+            if ($data['error'] === null) {
                 $data['success'] = true;
                 $fb = new MFeedback($this->db);
                 $fb->add(
@@ -207,7 +208,7 @@ class FeedbackModule extends Module implements ModuleInterface
         return $this->templateEngine->fetch(_DIR_TEMPLATES . '/feedback/feedpage.tpl');
     }
 
-    private function getCommonSuccess($data)
+    private function getCommonSuccess($data): string
     {
         foreach ($data as $k => $v) {
             $this->templateEngine->assign($k, $v);
@@ -232,7 +233,7 @@ class FeedbackModule extends Module implements ModuleInterface
      * @param $region
      * @return string
      */
-    private function getAddingSuccess($title, $descr, $region)
+    private function getAddingSuccess($title, $descr, $region): string
     {
         $this->templateEngine->assign('add_title', $title);
         $this->templateEngine->assign('add_descr', nl2br($descr));
