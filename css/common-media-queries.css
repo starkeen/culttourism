@@ -418,10 +418,6 @@
         display: none;
     }
 
-    #city_float {
-        display: none;
-    }
-
     #map_container {
         float: none;
         width: 100%;

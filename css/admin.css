@@ -214,15 +214,12 @@ ymaps h3 {
 /* --------------------------------------  USERS ------------------------ */
 #usertable tr th {
     text-align: left;
+    background-color: #d3ced3;
 }
 
 #usertable {
     background-color: #8a648a;
     margin: 5px;
-}
-
-#usertable tr th {
-    background-color: #d3ced3;
 }
 
 #usertable tr td {

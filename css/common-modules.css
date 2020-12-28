@@ -786,10 +786,6 @@ textarea.feedinput {
     width: 100%
 }
 
-.formhandler {
-
-}
-
 .formhandler input {
     display: none;
     border: none;
@@ -827,9 +823,6 @@ input.savereverse {
     cursor: pointer;
     color: #639063;
     border-bottom: 1px dotted #639063;
-}
-
-#obj_addr_searcher {
     font-size: small;
 }
 
