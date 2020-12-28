@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace app\checker;
 
+use app\api\DadataAPI;
 use app\component\typograph\Typograph;
 use app\db\MyDB;
-use app\api\DadataAPI;
+use app\utils\GPS;
 use Curl;
-use Helper;
 use MBlogEntries;
 use MCandidatePoints;
 use MDataCheck;
@@ -117,11 +117,11 @@ class DataChecker
                     ],
                     'delta_lat' => round(abs($pt['pt_latitude'] - $posLatLon[1]), 5),
                     'delta_lon' => round(abs($pt['pt_longitude'] - $posLatLon[0]), 5),
-                    'delta_meters' => Helper::distanceGPS(
-                        cut_trash_float($pt['pt_latitude']),
-                        cut_trash_float($pt['pt_longitude']),
-                        cut_trash_float($posLatLon[1]),
-                        cut_trash_float($posLatLon[0])
+                    'delta_meters' => GPS::distanceGPS(
+                        (float) $pt['pt_latitude'],
+                        (float) $pt['pt_longitude'],
+                        (float) $posLatLon[1],
+                        (float) $posLatLon[0]
                     ),
                 ];
             }
@@ -428,12 +428,12 @@ class DataChecker
 
     /**
      * @param int $limit
-     * @param bool $active
+     * @param string $activeField
      * @param bool $unchecked
      *
      * @return array
      */
-    private function getCheckingPortion($limit, $active, $unchecked = false): array
+    private function getCheckingPortion(int $limit, string $activeField, bool $unchecked = false): array
     {
         $checkerTable = $this->db->getTableName('data_check');
         $tableName = $this->db->getTableName($this->entityType);
@@ -442,7 +442,7 @@ class DataChecker
                                 LEFT JOIN $checkerTable dc ON dc.dc_item_id = t.$this->entityId
                                     AND dc.dc_type = :item_type
                                     AND dc.dc_field = :field
-                            WHERE t.$active > 0
+                            WHERE t.$activeField > 0
                                 AND t.$this->entityField != ''\n";
         if ($unchecked) {
             $this->db->sql .= " AND dc.dc_id IS NULL\n";
