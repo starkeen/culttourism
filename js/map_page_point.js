@@ -5,12 +5,7 @@ ymaps.ready(function () {
         type: "yandex#map",
         controls: ["zoomControl", "typeSelector", "geolocationControl"]
     });
-    /*
-     $.getScript('/js/nmap-autoswitcher/nmap-autoswitcher.js', function () {
-     var autoSwitcher = new AutoSwitcher();
-     autoSwitcher.addToMap(myMap);
-     });
-     */
+
     var cluster = new ymaps.Clusterer({
         margin: [20],
         clusterIcons: [{
