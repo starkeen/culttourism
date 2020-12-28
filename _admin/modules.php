@@ -30,7 +30,6 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
         $md_description = trim($_POST['md_description']);
         $md_pagecontent = isset($_POST['md_pagecontent']) ? trim($_POST['md_pagecontent']) : '';
         $md_active = (int) $_POST['md_active'];
-        $md_counters = (int) $_POST['md_counters'];
         $md_css = (int) $_POST['md_css'];
         $md_robots = trim($_POST['md_robots']);
         $md_sort = (int) $_POST['md_sort'];
@@ -48,7 +47,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
                     SET md_title='$md_title', md_pagecontent = '$md_pagecontent',
                     md_url = '$md_url', md_redirect = $redir,
                     md_description = '$md_description', md_keywords = '$md_keywords',
-                    md_active = '$md_active', md_counters = '$md_counters', md_css='$md_css',
+                    md_active = '$md_active', md_css='$md_css',
                     md_robots='$md_robots', md_sort='$md_sort'
                     WHERE md_id = '$md_id'";
             $db->exec($sql);
@@ -58,7 +57,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
                     md_pagecontent = '$md_pagecontent',
                     md_url = '$md_url', md_redirect = $redir,
                     md_description = '$md_description', md_keywords = '$md_keywords',
-                    md_active = '$md_active', md_counters = '$md_counters', md_css='$md_css',
+                    md_active = '$md_active', md_css='$md_css',
                     md_robots='$md_robots', md_sort='$md_sort'";
             $db->exec($sql);
             $newmd = $db->getLastInserted();
@@ -82,7 +81,6 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
         $row['md_keywords'] = '';
         $row['md_description'] = '';
         $row['md_active'] = 1;
-        $row['md_counters'] = 1;
         $row['md_css'] = 0;
         $row['md_robots'] = 'index, follow';
         $row['md_sort'] = '0';

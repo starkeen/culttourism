@@ -1,4 +1,4 @@
-<img class="pageicon" src="../img/admin/ico.a_refs.gif">
+<img class="pageicon" src="/img/admin/ico.a_refs.gif">
 <h3>Настройки сайта</h3>
 <ul>
     {foreach from=$reflist item=ref key=rid}
@@ -11,8 +11,8 @@
 </ul>
 
 <hr />
+
 <ul>
     <li><a href="cron.php">Задачи по расписанию</a></li>
     <li><a href="log_error.php">Журнал ошибок</a></li>
-    <li><a href="counters.php">Счётчики</a></li>
 </ul>

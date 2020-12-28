@@ -20,7 +20,6 @@ class MModules extends Model
             'md_keywords',
             'md_description',
             'md_active',
-            'md_counters',
             'md_pagecontent',
             'md_photo_id',
             'md_sort',

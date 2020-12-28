@@ -121,10 +121,6 @@
                             <input type="checkbox" id="imd_active" name="md_active" value="1" {if $mod_item.md_active}checked{/if} title="Включение и отключение страниц раздела">
                                    <label for="imd_active" title="Включение и отключение страниц раздела">- раздел активен</label>
 
-                            <input type="hidden" name="md_counters" value="0">
-                            <input type="checkbox" id="imd_counters" name="md_counters" value="1" {if $mod_item.md_counters}checked{/if} title="Отображение блока счетчиков на странице">
-                                   <label for="imd_counters" title="Отображение блока счетчиков на странице">- показывать счетчики</label>
-
                             <input type="hidden" name="md_css" value="0">
                             <input type="checkbox" id="imd_css" name="md_css" value="1" {if $mod_item.md_css}checked{/if} title="Использовать отдельные таблицы стилей">
                                    <label for="imd_css" title="Использовать отдельные таблицы стилей">- таблицы стилей</label>
