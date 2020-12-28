@@ -40,8 +40,7 @@
             "models/"
         ],
         "files"                : [
-            "includes/functions.php",
-            "includes/debug.php"
+            "includes/functions.php"
         ],
         "exclude-from-classmap": [
             "/modules/",
