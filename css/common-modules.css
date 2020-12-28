@@ -476,9 +476,7 @@ textarea.feedinput {
     color: #ffffff;
     padding: 0 5pt;
     background: #041b26;
-    background: -moz-linear-gradient(left, #292929, #ffffff);
-    background: -webkit-gradient(linear, right top, left top, from(#292929), to(#ffffff));
-    background: linear-gradient(top, #292929, #ffffff);
+    background: linear-gradient(to top, #292929, #ffffff);
 }
 
 #city_path a {
@@ -558,7 +556,6 @@ textarea.feedinput {
 }
 
 .citypoints_list tr td {
-    padding: 4px;
     position: relative;
     padding: 0;
 }
@@ -619,8 +616,7 @@ textarea.feedinput {
     bottom: 0;
     margin: 0;
     -ms-filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorStr='#00ffffff', endColorStr='#ffffffff');
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 1.0)));
-    background-image: -moz-linear-gradient(top center, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 1.0) 95%);
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 1.0) 95%);
     filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorStr='#00ffffff', endColorStr='#ffffffff');
 }
 
