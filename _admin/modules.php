@@ -7,7 +7,6 @@ $smarty->assign('title', 'Модули и страницы на сайте');
 $md_id = null;
 
 $dbm = $db->getTableName('modules');
-$dbp = $db->getTableName('pages');
 
 if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
     $md_id = (int) $_GET['id'];
@@ -104,17 +103,8 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
 
     $text_edit = true;
 
-    $subpages = [];
-    if ($md_id != 0) {
-        $smarty->assign('mod_id', $md_id);
-        $db->sql = "SELECT * FROM $dbp WHERE pg_md_id = '$md_id'";
-        $db->exec();
-        $subpages = $db->fetchAll();
-    } else {
-        $smarty->assign('mod_id', 'add');
-    }
+    $smarty->assign('mod_id', $md_id ?: 'add');
     $smarty->assign('text_edit', $text_edit);
-    $smarty->assign('subpages', $subpages);
 } else {
     $smarty->assign('mod_id', null);
 }
