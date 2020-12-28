@@ -30,6 +30,7 @@ class AboutModule extends Module implements ModuleInterface
     {
         return 'about';
     }
+
     /**
      * @inheritDoc
      */
