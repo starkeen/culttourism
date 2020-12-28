@@ -413,14 +413,14 @@ class MyDB
         if (in_array($errorCode, [1044, 1045], true)) {
             throw new AccessException('Ошибка PDO: access denied', $errorCode, $exception);
         }
-        if ($errorCode === 1046) {
-            throw new TableException('Ошибка PDO: table not found', $errorCode, $exception);
-        }
         if ($errorCode === 1054) {
             throw new TableException('Ошибка PDO: Unknown column in Field List', $errorCode, $exception);
         }
         if ($errorCode === 1062) {
             throw new DuplicateKeyException('Ошибка PDO: duplicate key', $errorCode, $exception);
+        }
+        if ($errorCode === 1146) {
+            throw new DuplicateKeyException('Ошибка PDO: table not found', $errorCode, $exception);
         }
 
         throw new MyPDOException('Ошибка PDO: ' . $errorCode, $errorCode, $exception);
