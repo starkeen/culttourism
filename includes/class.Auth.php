@@ -19,7 +19,7 @@ class Auth
      */
     private $cookieStorage;
 
-    private $key_lifetime_hours = 2592000; //3600 * 24 * 30;
+    private $key_lifetime_hours = 2592000; // это 30 дней
     public $key;
     private $session;
     private $meta = [

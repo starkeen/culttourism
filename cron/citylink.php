@@ -1,7 +1,5 @@
 <?php
 
-//echo '<p>citylink... ';
-
 $dbc = $db->getTableName('pagecity');
 $dbrs = $db->getTableName('ref_country');
 $dbrr = $db->getTableName('ref_region');
@@ -23,13 +21,13 @@ $db->sql = "SELECT pc.pc_id, pc.pc_title,
                 LEFT JOIN $dbu ru_cou  ON ru_cou.uid  = pc_cou.pc_url_id
                 LEFT JOIN $dbu ru_reg  ON ru_reg.uid  = pc_reg.pc_url_id
                 LEFT JOIN $dbu ru_city ON ru_city.uid = pc.pc_url_id
-            
+
             WHERE pc.pc_pagepath IS NULL
-            
+
             ORDER BY pc.pc_id";
 $db->exec();
-//$db->showSQL();
-$out = array();
+
+$out = [];
 $url_root = '';
 while ($row = $db->fetch()) {
     $out[$row['pc_id']] = '';
@@ -55,4 +53,3 @@ $pc = new MPageCities($db);
 foreach ($out as $cid => $link) {
     $pc->updatePagepath($cid, $link);
 }
-//echo "<p>обработано " . count($out) . " страниц";

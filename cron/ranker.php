@@ -1,6 +1,5 @@
 <?php
 
-//echo '<p>ranker...';
 $dbp = $db->getTableName('pagepoints');
 $dbc = $db->getTableName('pagecity');
 $dbsp = $db->getTableName('statpoints');

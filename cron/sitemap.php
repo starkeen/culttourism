@@ -14,19 +14,18 @@ $db->exec();
 while ($row = $db->fetch()) {
     $url['uri'] = $row['md_url'];
     $url['full'] = "$baseurl/{$row['md_url']}";
-    if ($row['md_url'] != 'index.html') {
+    if ($row['md_url'] !== 'index.html') {
         $url['full'] .= '/';
     }
     $url['lastmod'] = $basedate;
     $url['freq'] = 'weekly';
-    $url['priority'] = ($row['md_url'] != 'index.html') ? '0.90' : '1.00';
+    $url['priority'] = ($row['md_url'] !== 'index.html') ? '0.90' : '1.00';
     $urls[] = $url;
 }
 $db->sql = "SELECT u.url, DATE_FORMAT(c.pc_lastup_date, '%Y-%m-%dT%H:%i:%s+00:00') dateup
             FROM $dbr u
                 LEFT JOIN $dbc c ON c.pc_id = u.citypage
             WHERE c.pc_text is not null";
-//$db->showSQL();
 $db->exec();
 while ($row = $db->fetch()) {
     $url['uri'] = $row['url'];
@@ -55,33 +54,26 @@ while ($row = $db->fetch()) {
 $smarty->assign('urls', $urls);
 
 $filecontent = $smarty->fetch(_DIR_TEMPLATES . '/_XML/sitemap.sm.xml');
-///echo $filecontent;
 $filename = _DIR_ROOT . '/sitemap.xml'; //имя sitemap-файла
 
 $filesize_old = filesize($filename);
 
-chmod("$filename", 0777);
-//echo "<p>Запись в $filename... ";
-$file_hndlr = fopen("$filename", "w+");
+chmod($filename, 0777);
+$file_hndlr = fopen((string) $filename, 'wb+');
 if ($file_hndlr) {
     fwrite($file_hndlr, $filecontent);
     fclose($file_hndlr);
-    //echo 'Файл записан!</p>';
 } else {
     echo '<br>Ошибка доступа к файлу!';
 }
 
 $filesize = filesize($filename);
 
-if ($filesize != $filesize_old) {
+if ($filesize !== $filesize_old) {
     $ch = curl_init();
     $url = 'http://www.google.com/webmasters/sitemaps/ping?sitemap=http://culttourism.ru/sitemap.xml';
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $answer = curl_exec($ch);
     curl_close($ch);
-    //echo $answer;
 }
-
-
-//echo '<p>Записей: ' . count($urls) . '. Размер файла: '. $filesize . " байт.\n";

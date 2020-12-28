@@ -178,7 +178,7 @@ if ($filter['gps']['lon'] != 0) {
 }
 $db->sql .= "ORDER BY pp.pt_create_date
             LIMIT 1000";
-//$db->showSQL();
+
 $db->exec();
 $points = $db->fetchAll();
 

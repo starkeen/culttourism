@@ -54,7 +54,6 @@ class Parser
     public function getList(): array
     {
         $out = [];
-        //echo $this->_dom->saveHTML();
         $finder = new DomXPath($this->_dom);
         foreach ((array) $this->_config['list_items'] as $xpath) {
             $elements = $finder->query($xpath);
