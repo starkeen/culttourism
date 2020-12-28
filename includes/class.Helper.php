@@ -167,22 +167,4 @@ class Helper
 
         return strtr($text, $replacePairs);
     }
-
-    /**
-     * Функция возвращает расширение файла по его MIME-типу
-     * @param string $mimetype MIME-тип файла
-     * @return string|null
-     */
-    public static function getExt(string $mimetype): ?string
-    {
-        static $types = [
-            'image/jpeg' => 'jpg',
-            'image/png' => 'png',
-            'image/gif' => 'gif',
-            'application/vnd.ms-excel' => 'xls',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
-        ];
-
-        return $types[$mimetype] ?? null;
-    }
 }

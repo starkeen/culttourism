@@ -1,5 +1,6 @@
 <?php
 
+use app\constant\MimeType;
 use app\db\MyDB;
 
 abstract class Model
@@ -244,12 +245,13 @@ abstract class Model
     public function saveFile($id, $file_field, $file): void
     {
         if (!empty($file) && $file['error'] == 0) {
-            $filename = md5_file($file['tmp_name']) . '.' . Helper::getExt($file['type']);
+            $mime = new MimeType($file['type']);
+            $filename = md5_file($file['tmp_name']) . '.' . $mime->getDefaultExtension();
             if (!file_exists($this->_files_dir)) {
                 mkdir($this->_files_dir);
             }
             move_uploaded_file($file['tmp_name'], $this->_files_dir . "/$filename");
-            $this->updateByPk($id, ["$file_field" => $filename]);
+            $this->updateByPk($id, [(string) $file_field => $filename]);
         }
     }
 
