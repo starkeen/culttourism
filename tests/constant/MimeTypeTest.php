@@ -6,6 +6,7 @@ namespace tests\constant;
 
 use app\constant\MimeType;
 use PHPUnit\Framework\TestCase;
+use UnexpectedValueException;
 
 class MimeTypeTest extends TestCase
 {
@@ -34,7 +35,7 @@ class MimeTypeTest extends TestCase
 
     public function testUnknownType(): void
     {
-        $this->expectExceptionMessage('Value \'unknown\' is not part of the enum ' . MimeType::class);
+        $this->expectException(UnexpectedValueException::class);
         $mimeType = new MimeType('unknown');
     }
 }

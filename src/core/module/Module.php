@@ -66,8 +66,7 @@ abstract class Module
     {
         $this->webUser->getAuth()->checkSession('web');
 
-        $md = new MModules($this->db);
-        $moduleData = $md->getModuleByURI($this->getModuleKey());
+        $moduleData = $this->getModelModules()->getModuleByURI($this->getModuleKey());
 
         $response->getContent()->getHead()->addOGMeta(OgType::SITE_NAME(), $this->globalConfig->getDefaultPageTitle());
         $response->getContent()->getHead()->addOGMeta(OgType::LOCALE(), 'ru_RU');
@@ -135,5 +134,13 @@ abstract class Module
         $this->preProcess($response);
         $this->process($request, $response);
         $this->postProcess($response);
+    }
+
+    /**
+     * @return MModules
+     */
+    private function getModelModules(): MModules
+    {
+        return new MModules($this->db);
     }
 }
