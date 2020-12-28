@@ -34,8 +34,8 @@ ymaps.ready(function () {
             objects_all[oid] = obj;
         });
         var arr = [];
-        objects_all.map(function (object) {
-            return arr.push(object);
+        objects_all.forEach(function (object) {
+            arr.push(object);
         });
         cluster.add(arr);
         myMap.geoObjects.add(cluster);

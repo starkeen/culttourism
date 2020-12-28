@@ -55,14 +55,15 @@ ymaps.ready(function () {
         if (res.mapState && !hashCenter) {
             res.mapState.applyToMap(map);
         }
-        var arr = [];
+
         res.geoObjects.each(function (obj) {
             var oid = parseInt(obj.properties.get("metaDataProperty").AnyMetaData.pid);
             objects_all[oid] = obj;
             objects_cnt++;
         });
-        objects_all.map(function (object) {
-            return arr.push(object);
+        var arr = [];
+        objects_all.forEach(function (object) {
+            arr.push(object);
         });
         $('#mapdata_points').text(objects_cnt);
         cluster.add(arr);
