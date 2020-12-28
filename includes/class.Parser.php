@@ -239,7 +239,7 @@ class Parser
                 $out['geo_lon'] += floatval($matches[6]) / 3600;
             }
         }
-        //print_x($out);
+
         return $out;
     }
 

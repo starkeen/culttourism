@@ -122,7 +122,7 @@ while ($row = $db->fetch()) {
         $modules[$row['md_id']]['md_tree'] = null;
     }
 }
-//print_x($modules);
+
 $smarty->assign('mod_list', $modules);
 $smarty->assign('is_admin', $isAdmin);
 

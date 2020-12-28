@@ -330,7 +330,6 @@ class CityModule extends Module implements ModuleInterface
         $dbws = $this->db->getTableName('wordstat');
 
         if (isset($_POST) && !empty($_POST)) {
-            //print_x($_POST);
             $pc->updateByPk(
                 $city_id,
                 [
