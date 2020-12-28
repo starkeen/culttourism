@@ -1,5 +1,7 @@
 <?php
 
+use app\utils\NumberEnding;
+
 class SQLPager
 {
     private $_params = [
@@ -88,7 +90,7 @@ class SQLPager
         }
 
         if ($show_total) {
-            $out .= "всего: {$this->_params['total']} " . Helper::getNumEnding($this->_params['total'], [
+            $out .= "всего: {$this->_params['total']} " . NumberEnding::getNumEnding($this->_params['total'], [
                     'строка',
                     'строки',
                     'строк',

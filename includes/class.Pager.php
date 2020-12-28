@@ -1,5 +1,7 @@
 <?php
 
+use app\utils\NumberEnding;
+
 class Pager
 {
     public $pages = '';
@@ -75,7 +77,7 @@ class Pager
                 $this->pages .= $pagebutton;
             }
             if ($this->show_total) {
-                $this->pages .= "всего: $this->cnt_total " . Helper::getNumEnding(
+                $this->pages .= "всего: $this->cnt_total " . NumberEnding::getNumEnding(
                         $this->cnt_total,
                         ['строка', 'строки', 'строк']
                     );
