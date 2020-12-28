@@ -8,10 +8,11 @@ $dbpc = $db->getTableName('pagecity');
 $dbur = $db->getTableName('region_url');
 $dbsc = $db->getTableName('search_cache');
 
-if (isset($_GET['filter']) && $_GET['filter'] === 'free')
+if (isset($_GET['filter']) && $_GET['filter'] === 'free') {
     $where = 'AND url.url IS NULL';
-else
+} else {
     $where = '';
+}
 
 $db->sql = "SELECT count(*) cnt, sc_query, url.url
             FROM $dbsc sc
@@ -23,7 +24,7 @@ $db->sql = "SELECT count(*) cnt, sc_query, url.url
             HAVING cnt>1
             ORDER BY cnt DESC, sc_query";
 $db->exec();
-$stat = array();
+$stat = [];
 while ($row = $db->fetch()) {
     $stat[$row['sc_query']] = $row;
 }
@@ -32,4 +33,3 @@ $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/stat_search.
 
 $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();
-?>
