@@ -153,8 +153,7 @@
 
 <script>
     $(document).ready(function () {
-        $('#imd_pagecontent').ckeditor(function () {
-        }, {
+        $('#imd_pagecontent').ckeditor(function () {}, {
             customConfig: "/config/config.cke4.js",
             height: '400px',
             toolbar: "Lite"

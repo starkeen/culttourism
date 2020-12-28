@@ -78,6 +78,7 @@ CKEDITOR.editorConfig = function (config) {
     config.filebrowserImageUploadUrl = '/addons/ckfinder.2.4/core/connector/php/connector.php?command=QuickUpload&type=Images';
     config.filebrowserFlashUploadUrl = '/addons/ckfinder.2.4/core/connector/php/connector.php?command=QuickUpload&type=Flash';
 };
+
 CKEDITOR.stylesSet.add('my_styles', [
     // Block-level styles
     {name: 'Blue Title', element: 'h2', styles: {'color': 'Blue'}},
