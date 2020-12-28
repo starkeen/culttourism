@@ -474,9 +474,10 @@ textarea.feedinput {
     text-align: right;
     border-top: 2px solid #141414;
     color: #ffffff;
-    padding: 0 5pt;
+    height: 20px;
+    padding: 1px 10px;
     background: #041b26;
-    background: linear-gradient(to top, #292929, #ffffff);
+    background: linear-gradient(to bottom, #292929, #ffffff);
 }
 
 #city_path a {
