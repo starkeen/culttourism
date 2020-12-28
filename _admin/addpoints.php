@@ -2,6 +2,7 @@
 
 use app\api\yandex_search\Factory;
 use app\api\yandex_search\ResultItem;
+use app\exceptions\NotFoundException;
 
 include('common.php');
 include(_DIR_INCLUDES . '/class.Pager.php');
@@ -149,6 +150,7 @@ if (isset($_GET['id'], $_GET['act'])) {
                 );
             }
             break;
+        default: throw new NotFoundException();
     }
     $out['data'] = $c->getItemByPk($out['id']);
     header('Content-type: text/json');

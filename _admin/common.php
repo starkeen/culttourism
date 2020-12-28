@@ -48,16 +48,18 @@ if (isset($_SESSION['user_admin']) && (int) $_SESSION['user_admin'] === 1) {
     $isAdmin = true;
 }
 
+$defaultIcon = 'ico.a_refs.gif';
+
 $adm_menu_items[] = ['link' => 'modules.php', 'title' => 'Страницы и модули', 'ico' => 'ico.a_modules.gif'];
-$adm_menu_items[] = ['link' => 'points.php', 'title' => 'Точки', 'ico' => 'ico.a_refs.gif'];
-$adm_menu_items[] = ['link' => 'parser.php', 'title' => 'Парсер', 'ico' => 'ico.a_refs.gif'];
-$adm_menu_items[] = ['link' => 'photos.php', 'title' => 'Фото', 'ico' => 'ico.a_refs.gif'];
-$adm_menu_items[] = ['link' => 'addpoints.php', 'title' => 'Заявки', 'ico' => 'ico.a_refs.gif'];
-$adm_menu_items[] = ['link' => 'lists.php', 'title' => 'Списки', 'ico' => 'ico.a_refs.gif'];
+$adm_menu_items[] = ['link' => 'points.php', 'title' => 'Точки', 'ico' => $defaultIcon];
+$adm_menu_items[] = ['link' => 'parser.php', 'title' => 'Парсер', 'ico' => $defaultIcon];
+$adm_menu_items[] = ['link' => 'photos.php', 'title' => 'Фото', 'ico' => $defaultIcon];
+$adm_menu_items[] = ['link' => 'addpoints.php', 'title' => 'Заявки', 'ico' => $defaultIcon];
+$adm_menu_items[] = ['link' => 'lists.php', 'title' => 'Списки', 'ico' => $defaultIcon];
 $adm_menu_items[] = ['link' => 'stat_yandex.php', 'title' => 'Статистика Яндекса', 'ico' => 'ico.a_modules.gif'];
 if ($isAdmin) {
     $adm_menu_items[] = ['link' => 'users.php', 'title' => 'Пользователи', 'ico' => 'ico.a_users.gif'];
-    $adm_menu_items[] = ['link' => 'settings.php', 'title' => 'Настройки сайта', 'ico' => 'ico.a_refs.gif'];
+    $adm_menu_items[] = ['link' => 'settings.php', 'title' => 'Настройки сайта', 'ico' => $defaultIcon];
 }
 
 $smarty = $app->getTemplateEngine();
