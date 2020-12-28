@@ -4,7 +4,7 @@ use app\db\MyDB;
 
 class Curl
 {
-    const INTERNAL_ENCODING = 'UTF-8';
+    private const INTERNAL_ENCODING = 'UTF-8';
 
     private $cc;
     private $curl;
@@ -12,6 +12,9 @@ class Curl
     private $encoding = 'UTF-8';
     private $headers = [];
 
+    /**
+     * @param MyDB|null $db
+     */
     public function __construct(MyDB $db = null)
     {
         if ($db) {
@@ -57,7 +60,12 @@ class Curl
         return $text;
     }
 
-    public function post($url, $data = [])
+    /**
+     * @param string $url
+     * @param array $data
+     * @return string
+     */
+    public function post(string $url, $data = []): ?string
     {
         try {
             curl_setopt($this->curl, CURLOPT_URL, $url);
@@ -70,42 +78,56 @@ class Curl
                 throw new RuntimeException(curl_error($this->curl));
             }
             $this->cc->put($url . '?' . $data, $text, $this->ttl);
+
             return $text;
         } catch (Exception $e) {
             echo $e->getMessage();
+            return null;
         }
     }
 
-    public function addHeader($header, $value)
+    /**
+     * @param string $header
+     * @param $value
+     */
+    public function addHeader(string $header, $value): void
     {
         $this->headers[$header] = $value;
     }
 
-    protected function getHeaders()
+    /**
+     * @return array
+     */
+    protected function getHeaders(): array
     {
         $out = [];
         foreach ($this->headers as $k => $v) {
             $out[] = $k . ': ' . $v;
         }
+
         return $out;
     }
 
-    public function config($option, $value)
+    /**
+     * @param string $option
+     * @param string|int $value
+     */
+    public function config(string $option, $value): void
     {
         curl_setopt($this->curl, $option, $value);
     }
 
-    public function setTTL($ttl)
+    public function setTTL(int $ttl): void
     {
-        $this->ttl = intval($ttl);
+        $this->ttl = $ttl;
     }
 
-    public function setTTLDays($ttl_days)
+    public function setTTLDays(int $ttl_days): void
     {
-        $this->ttl = 24 * 3600 * (int) $ttl_days;
+        $this->ttl = 24 * 3600 * $ttl_days;
     }
 
-    public function setEncoding($encoding)
+    public function setEncoding(string $encoding): void
     {
         $this->encoding = $encoding;
     }
@@ -114,5 +136,4 @@ class Curl
     {
         curl_close($this->curl);
     }
-
 }

@@ -1,55 +1,57 @@
 <?php
 
-class SQLPager {
-
-    private $_params = array(
+class SQLPager
+{
+    private $_params = [
         'limit' => 0,
         'offset' => 0,
         'total' => 0,
-    );
+    ];
     private $_limit_default = 20;
-    private $var_perpage = array(20, 50, 100, 200);
+    private $var_perpage = [20, 50, 100, 200];
     private $_page_current = 0;
+
     private $_get;
 
-    public function __construct($get = array()) {
+    public function __construct($get = [])
+    {
         if (!empty($get)) {
             $this->_get = $get;
         } else {
-            $this->_get = isset($_GET) ? $_GET : array();
+            $this->_get = $_GET ?? [];
         }
         $this->_params['limit'] = $this->_limit_default;
 
-        $this->_page_current = isset($this->_get['page']) ? intval($this->_get['page']) : 0;
+        $this->_page_current = isset($this->_get['page']) ? (int) $this->_get['page'] : 0;
         if (isset($this->_get['pager_perpage'])) {
-            $this->setParam('limit', intval($this->_get['pager_perpage']));
+            $this->setParam('limit', (int) $this->_get['pager_perpage']);
             unset($this->_get['pager_perpage']);
         }
     }
 
-    private function calcOffset() {
+    private function calcOffset(): void
+    {
         $this->_params['offset'] = $this->_page_current * $this->_params['limit'];
     }
 
-    public function setParam($p, $v) {
-        if ($p == 'limit' && $this->_params['limit'] == $this->_limit_default) {
-            $this->_params['limit'] = intval($v);
-        } elseif (isset($this->_params[$p]) && $p != 'limit') {
-            $this->_params[$p] = intval($v);
+    public function setParam($p, $v): void
+    {
+        if ($p === 'limit' && $this->_params['limit'] == $this->_limit_default) {
+            $this->_params['limit'] = (int) $v;
+        } elseif (isset($this->_params[$p]) && $p !== 'limit') {
+            $this->_params[$p] = (int) $v;
         }
 
         $this->calcOffset();
     }
 
-    public function getParam($p) {
-        if (isset($this->_params[$p])) {
-            return $this->_params[$p];
-        } else {
-            return null;
-        }
+    public function getParam($p): ?int
+    {
+        return $this->_params[$p] ?? null;
     }
 
-    public function getHTML($show_selector = true, $show_total = false) {
+    public function getHTML($show_selector = true, $show_total = false): string
+    {
         $pages_cnt = ceil($this->_params['total'] / $this->_params['limit']);
 
         $out = '<div class="pager_block">';
@@ -58,7 +60,7 @@ class SQLPager {
 
         for ($i = 0; $i <= ($pages_cnt - 1); $i++) {
             $pagebutton = '';
-            $linkbutton_array = array_merge($_GET, array('page' => $i));
+            $linkbutton_array = array_merge($_GET, ['page' => $i]);
             $linkbutton = http_build_query($linkbutton_array);
             $linktext = $i + 1;
 
@@ -69,9 +71,9 @@ class SQLPager {
             if ($i == $this->_page_current) {//__________ текущая страница
                 $pagebutton .= '<span class="pager_nolink" title="вы на странице ' . $linktext . '">' . $linktext . '</span>';
             } elseif (
-                    $i == 0                     //первая
-                    || abs($i - $this->_page_current) < 3  //по две рядом с текущей
-                    || $i == ($pages_cnt - 1)   //последняя
+                $i == 0                     //первая
+                || abs($i - $this->_page_current) < 3  //по две рядом с текущей
+                || $i == ($pages_cnt - 1)   //последняя
             ) {//__________ первая и последняя страницы, по две сбоку текущей
                 $pagebutton .= "<a href=\"?$linkbutton\" class=\"pager_link\" title=\"перейти к странице $linktext\">$linktext</a>";
             } elseif ($i < $this->_page_current && !$empty_before) {//__________ между первой и текущей
@@ -86,7 +88,11 @@ class SQLPager {
         }
 
         if ($show_total) {
-            $out .= "всего: {$this->_params['total']} " . Helper::getNumEnding($this->_params['total'], array('строка', 'строки', 'строк'));
+            $out .= "всего: {$this->_params['total']} " . Helper::getNumEnding($this->_params['total'], [
+                    'строка',
+                    'строки',
+                    'строк',
+                ]);
         }
 
         if ($show_selector) {
@@ -113,5 +119,4 @@ class SQLPager {
 
         return $out;
     }
-
 }

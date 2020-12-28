@@ -7,9 +7,15 @@ class FlickrAPI
 {
     private const URL = 'https://api.flickr.com/services/rest/';
 
+    /**
+     * @var string
+     */
     protected $token;
 
-    public function __construct($token)
+    /**
+     * @param string $token
+     */
+    public function __construct(string $token)
     {
         $this->token = $token;
     }
@@ -21,7 +27,7 @@ class FlickrAPI
      *
      * @return array
      */
-    public function getPhotoInfo($id): ?array
+    public function getPhotoInfo(int $id): ?array
     {
         $licenses = [
             0 => 'All Rights Reserved',
@@ -45,8 +51,7 @@ class FlickrAPI
         try {
             $data = $this->request($url);
             $out = json_decode($data, true);
-            $out['photo']['license_text'] = isset($licenses[$out['photo']['license']]) ?
-                $licenses[$out['photo']['license']] : 'undefined license';
+            $out['photo']['license_text'] = $licenses[$out['photo']['license']] ?? 'undefined license';
             return $out;
         } catch (Exception $e) {
             //
@@ -60,7 +65,7 @@ class FlickrAPI
      *
      * @return array
      */
-    public function getSizes($id): ?array
+    public function getSizes(int $id): ?array
     {
         $requestData = [
             'api_key' => $this->token,

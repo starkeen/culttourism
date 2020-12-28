@@ -2,17 +2,19 @@
 
 class StaticResources
 {
-    const PREFIX = 'ct';
+    private const PREFIX = 'ct';
 
-    private $config = [
-        'css' => [],
-        'js' => [],
-    ];
+    /**
+     * @var array
+     */
+    private $config;
 
+    /**
+     * @var int
+     */
     private $timestamp_old;
 
     /**
-     * StaticResources constructor.
      */
     public function __construct()
     {
@@ -61,7 +63,7 @@ class StaticResources
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                 $minified = curl_exec($ch);
                 curl_close($ch);
-                if ($minified != '') {
+                if ($minified !== '') {
                     file_put_contents($file_production, $minified);
                 }
             }
@@ -97,12 +99,8 @@ class StaticResources
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                 $minified = curl_exec($ch);
                 curl_close($ch);
-                if ($minified != '') {
-                    $old_files = glob(_DIR_ROOT . '/js/' . self::PREFIX . '-' . $pack . '-*.min.js');
+                if ($minified !== '') {
                     file_put_contents($file_production, $minified);
-                    foreach ($old_files as $old) {
-                        //unlink($old);
-                    }
                 }
             }
             unlink($file_out);
@@ -125,7 +123,7 @@ class StaticResources
     /**
      *
      */
-    public function clean()
+    public function clean(): void
     {
         $mask = [];
         foreach ((array) $this->config as $filetype => $files) {

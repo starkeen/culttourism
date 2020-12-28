@@ -7,9 +7,9 @@ class Pager
     private $items_per_page = 20;
     private $items_per_max = 25;
     private $show_pager = false;
-    private $show_selector = true;
+    private $show_selector;
     private $var_perpage = [20, 40, 100, 200];
-    private $show_total = false;
+    private $show_total;
     public $cnt_total = 0;
 
     public function __construct($all, $show_selector = true, $show_total = false)
@@ -21,7 +21,7 @@ class Pager
         $cnt_items = count($all);
         $this->cnt_total = $cnt_items;
 
-        if (isset($_GET['pager_perpage']) && (int) $_GET['pager_perpage'] != 0) {
+        if (isset($_GET['pager_perpage']) && (int) $_GET['pager_perpage'] !== 0) {
             $this->items_per_page = (int) $_GET['pager_perpage'];
             $this->items_per_max = $this->items_per_page + 5;
         }
@@ -75,9 +75,6 @@ class Pager
                 $this->pages .= $pagebutton;
             }
             if ($this->show_total) {
-                if (!class_exists('Helper')) {
-                    include('class.Helper.php');
-                }
                 $this->pages .= "всего: $this->cnt_total " . Helper::getNumEnding(
                         $this->cnt_total,
                         ['строка', 'строки', 'строк']

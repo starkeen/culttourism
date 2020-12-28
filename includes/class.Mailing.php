@@ -182,5 +182,4 @@ class Mailing
         }
         return $template;
     }
-
 }
