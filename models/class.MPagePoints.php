@@ -2,6 +2,7 @@
 
 use app\db\MyDB;
 use app\model\criteria\PointCriteria;
+use app\utils\Keyboard;
 
 class MPagePoints extends Model
 {
@@ -589,7 +590,7 @@ class MPagePoints extends Model
      *
      * @return array
      */
-    public function getSuggestion($query): array
+    public function getSuggestion(string $query): array
     {
         $this->_db->sql = "SELECT pt_id, pt_name, pt_latitude, pt_longitude, pc_id, pc_title_unique AS pc_title, url
                             FROM $this->_table_name pt
@@ -602,7 +603,7 @@ class MPagePoints extends Model
         $this->_db->execute(
             [
                 ':name1' => '%' . trim($query) . '%',
-                ':name2' => '%' . trim(Helper::getQwerty($query)) . '%',
+                ':name2' => '%' . trim(Keyboard::getQwerty($query)) . '%',
             ]
         );
         return $this->_db->fetchAll();

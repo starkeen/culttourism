@@ -1,5 +1,7 @@
 <?php
 
+use app\utils\Keyboard;
+
 class MPageCities extends Model
 {
     protected $_table_pk = 'pc_id';
@@ -372,7 +374,7 @@ class MPageCities extends Model
         $this->_db->execute(
             [
                 ':name1' => '%' . trim($query) . '%',
-                ':name2' => '%' . trim(Helper::getQwerty($query)) . '%',
+                ':name2' => '%' . trim(Keyboard::getQwerty($query)) . '%',
             ]
         );
 
