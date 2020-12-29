@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class KeyboardTest extends TestCase
 {
-    private const INCOMING_STRING = 'a\s;d10-=.,/[]z()йзбю.жэхъ';
+    private const INCOMING_STRING = 'a\s;d1`0-=.,/[]z()йзбю.жэхъё';
 
     public function testTransformationEmptyString(): void
     {
@@ -18,11 +18,11 @@ class KeyboardTest extends TestCase
 
     public function testTransformationLatRus(): void
     {
-        self::assertEquals('ф\ыЖв10-=ЮБ.ХЪя()йзбюЮжэхъ', Keyboard::getQwerty(self::INCOMING_STRING, true));
+        self::assertEquals('ф\ыЖв1`0-=ЮБ.ХЪя()йзбюЮжэхъё', Keyboard::getQwerty(self::INCOMING_STRING, true));
     }
 
     public function testTransformationRusLat(): void
     {
-        self::assertEquals('a\s;d10-=/,/[]z()qpбю/жэхъ', Keyboard::getQwerty(self::INCOMING_STRING, false));
+        self::assertEquals('a\s;d1`0-=/,/[]z()qpбю/жэхъё', Keyboard::getQwerty(self::INCOMING_STRING, false));
     }
 }

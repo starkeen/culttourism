@@ -3,6 +3,7 @@
 use app\db\MyDB;
 use app\model\criteria\PointCriteria;
 use app\utils\Keyboard;
+use app\utils\Strings;
 
 class MPagePoints extends Model
 {
@@ -234,7 +235,7 @@ class MPagePoints extends Model
         if (($point['tr_sight'] == 0 && $point['pt_type_id'] != 0) || count($analogs) > 1) {
             $name = $point['pc_title'] . ' ' . $name;
         }
-        $name_url = trim(preg_replace('/[^a-z0-9-_]+/', '', strtolower(Helper::getTransliteration($name, '_'))), '_-');
+        $name_url = trim(preg_replace('/[^a-z0-9-_]+/', '', strtolower(Strings::getTransliteration($name, '_'))), '_-');
 
         $concurents = $this->searchSlugline($name_url);
         if (count($concurents) > 0) {
