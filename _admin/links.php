@@ -6,7 +6,6 @@ use app\sys\TemplateEngine;
 use models\MLinks;
 
 include('common.php');
-include(_DIR_INCLUDES . '/class.Pager.php');
 
 /** @var TemplateEngine $smarty */
 $smarty->assign('title', 'Ссылки для ручной проверки');

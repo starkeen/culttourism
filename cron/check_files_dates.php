@@ -81,7 +81,6 @@ $sp->updateByName('site_version', date('Ymd-Hi', $timestampMax));
 
 if ($lastUpdate !== $timestampMax) {
     //тревожное пимьмо
-    include_once _DIR_INCLUDES . '/class.Mailing.php';
     $mailAttrs = [
         'datetime_max' => date('d.m.Y H:i:s', $timestampMax),
         'datetime_last' => date('d.m.Y H:i:s', $lastUpdate),

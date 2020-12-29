@@ -5,7 +5,6 @@ define('_INDEXPAGE_URI', 'index.html');
 define('_ER_REPORT', true);
 
 define('_DIR_ROOT', '/www/vhosts/culttourism');
-define('_INI_DELIMITER', ':');                  // use ';' for Windows and ':' for Unix
 define('_DELIMITER_PATH', '/');
 define('_URL_ROOT', 'cult.local');
 
@@ -41,18 +40,12 @@ define('GOOGLE_CUSTOM_SEARCH_CX', 'absdef');
  */
 
 /* Directory settings */
-define('_DIR_INCLUDES', _DIR_ROOT . _DELIMITER_PATH . 'includes');
 define('_DIR_DATA', _DIR_ROOT . _DELIMITER_PATH . 'data');
 define('_DIR_PHOTOS', _DIR_DATA . _DELIMITER_PATH . 'photos');
 define('_DIR_TEMPLATES', _DIR_ROOT . _DELIMITER_PATH . 'templates');
-define('_DIR_TEMPLATES_ADM', _DIR_ROOT . _DELIMITER_PATH . 'templates' . _DELIMITER_PATH . '_admin');
-define('_DIR_MODELS', _DIR_ROOT . _DELIMITER_PATH . 'models');
-define('_DIR_ADDONS', _DIR_ROOT . _DELIMITER_PATH . 'addons');
-define('_DIR_SMARTY', _DIR_ROOT . _DELIMITER_PATH . 'addons/Smarty3/libs');
 define('_DIR_VAR', _DIR_ROOT . _DELIMITER_PATH . 'var');
 define('_DIR_CACHE', _DIR_VAR . _DELIMITER_PATH . 'cache');
 define('_DIR_TMP', _DIR_VAR . _DELIMITER_PATH . 'tmp');
 
 define('_SITE_URL', 'https://' . _URL_ROOT . '/');
 
-ini_set('include_path', ini_get('include_path') . _INI_DELIMITER . _DIR_INCLUDES);
