@@ -14,6 +14,7 @@ use app\exceptions\AccessDeniedException;
 use app\exceptions\RedirectException;
 use app\utils\Strings;
 use Curl;
+use InvalidArgumentException;
 use MPageCities;
 use MPhotos;
 use MWeatherCodes;
@@ -107,7 +108,9 @@ class CityModule extends Module implements ModuleInterface
             if ($weather_data['temperature'] > 0) {
                 $weather_data['temperature'] = '+' . $weather_data['temperature'];
             }
-            if (isset($response->main->temp_min, $response->main->temp_max) && round($response->main->temp_min) !== round($response->main->temp_max)) {
+            if (isset($response->main->temp_min, $response->main->temp_max)
+                && round($response->main->temp_min) !== round($response->main->temp_max)
+            ) {
                 $weather_data['temperature_min'] = round($response->main->temp_min - 273.15);
                 $weather_data['temperature_max'] = round($response->main->temp_max - 273.15);
                 if ($weather_data['temperature_min'] > 0) {
@@ -138,25 +141,9 @@ class CityModule extends Module implements ModuleInterface
                     $weather_data['weather_full'] .= ', ' . $weather_data['weather_descr'];
                 }
             }
-            if ($weather_data['winddeg'] >= 0 && $weather_data['winddeg'] <= 22.5) {
-                $weather_data['winddirect'] = 'сев';
-            } elseif ($weather_data['winddeg'] >= 22.5 && $weather_data['winddeg'] <= 67.5) {
-                $weather_data['winddirect'] = 'с-в';
-            } elseif ($weather_data['winddeg'] >= 67.5 && $weather_data['winddeg'] <= 112.5) {
-                $weather_data['winddirect'] = 'вост';
-            } elseif ($weather_data['winddeg'] >= 112.5 && $weather_data['winddeg'] <= 157.5) {
-                $weather_data['winddirect'] = 'ю-в';
-            } elseif ($weather_data['winddeg'] >= 157.5 && $weather_data['winddeg'] <= 202.5) {
-                $weather_data['winddirect'] = 'юж';
-            } elseif ($weather_data['winddeg'] >= 202.5 && $weather_data['winddeg'] <= 247.5) {
-                $weather_data['winddirect'] = 'ю-3';
-            } elseif ($weather_data['winddeg'] >= 247.5 && $weather_data['winddeg'] <= 292.5) {
-                $weather_data['winddirect'] = 'зап';
-            } elseif ($weather_data['winddeg'] >= 292.5 && $weather_data['winddeg'] <= 67.5) {
-                $weather_data['winddirect'] = 'с-з';
-            } else {
-                $weather_data['winddirect'] = 'сев';
-            }
+
+            $weather_data['winddirect'] = $this->getWindDirection($weather_data['winddeg']);
+
             $this->templateEngine->assign('weather_data', $weather_data);
             $out['state'] = true;
             $out['content'] = $this->templateEngine->fetch(_DIR_TEMPLATES . '/city/weather.block.tpl');
@@ -589,5 +576,38 @@ class CityModule extends Module implements ModuleInterface
         } else {
             $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.show.tpl'));
         }
+    }
+
+    /**
+     * @param float $degree
+     * @return string
+     */
+    private function getWindDirection(float $degree): string
+    {
+        if ($degree < 0) {
+            throw new InvalidArgumentException('Неправильное направление ветра');
+        }
+
+        if ($degree < 22.5) {
+            $result = 'сев';
+        } elseif ($degree < 67.5) {
+            $result = 'с-в';
+        } elseif ($degree < 112.5) {
+            $result = 'вост';
+        } elseif ($degree < 157.5) {
+            $result = 'ю-в';
+        } elseif ($degree < 202.5) {
+            $result = 'юж';
+        } elseif ($degree < 247.5) {
+            $result = 'ю-3';
+        } elseif ($degree < 292.5) {
+            $result = 'зап';
+        } elseif ($degree < 337.5) {
+            $result = 'с-з';
+        } else {
+            $result = 'сев';
+        }
+
+        return $result;
     }
 }
