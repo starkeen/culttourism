@@ -7,6 +7,8 @@ Disallow: /search/
 Disallow: /search
 Disallow: /city/detail/
 Disallow: /city/add/
+Disallow: /index.html/
+Disallow: /index.html
 Sitemap: https://culttourism.ru/sitemap.xml
 
 User-agent: Yandex
@@ -17,4 +19,6 @@ Disallow: /addons/
 Disallow: /search/
 Disallow: /city/detail/
 Disallow: /city/add/
+Disallow: /index.html/
+Disallow: /index.html
 Host: https://culttourism.ru
