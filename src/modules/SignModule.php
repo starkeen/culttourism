@@ -67,7 +67,7 @@ class SignModule extends Module implements ModuleInterface
             $uniqueKey = $_SESSION[self::COOKIE_KEY];
         }
 
-        return $this->templateEngine->getContent(_DIR_TEMPLATES . '/sign/in.tpl', [
+        return $this->templateEngine->getContent('sign/in.tpl', [
             'key' => $uniqueKey,
             'url' => _SITE_URL,
         ]);
@@ -79,7 +79,7 @@ class SignModule extends Module implements ModuleInterface
      */
     private function getUp(): string
     {
-        return $this->templateEngine->getContent(_DIR_TEMPLATES . '/sign/up.tpl');
+        return $this->templateEngine->getContent('sign/up.tpl');
     }
 
     /**

@@ -22,6 +22,21 @@ use MWeatherCodes;
 class CityModule extends Module implements ModuleInterface
 {
     /**
+     * @var MPageCities
+     */
+    private $modelPageCities;
+
+    /**
+     * @var MWeatherCodes
+     */
+    private $modelWeatherCodes;
+
+    /**
+     * @var MPhotos
+     */
+    private $modelPhotos;
+
+    /**
      * @inheritDoc
      * @throws NotFoundException
      * @throws AccessDeniedException
@@ -160,8 +175,7 @@ class CityModule extends Module implements ModuleInterface
      */
     private function getWeatherConditionsByCode($code): ?array
     {
-        $wc = new MWeatherCodes($this->db);
-        $row = $wc->getItemByPk($code);
+        $row = $this->buildModelWeatherCodes()->getItemByPk($code);
         if ($row !== null && (int) $row['wc_id'] !== 0) {
             return ['main' => $row['wc_main'], 'description' => $row['wc_description']];
         }
@@ -178,8 +192,6 @@ class CityModule extends Module implements ModuleInterface
     {
         $dbcd = $this->db->getTableName('city_data');
         $dbcf = $this->db->getTableName('city_fields');
-
-        $pc = new MPageCities($this->db);
 
         if (isset($_POST['act'])) {
             if (!$this->webUser->isEditor()) {
@@ -216,7 +228,7 @@ class CityModule extends Module implements ModuleInterface
                         ]
                     );
                     $row = $this->db->fetch();
-                    $pc->updateByPk(
+                    $this->buildModelPageCities()->updateByPk(
                         $city_id,
                         [
                             'pc_lastup_user' => $uid,
@@ -234,7 +246,7 @@ class CityModule extends Module implements ModuleInterface
                             ':cf_id' => $cf_id,
                         ]
                     );
-                    $pc->updateByPk(
+                    $this->buildModelPageCities()->updateByPk(
                         $city_id,
                         [
                             'pc_lastup_user' => $uid,
@@ -256,7 +268,7 @@ class CityModule extends Module implements ModuleInterface
                             ]
                         );
                     }
-                    $pc->updateByPk(
+                    $this->buildModelPageCities()->updateByPk(
                         $city_id,
                         [
                             'pc_lastup_user' => $uid,
@@ -269,13 +281,13 @@ class CityModule extends Module implements ModuleInterface
             $this->db->sql = "SELECT cf_title, cd_value
                                 FROM $dbcd cd
                                     LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
-                                WHERE cd.cd_pc_id = :pc_id
+                                WHERE cd.cd_pc_id = :id
                                     AND cd.cd_value != ''
                                     AND cf.cf_active = 1
                                 ORDER BY cf_order";
             $this->db->execute(
                 [
-                    ':pc_id' => (int) $_GET['id'],
+                    ':id' => (int) $_GET['id'],
                 ]
             );
             $metas = $this->db->fetchAll();
@@ -303,22 +315,18 @@ class CityModule extends Module implements ModuleInterface
         if (!isset($_GET['city_id'])) {
             throw new NotFoundException();
         }
-        $city_id = isset($_GET['city_id']) ? (int) $_GET['city_id'] : 0;
-        if (!$city_id) {
+        $cityId = isset($_GET['city_id']) ? (int) $_GET['city_id'] : 0;
+        if ($cityId === 0) {
             throw new NotFoundException();
         }
-
-        $ph = new MPhotos($this->db);
-
-        $pc = new MPageCities($this->db);
 
         $dbcd = $this->db->getTableName('city_data');
         $dbcf = $this->db->getTableName('city_fields');
         $dbws = $this->db->getTableName('wordstat');
 
         if (isset($_POST) && !empty($_POST)) {
-            $pc->updateByPk(
-                $city_id,
+            $this->buildModelPageCities()->updateByPk(
+                $cityId,
                 [
                     'pc_keywords' => $_POST['keywds'],
                     'pc_description' => $_POST['descr'],
@@ -335,23 +343,22 @@ class CityModule extends Module implements ModuleInterface
                     'pc_lastup_user' => $this->webUser->getId(),
                 ]
             );
-            $city = $pc->getItemByPk($city_id);
+            $city = $this->buildModelPageCities()->getItemByPk($cityId);
 
             throw new RedirectException($city['url']);
         }
 
-        $citypage = $pc->getItemByPk($city_id);
-
-        $photos = $ph->getItemsByRegion($city_id);
+        $citypage = $this->buildModelPageCities()->getItemByPk($cityId);
+        $photos = $this->buildModelPhotos()->getItemsByRegion($cityId);
 
         $this->db->sql = "SELECT *
                     FROM $dbcd cd
                         LEFT JOIN $dbcf cf ON cf.cf_id = cd.cd_cf_id
-                    WHERE cd.cd_pc_id = :pc_id
+                    WHERE cd.cd_pc_id = :city_id
                     ORDER BY cf_order";
         $this->db->execute(
             [
-                ':pc_id' => $city_id,
+                ':city_id' => $cityId,
             ]
         );
         $meta = $this->db->fetchAll();
@@ -362,7 +369,7 @@ class CityModule extends Module implements ModuleInterface
                     ORDER BY cf_order";
         $this->db->execute(
             [
-                ':pc_id' => $city_id,
+                ':pc_id' => $cityId,
             ]
         );
         $ref_meta = $this->db->fetchAll();
@@ -378,18 +385,19 @@ class CityModule extends Module implements ModuleInterface
         );
         $yandex = $this->db->fetch();
 
-        $this->templateEngine->assign('city', $citypage);
-        $this->templateEngine->assign('baseurl', _URL_ROOT);
-        $this->templateEngine->assign('meta', $meta);
-        $this->templateEngine->assign('photos', $photos['items']);
-        $this->templateEngine->assign('ref_meta', $ref_meta);
-        $this->templateEngine->assign('yandex', $yandex);
-
         $response->setLastEditTimestamp($citypage['last_update']);
 
-        $this->templateEngine->assign('adminlogined', $this->webUser->getId() ?: 0);
+        $body = $this->templateEngine->getContent('city/details.tpl', [
+            'adminlogined' => $this->webUser->getId() ?: 0,
+            'city' => $citypage,
+            'baseurl' => _URL_ROOT,
+            'meta' => $meta,
+            'photos' => $photos['items'],
+            'ref_meta' => $ref_meta,
+            'yandex' => $yandex,
+        ]);
 
-        $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/details.tpl'));
+        $response->getContent()->setBody($body);
     }
 
     /**
@@ -402,9 +410,9 @@ class CityModule extends Module implements ModuleInterface
         $newcity = '';
         $inbase = [];
         $already = [];
-        $pc = new MPageCities($this->db);
+
         if (isset($_POST) && !empty($_POST)) {
-            $cid = $pc->insert(
+            $cid = $this->buildModelPageCities()->insert(
                 [
                     'pc_title' => $_POST['city_name'],
                     'pc_city_id' => $_POST['city_id'],
@@ -609,5 +617,41 @@ class CityModule extends Module implements ModuleInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @return MPhotos
+     */
+    private function buildModelPhotos(): MPhotos
+    {
+        if ($this->modelPhotos === null) {
+            $this->modelPhotos = new MPhotos($this->db);
+        }
+
+        return $this->modelPhotos;
+    }
+
+    /**
+     * @return MPageCities
+     */
+    private function buildModelPageCities(): MPageCities
+    {
+        if ($this->modelPageCities === null) {
+            $this->modelPageCities = new MPageCities($this->db);
+        }
+
+        return $this->modelPageCities;
+    }
+
+    /**
+     * @return MWeatherCodes
+     */
+    private function buildModelWeatherCodes(): MWeatherCodes
+    {
+        if ($this->modelWeatherCodes === null) {
+            $this->modelWeatherCodes = new MWeatherCodes($this->db);
+        }
+
+        return $this->modelWeatherCodes;
     }
 }
