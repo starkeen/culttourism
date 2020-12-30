@@ -106,7 +106,12 @@ class Logger implements LoggerInterface
         $this->sentry->captureException($exception);
     }
 
-    private function sendSentry($level, $message, array $context = []): void
+    /**
+     * @param string $level
+     * @param string $message
+     * @param array $context
+     */
+    private function sendSentry(string $level, string $message, array $context = []): void
     {
         if ($level === LogLevel::NOTICE) {
             $severity = new Severity(LogLevel::WARNING);

@@ -70,7 +70,9 @@ class SentryLogger
             }
         );
 
-        return $this->hub->captureMessage($message, $level);
+        $eventId = $this->hub->captureMessage($message, $level);
+
+        return (string) $eventId;
     }
 
     /**
@@ -79,7 +81,7 @@ class SentryLogger
      */
     public function captureException(Throwable $exception): ?string
     {
-        return $this->hub->captureException($exception);
+        return (string) $this->hub->captureException($exception);
     }
 
     /**
