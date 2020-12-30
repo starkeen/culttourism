@@ -1,4 +1,5 @@
 <?php
 
-$sr = new StaticResources();
-$sr->clean();
+use app\core\assets\AssetsServiceBuilder;
+
+AssetsServiceBuilder::build()->clean();

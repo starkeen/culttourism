@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace app\modules;
 
+use app\core\assets\AssetsServiceBuilder;
+use app\core\assets\constant\Pack;
+use app\core\assets\constant\Type;
 use app\core\module\Module;
 use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
@@ -64,7 +67,11 @@ class SysModule extends Module implements ModuleInterface
         } elseif ($request->getLevel1() === 'bitbucket' && $request->getGETParam('key') !== null) {
             $this->getBitbucket(trim($_GET['key']));
         } elseif ($request->getLevel1() === 'static' && $request->getGETParam('type') !== null && $request->getGETParam('pack') !== null) {
-            $this->getStatic(trim($request->getGETParam('type')), trim($request->getGETParam('pack')));
+            $typeName = trim($request->getGETParam('type'));
+            $packName = trim($request->getGETParam('pack'));
+            $type = new Type($typeName);
+            $pack = new Pack($packName);
+            $this->getStatic($type, $pack);
         } else {
             throw new NotFoundException();
         }
@@ -87,21 +94,14 @@ class SysModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param string $type
-     * @param string $pack
+     * @param Type $type
+     * @param Pack $pack
      */
-    public function getStatic(string $type, string $pack = 'common'): void
+    private function getStatic(Type $type, Pack $pack): void
     {
-        if ($type === 'css') {
-            header('Content-Type: text/css');
-        } elseif ($type === 'js') {
-            header('Content-Type: text/javascript');
-        } else {
-            header('Content-Type: text/plain');
-        }
+        header('Content-Type: ' . $type->getContentType());
 
-        $sr = new StaticResources();
-        echo $sr->getFull($type, $pack);
+        echo AssetsServiceBuilder::build()->getFull($type, $pack);
         exit();
     }
 
@@ -128,8 +128,7 @@ class SysModule extends Module implements ModuleInterface
                     $this->templateEngine->cleanCompiled();
                     $this->templateEngine->cleanCache();
 
-                    $sr = new StaticResources();
-                    $static = $sr->rebuildAll();
+                    $static = AssetsServiceBuilder::build()->rebuildAll();
                     if (isset($static['css']['common'])) {
                         $sp->updateByName('mainfile_css', basename($static['css']['common']));
                     }

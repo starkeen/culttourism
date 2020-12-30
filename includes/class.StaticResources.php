@@ -1,39 +1,56 @@
 <?php
 
+use app\core\assets\constant\Pack;
+use app\core\assets\constant\Type;
+use app\core\assets\StaticFilesConfigInterface;
+
 class StaticResources
 {
     private const PREFIX = 'ct';
 
     /**
-     * @var array
+     * @var StaticFilesConfigInterface
      */
     private $config;
 
     /**
      * @var int
      */
-    private $timestamp_old;
+    private $timestampOld;
 
     /**
+     * @param StaticFilesConfigInterface $config
      */
-    public function __construct()
+    public function __construct(StaticFilesConfigInterface $config)
     {
-        $this->config = include(_DIR_ROOT . '/config/static_files.php');
-        $this->timestamp_old = strtotime('-6 months');
+        $this->config = $config;
+        $this->timestampOld = strtotime('-6 months');
     }
 
     /**
-     * @param $type
-     * @param $pack
+     * @param Type $type
+     * @param Pack $pack
      *
      * @return string
      */
-    public function getFull($type, $pack): string
+    public function getFull(Type $type, Pack $pack): string
     {
         $out = '';
-        foreach ((array) $this->config[$type][$pack] as $file) {
+        switch ($type->getValue()) {
+            case Type::CSS:
+                $packs = $this->config->getCSSList();
+                break;
+            case Type::JS:
+                $packs = $this->config->getJavascriptList();
+                break;
+            default:
+                throw new InvalidArgumentException('Неизвестный тип');
+        }
+        $files = $packs[$pack->getValue()];
+        foreach ($files as $file) {
             $out .= file_get_contents($file);
         }
+
         return $out;
     }
 
@@ -43,7 +60,7 @@ class StaticResources
     private function rebuildCSS(): array
     {
         $out = [];
-        foreach ((array) $this->config['css'] as $pack => $files) {
+        foreach ($this->config->getCSSList() as $pack => $files) {
             $file_out = _DIR_ROOT . '/css/' . self::PREFIX . '-' . $pack . '.css';
             file_put_contents($file_out, '');
             foreach ((array) $files as $file) {
@@ -53,16 +70,7 @@ class StaticResources
             $file_hash_new = crc32(file_get_contents($file_out));
             $file_production = _DIR_ROOT . '/css/' . self::PREFIX . '-' . $pack . '-' . $file_hash_new . '.min.css';
             if (!file_exists($file_production)) {
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'https://cssminifier.com/raw');
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_HEADER, false);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['input' => trim(file_get_contents($file_out))]));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_FAILONERROR, true);
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                $minified = curl_exec($ch);
-                curl_close($ch);
+                $minified = $this->getMinifiedCss(file_get_contents($file_out));
                 if ($minified !== '') {
                     file_put_contents($file_production, $minified);
                 }
@@ -70,6 +78,7 @@ class StaticResources
             unlink($file_out);
             $out[$pack] = $file_production;
         }
+
         return $out;
     }
 
@@ -79,7 +88,7 @@ class StaticResources
     private function rebuildJS(): array
     {
         $out = [];
-        foreach ((array) $this->config['js'] as $pack => $files) {
+        foreach ((array) $this->config->getJavascriptList() as $pack => $files) {
             $file_out = _DIR_ROOT . '/js/' . self::PREFIX . '-' . $pack . '.js';
             file_put_contents($file_out, '');
             foreach ((array) $files as $file) {
@@ -89,16 +98,7 @@ class StaticResources
             $file_hash_new = crc32(file_get_contents($file_out));
             $file_production = _DIR_ROOT . '/js/' . self::PREFIX . '-' . $pack . '-' . $file_hash_new . '.min.js';
             if (!file_exists($file_production)) {
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'https://javascript-minifier.com/raw');
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_HEADER, false);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['input' => trim(file_get_contents($file_out))]));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_FAILONERROR, true);
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                $minified = curl_exec($ch);
-                curl_close($ch);
+                $minified = $this->getMinifiedJavascript(file_get_contents($file_out));
                 if ($minified !== '') {
                     file_put_contents($file_production, $minified);
                 }
@@ -106,6 +106,7 @@ class StaticResources
             unlink($file_out);
             $out[$pack] = $file_production;
         }
+
         return $out;
     }
 
@@ -115,8 +116,8 @@ class StaticResources
     public function rebuildAll(): array
     {
         return [
-            'css' => $this->rebuildCSS(),
-            'js' => $this->rebuildJS(),
+            Type::CSS => $this->rebuildCSS(),
+            Type::JS => $this->rebuildJS(),
         ];
     }
 
@@ -126,11 +127,14 @@ class StaticResources
     public function clean(): void
     {
         $mask = [];
-        foreach ((array) $this->config as $filetype => $files) {
-            foreach ($files as $msk => $file) {
-                $mask[] = _DIR_ROOT . '/' . $filetype . '/' . self::PREFIX . '-' . $msk . '-*.min.' . $filetype;
-            }
+
+        foreach ($this->config->getCSSList() as $packName => $file) {
+            $mask[] = _DIR_ROOT . '/css/' . self::PREFIX . '-' . $packName . '-*.min.css';
         }
+        foreach ($this->config->getJavascriptList() as $packName => $file) {
+            $mask[] = _DIR_ROOT . '/js/' . self::PREFIX . '-' . $packName . '-*.min.js';
+        }
+
         $files = [];
         foreach ($mask as $id => $variant) {
             foreach (glob($variant) as $filename) {
@@ -138,7 +142,7 @@ class StaticResources
                 $files[$id][$timestamp] = [
                     'filename' => $filename,
                     'timestamp' => $timestamp,
-                    'delete' => $timestamp < $this->timestamp_old,
+                    'delete' => $timestamp < $this->timestampOld,
                 ];
             }
             ksort($files[$id]);
@@ -153,5 +157,44 @@ class StaticResources
                 }
             }
         }
+    }
+
+    /**
+     * @param string $content
+     * @return string
+     */
+    private function getMinifiedCss(string $content): string
+    {
+        return $this->getExternalResponse('https://cssminifier.com/raw', $content);
+    }
+
+    /**
+     * @param string $content
+     * @return string
+     */
+    private function getMinifiedJavascript(string $content): string
+    {
+        return $this->getExternalResponse('https://javascript-minifier.com/raw', $content);
+    }
+
+    /**
+     * @param string $url
+     * @param string $content
+     * @return string
+     */
+    private function getExternalResponse(string $url, string $content): string
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['input' => trim($content)]));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FAILONERROR, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $minified = curl_exec($ch);
+        curl_close($ch);
+
+        return $minified;
     }
 }

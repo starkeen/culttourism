@@ -1,7 +1,8 @@
 <?php
 
-$sr = new StaticResources();
-$static = $sr->rebuildAll();
+use app\core\assets\AssetsServiceBuilder;
+
+$static = AssetsServiceBuilder::build()->rebuildAll();
 
 $sp = new MSysProperties($db);
 if (isset($static['css']['common'])) {
