@@ -40,6 +40,6 @@ class WordstatRepository
         );
         $data = $this->db->fetch();
 
-        return new Wordstat($data);
+        return $data !== null ? new Wordstat($data) : null;
     }
 }
