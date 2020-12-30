@@ -1,6 +1,8 @@
 <script type="text/javascript" src="/js/editor.js" defer="defer"></script>
+
 <h2>{$city.pc_title}</h2>
 <hr />
+
 <form method="post">
     <div class="city-details-main">
         <table>
@@ -109,8 +111,8 @@
 
 <div class="city-details-yandex">
     <img src="/img/yandex.png" alt="Поиск от Яндекс">
-    Вес: {$yandex.ws_weight_min} < {$yandex.ws_weight} < {$yandex.ws_weight_max}<br />
-    Позиция: {$yandex.ws_position}
+    Вес: {$wordstat->ws_weight_min} < {$wordstat->ws_weight} < {$wordstat->ws_weight_max}<br />
+    Позиция: {$wordstat->ws_position}
 </div>
 
 <style>

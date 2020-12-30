@@ -12,6 +12,7 @@ use app\exceptions\NotFoundException;
 use app\constant\OgType;
 use app\exceptions\AccessDeniedException;
 use app\exceptions\RedirectException;
+use app\model\repository\WordstatRepository;
 use app\utils\Strings;
 use Curl;
 use InvalidArgumentException;
@@ -35,6 +36,11 @@ class CityModule extends Module implements ModuleInterface
      * @var MPhotos
      */
     private $modelPhotos;
+
+    /**
+     * @var WordstatRepository
+     */
+    private $wordstatRepository;
 
     /**
      * @inheritDoc
@@ -322,7 +328,6 @@ class CityModule extends Module implements ModuleInterface
 
         $dbcd = $this->db->getTableName('city_data');
         $dbcf = $this->db->getTableName('city_fields');
-        $dbws = $this->db->getTableName('wordstat');
 
         if (isset($_POST) && !empty($_POST)) {
             $this->buildModelPageCities()->updateByPk(
@@ -374,16 +379,7 @@ class CityModule extends Module implements ModuleInterface
         );
         $ref_meta = $this->db->fetchAll();
 
-        $this->db->sql = "SELECT *
-                    FROM $dbws
-                    WHERE ws_city_title = :pc_title
-                    LIMIT 1";
-        $this->db->execute(
-            [
-                ':pc_title' => $citypage['pc_title'],
-            ]
-        );
-        $yandex = $this->db->fetch();
+        $wordstat = $this->buildWordstatRepository()->getDataByCityName($citypage['pc_title']);
 
         $response->setLastEditTimestamp($citypage['last_update']);
 
@@ -394,7 +390,7 @@ class CityModule extends Module implements ModuleInterface
             'meta' => $meta,
             'photos' => $photos['items'],
             'ref_meta' => $ref_meta,
-            'yandex' => $yandex,
+            'wordstat' => $wordstat,
         ]);
 
         $response->getContent()->setBody($body);
@@ -653,5 +649,14 @@ class CityModule extends Module implements ModuleInterface
         }
 
         return $this->modelWeatherCodes;
+    }
+
+    private function buildWordstatRepository(): WordstatRepository
+    {
+        if ($this->wordstatRepository === null) {
+            $this->wordstatRepository = new WordstatRepository($this->db);
+        }
+
+        return $this->wordstatRepository;
     }
 }
