@@ -22,7 +22,6 @@ use app\sys\TemplateEngine;
 use GuzzleHttp\Client;
 use Mailing;
 use MSysProperties;
-use StaticResources;
 
 class SysModule extends Module implements ModuleInterface
 {
@@ -154,12 +153,10 @@ class SysModule extends Module implements ModuleInterface
                 }
                 echo 'ok';
                 exit();
-            } else {
-                throw new NotFoundException();
             }
-        } else {
-            throw new NotFoundException();
         }
+
+        throw new NotFoundException();
     }
 
     /**
