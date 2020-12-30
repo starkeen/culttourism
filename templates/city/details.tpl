@@ -111,8 +111,12 @@
 
 <div class="city-details-yandex">
     <img src="/img/yandex.png" alt="Поиск от Яндекс">
-    Вес: {$wordstat->ws_weight_min} < {$wordstat->ws_weight} < {$wordstat->ws_weight_max}<br />
-    Позиция: {$wordstat->ws_position}
+    {if $wordstat !== null}
+        Вес: {$wordstat->ws_weight_min} < {$wordstat->ws_weight} < {$wordstat->ws_weight_max}<br />
+        Позиция: {$wordstat->ws_position}
+    {else}
+        Данных нет
+    {/if}
 </div>
 
 <style>
