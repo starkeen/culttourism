@@ -18,7 +18,6 @@ use app\services\openweathermap\WeatherService;
 use app\utils\Strings;
 use MPageCities;
 use MPhotos;
-use MWeatherCodes;
 
 class CityModule extends Module implements ModuleInterface
 {
@@ -26,11 +25,6 @@ class CityModule extends Module implements ModuleInterface
      * @var MPageCities
      */
     private $modelPageCities;
-
-    /**
-     * @var MWeatherCodes
-     */
-    private $modelWeatherCodes;
 
     /**
      * @var MPhotos
