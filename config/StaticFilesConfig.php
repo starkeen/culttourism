@@ -11,7 +11,12 @@ use InvalidArgumentException;
 
 class StaticFilesConfig implements StaticFilesConfigInterface
 {
-    private const JQUERY = _DIR_ROOT . '/addons/jquery/jquery.2.1.3.min.js';
+    private const JS_COMMON = [
+        _DIR_ROOT . '/addons/jquery/jquery.2.1.3.min.js',
+        _DIR_ROOT . '/addons/jquery/jquery-migrate-1.2.1.min.js',
+        _DIR_ROOT . '/addons/simplemodal/jquery.simplemodal.1.4.4.min.js',
+        _DIR_ROOT . '/addons/autocomplete/jquery.autocomplete.min.js',
+    ];
 
     public function getFiles(Type $type, Pack $pack): array
     {
@@ -56,47 +61,27 @@ class StaticFilesConfig implements StaticFilesConfigInterface
     public function getJavascriptList(): array
     {
         return [
-            Pack::COMMON => [
-                self::JQUERY,
-                _DIR_ROOT . '/addons/jquery/jquery-migrate-1.2.1.min.js',
-                _DIR_ROOT . '/addons/simplemodal/jquery.simplemodal.1.4.4.min.js',
-                _DIR_ROOT . '/addons/autocomplete/jquery.autocomplete.min.js',
+            Pack::COMMON => array_merge(self::JS_COMMON, [
                 _DIR_ROOT . '/js/main.js',
-            ],
-            Pack::MAP => [
-                self::JQUERY,
-                _DIR_ROOT . '/addons/jquery/jquery-migrate-1.2.1.min.js',
-                _DIR_ROOT . '/addons/simplemodal/jquery.simplemodal.1.4.4.min.js',
-                _DIR_ROOT . '/addons/autocomplete/jquery.autocomplete.min.js',
+            ]),
+            Pack::MAP => array_merge(self::JS_COMMON, [
                 _DIR_ROOT . '/js/main.js',
                 _DIR_ROOT . '/js/map.js',
-            ],
-            Pack::LIST => [
-                self::JQUERY,
-                _DIR_ROOT . '/addons/jquery/jquery-migrate-1.2.1.min.js',
-                _DIR_ROOT . '/addons/simplemodal/jquery.simplemodal.1.4.4.min.js',
-                _DIR_ROOT . '/addons/autocomplete/jquery.autocomplete.min.js',
+            ]),
+            Pack::LIST => array_merge(self::JS_COMMON, [
                 _DIR_ROOT . '/js/main.js',
                 _DIR_ROOT . '/js/map_page_list.js',
-            ],
-            Pack::CITY => [
-                self::JQUERY,
-                _DIR_ROOT . '/addons/jquery/jquery-migrate-1.2.1.min.js',
-                _DIR_ROOT . '/addons/simplemodal/jquery.simplemodal.1.4.4.min.js',
-                _DIR_ROOT . '/addons/autocomplete/jquery.autocomplete.min.js',
+            ]),
+            Pack::CITY => array_merge(self::JS_COMMON, [
                 _DIR_ROOT . '/js/main.js',
                 _DIR_ROOT . '/js/map_page_city.js',
                 _DIR_ROOT . '/js/adv_city.js',
-            ],
-            Pack::POINT => [
-                self::JQUERY,
-                _DIR_ROOT . '/addons/jquery/jquery-migrate-1.2.1.min.js',
-                _DIR_ROOT . '/addons/simplemodal/jquery.simplemodal.1.4.4.min.js',
-                _DIR_ROOT . '/addons/autocomplete/jquery.autocomplete.min.js',
+            ]),
+            Pack::POINT => array_merge(self::JS_COMMON, [
                 _DIR_ROOT . '/js/main.js',
                 _DIR_ROOT . '/js/adv_point.js',
                 _DIR_ROOT . '/js/map_page_point.js',
-            ],
+            ]),
             Pack::API => [
                 _DIR_ROOT . '/js/api.js',
             ],
