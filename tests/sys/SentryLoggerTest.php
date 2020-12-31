@@ -15,6 +15,11 @@ class SentryLoggerTest extends TestCase
      */
     private $logger;
 
+    public static function setUpBeforeClass(): void
+    {
+        define('_ER_REPORT', false);
+    }
+
     public function setUp(): void
     {
         $this->logger = new SentryLogger('');

@@ -13,9 +13,9 @@ use app\constant\OgType;
 use app\exceptions\AccessDeniedException;
 use app\exceptions\RedirectException;
 use app\model\repository\WordstatRepository;
+use app\services\openweathermap\WeatherFactory;
+use app\services\openweathermap\WeatherService;
 use app\utils\Strings;
-use Curl;
-use InvalidArgumentException;
 use MPageCities;
 use MPhotos;
 use MWeatherCodes;
@@ -43,6 +43,11 @@ class CityModule extends Module implements ModuleInterface
     private $wordstatRepository;
 
     /**
+     * @var WeatherService
+     */
+    private $weatherService;
+
+    /**
      * @inheritDoc
      * @throws NotFoundException
      * @throws AccessDeniedException
@@ -60,7 +65,7 @@ class CityModule extends Module implements ModuleInterface
             $this->metaCity();
         } elseif ($request->getLevel1() === 'weather' && isset($_GET['lat']) && isset($_GET['lon'])) {
             $response->setLastEditTimestampToFuture();
-            $this->getBlockWeather($_GET['lat'], $_GET['lon']);
+            $this->getBlockWeather((float) $_GET['lat'], (float) $_GET['lon']);
         } else {
             throw new NotFoundException();
         }
@@ -84,109 +89,25 @@ class CityModule extends Module implements ModuleInterface
 
     /**
      **************************************  БЛОК  ПОГОДЫ  *****************
-     * @param $lat
-     * @param $lon
+     * @param float $lat
+     * @param float $lon
      */
-    private function getBlockWeather($lat, $lon): void
+    private function getBlockWeather(float $lat, float $lon): void
     {
         $out = ['state' => false, 'content' => '', 'color' => ''];
-        $weather_data = [
-            'temperature' => '',
-            'temperature_min' => '',
-            'temperature_max' => '',
-            'temp_range' => '',
-            'pressure' => 0,
-            'humidity' => 0,
-            'windspeed' => 0,
-            'winddirect' => '',
-            'winddeg' => 0,
-            'clouds' => 0,
-            'weather_id' => 800,
-            'weather_icon' => '01d',
-            'weather_text' => '',
-            'weather_descr' => '',
-            'weather_full' => '',
-        ];
 
-        $curl = new Curl($this->db);
-        $curl->setTTL(3600); //кэшируем запросы на час
-        $curl->config(CURLOPT_TIMEOUT, 2);
-        $curl->config(CURLOPT_HEADER, 0);
-        $curl->config(CURLOPT_SSL_VERIFYPEER, false);
-        $curl->config(CURLOPT_FAILONERROR, true);
+        $weatherService = $this->getWeatherService();
+        $weatherData = $weatherService->getWeatherByCoordinates($lat, $lon);
 
-        $url = 'http://api.openweathermap.org/data/2.5/weather?lat='
-            . (float) $lat . '&lon=' . (float) $lon
-            . '&APPID=' . $this->globalConfig->getOpenWeatherAPIKey();
-        $result = $curl->get($url);
-        if ($result === null) {
-            $result = json_encode(['cod' => 500]);
-        }
-        $response = json_decode($result);
-
-        if (is_object($response) && (int) $response->cod === 200) {
-            $weather_data['temperature'] = round($response->main->temp - 273.15);
-            if ($weather_data['temperature'] > 0) {
-                $weather_data['temperature'] = '+' . $weather_data['temperature'];
-            }
-            if (isset($response->main->temp_min, $response->main->temp_max)
-                && round($response->main->temp_min) !== round($response->main->temp_max)
-            ) {
-                $weather_data['temperature_min'] = round($response->main->temp_min - 273.15);
-                $weather_data['temperature_max'] = round($response->main->temp_max - 273.15);
-                if ($weather_data['temperature_min'] > 0) {
-                    $weather_data['temperature_min'] = '+' . $weather_data['temperature_min'];
-                }
-                if ($weather_data['temperature_max'] > 0) {
-                    $weather_data['temperature_max'] = '+' . $weather_data['temperature_max'];
-                }
-                $weather_data['temp_range'] = $weather_data['temperature_min'] . '&hellip;' . $weather_data['temperature_max'];
-            }
-            $weather_data['pressure'] = round($response->main->pressure / 10);
-            $weather_data['humidity'] = !empty($response->main->humidity) ? round($response->main->humidity) : null;
-            $weather_data['windspeed'] = round($response->wind->speed, 1);
-            $weather_data['winddeg'] = !empty($response->wind->deg) ? $response->wind->deg : 0;
-            $weather_data['clouds'] = $response->clouds->all;
-            if (isset($response->weather[0])) {
-                $weather_data['weather_id'] = $response->weather[0]->id;
-                $weather_data['weather_text'] = $response->weather[0]->main;
-                $weather_data['weather_descr'] = $response->weather[0]->description;
-                $weather_data['weather_icon'] = $response->weather[0]->icon;
-                $cond = $this->getWeatherConditionsByCode($weather_data['weather_id']);
-                if ($cond) {
-                    $weather_data['weather_text'] = $cond['main'];
-                    $weather_data['weather_descr'] = $cond['description'];
-                }
-                $weather_data['weather_full'] = $weather_data['weather_text'];
-                if ($weather_data['weather_descr']) {
-                    $weather_data['weather_full'] .= ', ' . $weather_data['weather_descr'];
-                }
-            }
-
-            $weather_data['winddirect'] = $this->getWindDirection($weather_data['winddeg']);
-
-            $this->templateEngine->assign('weather_data', $weather_data);
+        if ($weatherData !== null) {
             $out['state'] = true;
-            $out['content'] = $this->templateEngine->fetch(_DIR_TEMPLATES . '/city/weather.block.tpl');
+            $out['content'] = $this->templateEngine->getContent('city/weather.block.tpl', [
+                'weatherData' => $weatherData,
+            ]);
         }
         header('Content-type: application/json');
         echo json_encode($out);
         exit();
-    }
-
-    /**
-     ************************************  ПОГОДА ПО КОДУ  *****************
-     * @param $code
-     * @return array|null
-     */
-    private function getWeatherConditionsByCode($code): ?array
-    {
-        $row = $this->buildModelWeatherCodes()->getItemByPk($code);
-        if ($row !== null && (int) $row['wc_id'] !== 0) {
-            return ['main' => $row['wc_main'], 'description' => $row['wc_description']];
-        }
-
-        return null;
     }
 
     /**
@@ -583,39 +504,6 @@ class CityModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param float $degree
-     * @return string
-     */
-    private function getWindDirection(float $degree): string
-    {
-        if ($degree < 0) {
-            throw new InvalidArgumentException('Неправильное направление ветра');
-        }
-
-        if ($degree < 22.5) {
-            $result = 'сев';
-        } elseif ($degree < 67.5) {
-            $result = 'с-в';
-        } elseif ($degree < 112.5) {
-            $result = 'вост';
-        } elseif ($degree < 157.5) {
-            $result = 'ю-в';
-        } elseif ($degree < 202.5) {
-            $result = 'юж';
-        } elseif ($degree < 247.5) {
-            $result = 'ю-3';
-        } elseif ($degree < 292.5) {
-            $result = 'зап';
-        } elseif ($degree < 337.5) {
-            $result = 'с-з';
-        } else {
-            $result = 'сев';
-        }
-
-        return $result;
-    }
-
-    /**
      * @return MPhotos
      */
     private function buildModelPhotos(): MPhotos
@@ -639,18 +527,6 @@ class CityModule extends Module implements ModuleInterface
         return $this->modelPageCities;
     }
 
-    /**
-     * @return MWeatherCodes
-     */
-    private function buildModelWeatherCodes(): MWeatherCodes
-    {
-        if ($this->modelWeatherCodes === null) {
-            $this->modelWeatherCodes = new MWeatherCodes($this->db);
-        }
-
-        return $this->modelWeatherCodes;
-    }
-
     private function buildWordstatRepository(): WordstatRepository
     {
         if ($this->wordstatRepository === null) {
@@ -658,5 +534,14 @@ class CityModule extends Module implements ModuleInterface
         }
 
         return $this->wordstatRepository;
+    }
+
+    private function getWeatherService(): WeatherService
+    {
+        if ($this->weatherService === null) {
+            $this->weatherService = WeatherFactory::build($this->globalConfig->getOpenWeatherAPIKey());
+        }
+
+        return $this->weatherService;
     }
 }
