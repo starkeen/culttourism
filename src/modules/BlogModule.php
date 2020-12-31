@@ -154,7 +154,11 @@ class BlogModule extends Module implements ModuleInterface
     private function processOneEntry(SiteResponse $response, string $id, int $year, int $month): void
     {
         $decodedId = urldecode($id);
-        $decodedId = substr($decodedId, 0, strpos($decodedId, '.html'));
+        $decodedId = substr($decodedId, 0, strpos($decodedId, '.html') ?: 0);
+
+        if ($decodedId === '') {
+            throw new NotFoundException();
+        }
 
         $entry = $this->blogRepository->getItem($decodedId, $month, $year);
         if ($entry === null) {
