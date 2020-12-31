@@ -79,12 +79,8 @@ class WeatherData
         $this->cityName = $raw['name'];
         $this->temperature = (int) round($raw['main']['temp']);
         $this->temperatureFeels = (int) round($raw['main']['feels_like']);
-        if (isset($raw['main']['temp_min'])) {
-            $this->temperatureMin = (int) round($raw['main']['temp_min']);
-        }
-        if (isset($raw['main']['temp_max'])) {
-            $this->temperatureMax = (int) round($raw['main']['temp_max']);
-        }
+        $this->temperatureMin = isset($raw['main']['temp_min']) ? (int) round($raw['main']['temp_min']) : null;
+        $this->temperatureMax = isset($raw['main']['temp_max']) ? (int) round($raw['main']['temp_max']) : null;
         $this->pressure = $raw['main']['pressure'];
         $this->humidity = $raw['main']['humidity'];
         $this->windSpeed = $raw['wind']['speed'];
@@ -146,7 +142,7 @@ class WeatherData
      */
     public function getHumidity(): string
     {
-        return $this->humidity . ' %';
+        return $this->humidity . '%';
     }
 
     public function getWindDescription(): string
@@ -154,7 +150,7 @@ class WeatherData
         return sprintf('%s&nbsp;%d&nbsp;м/с', $this->getWindDirection($this->windDirection), (int) round($this->windSpeed));
     }
 
-    public function getWeatherTest(): string
+    public function getWeatherText(): string
     {
         return self::CODES[$this->weatherId] ?? $this->weatherMain;
     }

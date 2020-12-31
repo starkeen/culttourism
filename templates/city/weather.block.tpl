@@ -1,6 +1,6 @@
 <img class="weatherblock_icon"
      src="/img/weather/{$weatherData->getIcon()}.png"
-     alt="{$weatherData->getWeatherTest()}"
+     alt="{$weatherData->getWeatherText()}"
      title="{$weatherData->getWeatherDescription()}" />
 <div class="weatherblock_temperature">
     {$weatherData->getTemperature()}
