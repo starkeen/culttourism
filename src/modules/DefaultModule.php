@@ -117,10 +117,10 @@ class DefaultModule implements ModuleInterface
             $urlPartsArray = !empty($url) ? explode('/', $url) : [];
             $urlParts = array_pop($urlPartsArray);
             if ($urlParts === 'map.html') {
-                $this->redirectToCityMap($url, $response);
+                $this->redirectToCityMap($url);
             } elseif ($urlParts === 'index.html') {
-                $body = $this->getPageCity($url, $response);
-                $response->getContent()->setBody($body);
+                $url = substr($url, 0, stripos($url, $urlParts));
+                throw new RedirectException($url);
             } elseif (in_array($urlParts, self::REDIRECT_SUFFIXES, true)) {
                 $url = substr($url, 0, stripos($url, $urlParts));
                 throw new RedirectException($url);
@@ -392,10 +392,9 @@ class DefaultModule implements ModuleInterface
 
     /**
      * @param string $url
-     * @param SiteResponse $response
      * @throws RedirectException
      */
-    private function redirectToCityMap(string $url, SiteResponse $response): void
+    private function redirectToCityMap(string $url): void
     {
         $city = $this->getModelPageCities()->getCityByUrl(str_replace('/map.html', '', $url));
         $location = "/map/#center={$city['pc_longitude']},{$city['pc_latitude']}&zoom={$city['pc_latlon_zoom']}";
