@@ -8,11 +8,9 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Cookie\FileCookieJar;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RedirectMiddleware;
 use GuzzleHttp\RequestOptions;
 use models\MLinks;
-use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Throwable;
 
@@ -45,16 +43,10 @@ class CheckUrlsCommand extends CrontabCommand
      */
     private $httpClient;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(MLinks $linksModel, ClientInterface $httpClient, LoggerInterface $logger)
+    public function __construct(MLinks $linksModel, ClientInterface $httpClient)
     {
         $this->linksModel = $linksModel;
         $this->httpClient = $httpClient;
-        $this->logger = $logger;
     }
 
     public function run(): void
@@ -68,8 +60,6 @@ class CheckUrlsCommand extends CrontabCommand
             $statusCodeOld = $urlData['status'];
             $statusCount = $urlData['status_count'];
 
-            $urlScheme = parse_url($url, PHP_URL_SCHEME);
-            $urlDomain = parse_url($url, PHP_URL_HOST);
             $redirectUrl = null;
 
             try {
@@ -101,8 +91,6 @@ class CheckUrlsCommand extends CrontabCommand
                 $statusCodeNew = 523;
                 $content = null;
                 $contentSize = null;
-            } catch (RequestException $exception) {
-                continue;
             } catch (Throwable $exception) {
                 continue;
             }
@@ -136,7 +124,7 @@ class CheckUrlsCommand extends CrontabCommand
 
         if ($content !== null) {
             $matches = [];
-            if (preg_match("/<title>([^<]+)<\/title>/is", $content, $matches)) {
+            if (preg_match('/<title>([^<]+)<\/title>/is', $content, $matches)) {
                 $result = trim($matches[1]);
                 $result = strip_tags($result);
                 $result = html_entity_decode($result, ENT_QUOTES);
