@@ -16,6 +16,7 @@ class StaticFilesConfig implements StaticFilesConfigInterface
         _DIR_ROOT . '/addons/jquery/jquery-migrate-1.2.1.min.js',
         _DIR_ROOT . '/addons/simplemodal/jquery.simplemodal.1.4.4.min.js',
         _DIR_ROOT . '/addons/autocomplete/jquery.autocomplete.min.js',
+        _DIR_ROOT . '/js/main.js',
     ];
 
     public function getFiles(Type $type, Pack $pack): array
@@ -61,24 +62,18 @@ class StaticFilesConfig implements StaticFilesConfigInterface
     public function getJavascriptList(): array
     {
         return [
-            Pack::COMMON => array_merge(self::JS_COMMON, [
-                _DIR_ROOT . '/js/main.js',
-            ]),
+            Pack::COMMON => self::JS_COMMON,
             Pack::MAP => array_merge(self::JS_COMMON, [
-                _DIR_ROOT . '/js/main.js',
                 _DIR_ROOT . '/js/map.js',
             ]),
             Pack::LIST => array_merge(self::JS_COMMON, [
-                _DIR_ROOT . '/js/main.js',
                 _DIR_ROOT . '/js/map_page_list.js',
             ]),
             Pack::CITY => array_merge(self::JS_COMMON, [
-                _DIR_ROOT . '/js/main.js',
                 _DIR_ROOT . '/js/map_page_city.js',
                 _DIR_ROOT . '/js/adv_city.js',
             ]),
             Pack::POINT => array_merge(self::JS_COMMON, [
-                _DIR_ROOT . '/js/main.js',
                 _DIR_ROOT . '/js/adv_point.js',
                 _DIR_ROOT . '/js/map_page_point.js',
             ]),
