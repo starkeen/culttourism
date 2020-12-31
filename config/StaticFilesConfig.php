@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace config;
 
 use app\core\assets\constant\Pack;
-use app\core\assets\constant\Type;
 use app\core\assets\StaticFilesConfigInterface;
-use InvalidArgumentException;
 
 class StaticFilesConfig implements StaticFilesConfigInterface
 {
@@ -18,23 +16,6 @@ class StaticFilesConfig implements StaticFilesConfigInterface
         _DIR_ROOT . '/addons/autocomplete/jquery.autocomplete.min.js',
         _DIR_ROOT . '/js/main.js',
     ];
-
-    public function getFiles(Type $type, Pack $pack): array
-    {
-        $all = null;
-        switch ($type->getValue()) {
-            case Type::CSS:
-                $all = $this->getCSSList();
-                break;
-            case Type::JS:
-                $all = $this->getJavascriptList();
-                break;
-            default:
-                throw new InvalidArgumentException('Неизвестный тип');
-        }
-
-        return $all[$pack->getValue()];
-    }
 
     /**
      * @inheritDoc

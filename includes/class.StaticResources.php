@@ -88,7 +88,7 @@ class StaticResources
     private function rebuildJS(): array
     {
         $out = [];
-        foreach ((array) $this->config->getJavascriptList() as $pack => $files) {
+        foreach ($this->config->getJavascriptList() as $pack => $files) {
             $file_out = _DIR_ROOT . '/js/' . self::PREFIX . '-' . $pack . '.js';
             file_put_contents($file_out, '');
             foreach ((array) $files as $file) {
