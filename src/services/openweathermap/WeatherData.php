@@ -135,9 +135,7 @@ class WeatherData
             && $this->temperatureMax !== null
             && $this->temperatureMin !== $this->temperatureMax
         ) {
-            $result = $this->formatTemperature($this->temperatureMin)
-                . '&hellip;'
-                . $this->formatTemperature($this->temperatureMax);
+            $result = $this->formatTemperature($this->temperatureMin) . '&hellip;' . $this->formatTemperature($this->temperatureMax);
         } else {
             $result = $this->formatTemperature($this->temperature);
         }
@@ -178,10 +176,7 @@ class WeatherData
     public function getWeatherDescription(): string
     {
         $this->parse();
-        return $this->weatherDescription
-            . ', по ощущениям '
-            . $this->formatTemperature($this->temperatureFeels)
-            . '&deg;C';
+        return $this->weatherDescription . ', по ощущениям ' . $this->formatTemperature($this->temperatureFeels) . '&deg;C';
     }
 
     private function formatTemperature(float $temperature): string
