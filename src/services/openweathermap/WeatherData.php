@@ -60,6 +60,9 @@ class WeatherData
         906 => 'Град',
     ];
 
+    private array $rawData;
+    private bool $parsed;
+
     private string $cityName;
     private string $weatherIcon;
     private int $temperature;
@@ -76,20 +79,30 @@ class WeatherData
 
     public function __construct(array $raw)
     {
-        $this->cityName = $raw['name'];
-        $this->temperature = (int) round($raw['main']['temp']);
-        $this->temperatureFeels = (int) round($raw['main']['feels_like']);
-        $this->temperatureMin = isset($raw['main']['temp_min']) ? (int) round($raw['main']['temp_min']) : null;
-        $this->temperatureMax = isset($raw['main']['temp_max']) ? (int) round($raw['main']['temp_max']) : null;
-        $this->pressure = $raw['main']['pressure'];
-        $this->humidity = $raw['main']['humidity'];
-        $this->windSpeed = $raw['wind']['speed'];
-        $this->windDirection = $raw['wind']['deg'];
+        $this->rawData = $raw;
+        $this->parsed = false;
+    }
+    
+    private function parse(): void
+    {
+        if (!$this->parsed) {
+            $this->cityName = $this->rawData['name'];
+            $this->temperature = (int) round($this->rawData['main']['temp']);
+            $this->temperatureFeels = (int) round($this->rawData['main']['feels_like']);
+            $this->temperatureMin = isset($this->rawData['main']['temp_min']) ? (int) round($this->rawData['main']['temp_min']) : null;
+            $this->temperatureMax = isset($this->rawData['main']['temp_max']) ? (int) round($this->rawData['main']['temp_max']) : null;
+            $this->pressure = $this->rawData['main']['pressure'];
+            $this->humidity = $this->rawData['main']['humidity'];
+            $this->windSpeed = $this->rawData['wind']['speed'];
+            $this->windDirection = $this->rawData['wind']['deg'];
 
-        $this->weatherIcon = $raw['weather'][0]['icon'];
-        $this->weatherId = $raw['weather'][0]['id'];
-        $this->weatherMain = $raw['weather'][0]['main'];
-        $this->weatherDescription = $raw['weather'][0]['description'];
+            $this->weatherIcon = $this->rawData['weather'][0]['icon'];
+            $this->weatherId = $this->rawData['weather'][0]['id'];
+            $this->weatherMain = $this->rawData['weather'][0]['main'];
+            $this->weatherDescription = $this->rawData['weather'][0]['description'];
+
+            $this->parsed = true;
+        }
     }
 
     /**
@@ -97,6 +110,7 @@ class WeatherData
      */
     public function getCityName(): string
     {
+        $this->parse();
         return $this->cityName;
     }
 
@@ -105,6 +119,7 @@ class WeatherData
      */
     public function getIcon(): string
     {
+        $this->parse();
         return $this->weatherIcon;
     }
 
@@ -114,6 +129,7 @@ class WeatherData
      */
     public function getTemperature(): string
     {
+        $this->parse();
         $result = null;
         if ($this->temperatureMin !== null
             && $this->temperatureMax !== null
@@ -134,6 +150,7 @@ class WeatherData
      */
     public function getPressure(): string
     {
+        $this->parse();
         return $this->pressure . ' кПа';
     }
 
@@ -142,21 +159,25 @@ class WeatherData
      */
     public function getHumidity(): string
     {
+        $this->parse();
         return $this->humidity . '%';
     }
 
     public function getWindDescription(): string
     {
+        $this->parse();
         return sprintf('%s&nbsp;%d&nbsp;м/с', $this->getWindDirection($this->windDirection), (int) round($this->windSpeed));
     }
 
     public function getWeatherText(): string
     {
+        $this->parse();
         return self::CODES[$this->weatherId] ?? $this->weatherMain;
     }
 
     public function getWeatherDescription(): string
     {
+        $this->parse();
         return $this->weatherDescription
             . ', по ощущениям '
             . $this->formatTemperature($this->temperatureFeels)
