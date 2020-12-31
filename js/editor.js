@@ -442,6 +442,7 @@ $(document).ready(function () {
         $("#city_sign_anons").text($("#city_anons").val().length);
     });
     $(".button_active").click(function () {
+        var cf;
         switch ($(this).data("act")) {
             case "add":
                 if ($("#city_meta_add_value").val() !== "") {
@@ -454,13 +455,12 @@ $(document).ready(function () {
                         if (data !== "") {
                             $("#city_meta_add_value").val("");
                             $("#city_meta_add_cf :selected").remove();
-                            //$("#city_meta_table").append("<tr><td>" + data + "</td><td>" + $("#city_meta_add_value").val() + "</td><td></td><td>");
                         }
                     });
                 }
                 break;
             case "del":
-                var cf = $(this).data("cfid");
+                cf = $(this).data("cfid");
                 $.post("/city/meta/", {
                     act:  $(this).data("act"),
                     cf:   cf,
@@ -472,7 +472,7 @@ $(document).ready(function () {
                 });
                 break;
             case "edit":
-                var cf = $(this).data("cfid");
+                cf = $(this).data("cfid");
                 $.post("/city/meta/", {
                     act:  $(this).data("act"),
                     cf:   cf,

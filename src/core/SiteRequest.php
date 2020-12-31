@@ -177,12 +177,12 @@ class SiteRequest
     public function getHeader(string $name): ?string
     {
         if ($this->headers === null) {
-            $headers = getallheaders();
-            if ($headers === false) {
+            $allHeaders = getallheaders();
+            if ($allHeaders === false) {
                 throw new RuntimeException('Не удалось получить заголовки запроса');
             }
             $this->headers = [];
-            foreach ($headers as $key => $value) {
+            foreach ($allHeaders as $key => $value) {
                 $key = strtolower($key);
                 $this->headers[$key] = $value;
             }
