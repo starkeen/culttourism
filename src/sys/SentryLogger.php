@@ -36,6 +36,9 @@ class SentryLogger
             [
                 'dsn' => $dsn,
                 'capture_silenced_errors' => true,
+                'traces_sample_rate' => 1.0,
+                'environment' => _ER_REPORT ? 'developer' : 'production',
+                'send_default_pii' => true,
             ]
         );
         $clientBuilder = new ClientBuilder($options);
