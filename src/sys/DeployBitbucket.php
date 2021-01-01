@@ -90,7 +90,7 @@ class DeployBitbucket
             }
         }
 
-        $log[] = shell_exec(_DIR_ROOT . '/bin/deploy.sh');
+        $log[] = shell_exec(GLOBAL_DIR_ROOT . '/bin/deploy.sh');
 
         return $log;
     }

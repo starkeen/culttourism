@@ -2,7 +2,7 @@
 
 define('_ER_REPORT', true);
 
-define('_DIR_ROOT', '/www/vhosts/culttourism');
+define('GLOBAL_DIR_ROOT', '/www/vhosts/culttourism');
 define('_URL_ROOT', 'cult.local');
 
 // Sentry configuration

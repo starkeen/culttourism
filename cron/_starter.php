@@ -49,7 +49,7 @@ foreach ($scripts as $job) {
 
     $_timer_start_script = microtime(true);
     ob_start();
-    include(_DIR_ROOT . "/cron/$script");
+    include(GLOBAL_DIR_ROOT . "/cron/$script");
     $content = ob_get_contents();
     ob_end_clean();
     $execTime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах

@@ -27,22 +27,22 @@ $scanDirs = [
     'templates',
 ];
 $skipDirs = [
-    _DIR_ROOT . '/data/logs',
-    _DIR_ROOT . '/data/feed',
+    GLOBALGLOBAL_DIR_ROOT . '/data/logs',
+    GLOBAL_DIR_ROOT . '/data/feed',
 ];
 
-$files[] = _DIR_ROOT . '/index.php';
-$files[] = _DIR_ROOT . '/robots.txt';
-$files[] = _DIR_ROOT . '/.htaccess';
+$files[] = GLOBAL_DIR_ROOT . '/index.php';
+$files[] = GLOBAL_DIR_ROOT . '/robots.txt';
+$files[] = GLOBAL_DIR_ROOT . '/.htaccess';
 
 foreach ($scanDirs as $dir) {
-    foreach (glob(_DIR_ROOT . "/$dir/*.*") as $filename) {
+    foreach (glob(GLOBAL_DIR_ROOT . "/$dir/*.*") as $filename) {
         $files[] = $filename;
     }
-    foreach (glob(_DIR_ROOT . "/$dir/*/*.*") as $filename) {
+    foreach (glob(GLOBAL_DIR_ROOT . "/$dir/*/*.*") as $filename) {
         $files[] = $filename;
     }
-    foreach (glob(_DIR_ROOT . "/$dir/*/*/*.*") as $filename) {
+    foreach (glob(GLOBAL_DIR_ROOT . "/$dir/*/*/*.*") as $filename) {
         $files[] = $filename;
     }
 }

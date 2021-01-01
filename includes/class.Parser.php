@@ -17,7 +17,7 @@ class Parser
         if (empty($url)) {
             throw new RuntimeException('Не передан URL');
         }
-        $this->_sites = include _DIR_ROOT . '/config/config.parser.php';
+        $this->_sites = include GLOBAL_DIR_ROOT . '/config/config.parser.php';
         $this->_url = parse_url($url);
         $this->_url['domain'] = str_replace('www.', '', $this->_url['host']);
         $this->_config = $this->_sites[$this->_url['domain']];

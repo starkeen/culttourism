@@ -138,7 +138,7 @@ class Content
             $this->urlJs = $this->jsResources[$resourceKey];
         }
         if ($this->urlJs === null) {
-            $jsFiles = glob(_DIR_ROOT . '/js/ct-common-*.min.js');
+            $jsFiles = glob(GLOBAL_DIR_ROOT . '/js/ct-common-*.min.js');
             if (!empty($jsFiles)) {
                 $this->urlJs = basename($jsFiles[0]);
             }
@@ -153,7 +153,7 @@ class Content
     public function getUrlCss(): string
     {
         if ($this->urlCss === null) {
-            $cssFiles = glob(_DIR_ROOT . '/css/ct-common-*.min.css');
+            $cssFiles = glob(GLOBAL_DIR_ROOT . '/css/ct-common-*.min.css');
             if (!empty($cssFiles)) {
                 $this->urlCss = basename($cssFiles[0]);
             }

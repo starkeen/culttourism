@@ -118,7 +118,7 @@ class SysModule extends Module implements ModuleInterface
             $config = $sp->getSettingsByBranchId(self::SETTINGS_BRANCH_DEPLOY);
 
             if ($key && $key === $config['git_key']) {
-                $config['location'] = _DIR_ROOT . '/';
+                $config['location'] = GLOBAL_DIR_ROOT . '/';
 
                 $bb = $this->getBitbucketDeployHelper($config);
                 $res = $bb->deploy($req);
