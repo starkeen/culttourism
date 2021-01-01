@@ -67,7 +67,7 @@ abstract class Application
     /**
      * @return MyDB
      */
-    protected function getDb(): MyDB
+    public function getDb(): MyDB
     {
         if ($this->db === null) {
             $this->db = FactoryDB::db();
@@ -84,7 +84,7 @@ abstract class Application
     /**
      * @return TemplateEngine
      */
-    protected function getTemplateEngine(): TemplateEngine
+    public function getTemplateEngine(): TemplateEngine
     {
         if ($this->templateEngine === null) {
             $this->templateEngine = new TemplateEngine();
