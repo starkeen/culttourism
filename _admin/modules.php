@@ -99,7 +99,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
         $row['parent'] = $rowparent;
     }
     $smarty->assign('mod_item', $row);
-    $smarty->assign('site_url', _SITE_URL);
+    $smarty->assign('site_url', GLOBAL_SITE_URL);
 
     $text_edit = true;
 

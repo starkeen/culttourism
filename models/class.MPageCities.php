@@ -193,7 +193,7 @@ class MPageCities extends Model
         ";
         $this->_db->execute(
             [
-                ':site_url1' => _SITE_URL,
+                ':site_url1' => GLOBAL_SITE_URL,
             ]
         );
 

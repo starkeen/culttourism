@@ -69,7 +69,7 @@ class SignModule extends Module implements ModuleInterface
 
         return $this->templateEngine->getContent('sign/in.tpl', [
             'key' => $uniqueKey,
-            'url' => _SITE_URL,
+            'url' => GLOBAL_SITE_URL,
         ]);
     }
 
@@ -117,7 +117,7 @@ class SignModule extends Module implements ModuleInterface
         $passw = trim($_POST['userpass']);
 
         if ($this->webUser->getAuth()->checkMailPassword($email, $passw)) {
-            $returnUrl = $_SESSION['user_referer'] ?? _SITE_URL;
+            $returnUrl = $_SESSION['user_referer'] ?? GLOBAL_SITE_URL;
         } else {
             $returnUrl = '/sign/in/';
         }
@@ -135,7 +135,7 @@ class SignModule extends Module implements ModuleInterface
             return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/authuser.tpl');
         }
 
-        $this->templateEngine->assign('baseurl', _SITE_URL);
+        $this->templateEngine->assign('baseurl', GLOBAL_SITE_URL);
         $this->templateEngine->assign('authkey', 'ewtheqryb35yqb356y4ery');
 
         return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/authform.tpl');

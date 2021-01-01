@@ -29,7 +29,7 @@ class RssTurboBlogCommand extends CrontabCommand
 
         $xmlChannel = $xml->addChild('channel');
         $xmlChannel->addChild('title', 'Культурный туризм: блог');
-        $xmlChannel->addChild('link', _SITE_URL);
+        $xmlChannel->addChild('link', GLOBAL_SITE_URL);
         $xmlChannel->addChild('description', 'Блог проекта Культурный туризм');
         $xmlChannel->addChild('language', 'ru');
 

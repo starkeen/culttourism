@@ -79,8 +79,8 @@ class Mailing
     public static function sendLetterNewPassword($to, $details)
     {
         $db = FactoryDB::db();
-        $attrs['REQUEST_LINK'] = _SITE_URL . 'request/' . $details['req_key'] . '/';
-        $attrs['SITE_LINK'] = _SITE_URL;
+        $attrs['REQUEST_LINK'] = GLOBAL_SITE_URL . 'request/' . $details['req_key'] . '/';
+        $attrs['SITE_LINK'] = GLOBAL_SITE_URL;
         $letter = self::prepareLetter(5, $attrs);
         return self::sendImmediately($db, $to, $letter['mt_content'], $letter['mt_theme'], $letter['mt_custom_header']);
     }
@@ -91,7 +91,7 @@ class Mailing
         $attrs['USER_NAME'] = $details['user_name'];
         $attrs['REQUEST_KEY'] = $details['request_key'];
         $attrs['USER_EMAIL'] = $to;
-        $attrs['SITE_LINK'] = _SITE_URL;
+        $attrs['SITE_LINK'] = GLOBAL_SITE_URL;
         $letter = self::prepareLetter(2, $attrs);
         return self::sendImmediately($db, $to, $letter['mt_content'], $letter['mt_theme'], $letter['mt_custom_header']);
     }
@@ -107,7 +107,7 @@ class Mailing
     {
         $db = FactoryDB::db();
         $attrs = [];
-        $attrs['SITE_LINK'] = _SITE_URL;
+        $attrs['SITE_LINK'] = GLOBAL_SITE_URL;
         $attrs['USER_IP'] = $_SERVER['REMOTE_ADDR'] ?? 'cron';
         $attrs['NOW'] = date('d.m.Y H:i:s');
         foreach ($details as $key => $val) {

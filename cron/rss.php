@@ -21,7 +21,7 @@ $entries = $be->getLastActive(5);
 
 $gen = new RSSGenerator();
 $gen->title = 'Культурный туризм в России';
-$gen->link = _SITE_URL;
+$gen->link = GLOBAL_SITE_URL;
 $gen->email = 'abuse@culttourism.ru';
 $gen->description = 'Достопримечательности России и ближнего зарубежья: музеи, церкви и монастыри, памятники архитектуры';
 
@@ -41,7 +41,7 @@ $generators = [
 foreach ($generators as $fileType => $generator) {
     /** @var IRSSGenerator $generator */
     $fileName = sprintf('%s/feed/%s', _DIR_DATA, $fileType); // имя RSS-файла
-    $generator->url = sprintf('%sdata/feed/%s', _SITE_URL, $fileType); // URL файла
+    $generator->url = sprintf('%sdata/feed/%s', GLOBAL_SITE_URL, $fileType); // URL файла
 
     file_put_contents($fileName, $generator->process($entries));
 }

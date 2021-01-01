@@ -90,7 +90,7 @@ class RSSAddUTM extends RSSComponent
     private function getRootUrl(): string
     {
         if ($this->rootUrl === null) {
-            $this->rootUrl = rtrim(_SITE_URL, '/');
+            $this->rootUrl = rtrim(GLOBAL_SITE_URL, '/');
         }
 
         return $this->rootUrl;

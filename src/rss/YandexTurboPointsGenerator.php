@@ -38,7 +38,7 @@ class YandexTurboPointsGenerator
 
         $xmlChannel = $xml->addChild('channel');
         $xmlChannel->addChild('title', 'Культурный туризм: точки');
-        $xmlChannel->addChild('link', _SITE_URL);
+        $xmlChannel->addChild('link', GLOBAL_SITE_URL);
         $xmlChannel->addChild('description', 'Культурный туризм');
         $xmlChannel->addChild('language', 'ru');
 
@@ -47,7 +47,7 @@ class YandexTurboPointsGenerator
             $xmlItem = $xmlChannel->addChild('item');
             $xmlItem->addAttribute('turbo', 'true');
 
-            $cityUrl = _SITE_URL . ltrim($entry['city_url'], '/');
+            $cityUrl = GLOBAL_SITE_URL . ltrim($entry['city_url'], '/');
             $xmlItem->addChild('link', $cityUrl . $entry['pt_slugline'] . '.html');
             $xmlItem->addChild('title', $entry['pt_name']);
 
@@ -55,7 +55,7 @@ class YandexTurboPointsGenerator
             if ($entry['photo_src'] !== null && trim($entry['photo_src']) !== '') {
                 $absolutePhotoUrl = $entry['photo_src'];
                 if (strpos($absolutePhotoUrl, '/') === 0) {
-                    $absolutePhotoUrl = _SITE_URL . ltrim($absolutePhotoUrl, '/');
+                    $absolutePhotoUrl = GLOBAL_SITE_URL . ltrim($absolutePhotoUrl, '/');
                 }
                 $content = '<figure><img src="' . $absolutePhotoUrl . '"></figure>' . $content;
             }

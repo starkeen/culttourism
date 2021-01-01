@@ -47,7 +47,7 @@ class RSSBitlyer extends RSSComponent
     private function getRootUrl(): string
     {
         if ($this->rootUrl === null) {
-            $this->rootUrl = _SITE_URL;
+            $this->rootUrl = GLOBAL_SITE_URL;
         }
         return $this->rootUrl;
     }

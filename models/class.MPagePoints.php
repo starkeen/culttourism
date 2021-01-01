@@ -487,7 +487,7 @@ class MPagePoints extends Model
             [
                 ':limit' => $criteria->getLimit(),
                 ':offset' => $criteria->getOffset(),
-                ':site_url1' => _SITE_URL,
+                ':site_url1' => GLOBAL_SITE_URL,
             ]
         );
 

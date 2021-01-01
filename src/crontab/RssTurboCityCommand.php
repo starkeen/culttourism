@@ -29,7 +29,7 @@ class RssTurboCityCommand extends CrontabCommand
 
         $xmlChannel = $xml->addChild('channel');
         $xmlChannel->addChild('title', 'Культурный туризм: города');
-        $xmlChannel->addChild('link', _SITE_URL);
+        $xmlChannel->addChild('link', GLOBAL_SITE_URL);
         $xmlChannel->addChild('description', 'Культурный туризм');
         $xmlChannel->addChild('language', 'ru');
 
@@ -37,14 +37,14 @@ class RssTurboCityCommand extends CrontabCommand
         foreach ($entries as $entry) {
             $xmlItem = $xmlChannel->addChild('item');
             $xmlItem->addAttribute('turbo', 'true');
-            $xmlItem->addChild('link', _SITE_URL . ltrim($entry['city_url'], '/'));
+            $xmlItem->addChild('link', GLOBAL_SITE_URL . ltrim($entry['city_url'], '/'));
             $xmlItem->addChild('title', 'Достопримечательности ' . $entry['pc_inwheretext']);
 
             $content = $entry['text_absolute'];
             if ($entry['photo_src'] !== '') {
                 $absolutePhotoUrl = $entry['photo_src'];
                 if (strpos($absolutePhotoUrl, '/') === 0) {
-                    $absolutePhotoUrl = _SITE_URL . ltrim($absolutePhotoUrl, '/');
+                    $absolutePhotoUrl = GLOBAL_SITE_URL . ltrim($absolutePhotoUrl, '/');
                 }
                 $content = '<figure><img src="' . $absolutePhotoUrl . '"></figure>' . $content;
             }

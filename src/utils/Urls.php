@@ -14,6 +14,6 @@ class Urls
      */
     public static function getAbsoluteURL(string $path): string
     {
-        return strpos($path, '/') === 0 ? rtrim(_SITE_URL, '/') . $path : $path;
+        return strpos($path, '/') === 0 ? rtrim(GLOBAL_SITE_URL, '/') . $path : $path;
     }
 }

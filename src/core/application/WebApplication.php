@@ -89,7 +89,7 @@ class WebApplication extends Application
             $this->getSiteResponse()->getContent()->getHead()->addTitleElement('404 Not Found - страница не найдена на сервере');
             $this->getSiteResponse()->getContent()->setH1('Не найдено');
             $this->getTemplateEngine()->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-            $this->getTemplateEngine()->assign('host', _SITE_URL);
+            $this->getTemplateEngine()->assign('host', GLOBAL_SITE_URL);
             $this->getTemplateEngine()->assign('suggestions', []);
             $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(_DIR_TEMPLATES . '/_errors/er404.tpl'));
         } catch (AccessDeniedException $exception) {
@@ -105,7 +105,7 @@ class WebApplication extends Application
             $this->getSiteResponse()->getContent()->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
             $this->getSiteResponse()->getContent()->setH1('Запрещено');
             $this->getTemplateEngine()->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-            $this->getTemplateEngine()->assign('host', _SITE_URL);
+            $this->getTemplateEngine()->assign('host', GLOBAL_SITE_URL);
             $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(_DIR_TEMPLATES . '/_errors/er403.tpl'));
         } catch (Throwable $exception) {
             $this->getSiteResponse()->getHeaders()->add('Content-Type: text/html; charset=utf-8');

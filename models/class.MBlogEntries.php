@@ -50,9 +50,9 @@ class MBlogEntries extends Model
                             LIMIT :limit";
         $this->_db->execute(
             [
-                ':site_url1' => _SITE_URL,
-                ':site_url2' => _SITE_URL,
-                ':site_url3' => _SITE_URL,
+                ':site_url1' => GLOBAL_SITE_URL,
+                ':site_url2' => GLOBAL_SITE_URL,
+                ':site_url3' => GLOBAL_SITE_URL,
                 ':limit' => $qnt,
             ]
         );

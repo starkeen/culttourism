@@ -72,8 +72,8 @@ abstract class Module
         $response->getContent()->getHead()->addOGMeta(OgType::LOCALE(), 'ru_RU');
         $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
         $response->getContent()->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($_SERVER['REQUEST_URI']));
-        $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), _SITE_URL . 'img/logo/culttourism-head.jpg');
-        $response->getContent()->getHead()->addMicroData('image', _SITE_URL . 'img/logo/culttourism-head.jpg');
+        $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), GLOBAL_SITE_URL . 'img/logo/culttourism-head.jpg');
+        $response->getContent()->getHead()->addMicroData('image', GLOBAL_SITE_URL . 'img/logo/culttourism-head.jpg');
 
         if (!empty($moduleData)) {
             if ((int) $moduleData['md_photo_id'] !== 0) {
