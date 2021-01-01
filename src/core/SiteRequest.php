@@ -8,6 +8,8 @@ use RuntimeException;
 
 class SiteRequest
 {
+    public const INDEX_PAGE_URI = 'index.html';
+
     /**
      * @var string
      */
@@ -229,9 +231,9 @@ class SiteRequest
             $this->level3 = $requestURIParamsList[4];
         }
 
-        $this->moduleId = ($this->moduleId !== null && $this->moduleId !== '') ? $this->moduleId : _INDEXPAGE_URI;
+        $this->moduleId = ($this->moduleId !== null && $this->moduleId !== '') ? $this->moduleId : self::INDEX_PAGE_URI;
         if ($this->moduleId === 'index') {
-            $this->moduleId = _INDEXPAGE_URI;
+            $this->moduleId = self::INDEX_PAGE_URI;
         }
 
         $this->parsed = true;
