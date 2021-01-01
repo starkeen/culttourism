@@ -40,7 +40,7 @@ class Cache
     {
         if (isset(self::CONFIG[$cacheId])) {
             $this->cacheCurrent = self::CONFIG[$cacheId];
-            $this->cacheDir = _DIR_CACHE;
+            $this->cacheDir = GLOBAL_DIR_CACHE;
         }
     }
 
