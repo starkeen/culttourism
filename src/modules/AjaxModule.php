@@ -211,10 +211,10 @@ class AjaxModule extends Module implements ModuleInterface
 
     /**
      * @param int $pid
-     * @return false|string
+     * @return null|string
      * @throws AccessDeniedException
      */
-    private function setFormPointGPS(int $pid)
+    private function setFormPointGPS(int $pid): ?string
     {
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
@@ -247,7 +247,7 @@ class AjaxModule extends Module implements ModuleInterface
             return "$point_lat_w $point_lon_w";
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -283,10 +283,10 @@ class AjaxModule extends Module implements ModuleInterface
     }
 
     /**
-     * @return false|string
+     * @return string
      * @throws AccessDeniedException
      */
-    private function getChangeTypeForm()
+    private function getChangeTypeForm(): string
     {
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
@@ -312,10 +312,10 @@ class AjaxModule extends Module implements ModuleInterface
 
     /**
      * @param int $pid
-     * @return mixed
+     * @return string
      * @throws AccessDeniedException
      */
-    private function setPointType(int $pid)
+    private function setPointType(int $pid): string
     {
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
@@ -337,15 +337,15 @@ class AjaxModule extends Module implements ModuleInterface
         );
         $newType = $pts->getItemByPk($type);
 
-        return $newType['tp_icon'];
+        return (string) $newType['tp_icon'];
     }
 
     /**
      * @param int $id
-     * @return false|string
+     * @return string
      * @throws AccessDeniedException
      */
-    private function getPointNew(int $id)
+    private function getPointNew(int $id): string
     {
         if ($this->webUser->isEditor()) {
             if ($id !== 0) {
@@ -365,11 +365,11 @@ class AjaxModule extends Module implements ModuleInterface
 
     /**
      * @param int $pid
-     * @return false|int
+     * @return null|int
      * @throws NotFoundException
      * @throws AccessDeniedException
      */
-    private function deletePoint(int $pid)
+    private function deletePoint(int $pid): int|null
     {
         if ($pid === 0) {
             throw new NotFoundException();
@@ -390,7 +390,7 @@ class AjaxModule extends Module implements ModuleInterface
             return $ppid;
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -434,7 +434,7 @@ class AjaxModule extends Module implements ModuleInterface
      * @throws NotFoundException
      * @throws AccessDeniedException
      */
-    private function savePointTitle(int $id)
+    private function savePointTitle(int $id): string
     {
         if ($id === 0) {
             throw new NotFoundException();
@@ -466,11 +466,11 @@ class AjaxModule extends Module implements ModuleInterface
 
     /**
      * @param int $id
-     * @return mixed
+     * @return string
      * @throws NotFoundException
      * @throws AccessDeniedException
      */
-    private function savePointDescription(int $id)
+    private function savePointDescription(int $id): string
     {
         if ($id === 0) {
             throw new NotFoundException();
@@ -535,10 +535,10 @@ class AjaxModule extends Module implements ModuleInterface
 
     /**
      * @param string $slugLine
-     * @return false|string
+     * @return null|string
      * @throws NotFoundException
      */
-    private function getPointBySlugLine(string $slugLine)
+    private function getPointBySlugLine(string $slugLine): ?string
     {
         if ($slugLine === '') {
             throw new NotFoundException();
@@ -548,7 +548,7 @@ class AjaxModule extends Module implements ModuleInterface
         $objects = $pts->searchSlugline($slugLine);
         $object = $objects[0] ?? false;
         if (!$object) {
-            return false;
+            return null;
         }
 
         $object['page_link'] = $object['url_canonical'];
@@ -605,7 +605,7 @@ class AjaxModule extends Module implements ModuleInterface
         if ($city['pc_latitude'] && $city['pc_longitude']) {
             $city['map_center']['lat'] = $city['pc_latitude'];
             $city['map_center']['lon'] = $city['pc_longitude'];
-            $city['zoom'] = ($city['pc_latlon_zoom']) ? $city['pc_latlon_zoom'] : 13;
+            $city['zoom'] = $city['pc_latlon_zoom'] ?: 13;
             $city['map_point'] = 1;
         } else {
             $city['map_center']['lat'] = 55.7557;
@@ -621,11 +621,11 @@ class AjaxModule extends Module implements ModuleInterface
 
     /**
      * @param int $id
-     * @return mixed
+     * @return string
      * @throws NotFoundException
      * @throws AccessDeniedException
      */
-    private function saveCityTitle(int $id)
+    private function saveCityTitle(int $id): string
     {
         if (!$id) {
             throw new NotFoundException();
