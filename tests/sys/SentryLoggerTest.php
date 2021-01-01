@@ -17,7 +17,9 @@ class SentryLoggerTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        define('_ER_REPORT', false);
+        if (!defined('_ER_REPORT')) {
+            define('_ER_REPORT', false);
+        }
     }
 
     public function setUp(): void

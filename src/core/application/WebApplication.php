@@ -37,67 +37,19 @@ use Throwable;
 
 class WebApplication extends Application
 {
-    /**
-     * @var SiteRequest
-     */
-    private $request;
+    private ?SiteRequest $request = null;
 
-    /**
-     * @var SiteResponse
-     */
-    private $response;
+    private ?SiteResponse $response = null;
 
-    /**
-     * @var WebUser
-     */
-    private $user;
+    private ?WebUser $user = null;
 
-    /**
-     * @var ModuleFetcher
-     */
-    private $moduleFetcher;
+    private ?GlobalConfig $globalConfig = null;
 
-    /**
-     * @var GlobalConfig
-     */
-    private $globalConfig;
-
-    /**
-     * @var SessionStorage
-     */
-    private $session;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->session = new SessionStorage();
-        $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
-        $this->response = new SiteResponse(new Headers(), new Content(new Head()));
-        $this->user = new WebUser(new Auth($this->db, new CookieStorage()), $this->session);
-        $this->globalConfig = new GlobalConfig($this->db);
-        $modules =  [
-            new RedirectsModule($this->db),
-            new MainPageModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
-            new AjaxModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
-            new MapModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
-            new ListModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
-            new CityModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
-            new SearchModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
-            new BlogModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
-            new FeedbackModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
-            new AboutModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
-            new SignModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
-            new SysModule($this->db, $this->templateEngine, $this->user, $this->globalConfig, $this->logger),
-            new ApiModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
-            new DefaultModule($this->db, $this->templateEngine, $this->user, $this->globalConfig),
-        ];
-        $this->moduleFetcher = new ModuleFetcher($modules);
-    }
+    private ?SessionStorage $sessionStorage = null;
 
     public function init(): void
     {
-        $this->session->start();
+        $this->getSessionStorage()->start();
         parent::init();
     }
 
@@ -105,103 +57,184 @@ class WebApplication extends Application
     {
         $this->init();
 
-        // редиректим на https
-        if (!_ER_REPORT && !$this->request->isSSL()) {
-            $this->response->getHeaders()->sendRedirect($this->request->getCurrentURL(), true);
-        }
-
         try {
-            $module = $this->moduleFetcher->getModule($this->request);
+            // редиректим на https
+            if (!_ER_REPORT && !$this->getSiteRequest()->isSSL()) {
+                $url = $this->getSiteRequest()->getCurrentURL();
+                throw new RedirectException($url);
+            }
 
-            $this->response->getContent()->getHead()->setTitleDelimiter($this->globalConfig->getTitleDelimiter());
-            $this->response->getContent()->setUrlRss($this->globalConfig->getUrlRSS());
-            $this->response->getContent()->setJsResources($this->globalConfig->getJsResources());
-            $this->response->getContent()->setUrlCss($this->globalConfig->getUrlCss());
-            $this->response->getContent()->setUrlJs($this->globalConfig->getUrlJs());
-            if (!$this->globalConfig->isSiteActive()) {
+            $module = $this->getModuleFetcher()->getModule($this->getSiteRequest());
+
+            $this->getSiteResponse()->getContent()->getHead()->setTitleDelimiter($this->getGlobalConfig()->getTitleDelimiter());
+            $this->getSiteResponse()->getContent()->setUrlRss($this->getGlobalConfig()->getUrlRSS());
+            $this->getSiteResponse()->getContent()->setJsResources($this->getGlobalConfig()->getJsResources());
+            $this->getSiteResponse()->getContent()->setUrlCss($this->getGlobalConfig()->getUrlCss());
+            $this->getSiteResponse()->getContent()->setUrlJs($this->getGlobalConfig()->getUrlJs());
+            if (!$this->getGlobalConfig()->isSiteActive()) {
                 throw new BaseApplicationException();
             }
 
-            $module->handle($this->request, $this->response);
+            $module->handle($this->getSiteRequest(), $this->getSiteResponse());
         } catch (RedirectException $exception) {
-            $this->response->getHeaders()->sendRedirect($exception->getTargetUrl());
+            $this->getSiteResponse()->getHeaders()->sendRedirect($exception->getTargetUrl(), true);
         } catch (NotFoundException $exception) {
-            $this->logger->notice('Ошибка 404', [
+            $this->getLogger()->notice('Ошибка 404', [
                 'srv' => $_SERVER ?? [],
                 'trace' => $exception->getTrace(),
             ]);
 
-            $this->response->getHeaders()->add('HTTP/1.0 404 Not Found');
+            $this->getSiteResponse()->getHeaders()->add('HTTP/1.0 404 Not Found');
 
-            $this->response->getContent()->getHead()->addTitleElement('404 Not Found - страница не найдена на сервере');
-            $this->response->getContent()->setH1('Не найдено');
-            $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-            $this->templateEngine->assign('host', _SITE_URL);
-            $this->templateEngine->assign('suggestions', []);
-            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er404.tpl'));
+            $this->getSiteResponse()->getContent()->getHead()->addTitleElement('404 Not Found - страница не найдена на сервере');
+            $this->getSiteResponse()->getContent()->setH1('Не найдено');
+            $this->getTemplateEngine()->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+            $this->getTemplateEngine()->assign('host', _SITE_URL);
+            $this->getTemplateEngine()->assign('suggestions', []);
+            $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(_DIR_TEMPLATES . '/_errors/er404.tpl'));
         } catch (AccessDeniedException $exception) {
-            $this->logger->notice('Ошибка 403', [
+            $this->getLogger()->notice('Ошибка 403', [
                 'srv' => $_SERVER ?? [],
                 'trace' => $exception->getTrace(),
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
             ]);
 
-            $this->response->getHeaders()->add('HTTP/1.1 403 Forbidden');
+            $this->getSiteResponse()->getHeaders()->add('HTTP/1.1 403 Forbidden');
 
-            $this->response->getContent()->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
-            $this->response->getContent()->setH1('Запрещено');
-            $this->templateEngine->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-            $this->templateEngine->assign('host', _SITE_URL);
-            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er403.tpl'));
+            $this->getSiteResponse()->getContent()->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
+            $this->getSiteResponse()->getContent()->setH1('Запрещено');
+            $this->getTemplateEngine()->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+            $this->getTemplateEngine()->assign('host', _SITE_URL);
+            $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(_DIR_TEMPLATES . '/_errors/er403.tpl'));
         } catch (Throwable $exception) {
-            $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
-            $this->response->getHeaders()->add('HTTP/1.1 503 Service Temporarily Unavailable');
-            $this->response->getHeaders()->add('Status: 503 Service Temporarily Unavailable');
-            $this->response->getHeaders()->add('Retry-After: 300');
+            $this->getSiteResponse()->getHeaders()->add('Content-Type: text/html; charset=utf-8');
+            $this->getSiteResponse()->getHeaders()->add('HTTP/1.1 503 Service Temporarily Unavailable');
+            $this->getSiteResponse()->getHeaders()->add('Status: 503 Service Temporarily Unavailable');
+            $this->getSiteResponse()->getHeaders()->add('Retry-After: 300');
 
-            $this->response->getContent()->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
-            $this->response->getContent()->setH1('Сервис временно недоступен');
-            $this->response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/_errors/er503.tpl'));
+            $this->getSiteResponse()->getContent()->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
+            $this->getSiteResponse()->getContent()->setH1('Сервис временно недоступен');
+            $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(_DIR_TEMPLATES . '/_errors/er503.tpl'));
 
-            $this->logger->sendSentryException($exception);
+            $this->getLogger()->sendSentryException($exception);
         }
 
-        $this->response->getHeaders()->add('X-Powered-By: culttourism');
-        $this->response->getHeaders()->add('Content-Type: text/html; charset=utf-8');
+        $this->getSiteResponse()->getHeaders()->add('X-Powered-By: culttourism');
+        $this->getSiteResponse()->getHeaders()->add('Content-Type: text/html; charset=utf-8');
 
-        if ($this->response->getLastEditTimestamp() > 0 && !$this->request->isAjax()) {
-            $this->response->getHeaders()->add('Last-Modified: ' . $this->response->getLastEditTimeGMT());
-            $this->response->getHeaders()->add('Cache-control: public');
-            $this->response->getHeaders()->add('Pragma: cache');
-            $this->response->getHeaders()->add('Expires: ' . $this->response->getExpiresTimeGMT());
-            if ($this->request->getHeader('If-Modified-Since') !== null) {
-                $modifiedSince = explode(';', $this->request->getHeader('If-Modified-Since'));
-                if (strtotime($modifiedSince[0]) >= $this->response->getLastEditTimestamp()) {
-                    $this->response->getHeaders()->add('HTTP/1.1 304 Not Modified');
-                    $this->response->getHeaders()->flush();
+        if ($this->getSiteResponse()->getLastEditTimestamp() > 0 && !$this->getSiteRequest()->isAjax()) {
+            $this->getSiteResponse()->getHeaders()->add('Last-Modified: ' . $this->getSiteResponse()->getLastEditTimeGMT());
+            $this->getSiteResponse()->getHeaders()->add('Cache-control: public');
+            $this->getSiteResponse()->getHeaders()->add('Pragma: cache');
+            $this->getSiteResponse()->getHeaders()->add('Expires: ' . $this->getSiteResponse()->getExpiresTimeGMT());
+            if ($this->getSiteRequest()->getHeader('If-Modified-Since') !== null) {
+                $modifiedSince = explode(';', $this->getSiteRequest()->getHeader('If-Modified-Since'));
+                if (strtotime($modifiedSince[0]) >= $this->getSiteResponse()->getLastEditTimestamp()) {
+                    $this->getSiteResponse()->getHeaders()->add('HTTP/1.1 304 Not Modified');
+                    $this->getSiteResponse()->getHeaders()->flush();
                     exit();
                 }
             }
         } else {
-            $this->response->getHeaders()->add('Cache-Control: no-store, no-cache, must-revalidate');
-            $this->response->getHeaders()->add('Expires: ' . date('r'));
+            $this->getSiteResponse()->getHeaders()->add('Cache-Control: no-store, no-cache, must-revalidate');
+            $this->getSiteResponse()->getHeaders()->add('Expires: ' . date('r'));
         }
 
-        $this->response->getHeaders()->flush();
+        $this->getSiteResponse()->getHeaders()->flush();
 
-        if ($this->request->isAjax()) {
-            echo $this->response->getContent()->getBody();
+        if ($this->getSiteRequest()->isAjax()) {
+            echo $this->getSiteResponse()->getContent()->getBody();
         } else {
-            $this->templateEngine->displayPage(
+            $this->getTemplateEngine()->displayPage(
                 '_main/main.html.tpl',
                 [
-                    'user' => $this->user,
-                    'pageContent' => $this->response->getContent(),
+                    'user' => $this->getWebUser(),
+                    'pageContent' => $this->getSiteResponse()->getContent(),
                 ]
             );
         }
+    }
 
-        exit();
+    private function getSessionStorage(): SessionStorage
+    {
+        if ($this->sessionStorage === null) {
+            $this->sessionStorage = new SessionStorage();
+        }
+        return $this->sessionStorage;
+    }
+
+    public function setSessionStorage(SessionStorage $storage): void
+    {
+        $this->sessionStorage = $storage;
+    }
+
+    private function getSiteRequest(): SiteRequest
+    {
+        if ($this->request === null) {
+            $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
+        }
+        return $this->request;
+    }
+
+    public function setSiteRequest(SiteRequest $request): void
+    {
+        $this->request = $request;
+    }
+
+    private function getSiteResponse(): SiteResponse
+    {
+        if ($this->response === null) {
+            $this->response = new SiteResponse(new Headers(), new Content(new Head()));
+        }
+        return $this->response;
+    }
+
+    public function setSiteResponse(SiteResponse $response): void
+    {
+        $this->response = $response;
+    }
+
+    private function getGlobalConfig(): GlobalConfig
+    {
+        if ($this->globalConfig === null) {
+            $this->globalConfig = new GlobalConfig($this->getDb());
+        }
+        return $this->globalConfig;
+    }
+
+    private function getWebUser(): WebUser
+    {
+        if ($this->user === null) {
+            $this->user = new WebUser(new Auth($this->getDb(), new CookieStorage()), $this->getSessionStorage());
+        }
+        return $this->user;
+    }
+
+    public function setWebUser(WebUser $webUser): void
+    {
+        $this->user = $webUser;
+    }
+
+    private function getModuleFetcher(): ModuleFetcher
+    {
+        $modules =  [
+            new RedirectsModule($this->getDb()),
+            new MainPageModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new AjaxModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new MapModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new ListModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new CityModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new SearchModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig(), $this->getLogger()),
+            new BlogModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new FeedbackModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new AboutModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new SignModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new SysModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig(), $this->getLogger()),
+            new ApiModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new DefaultModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+        ];
+
+        return new ModuleFetcher($modules);
     }
 }

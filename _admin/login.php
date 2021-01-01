@@ -14,8 +14,8 @@ if (isset($_GET['out'])) {
 
 if (isset($_POST) && !empty($_POST)) {
     $login = trim($_POST['login']);
-    $pwd = cut_trash_text($_POST['pass']);
-    $retpath = !empty($_GET['r']) ? urldecode(cut_trash_text($_GET['r'])) : 'index.php';
+    $pwd = trim($_POST['pass']);
+    $retpath = !empty($_GET['r']) ? urldecode(trim($_GET['r'])) : 'index.php';
 
     if ($ticket->checkPassword($login, $pwd)) {
         $_SESSION['auth'] = $ticket->key;

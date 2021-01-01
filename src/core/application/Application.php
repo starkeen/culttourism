@@ -15,72 +15,88 @@ use MSysProperties;
 
 abstract class Application
 {
-    /**
-     * @var MyDB
-     */
-    protected $db;
+    private ?MyDB $db = null;
 
-    /**
-     * @var Logger
-     */
-    protected $logger;
+    private ?Logger $logger = null;
 
-    /**
-     * @var TemplateEngine
-     */
-    protected $templateEngine;
+    private ?TemplateEngine $templateEngine = null;
+
+    private ?MSysProperties $sysProperties = null;
 
     public function __construct()
     {
         error_reporting(E_ALL);
-        $sentryLogger = new SentryLogger(SENTRY_DSN);
-        $this->logger = new Logger($sentryLogger);
 
-        $exceptionHandler = new ExceptionsHandler($this->logger);
+        $exceptionHandler = new ExceptionsHandler($this->getLogger());
         set_exception_handler([$exceptionHandler, 'errorsExceptionsHandler']);
         register_shutdown_function([$exceptionHandler, 'shutdown']);
         set_error_handler(static function ($severity, $message, $filename, $lineno) {
             throw new ErrorException($message, 0, $severity, $filename, $lineno);
         });
+    }
 
-        $this->db = FactoryDB::db();
+    protected function getLogger(): Logger
+    {
+        if ($this->logger === null) {
+            $sentryLogger = new SentryLogger(SENTRY_DSN);
+            $this->logger = new Logger($sentryLogger);
+        }
 
-        $this->templateEngine = new TemplateEngine();
+        return $this->logger;
     }
 
     public function init(): void
     {
-        $sp = new MSysProperties($this->db);
-        $releaseKey = $sp->getByName('git_hash');
-        $this->logger->setReleaseKey($releaseKey);
+        $releaseKey = $this->getSysPropertiesModel()->getByName('git_hash');
+        $this->getLogger()->setReleaseKey($releaseKey);
     }
 
-    abstract public function run(): void;
-
-    /**
-     * @deprecated
-     * @return Logger
-     */
-    public function getLogger(): Logger
+    protected function getSysPropertiesModel(): MSysProperties
     {
-        return $this->logger;
+        if ($this->sysProperties === null) {
+            $this->sysProperties = new MSysProperties($this->getDb());
+        }
+        return $this->sysProperties;
+    }
+
+    public function setSysPropertiesModel(MSysProperties $sysProperties): void
+    {
+        $this->sysProperties = $sysProperties;
     }
 
     /**
-     * @deprecated
      * @return MyDB
      */
-    public function getDb(): MyDB
+    protected function getDb(): MyDB
     {
+        if ($this->db === null) {
+            $this->db = FactoryDB::db();
+        }
+
         return $this->db;
     }
 
+    public function setDb(MyDB $db): void
+    {
+        $this->db = $db;
+    }
+
     /**
-     * @deprecated
      * @return TemplateEngine
      */
-    public function getTemplateEngine(): TemplateEngine
+    protected function getTemplateEngine(): TemplateEngine
     {
+        if ($this->templateEngine === null) {
+            $this->templateEngine = new TemplateEngine();
+        }
+
         return $this->templateEngine;
     }
+
+    public function setTemplateEngine(TemplateEngine $templateEngine): void
+    {
+        $this->templateEngine = $templateEngine;
+    }
+
+    abstract public function run(): void;
 }
