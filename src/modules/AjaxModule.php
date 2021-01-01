@@ -369,7 +369,7 @@ class AjaxModule extends Module implements ModuleInterface
      * @throws NotFoundException
      * @throws AccessDeniedException
      */
-    private function deletePoint(int $pid): int|null
+    private function deletePoint(int $pid): ?int
     {
         if ($pid === 0) {
             throw new NotFoundException();
