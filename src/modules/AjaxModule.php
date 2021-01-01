@@ -33,9 +33,12 @@ class AjaxModule extends Module implements ModuleInterface
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
         $id = $request->getLevel2();
+        if ($id === null) {
+            throw new NotFoundException();
+        }
 
         $id = urldecode($id);
-        if (strpos($id, '?') !== false) {
+        if (str_contains($id, '?')) {
             $id = substr($id, 0, strpos($id, '?'));
         }
 
