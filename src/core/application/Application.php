@@ -35,7 +35,7 @@ abstract class Application
         });
     }
 
-    protected function getLogger(): Logger
+    public function getLogger(): Logger
     {
         if ($this->logger === null) {
             $sentryLogger = new SentryLogger(SENTRY_DSN);
