@@ -33,10 +33,15 @@ class ExceptionsHandler
             . '__________________________' . PHP_EOL . PHP_EOL . PHP_EOL
             . 'trace: ' . print_r($exception->getTrace(), true) . PHP_EOL;
 
-        mail('starkeen@gmail.com', 'Error on ' . _URL_ROOT, $msg);
-        if (ob_get_length()) {
-            ob_end_clean();
+        if (PHP_SAPI === 'cli') {
+            echo $msg;
+        } else {
+            mail('starkeen@gmail.com', 'Error on ' . _URL_ROOT, $msg);
+            if (ob_get_length()) {
+                ob_end_clean();
+            }
         }
+        $this->logger->sendSentryException($exception);
     }
 
     public function shutdown(): void
@@ -51,7 +56,11 @@ class ExceptionsHandler
                 . 'Cookies: ' . (isset($_COOKIE) ? print_r($_COOKIE, true) : 'none') . PHP_EOL
                 . '__________________________' . PHP_EOL . PHP_EOL . PHP_EOL
                 . 'trace: ' . print_r(debug_backtrace(), true) . PHP_EOL;
-            mail('starkeen@gmail.com', 'Fatal error on ' . _URL_ROOT, $msg);
+            if (PHP_SAPI === 'cli') {
+                echo $msg;
+            } else {
+                mail('starkeen@gmail.com', 'Fatal error on ' . _URL_ROOT, $msg);
+            }
         }
     }
 }
