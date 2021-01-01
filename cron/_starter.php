@@ -55,7 +55,7 @@ foreach ($scripts as $job) {
     $execTime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах
     if (strlen($content) !== 0) {
         $content .= "<hr>время: $execTime c.";
-        Mailing::sendDirect($global_cron_email, 'Cron on ' . _URL_ROOT, $content, 'X-Mailru-Msgtype:cronreport');
+        Mailing::sendDirect($global_cron_email, 'Cron on ' . GLOBAL_URL_ROOT, $content, 'X-Mailru-Msgtype:cronreport');
     }
     $cr->markWorkFinish($script_id, $content, $execTime);
 

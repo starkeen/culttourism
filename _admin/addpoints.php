@@ -37,7 +37,7 @@ if (isset($_GET['id'], $_GET['act'])) {
             );
             break;
         case 'get_analogs':
-            $searchRequest = $_GET['pname'] . ' host:' . _URL_ROOT;
+            $searchRequest = $_GET['pname'] . ' host:' . GLOBAL_URL_ROOT;
             $searcher = Factory::build();
             $searcher->setDocumentsOnPage(10);
             $result = $searcher->searchPages($searchRequest, 0);

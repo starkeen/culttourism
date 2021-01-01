@@ -165,8 +165,8 @@ class MListsItems extends Model
         $this->_db->execute(
             [
                 ':list_id' => $list_id,
-                ':url_root1' => _URL_ROOT,
-                ':url_root2' => _URL_ROOT,
+                ':url_root1' => GLOBAL_URL_ROOT,
+                ':url_root2' => GLOBAL_URL_ROOT,
             ]
         );
         return $this->_db->fetchAll();

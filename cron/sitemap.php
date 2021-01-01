@@ -1,6 +1,6 @@
 <?php
 
-$baseurl = 'https://' . _URL_ROOT;
+$baseurl = 'https://' . GLOBAL_URL_ROOT;
 $basedate = date('Y-m-d\TH:i:s+00:00');
 $urls = array();
 

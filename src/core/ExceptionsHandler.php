@@ -36,7 +36,7 @@ class ExceptionsHandler
         if (PHP_SAPI === 'cli') {
             echo $msg;
         } else {
-            mail('starkeen@gmail.com', 'Error on ' . _URL_ROOT, $msg);
+            mail('starkeen@gmail.com', 'Error on ' . GLOBAL_URL_ROOT, $msg);
             if (ob_get_length()) {
                 ob_end_clean();
             }
@@ -59,7 +59,7 @@ class ExceptionsHandler
             if (PHP_SAPI === 'cli') {
                 echo $msg;
             } else {
-                mail('starkeen@gmail.com', 'Fatal error on ' . _URL_ROOT, $msg);
+                mail('starkeen@gmail.com', 'Fatal error on ' . GLOBAL_URL_ROOT, $msg);
             }
         }
     }

@@ -163,8 +163,8 @@ class MPagePoints extends Model
 
         $this->_db->execute(
             [
-                ':url_root1' => _URL_ROOT,
-                ':url_root2' => _URL_ROOT,
+                ':url_root1' => GLOBAL_URL_ROOT,
+                ':url_root2' => GLOBAL_URL_ROOT,
                 ':selected_object_id1' => $selected_object_id,
                 ':selected_object_id2' => $selected_object_id,
                 ':bounds_min_lat' => $bounds['min_lat'],
@@ -301,8 +301,8 @@ class MPagePoints extends Model
         $this->_db->execute(
             [
                 ':cid' => $cid,
-                ':url_root1' => _URL_ROOT,
-                ':url_root2' => _URL_ROOT,
+                ':url_root1' => GLOBAL_URL_ROOT,
+                ':url_root2' => GLOBAL_URL_ROOT,
             ]
         );
         return $this->_db->fetchAll();
@@ -555,11 +555,11 @@ class MPagePoints extends Model
     public function repairLinksAbsRel(): void
     {
         $this->_db->sql = "UPDATE $this->_table_name
-                            SET pt_description = REPLACE(pt_description, '=\"http://" . _URL_ROOT . "/', '=\"/')";
+                            SET pt_description = REPLACE(pt_description, '=\"http://" . GLOBAL_URL_ROOT . "/', '=\"/')";
         $this->_db->exec();
 
         $this->_db->sql = "UPDATE $this->_table_name
-                            SET pt_description = REPLACE(pt_description, '=\"https://" . _URL_ROOT . "/', '=\"/')";
+                            SET pt_description = REPLACE(pt_description, '=\"https://" . GLOBAL_URL_ROOT . "/', '=\"/')";
         $this->_db->exec();
     }
 

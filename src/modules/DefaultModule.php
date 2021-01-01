@@ -379,7 +379,7 @@ class DefaultModule implements ModuleInterface
                     'points' => $points_data['points'],
                     'points_sight' => $points_data['points_sight'],
                     'points_servo' => $points_data['points_service'],
-                    'page_url' => _URL_ROOT,
+                    'page_url' => GLOBAL_URL_ROOT,
                     'page_image' => $cityImage,
                     'types_select' => $points_data['types'],
                     'ptypes' => [],

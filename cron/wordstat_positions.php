@@ -21,7 +21,7 @@ foreach ($cities as $city) {
         foreach ($result->getItems() as $site) {
             $domains[] = $site->getDomain();
         }
-        $founded = array_search(_URL_ROOT, $domains, true);
+        $founded = array_search(GLOBAL_URL_ROOT, $domains, true);
         if ($founded === false) {
             $position = 0;
         } else {

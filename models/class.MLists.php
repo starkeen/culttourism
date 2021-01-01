@@ -83,11 +83,11 @@ class MLists extends Model
     public function repairLinksAbsRel(): void
     {
         $this->_db->sql = "UPDATE $this->_table_name
-                            SET ls_text = REPLACE(ls_text, '=\"http://" . _URL_ROOT . "/', '=\"/')";
+                            SET ls_text = REPLACE(ls_text, '=\"http://" . GLOBAL_URL_ROOT . "/', '=\"/')";
         $this->_db->exec();
 
         $this->_db->sql = "UPDATE $this->_table_name
-                            SET ls_text = REPLACE(ls_text, '=\"https://" . _URL_ROOT . "/', '=\"/')";
+                            SET ls_text = REPLACE(ls_text, '=\"https://" . GLOBAL_URL_ROOT . "/', '=\"/')";
         $this->_db->exec();
     }
 }

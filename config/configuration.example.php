@@ -3,7 +3,7 @@
 define('_ER_REPORT', true);
 
 define('GLOBAL_DIR_ROOT', '/www/vhosts/culttourism');
-define('_URL_ROOT', 'cult.local');
+define('GLOBAL_URL_ROOT', 'cult.local');
 
 // Sentry configuration
 define('SENTRY_DSN', 'https://key1:key2@sentry.io/key3');
@@ -44,5 +44,5 @@ define('_DIR_VAR', _DIR_ROOT . '/var');
 define('_DIR_CACHE', _DIR_VAR . '/cache');
 define('_DIR_TMP', _DIR_VAR . '/tmp');
 
-define('_SITE_URL', 'https://' . _URL_ROOT . '/');
+define('_SITE_URL', 'https://' . GLOBAL_URL_ROOT . '/');
 

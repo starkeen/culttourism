@@ -301,7 +301,7 @@ class CityModule extends Module implements ModuleInterface
         $body = $this->templateEngine->getContent('city/details.tpl', [
             'adminlogined' => $this->webUser->getId() ?: 0,
             'city' => $citypage,
-            'baseurl' => _URL_ROOT,
+            'baseurl' => GLOBAL_URL_ROOT,
             'meta' => $meta,
             'photos' => $photos['items'],
             'ref_meta' => $ref_meta,
