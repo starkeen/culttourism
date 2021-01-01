@@ -23,12 +23,12 @@ class Mailing
         $mailer->SMTPAuth = true;
         $mailer->CharSet = 'utf-8';
         $mailer->setLanguage('ru');
-        $mailer->setFrom(_MAIL_FROMADDR, _MAIL_FROMNAME);
-        $mailer->Host = _MAIL_HOST;
+        $mailer->setFrom(GLOBAL_MAIL_FROMADDR, GLOBAL_MAIL_FROMNAME);
+        $mailer->Host = GLOBAL_MAIL_HOST;
         $mailer->SMTPSecure = 'ssl';
         $mailer->Port = 465;
-        $mailer->Username = _MAIL_USER;                  // SMTP username
-        $mailer->Password = _MAIL_PASS;                  // SMTP password
+        $mailer->Username = GLOBAL_MAIL_USER;                  // SMTP username
+        $mailer->Password = GLOBAL_MAIL_PASS;                  // SMTP password
         $mailer->Subject = $letter['ml_theme'];
         $mailer->Body = $letter['ml_text'];
         if ($letter['ml_customheader'] !== '') {

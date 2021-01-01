@@ -17,13 +17,11 @@ define('DB_BASENAME', 'cult-base');
 define('DB_PREFIX', 'cult');
 
 /* Mail settings */
-define('_MAIL_HOST', 'smtp.server-host.ru');
-define('_MAIL_USER', 'noreply@culttourism.ru');
-define('_MAIL_PASS', '-----');
-define('_MAIL_FROMADDR', 'noreply@culttourism.ru');
-define('_MAIL_FROMNAME', 'Культурный туризм');
-define('_MAIL_TO', 'xxxxx@gmail.com');
-define('_FEEDBACK_MAIL', 'xxx@mail.ru');
+define('GLOBAL_MAIL_HOST', 'smtp.server-host.ru');
+define('GLOBAL_MAIL_USER', 'noreply@culttourism.ru');
+define('GLOBAL_MAIL_PASS', '-----');
+define('GLOBAL_MAIL_FROMADDR', 'noreply@culttourism.ru');
+define('GLOBAL_MAIL_FROMNAME', 'Культурный туризм');
 
 define('YANDEX_XML_USER', 'user');
 define('YANDEX_XML_KEY', 'absdef');
