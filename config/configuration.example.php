@@ -5,7 +5,6 @@ define('_INDEXPAGE_URI', 'index.html');
 define('_ER_REPORT', true);
 
 define('_DIR_ROOT', '/www/vhosts/culttourism');
-define('_DELIMITER_PATH', '/');
 define('_URL_ROOT', 'cult.local');
 
 // Sentry configuration
@@ -40,12 +39,12 @@ define('GOOGLE_CUSTOM_SEARCH_CX', 'absdef');
  */
 
 /* Directory settings */
-define('_DIR_DATA', _DIR_ROOT . _DELIMITER_PATH . 'data');
-define('_DIR_PHOTOS', _DIR_DATA . _DELIMITER_PATH . 'photos');
-define('_DIR_TEMPLATES', _DIR_ROOT . _DELIMITER_PATH . 'templates');
-define('_DIR_VAR', _DIR_ROOT . _DELIMITER_PATH . 'var');
-define('_DIR_CACHE', _DIR_VAR . _DELIMITER_PATH . 'cache');
-define('_DIR_TMP', _DIR_VAR . _DELIMITER_PATH . 'tmp');
+define('_DIR_DATA', _DIR_ROOT . '/data');
+define('_DIR_PHOTOS', _DIR_DATA . '/photos');
+define('_DIR_TEMPLATES', _DIR_ROOT . '/templates');
+define('_DIR_VAR', _DIR_ROOT . '/var');
+define('_DIR_CACHE', _DIR_VAR . '/cache');
+define('_DIR_TMP', _DIR_VAR . '/tmp');
 
 define('_SITE_URL', 'https://' . _URL_ROOT . '/');
 
