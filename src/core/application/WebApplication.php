@@ -59,7 +59,7 @@ class WebApplication extends Application
 
         try {
             // редиректим на https
-            if (!_ER_REPORT && !$this->getSiteRequest()->isSSL()) {
+            if (!GLOBAL_ERROR_REPORTING && !$this->getSiteRequest()->isSSL()) {
                 $url = $this->getSiteRequest()->getCurrentURL();
                 throw new RedirectException($url);
             }

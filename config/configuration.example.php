@@ -1,6 +1,6 @@
 <?php
 
-define('_ER_REPORT', true);
+define('GLOBAL_ERROR_REPORTING', true);
 
 define('GLOBAL_DIR_ROOT', '/www/vhosts/culttourism');
 define('GLOBAL_URL_ROOT', 'cult.local');

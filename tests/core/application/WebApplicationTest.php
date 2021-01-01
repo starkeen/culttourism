@@ -23,8 +23,8 @@ class WebApplicationTest extends TestCase
         if (!defined('SENTRY_DSN')) {
             define('SENTRY_DSN', 'https://key1@key2.ingest.sentry.io/12345');
         }
-        if (!defined('_ER_REPORT')) {
-            define('_ER_REPORT', false);
+        if (!defined('GLOBAL_ERROR_REPORTING')) {
+            define('GLOBAL_ERROR_REPORTING', false);
         }
         $_SERVER['REQUEST_URI'] = '/';
     }

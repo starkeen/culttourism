@@ -26,7 +26,6 @@ class CookieStorage
      */
     public function setCookie(string $name, string $value, int $lifeTime): void
     {
-        $secure = !_ER_REPORT;
-        setcookie($name, $value, time() + $lifeTime, '/', '', $secure, $secure);
+        setcookie($name, $value, time() + $lifeTime, '/', '', !GLOBAL_ERROR_REPORTING, !GLOBAL_ERROR_REPORTING);
     }
 }
