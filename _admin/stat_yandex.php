@@ -60,8 +60,8 @@ $smarty->assign('seo', $ws->getStatPositions());
 $smarty->assign('reports', $reports);
 $smarty->assign('towns', $towns);
 $smarty->assign('direct_apikey', $direct_apikey);
-$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/stat_yandex.tpl'));
+$smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/stat_yandex.tpl'));
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
+$smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();
 

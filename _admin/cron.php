@@ -17,7 +17,7 @@ if (!isset($_GET['crid']) && !isset($_GET['act'])) {
         $crons[] = $row;
     }
     $smarty->assign('crons', $crons);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/cron.list.tpl'));
+    $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/cron.list.tpl'));
 }
 //-------------------------------------------------------------------------
 elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'edit') {
@@ -49,7 +49,7 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'edit') {
     $db->exec();
     $row = $db->fetch();
     $smarty->assign('task', $row);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/cron.item.tpl'));
+    $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/cron.item.tpl'));
 }
 //-------------------------------------------------------------------------
 elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'run') {
@@ -100,5 +100,5 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] === 'stop') 
 } else {
     die('error');
 }
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
+$smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();

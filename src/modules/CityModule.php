@@ -443,7 +443,7 @@ class CityModule extends Module implements ModuleInterface
         $this->templateEngine->assign('already', $already);
         $this->templateEngine->assign('freeplace', mb_strlen($newcity) >= 5 ? $newcity : null);
         $this->templateEngine->assign('adminlogined', $this->webUser->getId());
-        $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/add.tpl'));
+        $response->getContent()->setBody($this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/city/add.tpl'));
     }
 
     /**
@@ -491,9 +491,9 @@ class CityModule extends Module implements ModuleInterface
         $this->templateEngine->assign('adminlogined', $this->webUser->getId() ?? 0);
 
         if ($this->webUser->isEditor()) {
-            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.edit.tpl'));
+            $response->getContent()->setBody($this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/city/city.edit.tpl'));
         } else {
-            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/city/city.show.tpl'));
+            $response->getContent()->setBody($this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/city/city.show.tpl'));
         }
     }
 

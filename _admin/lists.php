@@ -33,7 +33,7 @@ if (isset($_GET['id'])) {
 
     $smarty->assign('list', $list);
     $smarty->assign('list_items', $lstitems->getAll());
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/lists.item.tpl'));
+    $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/lists.item.tpl'));
 } elseif (isset($_GET['suggest'])) {
     $out = ['query' => '', 'suggestions' => []];
     $out['query'] = htmlentities(trim($_GET['query']), ENT_QUOTES, 'UTF-8');
@@ -74,8 +74,8 @@ if (isset($_GET['id'])) {
     exit();
 } else {
     $smarty->assign('lists', $lst->getAll());
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/lists.list.tpl'));
+    $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/lists.list.tpl'));
 }
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
+$smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();

@@ -132,13 +132,13 @@ class SignModule extends Module implements ModuleInterface
     {
         if (isset($_SESSION['user_id'])) {
             $this->templateEngine->assign('username', $this->webUser->getName());
-            return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/authuser.tpl');
+            return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/sign/authuser.tpl');
         }
 
         $this->templateEngine->assign('baseurl', GLOBAL_SITE_URL);
         $this->templateEngine->assign('authkey', 'ewtheqryb35yqb356y4ery');
 
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/sign/authform.tpl');
+        return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/sign/authform.tpl');
     }
 
     /**

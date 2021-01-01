@@ -92,8 +92,8 @@ switch ($act) {
         break;
 }
 
-$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/photos_import.list.tpl'));
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
+$smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/photos_import.list.tpl'));
+$smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 
 function json(array $data): void
 {

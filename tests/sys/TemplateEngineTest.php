@@ -13,8 +13,8 @@ class TemplateEngineTest extends TestCase
 {
     public static function setUpBeforeClass(): void
     {
-        define('_DIR_TEMPLATES', 'dir_tpl');
-        define('_DIR_VAR', 'dir_var');
+        define('GLOBAL_DIR_TEMPLATES', 'dir_tpl');
+        define('GLOBAL_DIR_VAR', 'dir_var');
     }
 
     public function testContentBuilder(): void

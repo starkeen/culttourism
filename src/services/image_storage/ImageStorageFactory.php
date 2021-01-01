@@ -14,6 +14,6 @@ class ImageStorageFactory
         $db = FactoryDB::db();
         $model = new MPhotos($db);
 
-        return new ImageStorageService(_DIR_TMP, _DIR_PHOTOS, $model);
+        return new ImageStorageService(_DIR_TMP, GLOBAL_DIR_PHOTOS, $model);
     }
 }

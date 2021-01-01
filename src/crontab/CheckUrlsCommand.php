@@ -31,7 +31,7 @@ class CheckUrlsCommand extends CrontabCommand
         ],
     ];
 
-    private const COOKIES_PATH = _DIR_VAR . '/cookies';
+    private const COOKIES_PATH = GLOBAL_DIR_VAR . '/cookies';
 
     /**
      * @var MLinks

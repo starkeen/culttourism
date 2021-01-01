@@ -229,7 +229,7 @@ $smarty->assign('points_cnt', $points_cnt);
 $smarty->assign('filter', $filter);
 $smarty->assign('refs', $refs);
 
-$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/points.list.tpl'));
+$smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/points.list.tpl'));
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
+$smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();

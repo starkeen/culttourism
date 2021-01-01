@@ -29,7 +29,7 @@ class MapModule extends Module implements ModuleInterface
         //========================  I N D E X  ================================
         if ($request->getLevel1() === null) {
             $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
-            $response->getContent()->setBody($this->templateEngine->fetch(_DIR_TEMPLATES . '/map/map.tpl'));
+            $response->getContent()->setBody($this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/map/map.tpl'));
         } //====================  M A P   E N T R Y  ============================
         elseif ($request->getLevel1() === 'common') {
             $this->webUser->getAuth()->setService('map');
@@ -118,7 +118,7 @@ class MapModule extends Module implements ModuleInterface
         $this->templateEngine->assign('points', $points);
 
         $this->sendYMLHeaders();
-        echo $this->templateEngine->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
+        echo $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
         exit();
     }
 
@@ -162,7 +162,7 @@ class MapModule extends Module implements ModuleInterface
         $this->templateEngine->assign('city', $city);
 
         $this->sendYMLHeaders();
-        echo $this->templateEngine->fetch(_DIR_TEMPLATES . '/_XML/YMapsML1.sm.xml');
+        echo $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/_XML/YMapsML1.sm.xml');
         exit();
     }
 
@@ -229,7 +229,7 @@ class MapModule extends Module implements ModuleInterface
         $this->templateEngine->assign('points', $points);
 
         $this->sendYMLHeaders();
-        echo $this->templateEngine->fetch(_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
+        echo $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/_XML/YMapsML3.sm.xml');
         exit();
     }
 
@@ -248,7 +248,7 @@ class MapModule extends Module implements ModuleInterface
         $this->templateEngine->assign('points', $pts['points']);
 
         header('Content-type: application/xml');
-        echo $this->templateEngine->fetch(_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
+        echo $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/_XML/GPX.export.sm.xml');
         exit();
     }
 

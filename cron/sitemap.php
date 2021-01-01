@@ -53,7 +53,7 @@ while ($row = $db->fetch()) {
 
 $smarty->assign('urls', $urls);
 
-$filecontent = $smarty->fetch(_DIR_TEMPLATES . '/_XML/sitemap.sm.xml');
+$filecontent = $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_XML/sitemap.sm.xml');
 $filename = GLOBAL_DIR_ROOT . '/sitemap.xml'; //имя sitemap-файла
 
 $filesize_old = filesize($filename);

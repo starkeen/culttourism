@@ -36,11 +36,11 @@ define('GOOGLE_CUSTOM_SEARCH_CX', 'absdef');
 
 /* Directory settings */
 define('GLOBAL_DIR_DATA', GLOBAL_DIR_ROOT . '/data');
-define('_DIR_PHOTOS', GLOBAL_DIR_DATA . '/photos');
-define('_DIR_TEMPLATES', GLOBAL_DIR_ROOT . '/templates');
-define('_DIR_VAR', GLOBAL_DIR_ROOT . '/var');
-define('_DIR_CACHE', _DIR_VAR . '/cache');
-define('_DIR_TMP', _DIR_VAR . '/tmp');
+define('GLOBAL_DIR_PHOTOS', GLOBAL_DIR_DATA . '/photos');
+define('GLOBAL_DIR_TEMPLATES', GLOBAL_DIR_ROOT . '/templates');
+define('GLOBAL_DIR_VAR', GLOBAL_DIR_ROOT . '/var');
+define('_DIR_CACHE', GLOBAL_DIR_VAR . '/cache');
+define('_DIR_TMP', GLOBAL_DIR_VAR . '/tmp');
 
 define('GLOBAL_SITE_URL', 'https://' . GLOBAL_URL_ROOT . '/');
 

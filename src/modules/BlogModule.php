@@ -139,7 +139,7 @@ class BlogModule extends Module implements ModuleInterface
         $this->templateEngine->assign('entries', $entries);
         $this->templateEngine->assign('isAdmin', $this->webUser->isEditor());
 
-        $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/blog.all.tpl');
+        $body = $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/blog/blog.all.tpl');
 
         $response->getContent()->setBody($body);
     }
@@ -187,7 +187,7 @@ class BlogModule extends Module implements ModuleInterface
         }
 
         $this->templateEngine->assign('entry', $entry);
-        $contentBody = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/blog.one.tpl');
+        $contentBody = $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/blog/blog.one.tpl');
 
         $response->getContent()->setBody($contentBody);
     }
@@ -224,7 +224,7 @@ class BlogModule extends Module implements ModuleInterface
         $this->templateEngine->assign('years', $this->blogRepository->getYears());
         $this->templateEngine->assign('cur_year', $year);
 
-        $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/blog.calendar.tpl');
+        $body = $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/blog/blog.calendar.tpl');
 
         $response->getContent()->setBody($body);
     }
@@ -242,7 +242,7 @@ class BlogModule extends Module implements ModuleInterface
         if ($id !== null) {
             $entry = $this->blogRepository->getItemByPk($id);
             $this->templateEngine->assign('entry', $entry);
-            $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/ajax.editform.tpl');
+            $body = $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/blog/ajax.editform.tpl');
         } else {
             $entry = [
                 'br_day' => date('d.m.Y'),
@@ -252,7 +252,7 @@ class BlogModule extends Module implements ModuleInterface
                 'br_url' => date('d'),
             ];
             $this->templateEngine->assign('entry', $entry);
-            $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/blog/ajax.addform.tpl');
+            $body = $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/blog/ajax.addform.tpl');
         }
 
         $response->getContent()->setBody($body);

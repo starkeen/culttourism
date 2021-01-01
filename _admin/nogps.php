@@ -34,8 +34,8 @@ while ($row = $db->fetch()) {
 }
 
 $smarty->assign('points', $points);
-$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/nogps.tpl'));
+$smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/nogps.tpl'));
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
+$smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();
 ?>

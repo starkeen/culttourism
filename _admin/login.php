@@ -28,8 +28,8 @@ if (isset($_POST) && !empty($_POST)) {
 
 $smarty->assign('login', $login);
 $smarty->assign('error', $error);
-$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/login.tpl'));
+$smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/login.tpl'));
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
+$smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 
 exit();

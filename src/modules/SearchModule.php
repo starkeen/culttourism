@@ -184,7 +184,7 @@ class SearchModule extends Module implements ModuleInterface
         $this->templateEngine->assign('result', $result);
         $this->templateEngine->assign('meta', $resultMeta);
 
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/search/search.tpl');
+        return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/search/search.tpl');
     }
 
     /**

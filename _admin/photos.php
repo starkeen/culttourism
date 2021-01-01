@@ -108,7 +108,7 @@ if (isset($_GET['act'])) {
 
     $smarty->assign('photo', $photo);
     $smarty->assign('referer', $referer);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/photos.item.tpl'));
+    $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/photos.item.tpl'));
 } else {
     $get = [
         'fid' => isset($_GET['fid']) ? trim($_GET['fid']) : null,
@@ -158,8 +158,8 @@ if (isset($_GET['act'])) {
     $smarty->assign('get', $get);
     $smarty->assign('list', $list);
     $smarty->assign('pager', $ph->getPager());
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/photos.list.tpl'));
+    $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/photos.list.tpl'));
 }
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
+$smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();

@@ -49,7 +49,7 @@ class MainPageModule extends Module implements ModuleInterface
         $this->templateEngine->assign('stat', $this->globalConfig->getIndexStatText());
         $this->templateEngine->assign('blogentries', $blogEntries);
         $this->templateEngine->assign('agrnewsentries', $newsEntries);
-        $body = $this->templateEngine->fetch(_DIR_TEMPLATES . '/index.html/main.page.tpl');
+        $body = $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/index.html/main.page.tpl');
         $response->getContent()->setBody($body);
     }
 

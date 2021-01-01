@@ -99,7 +99,7 @@ if (isset($_GET['act'])) {
     echo json_encode($out);
     exit();
 } else {
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/flickr.import.tpl'));
-    $smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
+    $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/flickr.import.tpl'));
+    $smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
     exit();
 }

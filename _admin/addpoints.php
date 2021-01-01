@@ -164,7 +164,7 @@ if (isset($_GET['id'], $_GET['act'])) {
     $smarty->assign('referer', $_SERVER['HTTP_REFERER'] ?? 'addpoints.php');
     $smarty->assign('ref_types', $rpt->getActive());
     // -----------   обработка заявки ----------
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/pointadding.item.tpl'));
+    $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/pointadding.item.tpl'));
 } else {
     // -----------   список активных ----------
     $pt = new MRefPointtypes($db);
@@ -196,9 +196,9 @@ if (isset($_GET['id'], $_GET['act'])) {
     $smarty->assign('ref_st', $uv_st->getActive());
     $smarty->assign('matrix', $matrix);
     $smarty->assign('list', $list);
-    $smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/pointadding.list.tpl'));
+    $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/pointadding.list.tpl'));
 }
 
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
+$smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();

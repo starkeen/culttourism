@@ -19,9 +19,9 @@ class TemplateEngine
     public function __construct(Smarty $smarty = null)
     {
         $this->smarty = $smarty ?? new Smarty();
-        $this->smarty->setTemplateDir(_DIR_TEMPLATES . '/');
-        $this->smarty->setCompileDir(_DIR_VAR . '/templates_c/');
-        $this->smarty->setCacheDir(_DIR_VAR . '/templates_cache/');
+        $this->smarty->setTemplateDir(GLOBAL_DIR_TEMPLATES . '/');
+        $this->smarty->setCompileDir(GLOBAL_DIR_VAR . '/templates_c/');
+        $this->smarty->setCacheDir(GLOBAL_DIR_VAR . '/templates_cache/');
         $this->smarty->setCaching(Smarty::CACHING_OFF);
         $this->smarty->setCacheLifetime(3600);
         $this->smarty->setCompileCheck(Smarty::COMPILECHECK_ON);

@@ -91,7 +91,7 @@ class WebApplication extends Application
             $this->getTemplateEngine()->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
             $this->getTemplateEngine()->assign('host', GLOBAL_SITE_URL);
             $this->getTemplateEngine()->assign('suggestions', []);
-            $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(_DIR_TEMPLATES . '/_errors/er404.tpl'));
+            $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(GLOBAL_DIR_TEMPLATES . '/_errors/er404.tpl'));
         } catch (AccessDeniedException $exception) {
             $this->getLogger()->notice('Ошибка 403', [
                 'srv' => $_SERVER ?? [],
@@ -106,7 +106,7 @@ class WebApplication extends Application
             $this->getSiteResponse()->getContent()->setH1('Запрещено');
             $this->getTemplateEngine()->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
             $this->getTemplateEngine()->assign('host', GLOBAL_SITE_URL);
-            $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(_DIR_TEMPLATES . '/_errors/er403.tpl'));
+            $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(GLOBAL_DIR_TEMPLATES . '/_errors/er403.tpl'));
         } catch (Throwable $exception) {
             $this->getSiteResponse()->getHeaders()->add('Content-Type: text/html; charset=utf-8');
             $this->getSiteResponse()->getHeaders()->add('HTTP/1.1 503 Service Temporarily Unavailable');
@@ -115,7 +115,7 @@ class WebApplication extends Application
 
             $this->getSiteResponse()->getContent()->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
             $this->getSiteResponse()->getContent()->setH1('Сервис временно недоступен');
-            $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(_DIR_TEMPLATES . '/_errors/er503.tpl'));
+            $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(GLOBAL_DIR_TEMPLATES . '/_errors/er503.tpl'));
 
             $this->getLogger()->sendSentryException($exception);
         }

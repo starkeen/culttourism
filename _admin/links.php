@@ -143,9 +143,9 @@ $smarty->assign('statuses', $statuses);
 $smarty->assign('types', $types);
 $smarty->assign('status', $status);
 $smarty->assign('type', $type);
-$smarty->assign('content', $smarty->fetch(_DIR_TEMPLATES . '/_admin/links.list.tpl'));
+$smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/links.list.tpl'));
 
-$smarty->display(_DIR_TEMPLATES . '/_admin/admpage.tpl');
+$smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 
 
 exit();

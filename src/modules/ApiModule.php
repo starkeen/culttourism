@@ -71,7 +71,7 @@ class ApiModule extends Module implements ModuleInterface
      */
     private function getApi0()
     {
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/map0.tpl');
+        return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/api/map0.tpl');
     }
 
     /**
@@ -124,7 +124,7 @@ class ApiModule extends Module implements ModuleInterface
         }
 
         $this->templateEngine->assign('points', $points);
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api1.tpl');
+        return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/api/api1.tpl');
     }
 
     /**
@@ -150,7 +150,7 @@ class ApiModule extends Module implements ModuleInterface
         $db->exec();
         $pt = $db->fetch();
         $this->templateEngine->assign('object', $pt);
-        return $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api2.tpl');
+        return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/api/api2.tpl');
     }
 
     /**
@@ -241,7 +241,7 @@ class ApiModule extends Module implements ModuleInterface
         $this->templateEngine->assign('current', $this->getApi3("$c_lat,$c_lon"));
         $this->templateEngine->assign('points', $points);
         header("Content-type: application/xml");
-        echo $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api4.sm.xml');
+        echo $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/api/api4.sm.xml');
         exit();
     }
 
@@ -272,7 +272,7 @@ class ApiModule extends Module implements ModuleInterface
         );
         $this->templateEngine->assign('point', $pt);
         header("Content-type: application/xml");
-        echo $this->templateEngine->fetch(_DIR_TEMPLATES . '/api/api5.sm.xml');
+        echo $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/api/api5.sm.xml');
         exit();
     }
 
