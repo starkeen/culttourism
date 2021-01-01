@@ -27,7 +27,7 @@ $scanDirs = [
     'templates',
 ];
 $skipDirs = [
-    GLOBALGLOBAL_DIR_ROOT . '/data/logs',
+    GLOBAL_DIR_ROOT . '/data/logs',
     GLOBAL_DIR_ROOT . '/data/feed',
 ];
 
