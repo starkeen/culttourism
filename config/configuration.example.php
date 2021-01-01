@@ -35,8 +35,8 @@ define('GOOGLE_CUSTOM_SEARCH_CX', 'absdef');
  */
 
 /* Directory settings */
-define('_DIR_DATA', GLOBAL_DIR_ROOT . '/data');
-define('_DIR_PHOTOS', _DIR_DATA . '/photos');
+define('GLOBAL_DIR_DATA', GLOBAL_DIR_ROOT . '/data');
+define('_DIR_PHOTOS', GLOBAL_DIR_DATA . '/photos');
 define('_DIR_TEMPLATES', GLOBAL_DIR_ROOT . '/templates');
 define('_DIR_VAR', GLOBAL_DIR_ROOT . '/var');
 define('_DIR_CACHE', _DIR_VAR . '/cache');

@@ -29,7 +29,7 @@ class UnirefValues extends Model
             'uv_active',
         ];
         $this->_key_id = (int) $key_id;
-        $this->_files_dir = _DIR_DATA . '/uniref/' . (int) $key_id . '/full';
+        $this->_files_dir = GLOBAL_DIR_DATA . '/uniref/' . (int) $key_id . '/full';
         parent::__construct($db);
     }
 

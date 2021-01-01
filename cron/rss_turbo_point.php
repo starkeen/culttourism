@@ -13,8 +13,8 @@ $apiClient = new YandexWebmasterAPI($guzzle);
 
 $command = new RssTurboPointsCommand($generator, $apiClient);
 
-$fileName = sprintf('%s/feed/%s', _DIR_DATA, 'turbo-point.xml');
+$fileName = sprintf('%s/feed/%s', GLOBAL_DIR_DATA, 'turbo-point.xml');
 $chunkNumber = date('d') % 10;
-$partialFileName = sprintf('%s/feed/turbo-point-d%02d.xml', _DIR_DATA, $chunkNumber);
+$partialFileName = sprintf('%s/feed/turbo-point-d%02d.xml', GLOBAL_DIR_DATA, $chunkNumber);
 
 $command->run($fileName, $partialFileName, $chunkNumber);

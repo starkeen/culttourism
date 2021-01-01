@@ -40,7 +40,7 @@ $generators = [
 
 foreach ($generators as $fileType => $generator) {
     /** @var IRSSGenerator $generator */
-    $fileName = sprintf('%s/feed/%s', _DIR_DATA, $fileType); // имя RSS-файла
+    $fileName = sprintf('%s/feed/%s', GLOBAL_DIR_DATA, $fileType); // имя RSS-файла
     $generator->url = sprintf('%sdata/feed/%s', GLOBAL_SITE_URL, $fileType); // URL файла
 
     file_put_contents($fileName, $generator->process($entries));

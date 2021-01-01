@@ -2,7 +2,7 @@
 
 use app\utils\Strings;
 
-$dirSave = _DIR_DATA . '/photos/maps';
+$dirSave = GLOBAL_DIR_DATA . '/photos/maps';
 $dirRelative = '/data/photos/maps';
 $googleAPIkey = 'AIzaSyBiuHllm_OCLEKww8y02DJPeePMtvEnTiE';
 $size = 500;
