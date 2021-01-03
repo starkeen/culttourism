@@ -9,8 +9,6 @@ use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
 use app\exceptions\NotFoundException;
-use app\exceptions\RedirectException;
-use JetBrains\PhpStorm\Pure;
 
 class ApiModule extends Module implements ModuleInterface
 {
