@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "afd74d866978f7d5d9136dd59a6d4c35",
+    "content-hash": "0385d90750fa6696e2206ffd5578467d",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -242,43 +242,6 @@
                 "source": "https://github.com/Fanamurov/mdash/tree/master"
             },
             "time": "2018-04-02T07:44:31+00:00"
-        },
-        {
-            "name": "ganlvtech/kcaptcha",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ganlvtech/kcaptcha.git",
-                "reference": "42f6d73a1122ee90a25b3ba8915e59a8283e520d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ganlvtech/kcaptcha/zipball/42f6d73a1122ee90a25b3ba8915e59a8283e520d",
-                "reference": "42f6d73a1122ee90a25b3ba8915e59a8283e520d",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "KCAPTCHA\\": "./"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ganlv",
-                    "email": "ganlvtech@qq.com"
-                }
-            ],
-            "description": "KCAPTCHA for composer",
-            "support": {
-                "issues": "https://github.com/ganlvtech/kcaptcha/issues",
-                "source": "https://github.com/ganlvtech/kcaptcha/tree/master"
-            },
-            "time": "2018-02-14T06:20:49+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
