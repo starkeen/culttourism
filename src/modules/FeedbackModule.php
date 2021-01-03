@@ -10,7 +10,6 @@ use app\core\SiteRequest;
 use app\core\SiteResponse;
 use app\exceptions\NotFoundException;
 use app\includes\ReCaptcha;
-use app\utils\MyKCaptcha;
 use GuzzleHttp\Client;
 use Mailing;
 use MCandidatePoints;
@@ -25,9 +24,7 @@ class FeedbackModule extends Module implements ModuleInterface
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
         if ($request->getLevel1() === null) {
-            $this->getCommon($response);
-        } elseif ($request->getLevel1() === 'getcapt') {
-            $this->showCaptcha();
+            $this->getCommon($request, $response);
         } elseif ($request->getLevel1() === 'newpoint') {
             $this->getAdd($response);
         } else {
@@ -59,13 +56,11 @@ class FeedbackModule extends Module implements ModuleInterface
     private function getAdd(SiteResponse $response): void
     {
         $cp = new MCandidatePoints($this->db);
-        if (!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] == null) {
+        if (!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] === null) {
             $_SESSION['feedback_referer'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
         }
         if (isset($_POST) && !empty($_POST)) {
-            $httpClient = new Client();
-            $reCaptcha = new ReCaptcha($httpClient);
-            $spamStatusOK = $reCaptcha->check($_POST['g-recaptcha-response'] ?? null);
+            $spamStatusOK = $this->getReCaptcha()->check($_POST['g-recaptcha-response'] ?? null);
 
             $loggedSender = $_SESSION['user_id'] ?? null;
             $isAdminSender = $loggedSender !== null && (int) $loggedSender !== 0;
@@ -102,7 +97,6 @@ class FeedbackModule extends Module implements ModuleInterface
                 ];
 
                 Mailing::sendLetterCommon($this->globalConfig->getMailFeedback(), 5, $mailAttrs);
-                unset($_SESSION['feedback_referer'], $_SESSION[MyKCaptcha::SESSION_KEY]);
             }
 
             $response->getContent()->setBody($this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']));
@@ -113,9 +107,10 @@ class FeedbackModule extends Module implements ModuleInterface
     }
 
     /**
+     * @param SiteRequest $request
      * @param SiteResponse $response
      */
-    private function getCommon(SiteResponse $response): void
+    private function getCommon(SiteRequest $request, SiteResponse $response): void
     {
         $data = [
             'error' => null,
@@ -125,70 +120,62 @@ class FeedbackModule extends Module implements ModuleInterface
             'ftext' => null,
             'fmail' => null,
         ];
-        if ((!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] === null) && isset($_SERVER['HTTP_REFERER'])) {
-            $_SESSION['feedback_referer'] = $_SERVER['HTTP_REFERER'];
+
+        if ($request->isPost()) {
+            $this->processFeedbackPosting($request, $response);
+        } else {
+            $response->getContent()->setBody($this->getCommonForm($data));
+        }
+    }
+
+    /**
+     * Обработка запроса на сохранение обратной связи
+     * @param SiteRequest $request
+     * @param SiteResponse $response
+     */
+    private function processFeedbackPosting(SiteRequest $request, SiteResponse $response): void
+    {
+       if ((!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] === null) && $request->getReferer() !== null) {
+            $_SESSION['feedback_referer'] = $request->getReferer();
         }
         $referer = !empty($_SESSION['feedback_referer']) ? $_SESSION['feedback_referer'] : null;
-        if (isset($_POST) && !empty($_POST)) {
-            $data['fname'] = cut_trash_text($_POST['fname']);
-            $data['fsurname'] = $_POST['fsurname'] ?? null;
-            $data['fmail'] = cut_trash_text($_POST['fmail']);
-            $data['ftext'] = cut_trash_text($_POST['ftext']);
-            $fcapt = $_POST['fcapt'];
-            $ftextcheck = cut_trash_text($_POST['ftextcheck']);
 
-            if (isset($_SESSION[MyKCaptcha::SESSION_KEY]) && $fcapt !== $_SESSION[MyKCaptcha::SESSION_KEY]) {
-                $data['error'] = 'fcapt';
-            }
-            if ($data['fname'] === 'Сотруднк') {
-                $data['error'] = 'fcapt';
-            }
-            if ($data['fsurname'] === null) { // скрытое поле не было отправлено вообще
-                $data['error'] = 'fcapt';
-            }
-            if ($data['fsurname'] !== '') { // скрытое поле было отправлено непустым
-                $data['error'] = 'fcapt';
-            }
-            if (strpos($data['ftext'], 'drive.google.com') !== false) {
-                $data['error'] = 'fcapt';
-            }
-            if ($ftextcheck != '') {
-                $data['error'] = 'fcapt';
-            }
-            if ($data['ftext'] == '') {
-                $data['error'] = 'ftext';
-            }
-            if ($data['fname'] == '') {
-                $data['error'] = 'fname';
-            }
+        $data['fname'] = cut_trash_text($_POST['fname']);
+        $data['fsurname'] = $_POST['fsurname'] ?? null;
+        $data['fmail'] = cut_trash_text($_POST['fmail']);
+        $data['ftext'] = cut_trash_text($_POST['ftext']);
 
-            if ($data['error'] === null) {
-                $data['success'] = true;
-                $fb = new MFeedback($this->db);
-                $fb->add(
-                    [
-                        'fb_name' => $data['fname'],
-                        'fb_text' => $data['ftext'],
-                        'fb_sendermail' => $data['fmail'],
-                        'fb_referer' => $referer,
-                        'fb_ip' => $_SERVER['REMOTE_ADDR'],
-                        'fb_browser' => $_SERVER['HTTP_USER_AGENT'],
-                    ]
-                );
-                $mail_attrs = [
+        if ($data['ftext'] === '') {
+            $data['error'] = 'ftext';
+        }
+        if ($data['fname'] === '') {
+            $data['error'] = 'fname';
+        }
+
+        if (!isset($data['error'])) {
+            $data['success'] = true;
+            $fb = new MFeedback($this->db);
+            $fb->add(
+                [
+                    'fb_name' => $data['fname'],
+                    'fb_text' => $data['ftext'],
+                    'fb_sendermail' => $data['fmail'],
+                    'fb_referer' => $referer,
+                    'fb_ip' => $_SERVER['REMOTE_ADDR'],
+                    'fb_browser' => $_SERVER['HTTP_USER_AGENT'],
+                ]
+            );
+            $spamStatusOK = $this->getReCaptcha()->check($_POST['g-recaptcha-response'] ?? null);
+            if ($spamStatusOK) {
+                $mailAttributes = [
                     'user_name' => $data['fname'],
                     'user_mail' => $data['fmail'],
                     'feed_text' => $data['ftext'],
                     'referer' => $referer,
                 ];
-                Mailing::sendLetterCommon($this->globalConfig->getMailFeedback(), 4, $mail_attrs);
-                unset($_POST, $_SESSION[MyKCaptcha::SESSION_KEY], $_SESSION[MyKCaptcha::SESSION_KEY]);
-                $response->getContent()->setBody($this->getCommonSuccess($data));
-            } else {
-                $response->getContent()->setBody($this->getCommonForm($data));
+                Mailing::sendLetterCommon($this->globalConfig->getMailFeedback(), 4, $mailAttributes);
             }
-
-            unset($_SESSION[MyKCaptcha::SESSION_KEY]);
+            $response->getContent()->setBody($this->getCommonSuccess($data));
         } else {
             $response->getContent()->setBody($this->getCommonForm($data));
         }
@@ -201,19 +188,17 @@ class FeedbackModule extends Module implements ModuleInterface
      */
     private function getCommonForm(array $data): string
     {
-        foreach ($data as $k => $v) {
-            $this->templateEngine->assign($k, $v);
-        }
-
-        return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/feedback/feedpage.tpl');
+        $data['recaptcha_key'] = ReCaptcha::KEY;
+        return $this->templateEngine->getContent('feedback/feedback_form_page.tpl', $data);
     }
 
-    private function getCommonSuccess($data): string
+    /**
+     * @param array $data
+     * @return string
+     */
+    private function getCommonSuccess(array $data): string
     {
-        foreach ($data as $k => $v) {
-            $this->templateEngine->assign($k, $v);
-        }
-        return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/feedback/feedsuccess.tpl');
+        return $this->templateEngine->getContent('feedback/feedsuccess.tpl', $data);
     }
 
     /**
@@ -223,8 +208,10 @@ class FeedbackModule extends Module implements ModuleInterface
     private function getAddingForm(SiteResponse $response): string
     {
         $response->getContent()->getHead()->addTitleElement('Добавить объект (музей, гостиницу, кафе и др.)');
-        $this->templateEngine->assign('recaptcha_key', ReCaptcha::KEY);
-        return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/feedback/addpoint.tpl');
+
+        return $this->templateEngine->getContent('feedback/point_add_form_page.tpl', [
+            'recaptcha_key' => ReCaptcha::KEY,
+        ]);
     }
 
     /**
@@ -241,11 +228,12 @@ class FeedbackModule extends Module implements ModuleInterface
         return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/feedback/addsuccess.tpl');
     }
 
-    private function showCaptcha(): void
+    /**
+     * @return ReCaptcha
+     */
+    private function getReCaptcha(): ReCaptcha
     {
-        $captcha = new MyKCaptcha();
-        $_SESSION[MyKCaptcha::SESSION_KEY] = $captcha->getKeyString();
-        $captcha->captcha();
-        exit();
+        $httpClient = new Client();
+        return new ReCaptcha($httpClient);
     }
 }

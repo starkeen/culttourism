@@ -44,13 +44,6 @@ $(document).ready(function () {
     });
     //=============================
 
-    //------------------------------------------ FEEDBACK --------------------------
-    $("#captchahelp").click(function () {
-        let stamp = new Date;
-        $("#norobotpic").attr("src", "/feedback/getcapt/" + stamp.getTime());
-        return false;
-    });
-
     //----------------------------------- POINTS FILTER ------------------------------
     $("a.typefilterlink").live("click", function () {//----- фильтр достопримечательностей по типу
         var a = this.href.split("#")[1].split("_")[1];

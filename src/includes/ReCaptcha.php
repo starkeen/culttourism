@@ -7,12 +7,11 @@ use RuntimeException;
 
 class ReCaptcha
 {
-    const KEY = '6LcLZRoUAAAAADiMQC7i3obCBBRkKJZihgJZx2cV';
-    const SECRET = '6LcLZRoUAAAAAGXgjcBiEFGtfKPJODLsInmOqNxT';
-    const URL = 'https://www.google.com/recaptcha/api/siteverify';
+    public const KEY = '6LcLZRoUAAAAADiMQC7i3obCBBRkKJZihgJZx2cV';
+    private const SECRET = '6LcLZRoUAAAAAGXgjcBiEFGtfKPJODLsInmOqNxT';
+    private const URL = 'https://www.google.com/recaptcha/api/siteverify';
 
-    /** @var Client */
-    private $httpClient;
+    private Client $httpClient;
 
     public function __construct(Client $client)
     {
@@ -25,7 +24,7 @@ class ReCaptcha
      * @return boolean
      * @throws RuntimeException
      */
-    public function check($token): bool
+    public function check(string $token): bool
     {
         try {
             $response = $this->httpClient->post(self::URL, $this->getRequestData($token));
@@ -35,7 +34,7 @@ class ReCaptcha
             $answer = null;
         }
 
-        return (bool) $answer['success'] ?? false;
+        return (bool) ($answer['success'] ?? false);
     }
 
     /**
@@ -43,7 +42,7 @@ class ReCaptcha
      *
      * @return array
      */
-    private function getRequestData($token): array
+    private function getRequestData(string $token): array
     {
         return [
             'form_params' => [

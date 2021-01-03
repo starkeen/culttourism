@@ -203,6 +203,23 @@ class SiteRequest
     }
 
     /**
+     * Определяет POST-запрос
+     * @return bool
+     */
+    public function isPost(): bool
+    {
+        return !empty($_POST);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReferer(): ?string
+    {
+        return $_SERVER['HTTP_REFERER'] ?? null;
+    }
+
+    /**
      * Разбор запроса на составляющие
      */
     private function parseRequest(): void

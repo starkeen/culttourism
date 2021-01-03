@@ -4,6 +4,7 @@ namespace app\db;
 
 use app\db\exceptions\AccessException;
 use app\db\exceptions\DuplicateKeyException;
+use app\db\exceptions\FieldException;
 use app\db\exceptions\MyPDOException;
 use app\db\exceptions\TableException;
 use app\db\exceptions\TooManyConnectionsException;
@@ -420,7 +421,10 @@ class MyDB
             throw new DuplicateKeyException('Ошибка PDO: duplicate key', $errorCode, $exception);
         }
         if ($errorCode === 1146) {
-            throw new DuplicateKeyException('Ошибка PDO: table not found', $errorCode, $exception);
+            throw new TableException('Ошибка PDO: table not found', $errorCode, $exception);
+        }
+        if ($errorCode === 1406) {
+            throw new FieldException('Ошибка PDO: data too long for column', $errorCode, $exception);
         }
 
         throw new MyPDOException('Ошибка PDO: ' . $errorCode, $errorCode, $exception);
