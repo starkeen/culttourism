@@ -10,42 +10,34 @@ use app\core\SiteRequest;
 use app\core\SiteResponse;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
+use JetBrains\PhpStorm\Pure;
 
 class ApiModule extends Module implements ModuleInterface
 {
     /**
      * @inheritDoc
      * @throws NotFoundException
-     * @throws RedirectException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
-        $page_id = $request->getLevel1();
-        $id = $request->getLevel2();
-        $id = urldecode($id);
-        if (strpos($id, '?') !== false) {
-            $id = substr($id, 0, strpos($id, '?'));
-        }
-        $this->id = $id;
+        $pageId = (string) $request->getLevel1();
+
         $this->webUser->getAuth()->setService('api');
 
         //========================  I N D E X  ================================
-        if ($page_id == '0') {//карта
+        if ($pageId === '0') {//карта
             $response->getContent()->setBody($this->getApi0());
-        } elseif ($page_id == '1' && isset($_GET['center'])) {//список
+        } elseif ($pageId === '1' && isset($_GET['center'])) {//список
             $response->getContent()->setBody($this->getApi1());
-        } elseif ($page_id == '2' && isset($_GET['id'])) {//место
+        } elseif ($pageId === '2' && isset($_GET['id'])) {//место
             $response->getContent()->setBody($this->getApi2((int) $_GET['id']));
-        } elseif ($page_id == '3' && isset($_GET['center'])) {//адрес
+        } elseif ($pageId === '3' && isset($_GET['center'])) {//адрес
             $response->getContent()->setBody($this->getApi3($_GET['center']));
-        } elseif ($page_id == '4' && isset($_GET['center'])) {//список xml
+        } elseif ($pageId === '4' && isset($_GET['center'])) {//список xml
             $this->getApi4();
-        } elseif ($page_id == '5' && isset($_GET['id'])) {//место xml
+        } elseif ($pageId === '5' && isset($_GET['id'])) {//место xml
             $this->getApi5((int) $_GET['id']);
-        } elseif ($page_id == '') {
-            throw new RedirectException('/api/0/');
-        } //==========================  E X I T  ================================
-        else {
+        } else {
             throw new NotFoundException();
         }
     }
@@ -79,11 +71,10 @@ class ApiModule extends Module implements ModuleInterface
      */
     private function getApi1()
     {
-        $db = $this->db;
-        $dbpt = $db->getTableName('pagepoints');
-        $dbpc = $db->getTableName('pagecity');
-        $dpru = $db->getTableName('region_url');
-        $dprt = $db->getTableName('ref_pointtypes');
+        $dbpt =  $this->db->getTableName('pagepoints');
+        $dbpc =  $this->db->getTableName('pagecity');
+        $dpru =  $this->db->getTableName('region_url');
+        $dprt =  $this->db->getTableName('ref_pointtypes');
 
         [$c_lat, $c_lon] = explode(',', trim($_GET['center']));
         $c_lat = cut_trash_float($c_lat);
@@ -100,7 +91,7 @@ class ApiModule extends Module implements ModuleInterface
             $filter = '';
         }
 
-        $db->sql = "SELECT pt.*, rt.tp_name, rt.tp_icon,
+        $this->db->sql = "SELECT pt.*, rt.tp_name, rt.tp_icon,
                            ru.url,
                            ROUND(6371 * 1000 * acos(sin(RADIANS(pt.pt_latitude)) * sin(RADIANS($c_lat)) + cos(RADIANS(pt.pt_latitude)) * cos(RADIANS($c_lat)) * cos(RADIANS(pt.pt_longitude) - RADIANS($c_lon)))) AS dist_m
                     FROM $dbpt pt
@@ -112,9 +103,9 @@ class ApiModule extends Module implements ModuleInterface
                     AND pt.pt_latitude > 0 AND pt.pt_longitude > 0
                     ORDER BY dist_m
                     LIMIT 20";
-        $db->exec();
+        $this->db->exec();
         $points = [];
-        while ($pt = $db->fetch()) {
+        while ($pt =  $this->db->fetch()) {
             $pt['pt_description'] = strip_tags($pt['pt_description']);
             $pt['pt_description'] = html_entity_decode($pt['pt_description'], ENT_QUOTES, 'UTF-8');
             $short_end = @mb_strpos($pt['pt_description'], ' ', 350, 'utf-8');
@@ -124,6 +115,7 @@ class ApiModule extends Module implements ModuleInterface
         }
 
         $this->templateEngine->assign('points', $points);
+
         return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/api/api1.tpl');
     }
 
@@ -150,6 +142,7 @@ class ApiModule extends Module implements ModuleInterface
         $db->exec();
         $pt = $db->fetch();
         $this->templateEngine->assign('object', $pt);
+
         return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/api/api2.tpl');
     }
 
@@ -277,13 +270,13 @@ class ApiModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param $lat1
-     * @param $lon1
-     * @param $lat2
-     * @param $lon2
+     * @param float $lat1
+     * @param float $lon1
+     * @param float $lat2
+     * @param float $lon2
      * @return float
      */
-    private function calcGeodesicLine($lat1, $lon1, $lat2, $lon2): float
+    private function calcGeodesicLine(float $lat1, float $lon1, float $lat2, float $lon2): float
     {
         return round(
             6371 * 1000 * acos(
