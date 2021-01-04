@@ -1,4 +1,4 @@
-;ymaps.ready(function() {
+ymaps.ready(function() {
     var myMap = new ymaps.Map("city_map", {
         center: [$('#mapcity_pc_longitude').val(), $('#mapcity_pc_latitude').val()],
         zoom: $('#mapcity_pc_zoom').val(),

@@ -61,7 +61,6 @@ $(document).ready(function () {
     $(".links-disable-process").live("click", function (event) {
         let $element = $(event.target);
         let id = $element.data("id");
-        let $link = $("#link-id-" + id);
         if (confirm("Деактивировать объект?")) {
             $.post(
                 "links.php?act=process-disable",

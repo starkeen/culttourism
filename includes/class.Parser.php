@@ -15,7 +15,7 @@ class Parser
     public function __construct($db, $url)
     {
         if (empty($url)) {
-            throw new RuntimeException('Не передан URL');
+            throw new InvalidArgumentException('Не передан URL');
         }
         $this->_sites = include GLOBAL_DIR_ROOT . '/config/config.parser.php';
         $this->_url = parse_url($url);

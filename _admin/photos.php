@@ -11,45 +11,39 @@ $pc = new MPageCities($db);
 $pt = new MPagePoints($db);
 
 if (isset($_GET['act'])) {
-    switch ($_GET['act']) {
-        case 'upload':
-            if (!empty($_FILES)) {
-                $file = $_FILES['photo'];
-                if ((int) $file['error'] === 0) {
-                    $imageService = ImageStorageFactory::build();
-                    $photoId = $imageService->uploadFromFile($file['tmp_name']);
-                    if ($photoId > 0) {
-                        $pcId = (int) $_POST['pcid'];
-                        $ptId = (int) $_POST['ptid'];
-                        $addPc = (int) $_POST['pcid_add'];
-                        $addPt = (int) $_POST['ptid_add'];
+    if (($_GET['act'] === 'upload') && !empty($_FILES)) {
+        $file = $_FILES['photo'];
+        if ((int) $file['error'] === 0) {
+            $imageService = ImageStorageFactory::build();
+            $photoId = $imageService->uploadFromFile($file['tmp_name']);
+            if ($photoId > 0) {
+                $pcId = (int) $_POST['pcid'];
+                $ptId = (int) $_POST['ptid'];
+                $addPc = (int) $_POST['pcid_add'];
+                $addPt = (int) $_POST['ptid_add'];
 
-                        if ($pcId > 0 && $addPc === 1) {
-                            $imageService->bindPhotoToRegion($photoId, $pcId);
-                            $pc->updateByPk(
-                                $pcId,
-                                [
-                                    'pc_coverphoto_id' => $photoId,
-                                    'pc_lastup_date' => $pc->now(),
-                                ]
-                            );
-                        }
-                        if ($ptId > 0 && $addPt === 1) {
-                            $imageService->bindPhotoToObject($photoId, $ptId);
-                            $pt->updateByPk(
-                                $ptId,
-                                [
-                                    'pt_photo_id' => $photoId,
-                                    'pt_lastup_date' => $pt->now(),
-                                ]
-                            );
-                        }
-                    }
+                if ($pcId > 0 && $addPc === 1) {
+                    $imageService->bindPhotoToRegion($photoId, $pcId);
+                    $pc->updateByPk(
+                        $pcId,
+                        [
+                            'pc_coverphoto_id' => $photoId,
+                            'pc_lastup_date' => $pc->now(),
+                        ]
+                    );
+                }
+                if ($ptId > 0 && $addPt === 1) {
+                    $imageService->bindPhotoToObject($photoId, $ptId);
+                    $pt->updateByPk(
+                        $ptId,
+                        [
+                            'pt_photo_id' => $photoId,
+                            'pt_lastup_date' => $pt->now(),
+                        ]
+                    );
                 }
             }
-            break;
-        default:
-            throw new InvalidArgumentException('Ошибка роутинга');
+        }
     }
 
     header('Location: photos.php');

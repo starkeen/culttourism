@@ -117,8 +117,6 @@ class SQLPager
             $out .= '</select> на странице</form>';
         }
 
-        $out .= '</div>';
-
-        return $out;
+        return $out . '</div>';
     }
 }
