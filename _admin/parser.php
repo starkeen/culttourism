@@ -29,7 +29,7 @@ if (isset($_GET['act'])) {
                             'cp_web' => $out['data']['web'],
                             'cp_worktime' => $out['data']['worktime'],
                             'cp_email' => $out['data']['email'],
-                            'cp_city' => isset($_GET['city']) ? $_GET['city'] : '',
+                            'cp_city' => $_GET['city'] ?? '',
                             'cp_type_id' => 0,
                             'cp_citypage_id' => isset($_GET['pcid']) ? (int) $_GET['pcid'] : 0,
                             'cp_latitude' => $out['data']['geo_lat'],
@@ -41,8 +41,10 @@ if (isset($_GET['act'])) {
                     ) > 0;
             }
             break;
+        default:
+            throw new InvalidArgumentException('Ошибка роутинга');
     }
-    header("Content-type: application/json");
+    header('Content-type: application/json');
     echo json_encode($out);
     exit();
 }

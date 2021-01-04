@@ -90,6 +90,8 @@ switch ($act) {
         }
         json($out);
         break;
+    default:
+        throw new InvalidArgumentException('Ошибка роутинга');
 }
 
 $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/photos_import.list.tpl'));

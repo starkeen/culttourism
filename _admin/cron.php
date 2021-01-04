@@ -1,6 +1,7 @@
 <?php
 
 require('common.php');
+
 $smarty->assign('title', 'Задачи по расписанию');
 $dbcron = $db->getTableName('cron');
 
@@ -20,7 +21,7 @@ if (!isset($_GET['crid']) && !isset($_GET['act'])) {
     $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/cron.list.tpl'));
 }
 //-------------------------------------------------------------------------
-elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'edit') {
+elseif (isset($_GET['crid'], $_GET['act']) && $_GET['act'] === 'edit') {
     $crid = (int) $_GET['crid'];
 
     if (isset($_POST) && !empty($_POST)) {
@@ -34,8 +35,7 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'edit') {
                     cr_datenext='$next_day $next_time'
                     WHERE cr_id = '$crid'";
         if ($db->exec()) {
-            header('Location: cron.php');
-            exit();
+            redirect();
         }
     }
 
@@ -52,7 +52,7 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'edit') {
     $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/cron.item.tpl'));
 }
 //-------------------------------------------------------------------------
-elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'run') {
+elseif (isset($_GET['crid'], $_GET['act']) && $_GET['act'] === 'run') {
     $crid = (int) $_GET['crid'];
     $db->sql = "SELECT cr_id, cr_script, DATE_FORMAT(cr_period, '%d %H:%i') as period FROM $dbcron WHERE cr_id = '$crid'";
     if ($db->exec()) {
@@ -69,7 +69,7 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'run') {
         $content = ob_get_contents();
         ob_end_clean();
         $exectime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах
-        if (strlen($content) != 0) {
+        if (strlen($content) !== 0) {
             $content .= "<hr>время: $exectime c.";
         }
         echo $content;
@@ -81,8 +81,7 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] == 'run') {
                     cr_datelast = now()
                     WHERE cr_id = '$script_id'");
     }
-    header("Location: cron.php");
-    exit();
+    redirect();
 }
 //-------------------------------------------------------------------------
 elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] === 'stop') {
@@ -91,14 +90,19 @@ elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] === 'stop') 
                 cr_active='0', cr_isrun='0'
                 WHERE cr_id = '$crid'";
     if ($db->exec()) {
-        header("Location: cron.php");
-        exit();
+        redirect();
     } else {
-        header("Location: cron.php?crid=$crid&act=edit");
+        header('Location: cron.php?crid=' . $crid . '&act=edit');
         exit();
     }
-} else {
-    die('error');
 }
+
 $smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();
+
+
+function redirect(): void
+{
+    header('Location: cron.php');
+    exit();
+}

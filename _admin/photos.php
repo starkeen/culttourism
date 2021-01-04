@@ -48,6 +48,8 @@ if (isset($_GET['act'])) {
                 }
             }
             break;
+        default:
+            throw new InvalidArgumentException('Ошибка роутинга');
     }
 
     header('Location: photos.php');

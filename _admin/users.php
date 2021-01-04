@@ -31,7 +31,7 @@ if (!isset($_GET['user_id']) && !isset($_GET['act'])) {
                     us_login = '$us_login',
                     us_email = '$us_email',
                     us_male = '$us_male'";
-        if ($us_pass1 === $us_pass2 && strlen($us_pass1) != 0) {
+        if ($us_pass1 === $us_pass2 && strlen($us_pass1) !== 0) {
             $db->sql .= ",  us_passwrd = MD5('$us_pass1')";
         }
         if ($us_admin !== null) {
@@ -42,16 +42,16 @@ if (!isset($_GET['user_id']) && !isset($_GET['act'])) {
         }
         $db->sql .= "\nWHERE us_id = '$us_id'";
         if ($db->exec()) {
-            header('location:users.php');
+            redirect();
         }
     }
     if (isset($_POST['to_ret'])) {
-        header('location:users.php');
+        redirect();
     }
     if (isset($_POST['to_del'])) {
         $db->sql = "DELETE FROM $dbu WHERE us_id = '$us_id'";
         if ($db->exec()) {
-            header('location:users.php');
+            redirect();
         }
     }
 
@@ -93,7 +93,7 @@ if (!isset($_GET['user_id']) && !isset($_GET['act'])) {
             $db->sql = "INSERT INTO $dbu (us_name, us_login, us_passwrd, us_email, us_male, us_admin, us_active)
                         VALUES ('$us_name', '$us_login', MD5('$us_pass1'), '$us_email', '$us_male', '$us_admin', '1')";
             if ($db->exec()) {
-                header('location:users.php');
+                redirect();
             }
         }
     }
@@ -107,3 +107,9 @@ if (!isset($_GET['user_id']) && !isset($_GET['act'])) {
 
 $smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();
+
+function redirect(): void
+{
+    header('location:users.php');
+    exit;
+}

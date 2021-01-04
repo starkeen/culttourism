@@ -55,6 +55,8 @@ if (isset($_GET['act'])) {
             }
             $data['state'] = true;
             break;
+        default:
+            throw new InvalidArgumentException('Ошибка роутинга');
     }
     header('Content-type: application/json');
     echo json_encode($data);
