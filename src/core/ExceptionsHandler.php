@@ -44,6 +44,9 @@ class ExceptionsHandler
         $this->logger->sendSentryException($exception);
     }
 
+    /**
+     * Обработка фатальных ошибок, отловленных на этапе окончания работы
+     */
     public function shutdown(): void
     {
         $error = error_get_last();
