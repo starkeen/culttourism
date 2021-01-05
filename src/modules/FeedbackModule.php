@@ -60,7 +60,7 @@ class FeedbackModule extends Module implements ModuleInterface
             $_SESSION['feedback_referer'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
         }
         if (isset($_POST) && !empty($_POST)) {
-            $spamStatusOK = $this->getReCaptcha()->check($_POST['g-recaptcha-response'] ?? null);
+            $spamStatusOK = $this->getReCaptcha()->check($_POST['g-recaptcha-response'] ?? '');
 
             $loggedSender = $_SESSION['user_id'] ?? null;
             $isAdminSender = $loggedSender !== null && (int) $loggedSender !== 0;
@@ -165,7 +165,7 @@ class FeedbackModule extends Module implements ModuleInterface
                     'fb_browser' => $_SERVER['HTTP_USER_AGENT'],
                 ]
             );
-            $spamStatusOK = $this->getReCaptcha()->check($_POST['g-recaptcha-response'] ?? null);
+            $spamStatusOK = $this->getReCaptcha()->check($_POST['g-recaptcha-response'] ?? '');
             if ($spamStatusOK) {
                 $mailAttributes = [
                     'user_name' => $data['fname'],
