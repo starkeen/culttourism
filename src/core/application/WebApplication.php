@@ -28,6 +28,7 @@ use app\modules\FeedbackModule;
 use app\modules\ListModule;
 use app\modules\MainPageModule;
 use app\modules\MapModule;
+use app\modules\PointsModule;
 use app\modules\RedirectsModule;
 use app\modules\SearchModule;
 use app\modules\SignModule;
@@ -224,6 +225,7 @@ class WebApplication extends Application
             new AjaxModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new MapModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new ListModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new PointsModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new CityModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new SearchModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig(), $this->getLogger()),
             new BlogModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),

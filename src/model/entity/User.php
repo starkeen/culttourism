@@ -24,4 +24,9 @@ class User extends Entity
     {
         $this->values = $row;
     }
+
+    public function getId(): ?int
+    {
+        return $this->us_id;
+    }
 }

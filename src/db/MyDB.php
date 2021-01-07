@@ -301,6 +301,22 @@ class MyDB
     }
 
     /**
+     * @param string $sql
+     */
+    public function setSQL(string $sql): void
+    {
+        $this->sql = $sql;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSQL(): string
+    {
+        return $this->sql;
+    }
+
+    /**
      * @return mixed
      */
     public function getLastInserted()

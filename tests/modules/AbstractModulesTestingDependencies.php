@@ -74,7 +74,15 @@ abstract class AbstractModulesTestingDependencies extends TestCase
     {
         return $this->getMockBuilder(SiteRequest::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getModuleKey', 'getUrl', 'getLevel1'])
+            ->onlyMethods([
+                'getModuleKey',
+                'getUrl',
+                'getLevel1',
+                'getLevel2',
+                'getLevel3',
+                'isAjax',
+                'isPost',
+            ])
             ->getMock();
     }
 

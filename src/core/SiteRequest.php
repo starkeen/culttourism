@@ -212,6 +212,16 @@ class SiteRequest
     }
 
     /**
+     * Возвращает параметр POST-запроса по имени
+     * @param string $name
+     * @return int|string|bool|null
+     */
+    public function getPostParameter(string $name)
+    {
+        return $_POST[$name] ?? null;
+    }
+
+    /**
      * @return string|null
      */
     public function getReferer(): ?string

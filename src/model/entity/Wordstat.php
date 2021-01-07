@@ -28,4 +28,9 @@ class Wordstat extends Entity
     {
         $this->values = $row;
     }
+
+    public function getId(): ?int
+    {
+        return $this->ws_id;
+    }
 }

@@ -133,23 +133,22 @@ $(document).ready(function () {
             });
             $(document).css("cursor", "default");
         }
-        if ($(this).parent().attr("id") == "pt_contacts_handler") {//--- сохранение контактов
+        if ($(this).parent().attr("id") === "pt_contacts_handler") {//--- сохранение контактов
             $(document).css("cursor", "progress");
             $("#pt_contacts_handler input").hide();
             $("#pt_cont_adress").text($("#pt_cont_adress_edit").val());
             $("#pt_cont_worktime").text($("#pt_cont_worktime_edit").val());
             $("#pt_cont_phone").text($("#pt_cont_phone_edit").val());
             $("#pt_cont_website").text($("#pt_cont_website_edit").val()).attr("href", $("#pt_cont_website_edit").val());
-            $("#pt_cont_email").text($("#pt_cont_email_edit").val()).attr("href", "mailto:" + $("#pt_cont_email_edit").val());
-            $.post("/ajax/point/savecontacts/?cid=" + $("#pt_id").val(), {
-                cid:       $("#pt_id").val(),
-                nwebsite:  $("#pt_cont_website").attr("readonly", true).text(),
-                nemail:    $("#pt_cont_email").attr("readonly", true).text(),
-                nphone:    $("#pt_cont_phone").attr("readonly", true).text(),
-                nworktime: $("#pt_cont_worktime").attr("readonly", true).text(),
-                nadress:   $("#pt_cont_adress").attr("readonly", true).text()
-            }, function (a) {
-                if (a) {
+
+            $.post("/point/" + $("#pt_id").val() + "/contacts/", {
+                id:        $("#pt_id").val(),
+                website:  $("#pt_cont_website").attr("readonly", true).text(),
+                phone:    $("#pt_cont_phone").attr("readonly", true).text(),
+                worktime: $("#pt_cont_worktime").attr("readonly", true).text(),
+                address:   $("#pt_cont_adress").attr("readonly", true).text()
+            }, function (response) {
+                if (response) {
                     $(".edit_cont").show();
                     $("div#pt_contacts_handler input").hide();
                     $(".hiddenedit_cont").hide();

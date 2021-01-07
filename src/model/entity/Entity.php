@@ -9,7 +9,11 @@ abstract class Entity
     /**
      * @var int[]|string[]|bool[]|null[]
      */
-    protected $values = [];
+    protected array $values = [];
+
+    protected array $modifiedFields = [];
+
+    abstract public function getId(): ?int;
 
     /**
      * @param string $name
@@ -27,6 +31,7 @@ abstract class Entity
     public function __set(string $name, $value): void
     {
         $this->values[$name] = $value;
+        $this->modifiedFields[$name] = true;
     }
 
     /**
@@ -36,5 +41,25 @@ abstract class Entity
     public function __get(string $name)
     {
         return $this->values[$name] ?? null;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getModifiedFields(): array
+    {
+        return array_keys(
+            array_filter(
+                $this->modifiedFields,
+                static function (bool $fieldState) {
+                    return $fieldState === true;
+                }
+            )
+        );
+    }
+
+    public function now(): string
+    {
+        return date('Y-m-d H:i:s');
     }
 }

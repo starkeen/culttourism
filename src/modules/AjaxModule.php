@@ -23,7 +23,7 @@ class AjaxModule extends Module implements ModuleInterface
     /**
      * @var MDataCheck
      */
-    private $mDataCheck;
+    private MDataCheck $mDataCheck;
 
     /**
      * @inheritDoc
@@ -55,8 +55,6 @@ class AjaxModule extends Module implements ModuleInterface
                 $response->getContent()->setBody($this->savePointTitle((int) $_GET['id']));
             } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
                 $response->getContent()->setBody($this->savePointDescription((int) $_GET['id']));
-            } elseif ($id === 'savecontacts' && isset($_GET['cid']) && (int) $_GET['cid']) {
-                $this->savePointContacts((int) $_GET['cid']);
             } elseif ($id === 'getnewform' && isset($_GET['cid'])) {
                 $response->getContent()->setBody($this->getPointNew((int) $_GET['cid']));
             } elseif ($id === 'savenew' && isset($_GET['cid'])) {
@@ -132,47 +130,7 @@ class AjaxModule extends Module implements ModuleInterface
 
     /**
      * -------------------------------------------------------------- POINTS ----------
-     * @param int $cid
-     * @return bool|null
-     * @throws NotFoundException
-     * @throws AccessDeniedException
-     */
-    private function savePointContacts(int $cid): ?bool
-    {
-        if ($cid === 0) {
-            throw new NotFoundException();
-        }
-        $pp = new MPagePoints($this->db);
-
-        $nid = (int) $_POST['cid'];
-        if ($cid !== $nid) {
-            throw new NotFoundException();
-        }
-        if (!$this->webUser->isEditor()) {
-            throw new AccessDeniedException();
-        }
-        $out = $pp->updateByPk(
-            $cid,
-            [
-                'pt_lastup_user' => $this->webUser->getId(),
-                'pt_lastup_date' => $pp->now(),
-                'pt_website' => $_POST['nwebsite'],
-                'pt_email' => $_POST['nemail'],
-                'pt_phone' => $_POST['nphone'],
-                'pt_worktime' => $_POST['nworktime'],
-                'pt_adress' => $_POST['nadress'],
-            ]
-        );
-        if ($out) {
-            $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $cid);
-            $linksModel = new MLinks($this->db);
-            $linksModel->deleteByPoint($cid);
-
-            return true;
-        }
-
-        return false;
-    }
+     * /
 
     /**
      * @param int $pid
