@@ -15,6 +15,8 @@ class SignModule extends Module implements ModuleInterface
 {
     private const COOKIE_KEY = 'userkey';
 
+    private const ROUTE_SIGN_IN = '/sign/in/';
+
     /**
      * @inheritDoc
      * @throws RedirectException
@@ -107,10 +109,10 @@ class SignModule extends Module implements ModuleInterface
             $_SESSION['user_referer'] = $_SERVER['HTTP_REFERER'];
         }
         if (!$key) {
-            throw new RedirectException('/sign/in/');
+            throw new RedirectException(self::ROUTE_SIGN_IN);
         }
         if (!isset($_POST) || empty($_POST)) {
-            throw new RedirectException('/sign/in/');
+            throw new RedirectException(self::ROUTE_SIGN_IN);
         }
 
         $email = trim($_POST['email']);
@@ -119,7 +121,7 @@ class SignModule extends Module implements ModuleInterface
         if ($this->webUser->getAuth()->checkMailPassword($email, $passw)) {
             $returnUrl = $_SESSION['user_referer'] ?? GLOBAL_SITE_URL;
         } else {
-            $returnUrl = '/sign/in/';
+            $returnUrl = self::ROUTE_SIGN_IN;
         }
 
         throw new RedirectException($returnUrl);

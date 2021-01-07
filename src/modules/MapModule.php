@@ -18,6 +18,8 @@ use MRefPointtypes;
 
 class MapModule extends Module implements ModuleInterface
 {
+    private const REPLACE_SYMBOLS = "\x00..\x1F,.-";
+
     /**
      * @inheritDoc
      * @throws NotFoundException
@@ -87,12 +89,7 @@ class MapModule extends Module implements ModuleInterface
         foreach ($points as $i => $pt) {
             $points[$i]['pt_description'] = strip_tags($points[$i]['pt_description']);
             $points[$i]['pt_description'] = html_entity_decode($points[$i]['pt_description'], ENT_QUOTES, 'UTF-8');
-            $descriptionLength = mb_strlen($pt['pt_description']);
-            $short_end = @mb_strpos($pt['pt_description'], ' ', min(50, $descriptionLength), 'utf-8');
-            $points[$i]['pt_short'] = trim(
-                mb_substr($points[$i]['pt_description'], 0, $short_end ?: null, 'utf-8'),
-                "\x00..\x1F,.-"
-            );
+            $points[$i]['pt_short'] = $this->getShortDescription($points[$i]['pt_description'], 50);
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'] ?? '', ENT_QUOTES);
 
             if ($pt['pt_latitude'] > $bounds['max_lat']) {
@@ -144,12 +141,7 @@ class MapModule extends Module implements ModuleInterface
         foreach ($points as $i => $pt) {
             $points[$i]['pt_description'] = strip_tags($points[$i]['pt_description']);
             $points[$i]['pt_description'] = html_entity_decode($points[$i]['pt_description'], ENT_QUOTES, 'UTF-8');
-            $descriptionLength = mb_strlen($pt['pt_description']);
-            $short_end = @mb_strpos($pt['pt_description'], ' ', min(100, $descriptionLength), 'utf-8');
-            $points[$i]['pt_short'] = trim(
-                mb_substr($points[$i]['pt_description'], 0, $short_end ?: null, 'utf-8'),
-                "\x00..\x1F,.-"
-            );
+            $points[$i]['pt_short'] = $this->getShortDescription($pt['pt_description'], 100);
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'] ?? '', ENT_QUOTES);
         }
 
@@ -215,12 +207,7 @@ class MapModule extends Module implements ModuleInterface
         foreach ($points as $i => $ptItem) {
             $points[$i]['pt_description'] = strip_tags($points[$i]['pt_description']);
             $points[$i]['pt_description'] = html_entity_decode($points[$i]['pt_description'], ENT_QUOTES, 'UTF-8');
-            $descriptionLength = mb_strlen($points[$i]['pt_description']);
-            $shortEnd = @mb_strpos($points[$i]['pt_description'], ' ', min(50, $descriptionLength), 'utf-8');
-            $points[$i]['pt_short'] = trim(
-                mb_substr($points[$i]['pt_description'], 0, $shortEnd ?: null, 'utf-8'),
-                "\x00..\x1F,.-"
-            );
+            $points[$i]['pt_short'] = $this->getShortDescription($points[$i]['pt_description'], 50);
             $points[$i]['pt_website'] = htmlspecialchars($points[$i]['pt_website'] ?? '', ENT_QUOTES);
         }
 
@@ -265,6 +252,22 @@ class MapModule extends Module implements ModuleInterface
             $cache->put('point_types', $types);
         }
         return $types;
+    }
+
+    /**
+     * @param string $longDescription
+     * @param int $size
+     * @return string
+     */
+    private function getShortDescription(string $longDescription, int $size): string
+    {
+        $descriptionLength = mb_strlen($longDescription);
+        $trimBoundary = @mb_strpos($longDescription, ' ', min($size, $descriptionLength), 'utf-8');
+
+        return trim(
+            mb_substr($longDescription, 0, $trimBoundary ?: null, 'utf-8'),
+            self::REPLACE_SYMBOLS
+        );
     }
 
     private function calculateCenterBounds(array $bounds): array
