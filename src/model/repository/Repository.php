@@ -27,11 +27,6 @@ abstract class Repository
         return $this->db;
     }
 
-    protected function setDb(MyDB $db): void
-    {
-        $this->db = $db;
-    }
-
     public function save(Entity $entity): int
     {
         $id = $entity->getId();
@@ -46,7 +41,22 @@ abstract class Repository
 
     private function insert(Entity $entity): int
     {
-        return -1;
+        $binds = [];
+        $sqlFields = [];
+
+        $pkName = static::getPkName();
+
+        $fields = $entity->getModifiedFields();
+        foreach ($fields as $field) {
+            $sqlFields[] = $field . ' = :' . $field;
+            $binds[':' . $field] = $entity->$field;
+        }
+        $sql = 'INSERT INTO ' . $this->getDb()->getTableName(static::getTableName()) . ' SET ' . PHP_EOL
+            . implode(',' . PHP_EOL, $sqlFields);
+        $binds[':' . $pkName] = $entity->getId();
+
+        $this->getDb()->setSQL($sql);
+        $this->getDb()->execute($binds);
     }
 
     private function update(Entity $entity): void

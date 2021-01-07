@@ -39,10 +39,20 @@ class EntityTest extends TestCase
         self::assertEquals(54321, $this->entity->field_integer);
         self::assertTrue($this->entity->field_bool);
         self::assertNull($this->entity->field_null);
+
+        self::assertTrue(isset($this->entity->field_string));
+        self::assertFalse(isset($this->entity->field_undefined));
+
         self::assertEquals(12345, $this->entity->getId());
+
         self::assertEquals(
             ['field_string', 'field_integer', 'field_bool', 'field_null'],
             $this->entity->getModifiedFields()
         );
+    }
+
+    public function testNow(): void
+    {
+        self::assertEquals(date('Y-m-d H:i:s'), $this->entity->now());
     }
 }
