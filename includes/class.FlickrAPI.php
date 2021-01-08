@@ -1,5 +1,7 @@
 <?php
 
+use app\core\exception\CoreException;
+
 /**
  * Класс для работы с API flickr.com
  */
@@ -106,7 +108,7 @@ class FlickrAPI
         }
     }
 
-    private function request($url)
+    private function request(string $url)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -123,7 +125,7 @@ class FlickrAPI
         $errno = curl_errno($ch);
         if ($errno) {
             $error_message = curl_error($ch);
-            throw new Exception("cURL error ({$errno}):\n {$error_message}");
+            throw new CoreException("cURL error ({$errno}):\n {$error_message}");
         }
         curl_close($ch);
 

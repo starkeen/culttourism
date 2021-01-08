@@ -39,6 +39,7 @@ class GoogleSearch
     {
         $request = new Request($query);
         $request->setLimit($this->limit);
+        $request->setPage($page);
         $request->setOptions($this->options);
 
         $response = $this->httpClient->fetchResponse($request);

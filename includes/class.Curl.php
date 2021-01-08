@@ -1,5 +1,6 @@
 <?php
 
+use app\core\exception\CoreException;
 use app\db\MyDB;
 
 class Curl
@@ -75,7 +76,7 @@ class Curl
             curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->getHeaders());
             $text = curl_exec($this->curl);
             if ($text === false) {
-                throw new RuntimeException(curl_error($this->curl));
+                throw new CoreException(curl_error($this->curl));
             }
             $this->cc->put($url . '?' . $data, $text, $this->ttl);
 

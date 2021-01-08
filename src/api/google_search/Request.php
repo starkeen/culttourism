@@ -6,20 +6,16 @@ namespace app\api\google_search;
 
 class Request
 {
-    /**
-     * @var string
-     */
-    private $query;
+    private string $query;
 
-    /**
-     * @var int
-     */
-    private $limit = 10;
+    private int $limit = 10;
+
+    private int $page = 0;
 
     /**
      * @var string[]
      */
-    private $options = [];
+    private array $options = [];
 
     public function __construct(string $query)
     {
@@ -45,6 +41,22 @@ class Request
     public function setLimit(int $limit): void
     {
         $this->limit = $limit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPage(): int
+    {
+        return $this->page;
+    }
+
+    /**
+     * @param int $page
+     */
+    public function setPage(int $page): void
+    {
+        $this->page = $page;
     }
 
     /**
