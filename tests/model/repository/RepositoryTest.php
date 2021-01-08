@@ -78,4 +78,41 @@ class RepositoryTest extends TestCase
 
         $this->repository->save($entity);
     }
+
+    public function testSaveNewEntity(): void
+    {
+        $entity = $this->getMockBuilder(Entity::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getId', 'getModifiedFields', '__get'])
+            ->getMock();
+
+        $entity->expects(self::once())->method('getId')->willReturn(null);
+        $entity->expects(self::exactly(3))->method('__get')->willReturnMap([
+            ['field_one', 'value_one'],
+            ['field_two', 54321],
+            ['field_3', null],
+        ]);
+        $entity->expects(self::once())->method('getModifiedFields')->willReturn(['field_one', 'field_two', 'field_3']);
+
+        $this->dbMock->expects(self::once())
+            ->method('setSQL')
+            ->with('INSERT INTO `table_name` SET '
+                . PHP_EOL
+                . 'field_one = :field_one,'
+                .PHP_EOL
+                . 'field_two = :field_two,'
+                . PHP_EOL
+                . 'field_3 = :field_3'
+                . PHP_EOL);
+        $this->dbMock->expects(self::once())
+            ->method('execute')
+            ->with([
+                    ':field_one' => 'value_one',
+                    ':field_two' => 54321,
+                    ':field_3' => null,
+                ]
+            );
+
+        $this->repository->save($entity);
+    }
 }

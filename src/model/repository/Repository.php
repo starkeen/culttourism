@@ -41,42 +41,49 @@ abstract class Repository
 
     private function insert(Entity $entity): int
     {
-        $binds = [];
-        $sqlFields = [];
+        [$sqlSet, $binds] = $this->getSQLSetWithBinds($entity);
 
-        $pkName = static::getPkName();
-
-        $fields = $entity->getModifiedFields();
-        foreach ($fields as $field) {
-            $sqlFields[] = $field . ' = :' . $field;
-            $binds[':' . $field] = $entity->$field;
-        }
         $sql = 'INSERT INTO ' . $this->getDb()->getTableName(static::getTableName()) . ' SET ' . PHP_EOL
-            . implode(',' . PHP_EOL, $sqlFields);
+            . $sqlSet;
+
+        $this->getDb()->setSQL($sql);
+        $this->getDb()->execute($binds);
+
+        return (int) $this->getDb()->getLastInserted();
+    }
+
+    private function update(Entity $entity): void
+    {
+        $pkName = static::getPkName();
+        [$sqlSet, $binds] = $this->getSQLSetWithBinds($entity);
+
+        $sql = 'UPDATE ' . $this->getDb()->getTableName(static::getTableName()) . ' SET ' . PHP_EOL
+            . $sqlSet
+            . 'WHERE ' . $pkName . ' = :' . $pkName;
         $binds[':' . $pkName] = $entity->getId();
 
         $this->getDb()->setSQL($sql);
         $this->getDb()->execute($binds);
     }
 
-    private function update(Entity $entity): void
+    /**
+     * @param Entity $entity
+     * @return array - два элемента - тело SQL-запроса и набор данных для него
+     */
+    private function getSQLSetWithBinds(Entity $entity): array
     {
         $binds = [];
         $sqlFields = [];
-
-        $pkName = static::getPkName();
 
         $fields = $entity->getModifiedFields();
         foreach ($fields as $field) {
             $sqlFields[] = $field . ' = :' . $field;
             $binds[':' . $field] = $entity->$field;
         }
-        $sql = 'UPDATE ' . $this->getDb()->getTableName(static::getTableName()) . ' SET ' . PHP_EOL
-            . implode(',' . PHP_EOL, $sqlFields) . PHP_EOL
-            . 'WHERE ' . $pkName . ' = :' . $pkName;
-        $binds[':' . $pkName] = $entity->getId();
 
-        $this->getDb()->setSQL($sql);
-        $this->getDb()->execute($binds);
+        return [
+            implode(',' . PHP_EOL, $sqlFields) . PHP_EOL,
+            $binds,
+        ];
     }
 }
