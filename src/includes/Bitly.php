@@ -8,8 +8,8 @@ use RuntimeException;
 
 class Bitly
 {
-    const BITLY_HOST = 'https://api-ssl.bitly.com';
-    const CURL_CACHE_TTL = 86400;
+    private const BITLY_HOST = 'https://api-ssl.bitly.com';
+    private const CURL_CACHE_TTL = 86400;
 
     /** @var Client */
     private $client;
@@ -19,15 +19,20 @@ class Bitly
 
     /** @var string */
     private $bitlyHost;
+
     /** @var string */
     private $token = 'cdba9cb93629303877a0e9ae5a33ff0a6877eac5';
-    /** @var string */
-    private $apiKey = 'R_591b7cdc5de86b5afa99f850f4aa54e0';
+
     /** @var string */
     private $clientId = '937164071db5a7fab7f82e56aa5198616c96bf37';
+
     /** @var string */
     private $clientSecret = 'ccd85b27dc6d77ddf409250b5f5f07f8924fdd6b';
 
+    /**
+     * @param Client $client
+     * @param MCurlCache $cc
+     */
     public function __construct(Client $client, MCurlCache $cc)
     {
         $this->client = $client;
@@ -39,7 +44,7 @@ class Bitly
      * @return string
      * @throws RuntimeException
      */
-    public function short($url)
+    public function short(string $url): string
     {
         $result = $url;
 
@@ -66,11 +71,10 @@ class Bitly
     /**
      * @return string
      */
-    private function getToken()
+    private function getToken(): string
     {
         if (empty($this->token)) {
-            $uri = sprintf('/oauth/access_token');
-            $res = $this->client->request('POST', self::BITLY_HOST . $uri, [
+            $this->client->request('POST', self::BITLY_HOST . '/oauth/access_token', [
                 'client_id' => $this->clientId,
                 'client_secret' => $this->clientSecret,
                 'code' => 200,
@@ -83,7 +87,7 @@ class Bitly
     /**
      * @param string $token
      */
-    public function setToken(string $token)
+    public function setToken(string $token): void
     {
         $this->token = $token;
     }
@@ -91,7 +95,7 @@ class Bitly
     /**
      * @param string $host
      */
-    public function setHost(string $host)
+    public function setHost(string $host): void
     {
         $this->bitlyHost = $host;
     }
@@ -101,7 +105,7 @@ class Bitly
      *
      * @return string
      */
-    private function buildUrl($url)
+    private function buildUrl($url): string
     {
         $pattern = '%s/v3/shorten?access_token=%s&longUrl=%s&format=json';
 

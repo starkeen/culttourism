@@ -1,5 +1,7 @@
 <?php
 
+use app\db\MyDB;
+
 class MDataCheck extends Model
 {
     public const ENTITY_POINTS = 'pagepoints';
@@ -11,7 +13,7 @@ class MDataCheck extends Model
     protected $_table_order = 'dc_id';
     protected $_table_active = 'dc_id';
 
-    public function __construct($db)
+    public function __construct(MyDB $db)
     {
         $this->_table_name = $db->getTableName('data_check');
         $this->_table_fields = [
@@ -44,8 +46,8 @@ class MDataCheck extends Model
                 ':result2' => $result,
             ]
         );
-        $dcid = $this->_db->getLastInserted();
-        return $dcid;
+
+        return $this->_db->getLastInserted();
     }
 
     /**

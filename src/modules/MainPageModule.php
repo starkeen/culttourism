@@ -17,17 +17,6 @@ use MNewsItems;
 
 class MainPageModule extends Module implements ModuleInterface
 {
-    /**
-     * @param MyDB $db
-     * @param TemplateEngine $templateEngine
-     * @param WebUser $webUser
-     * @param GlobalConfig $globalConfig
-     */
-    public function __construct(MyDB $db, TemplateEngine $templateEngine, WebUser $webUser, GlobalConfig $globalConfig)
-    {
-        parent::__construct($db, $templateEngine, $webUser, $globalConfig);
-    }
-
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
         $bg = new MBlogEntries($this->db);
