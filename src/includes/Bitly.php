@@ -9,7 +9,7 @@ use RuntimeException;
 class Bitly
 {
     private const BITLY_HOST = 'https://api-ssl.bitly.com';
-    private const CURL_CACHE_TTL = 86400;
+    public const CURL_CACHE_TTL = 86400;
 
     /** @var Client */
     private $client;
