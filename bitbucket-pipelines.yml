@@ -1,48 +1,58 @@
 image: php:7.4
 
 definitions:
-    steps:
-        -   step: &unit-tests
-                name: Unit tests
-                caches:
-                    - composer
-                script:
-                    - apt-get update && apt-get install -y unzip
-                    - make vendor
-                    - make test
-        -   step: &deploy
-                name: Deploy
-                script:
-                    - echo "Deploy dummy"
-        -   step: &deploy-release-notification
-                name: Sentry release notification
-                script:
-                    -   pipe: sentryio/sentry-new-release:0.1.1
-                        variables:
-                            SENTRY_AUTH_TOKEN: $SENTRY_AUTH_TOKEN
-                            SENTRY_ORG: 'starkeen'
-                            SENTRY_PROJECT: 'culttourismru'
-                            DEBUG: 'true'
+  steps:
+    -
+      step: &unit-tests
+        name: Unit tests
+        caches:
+          - composer
+        script:
+          - apt-get update && apt-get install -y unzip
+          - make vendor
+          - make test
+    -
+      step: &deploy
+        name: Deploy
+        script:
+          - echo "Deploy dummy"
+    -
+      step: &deploy-release-notification
+        name: Sentry release notification
+        script:
+          -
+            pipe: sentryio/sentry-new-release:0.1.1
+            variables:
+              SENTRY_AUTH_TOKEN: $SENTRY_AUTH_TOKEN
+              SENTRY_ORG: 'starkeen'
+              SENTRY_PROJECT: 'culttourismru'
+              DEBUG: 'true'
 
-        -   step: &sentry-code-report
-                name: Sentry code report
-                script:
-                    -   pipe: sentryio/sentry-code-report:0.0.6
-                        variables:
-                            SENTRY_ORG: 'starkeen'
-                            SENTRY_PROJECT_ID: 114324
+    -
+      step: &sentry-code-report
+        name: Sentry code report
+        script:
+          -
+            pipe: sentryio/sentry-code-report:0.0.6
+            variables:
+              SENTRY_ORG: 'starkeen'
+              SENTRY_PROJECT_ID: 114324
 
 pipelines:
-    default:
-        -   step:
-                <<: *unit-tests
-                name: Unit tests on branch
+  default:
+    -
+      step:
+        <<: *unit-tests
+        name: Unit tests on branch
 
-    branches:
-        master:
-            #            - step: *sentry-code-report
-            -   step:
-                    <<: *unit-tests
-                    name: Unit tests on Master
-            -   step: *deploy
-            -   step: *deploy-release-notification
+  branches:
+    master:
+      #            - step: *sentry-code-report
+      -
+        step:
+          <<: *unit-tests
+          name: Unit tests on Master
+      -
+        step: *deploy
+      -
+        step: *deploy-release-notification
