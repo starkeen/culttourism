@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace app\services\image_storage;
 
 use app\constant\MimeType;
+use app\core\exception\CoreException;
 use app\services\image_storage\exceptions\SourceUnreachedException;
 use MPhotos;
-use RuntimeException;
 use Throwable;
 
 class ImageStorageService
@@ -151,7 +151,7 @@ class ImageStorageService
         try {
             $source = fopen($url, 'rb', false, $context);
             if (!$source) {
-                throw new RuntimeException('Не удалось открыть удалённый файл');
+                throw new CoreException('Не удалось открыть удалённый файл');
             }
         } catch (Throwable $exception) {
             throw new SourceUnreachedException('Не удалось получить файл');
@@ -180,14 +180,14 @@ class ImageStorageService
         $concurrentDirectory = $this->photosDirectory . $directoryLevel1;
         if (!file_exists($concurrentDirectory)) {
             if (!mkdir($concurrentDirectory, 0700, true)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+                throw new CoreException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
         }
         $directoryLevel2 = $directoryLevel1 . DIRECTORY_SEPARATOR . $fileName[1];
         $concurrentDirectory = $this->photosDirectory . $directoryLevel2;
         if (!file_exists($concurrentDirectory)) {
             if (!mkdir($concurrentDirectory, 0700, true)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+                throw new CoreException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
         }
 

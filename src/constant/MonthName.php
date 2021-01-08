@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\constant;
 
-use RuntimeException;
+use app\core\exception\CoreException;
 
 class MonthName
 {
@@ -26,7 +26,7 @@ class MonthName
     public static function getMonthName(int $month): string
     {
         if (!isset(self::NAMES[$month])) {
-            throw new RuntimeException('Непредусмотренный месяц');
+            throw new CoreException('Непредусмотренный месяц');
         }
 
         return self::NAMES[$month];

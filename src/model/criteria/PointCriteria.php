@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\model\criteria;
 
-use RuntimeException;
+use app\core\exception\CoreException;
 
 class PointCriteria
 {
@@ -98,7 +98,7 @@ class PointCriteria
     public function addOrder(string $field, string $direction = self::ORDER_ASC): void
     {
         if (!in_array($direction, [self::ORDER_ASC, self::ORDER_DESC], true)) {
-            throw new RuntimeException('Неправильное направление сортировки');
+            throw new CoreException('Неправильное направление сортировки');
         }
         $this->orderBy[$field] = $direction;
     }

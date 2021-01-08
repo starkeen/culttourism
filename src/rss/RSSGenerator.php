@@ -56,8 +56,6 @@ class RSSGenerator implements IRSSGenerator
             $item->addChild('link', $entity['link']);
             $item->addChild('pubDate', $entity['date']);
             $item->addChildWithCData('description', $entity['text']);
-            // $item->addChildWithCData('content:encoded', $entity['text'], 'http://purl.org/rss/1.0/modules/content/');
-            // $item->addChild('author', $entity['author']);
             $item->addChild('dc:creator', $entity['creator'], 'http://purl.org/dc/elements/1.1/');
         }
 

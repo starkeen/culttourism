@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\modules;
 
 use app\constant\OgType;
+use app\core\exception\RoutingException;
 use app\core\GlobalConfig;
 use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
@@ -142,7 +143,7 @@ class DefaultModule implements ModuleInterface
                 $response->getContent()->setBody($body);
             }
         } else {
-            throw new RuntimeException('Ошибка в роутинге городов и объектов');
+            throw new RoutingException('Ошибка в роутинге городов и объектов');
         }
     }
 

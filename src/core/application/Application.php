@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace app\core\application;
 
+use app\core\exception\ErrorException;
 use app\core\ExceptionsHandler;
 use app\db\FactoryDB;
 use app\db\MyDB;
 use app\sys\Logger;
 use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
-use ErrorException;
 use MSysProperties;
 
 abstract class Application

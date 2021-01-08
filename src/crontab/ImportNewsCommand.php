@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\crontab;
 
+use app\core\exception\CoreException;
 use DOMDocument;
 use MNewsItems;
 use MNewsSources;
@@ -76,7 +77,7 @@ class ImportNewsCommand extends CrontabCommand
         $result = [];
         try {
             if (!$doc->load($url)) {
-                throw new RuntimeException("HTTP error [$url]");
+                throw new CoreException("HTTP error [$url]");
             }
             foreach ($doc->getElementsByTagName($tag) as $node) {
                 $item = [];

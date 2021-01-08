@@ -49,7 +49,7 @@ class RSSAddUTM extends RSSComponent
 
     /**
      * @param string $link
-     * @param string $content
+     * @param string|null $content
      *
      * @return string
      */
@@ -71,8 +71,8 @@ class RSSAddUTM extends RSSComponent
         $query = [];
         parse_str($url['query'] ?? '', $query);
 
-        $utm = array_merge($this->utm, ['utm_content' => $content]);
-        $query = array_merge($query, array_filter($utm));
+        $utmItems = array_merge($this->utm, ['utm_content' => $content]);
+        $query = array_merge($query, array_filter($utmItems));
 
         if (!empty($query)) {
             $result .= '?' . http_build_query($query);

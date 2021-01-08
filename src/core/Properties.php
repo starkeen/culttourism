@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\core;
 
-use RuntimeException;
+use app\core\exception\CoreException;
 
 /**
  * DTO с базовыми настройками
@@ -74,7 +74,7 @@ class Properties
     public function __set($name, $value): void
     {
         if (!in_array($name, self::KEYS, true)) {
-            throw new RuntimeException('Указано несуществующее свойство');
+            throw new CoreException('Указано несуществующее свойство');
         }
 
         $this->values[$name] = $value;
@@ -86,6 +86,6 @@ class Properties
             return $this->values[$name];
         }
 
-        throw new RuntimeException('Запрошено несуществующее свойство');
+        throw new CoreException('Запрошено несуществующее свойство');
     }
 }

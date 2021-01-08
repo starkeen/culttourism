@@ -22,6 +22,7 @@
         "ext-SimpleXML"      : "*",
         "ext-json"           : "*",
         "ext-fileinfo"       : "*",
+        "ext-iconv"          : "*",
         "ext-dom"            : "*"
     },
     "require-dev": {

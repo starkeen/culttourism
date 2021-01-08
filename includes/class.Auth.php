@@ -271,9 +271,8 @@ class Auth
      */
     public function checkKey(string $key): bool
     {
-        $db = $this->db;
-        $dba = $db->getTableName('authorizations');
-        $db->sql = "SELECT au_key, au_session
+        $dba = $this->db->getTableName('authorizations');
+        $this->db->sql = "SELECT au_key, au_session
                     FROM $dba
                     WHERE au_date_expire > NOW()
                         AND au_key = :key
@@ -284,12 +283,12 @@ class Auth
                 ':key' => $key,
             ]
         );
-        while ($row = $db->fetch()) {
+        while ($row = $this->db->fetch()) {
             if ($row['au_key'] === $key && session_id() === $row['au_session']) {
                 return true;
             }
         }
-        $db->sql = "INSERT IGNORE INTO $dba SET
+        $this->db->sql = "INSERT IGNORE INTO $dba SET
                         au_key = :key,
                         au_us_id = 0,
                         au_session = :session,

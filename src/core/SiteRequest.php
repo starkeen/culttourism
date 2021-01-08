@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\core;
 
+use app\core\exception\CoreException;
 use RuntimeException;
 
 class SiteRequest
@@ -181,7 +182,7 @@ class SiteRequest
         if ($this->headers === null) {
             $allHeaders = getallheaders();
             if ($allHeaders === false) {
-                throw new RuntimeException('Не удалось получить заголовки запроса');
+                throw new CoreException('Не удалось получить заголовки запроса');
             }
             $this->headers = [];
             foreach ($allHeaders as $key => $value) {

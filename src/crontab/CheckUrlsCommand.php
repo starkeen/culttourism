@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\crontab;
 
+use app\core\exception\CoreException;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Cookie\FileCookieJar;
 use GuzzleHttp\Exception\BadResponseException;
@@ -146,7 +147,7 @@ class CheckUrlsCommand extends CrontabCommand
             && !mkdir(self::COOKIES_PATH, 0700, true)
             && !is_dir(self::COOKIES_PATH)
         ) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', self::COOKIES_PATH));
+            throw new CoreException(sprintf('Directory "%s" was not created', self::COOKIES_PATH));
         }
         $domain = parse_url($url, PHP_URL_HOST);
         if (empty($domain)) {

@@ -2,7 +2,6 @@
 
 namespace app\api;
 
-use RuntimeException;
 use Throwable;
 
 /**
@@ -27,7 +26,7 @@ class YandexDirectAPI
      * @param string[] $phrases
      *
      * @return int - ID отчета
-     * @throws RuntimeException
+     * @throws YandexDirectException
      */
     public function createReport(array $phrases = []): int
     {
@@ -46,10 +45,10 @@ class YandexDirectAPI
             return $res['data'];
         }
         if (isset($res['error_code'])) {
-            throw new RuntimeException('API error:' . $res['error_detail'] ?? 'unknown', $res['error_code']);
+            throw new YandexDirectException('API error:' . $res['error_detail'] ?? 'unknown', $res['error_code']);
         }
 
-        throw new RuntimeException('Empty DATA response' . print_r($res, true));
+        throw new YandexDirectException('Empty DATA response' . print_r($res, true));
     }
 
     /**
@@ -58,7 +57,7 @@ class YandexDirectAPI
      * @param int $report_id - ID отчета
      *
      * @return array список слов в отчете
-     * @throws RuntimeException
+     * @throws YandexDirectException
      */
     public function getReport(int $report_id): array
     {
@@ -80,7 +79,7 @@ class YandexDirectAPI
                 $reps[] = $rep;
             }
         } else {
-            $ex = new RuntimeException("Empty data in report $report_id");
+            $ex = new YandexDirectException("Empty data in report $report_id");
             $ex->level = 'warning';
             throw $ex;
         }
@@ -239,11 +238,11 @@ class YandexDirectAPI
     /**
      * Отправка POST-запроса по указанному URL
      *
-     * @param string $url  - URL запроса
+     * @param string $url - URL запроса
      * @param string $data - данные запроса (json или http_build_query)
      *
      * @return string чистый ответ сервера
-     * @throws RuntimeException
+     * @throws YandexDirectException
      */
     protected function curlPostExec($url, $data)
     {
@@ -265,7 +264,7 @@ class YandexDirectAPI
         $errno = curl_errno($ch);
         if ($errno) {
             $error_message = curl_error($ch);
-            throw new RuntimeException("cURL error ({$errno}):\n {$error_message}");
+            throw new YandexDirectException("cURL error ({$errno}):\n {$error_message}");
         }
         curl_close($ch);
 

@@ -90,8 +90,7 @@ class CityModule extends Module implements ModuleInterface
     {
         $out = ['state' => false, 'content' => '', 'color' => ''];
 
-        $weatherService = $this->getWeatherService();
-        $weatherData = $weatherService->getWeatherByCoordinates($lat, $lon);
+       $weatherData = $this->getWeatherService()->getWeatherByCoordinates($lat, $lon);
 
         if ($weatherData !== null) {
             $out['state'] = true;
