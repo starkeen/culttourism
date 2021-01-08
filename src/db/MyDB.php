@@ -6,6 +6,7 @@ use app\db\exceptions\AccessException;
 use app\db\exceptions\DuplicateKeyException;
 use app\db\exceptions\FieldException;
 use app\db\exceptions\MyPDOException;
+use app\db\exceptions\ServerException;
 use app\db\exceptions\TableException;
 use app\db\exceptions\TooManyConnectionsException;
 use PDO;
@@ -441,6 +442,9 @@ class MyDB
         }
         if ($errorCode === 1406) {
             throw new FieldException('Ошибка PDO: data too long for column', $errorCode, $exception);
+        }
+        if ($errorCode === 2002) {
+            throw new ServerException('Ошибка PDO: server unavailable', $errorCode, $exception);
         }
 
         throw new MyPDOException('Ошибка PDO: ' . $errorCode, $errorCode, $exception);
