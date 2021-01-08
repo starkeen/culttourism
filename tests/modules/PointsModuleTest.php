@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace tests\modules;
 
+use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
 use app\modules\PointsModule;
 
 class PointsModuleTest extends AbstractModulesTestingDependencies
 {
+    private $webUser;
+
     public function testNoAjaxRequest(): void
     {
         $module = $this->buildModule();
@@ -86,6 +89,24 @@ class PointsModuleTest extends AbstractModulesTestingDependencies
         $module->handle($request, $response);
     }
 
+    public function testPostRequestWithIdAndNotAdminMethod(): void
+    {
+        $module = $this->buildModule();
+
+        $request = $this->getMockRequest();
+        $response = $this->getMockResponse();
+
+        $request->expects(self::once())->method('isAjax')->willReturn(true);
+        $request->expects(self::once())->method('isPost')->willReturn(true);
+        $request->expects(self::exactly(2))->method('getLevel1')->willReturn('123');
+        $request->expects(self::once())->method('getLevel2')->willReturn('contacts');
+        $this->webUser->expects(self::once())->method('isEditor')->willReturn(false);
+
+        $this->expectException(AccessDeniedException::class);
+
+        $module->handle($request, $response);
+    }
+
     /**
      * @param string $key
      * @param bool $isApplicable
@@ -116,9 +137,9 @@ class PointsModuleTest extends AbstractModulesTestingDependencies
     {
         $db = $this->getMockDb();
         $templateEngine = $this->getMockTemplateEngine();
-        $webUser = $this->getMockWebUser();
+        $this->webUser = $this->getMockWebUser();
         $globalConfig = $this->getMockGlobalConfig();
 
-        return new PointsModule($db, $templateEngine, $webUser, $globalConfig);
+        return new PointsModule($db, $templateEngine, $this->webUser, $globalConfig);
     }
 }

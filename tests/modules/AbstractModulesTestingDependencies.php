@@ -44,6 +44,7 @@ abstract class AbstractModulesTestingDependencies extends TestCase
     {
         return $this->getMockBuilder(WebUser::class)
             ->disableOriginalConstructor()
+            ->onlyMethods(['isEditor', 'getAuth'])
             ->getMock();
     }
 
