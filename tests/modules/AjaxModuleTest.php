@@ -18,9 +18,8 @@ class AjaxModuleTest extends AbstractModulesTestingDependencies
         $db = $this->getMockDb();
         $templateEngine = $this->getMockTemplateEngine();
         $webUser = $this->getMockWebUser();
-        $globalConfig = $this->getMockGlobalConfig();
 
-        $module = new AjaxModule($db, $templateEngine, $webUser, $globalConfig);
+        $module = new AjaxModule($db, $templateEngine, $webUser);
 
         $request = $this->getMockRequest();
         $request->expects(self::once())->method('getModuleKey')->willReturn($key);

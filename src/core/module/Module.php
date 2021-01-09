@@ -18,25 +18,13 @@ use MPhotos;
 
 abstract class Module
 {
-    /**
-     * @var MyDB
-     */
-    protected $db;
+    protected MyDB $db;
 
-    /**
-     * @var TemplateEngine
-     */
-    protected $templateEngine;
+    protected TemplateEngine $templateEngine;
 
-    /**
-     * @var WebUser
-     */
-    protected $webUser;
+    protected WebUser $webUser;
 
-    /**
-     * @var GlobalConfig
-     */
-    protected $globalConfig;
+    protected GlobalConfig $globalConfig;
 
     public function __construct(MyDB $db, TemplateEngine $templateEngine, WebUser $webUser, GlobalConfig $globalConfig)
     {

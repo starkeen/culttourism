@@ -229,7 +229,7 @@ class WebApplication extends Application
         $modules =  [
             new RedirectsModule($this->getDb()),
             new MainPageModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
-            new AjaxModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new AjaxModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser()),
             new MapModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new ListModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new PointsModule($this->getDb(),$this->getWebUser()),

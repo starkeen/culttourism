@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace app\modules;
 
-use app\core\module\Module;
+use app\core\GlobalConfig;
 use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
+use app\core\WebUser;
+use app\db\MyDB;
 use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
+use app\sys\TemplateEngine;
 use MDataCheck;
 use MModules;
 use models\MLinks;
@@ -18,20 +21,35 @@ use MPagePoints;
 use MRefPointtypes;
 use MStatpoints;
 
-class AjaxModule extends Module implements ModuleInterface
+class AjaxModule implements ModuleInterface
 {
     /**
      * @var MDataCheck
      */
     private MDataCheck $mDataCheck;
 
+    private MyDB $db;
+
+    private TemplateEngine $templateEngine;
+
+    private WebUser $webUser;
+
+    public function __construct(MyDB $db, TemplateEngine $templateEngine, WebUser $webUser)
+    {
+        $this->db = $db;
+        $this->templateEngine = $templateEngine;
+        $this->webUser = $webUser;
+    }
+
     /**
      * @inheritDoc
-     * @throws NotFoundException
      * @throws AccessDeniedException
+     * @throws NotFoundException
      */
-    protected function process(SiteRequest $request, SiteResponse $response): void
+    public function handle(SiteRequest $request, SiteResponse $response): void
     {
+        $this->webUser->getAuth()->checkSession('web');
+
         $id = $request->getLevel2();
         if ($id === null) {
             throw new NotFoundException();
