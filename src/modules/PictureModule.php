@@ -67,7 +67,7 @@ class PictureModule implements ModuleInterface
                 throw new CoreException('Неподдерживаемый тип: ' . $photo->ph_mime);
             }
             imagecopyresampled($resultImage, $sourceImage, 0, 0, 0, 0, 1200, 900, $photo->ph_width, $photo->ph_height);
-            header('Content-Type: image/jpeg');
+            $response->getHeaders()->add('Content-Type: image/jpeg');
             imagejpeg($resultImage);
             imagedestroy($resultImage);
         } else {
