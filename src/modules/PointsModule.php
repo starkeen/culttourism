@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace app\modules;
 
-use app\core\GlobalConfig;
 use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
@@ -12,9 +11,7 @@ use app\core\WebUser;
 use app\db\MyDB;
 use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
-use app\model\entity\Point;
 use app\model\repository\PointsRepository;
-use app\sys\TemplateEngine;
 use MDataCheck;
 use models\MLinks;
 
@@ -104,8 +101,6 @@ class PointsModule implements ModuleInterface
         $point = $repository->getItemByPk($pointId);
 
         $response->getContent()->setJson(['id' => $point->getId()]);
-
-        $this->echoPointJson($point);
     }
 
     /**
@@ -120,20 +115,6 @@ class PointsModule implements ModuleInterface
         $linksModel->deleteByPoint($id);
     }
 
-    /**
-     * @param Point $point
-     */
-    private function echoPointJson(Point $point): void
-    {
-        echo json_encode(
-            [
-                'id' => $point->getId(),
-            ],
-            JSON_THROW_ON_ERROR
-        );
-        exit;
-    }
-
     private function getPointsRepository(): PointsRepository
     {
         if ($this->pointsRepository === null) {
@@ -143,16 +124,11 @@ class PointsModule implements ModuleInterface
         return $this->pointsRepository;
     }
 
-    private function getModuleKey(): string
-    {
-        return 'point';
-    }
-
     /**
      * @inheritDoc
      */
     public function isApplicable(SiteRequest $request): bool
     {
-        return $request->getModuleKey() === $this->getModuleKey();
+        return $request->getModuleKey() === 'point';
     }
 }

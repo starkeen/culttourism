@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
                           libjpeg62-turbo-dev \
                           libonig-dev \
                           libmcrypt-dev
+RUN docker-php-ext-configure gd --with-jpeg
 RUN docker-php-ext-install -j$(nproc) mbstring pdo pdo_mysql tokenizer iconv mysqli gd fileinfo
 RUN pecl install xdebug-3.0.1 && docker-php-ext-enable xdebug
 RUN a2enmod rewrite

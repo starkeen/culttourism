@@ -7,10 +7,11 @@ namespace tests\modules;
 use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
 use app\modules\PointsModule;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class PointsModuleTest extends AbstractModulesTestingDependencies
 {
-    private $webUser;
+    private MockObject $webUser;
 
     public function testNoAjaxRequest(): void
     {
