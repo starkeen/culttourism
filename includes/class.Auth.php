@@ -85,7 +85,7 @@ class Auth
     /**
      * @param string $service
      */
-    public function checkSession($service = 'web'): void
+    public function checkSession(string $service): void
     {
         $dba = $this->db->getTableName('authorizations');
         $this->db->sql = "SELECT au_session, IF(au_date_expire < NOW(), 1, 0) AS expired FROM $dba

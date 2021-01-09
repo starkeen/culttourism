@@ -23,30 +23,27 @@ use GuzzleHttp\Client;
 use Mailing;
 use MSysProperties;
 
-class SysModule extends Module implements ModuleInterface
+class SysModule implements ModuleInterface
 {
     private const SETTINGS_BRANCH_DEPLOY = 9;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private MyDB $db;
 
-    /**
-     * @param MyDB $db
-     * @param TemplateEngine $templateEngine
-     * @param WebUser $webUser
-     * @param GlobalConfig $globalConfig
-     * @param Logger $logger
-     */
+    private TemplateEngine $templateEngine;
+
+    private WebUser $webUser;
+
+    private Logger $logger;
+
     public function __construct(
         MyDB $db,
         TemplateEngine $templateEngine,
         WebUser $webUser,
-        GlobalConfig $globalConfig,
         Logger $logger
     ) {
-        parent::__construct($db, $templateEngine, $webUser, $globalConfig);
+        $this->db = $db;
+        $this->templateEngine = $templateEngine;
+        $this->webUser = $webUser;
         $this->logger = $logger;
     }
 
@@ -55,15 +52,19 @@ class SysModule extends Module implements ModuleInterface
      * @throws NotFoundException
      * @throws RedirectException
      */
-    protected function process(SiteRequest $request, SiteResponse $response): void
+    public function handle(SiteRequest $request, SiteResponse $response): void
     {
+        $this->webUser->getAuth()->checkSession('web');
+
         if ($request->getLevel2() !== null) {
             throw new NotFoundException();
         }
 
         if ($request->getLevel1() === null && empty($request->getGET())) {
             throw new RedirectException('/');
-        } elseif ($request->getLevel1() === 'bitbucket' && $request->getGETParam('key') !== null) {
+        }
+
+        if ($request->getLevel1() === 'bitbucket' && $request->getGETParam('key') !== null) {
             $this->getBitbucket(trim($_GET['key']));
         } elseif ($request->getLevel1() === 'static' && $request->getGETParam('type') !== null && $request->getGETParam('pack') !== null) {
             $typeName = trim($request->getGETParam('type'));
@@ -89,7 +90,7 @@ class SysModule extends Module implements ModuleInterface
      */
     public function isApplicable(SiteRequest $request): bool
     {
-        return $request->getModuleKey() === $this->getModuleKey();
+        return $request->getModuleKey() === 'sys';
     }
 
     /**

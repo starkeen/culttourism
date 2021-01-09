@@ -23,9 +23,6 @@ use MStatpoints;
 
 class AjaxModule implements ModuleInterface
 {
-    /**
-     * @var MDataCheck
-     */
     private MDataCheck $mDataCheck;
 
     private MyDB $db;
@@ -120,17 +117,9 @@ class AjaxModule implements ModuleInterface
     /**
      * @inheritDoc
      */
-    protected function getModuleKey(): string
-    {
-        return 'ajax';
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function isApplicable(SiteRequest $request): bool
     {
-        return $request->getModuleKey() === $this->getModuleKey();
+        return $request->getModuleKey() === 'ajax';
     }
 
     /**

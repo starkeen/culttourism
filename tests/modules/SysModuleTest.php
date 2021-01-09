@@ -18,10 +18,9 @@ class SysModuleTest extends AbstractModulesTestingDependencies
         $db = $this->getMockDb();
         $templateEngine = $this->getMockTemplateEngine();
         $webUser = $this->getMockWebUser();
-        $globalConfig = $this->getMockGlobalConfig();
         $logger = $this->getMockLogger();
 
-        $module = new SysModule($db, $templateEngine, $webUser, $globalConfig, $logger);
+        $module = new SysModule($db, $templateEngine, $webUser, $logger);
 
         $request = $this->getMockRequest();
         $request->expects(self::once())->method('getModuleKey')->willReturn($key);
