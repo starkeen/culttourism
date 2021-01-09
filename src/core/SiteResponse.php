@@ -11,20 +11,11 @@ class SiteResponse
 {
     private const EXPIRES_HEADER_SHIFT = 60 * 60 * 24 * 7;
 
-    /**
-     * @var Headers
-     */
-    private $headers;
+    private Headers $headers;
 
-    /**
-     * @var Content
-     */
-    private $content;
+    private Content $content;
 
-    /**
-     * @var int|null
-     */
-    private $lastEditTimestamp;
+    private ?int $lastEditTimestamp = null;
 
     /**
      * @param Headers $headers

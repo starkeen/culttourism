@@ -50,19 +50,19 @@ class AjaxModule extends Module implements ModuleInterface
             if ($id == '' && isset($_GET['id']) && (int) $_GET['id']) {
                 $response->getContent()->setBody($this->getPoint((int) $_GET['id']));
             } elseif ($id === 's' && isset($_GET['id'])) {
-                $response->getContent()->setBody($this->getPointBySlugLine(str_replace('.html', '', $_GET['id'])));
+                $response->getContent()->setJsonHtml($this->getPointBySlugLine(str_replace('.html', '', $_GET['id'])));
             } elseif ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
                 $response->getContent()->setBody($this->savePointTitle((int) $_GET['id']));
             } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
                 $response->getContent()->setBody($this->savePointDescription((int) $_GET['id']));
             } elseif ($id === 'getnewform' && isset($_GET['cid'])) {
-                $response->getContent()->setBody($this->getPointNew((int) $_GET['cid']));
+                $response->getContent()->setJsonHtml($this->getPointNew((int) $_GET['cid']));
             } elseif ($id === 'savenew' && isset($_GET['cid'])) {
                 $response->getContent()->setBody((string) $this->savePointNew((int) $_GET['cid']));
             } elseif ($id === 'delpoint' && isset($_GET['pid'])) {
                 $response->getContent()->setBody((string) $this->deletePoint((int) $_GET['pid']));
             } elseif ($id === 'getformGPS' && isset($_GET['pid'])) {
-                $response->getContent()->setBody($this->getFormPointGPS((int) $_GET['pid']));
+                $response->getContent()->setJsonHtml($this->getFormPointGPS((int) $_GET['pid']));
             } elseif ($id === 'saveformGPS' && isset($_GET['pid'])) {
                 $response->getContent()->setBody($this->setFormPointGPS((int) $_GET['pid']));
             } elseif ($id === 'saveAddrGPS' && isset($_GET['pid'])) {
@@ -77,20 +77,20 @@ class AjaxModule extends Module implements ModuleInterface
             } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
                 $response->getContent()->setBody($this->saveCityDescription((int) $_GET['id']));
             } elseif ($id === 'getformGPS' && isset($_GET['cid']) && (int) $_GET['cid']) {
-                $response->getContent()->setBody($this->getFormCityGPS((int) $_GET['cid']));
+                $response->getContent()->setJsonHtml($this->getFormCityGPS((int) $_GET['cid']));
             } elseif ($id === 'saveformGPS') {
                 $response->getContent()->setBody((string) $this->setFormCityGPS((int) $_GET['cid']));
             }
             $response->setLastEditTimestampToFuture();
         } elseif ($request->getLevel1() === 'pointtype') {
             if ($id === 'getform') {
-                $response->getContent()->setBody($this->getChangeTypeForm());
+                $response->getContent()->setJsonHtml($this->getChangeTypeForm());
             } elseif ($id === 'savetype' && isset($_POST['pid']) && (int) $_POST['pid']) {
                 $response->getContent()->setBody($this->setPointType((int) $_POST['pid']));
             }
         } elseif ($request->getLevel1() === 'page') {
             if ($id === 'gps') {
-                $response->getContent()->setBody($this->getTextPage(31));
+                $response->getContent()->setJsonHtml($this->getTextPage(31));
             } else {
                 throw new NotFoundException();
             }

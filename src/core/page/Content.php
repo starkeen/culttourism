@@ -6,45 +6,23 @@ namespace app\core\page;
 
 class Content
 {
-    /**
-     * @var Head
-     */
-    private $head;
+    private Head $head;
 
-    /**
-     * @var string
-     */
-    private $body = '';
+    private string $body = '';
 
-    /**
-     * @var string|null
-     */
-    private $h1;
+    private ?array $json = null;
 
-    /**
-     * @var string
-     */
-    private $urlCss;
+    private ?string $h1 = null;
 
-    /**
-     * @var string
-     */
-    private $urlJs;
+    private string $urlCss;
 
-    /**
-     * @var string
-     */
-    private $urlRss;
+    private string $urlJs;
 
-    /**
-     * @var string|null
-     */
-    private $customJsModule;
+    private string $urlRss;
 
-    /**
-     * @var string[]
-     */
-    private $jsResources = [];
+    private ?string $customJsModule = null;
+
+    private array $jsResources = [];
 
     /**
      * @param Head $head
@@ -92,6 +70,44 @@ class Content
     public function getBody(): string
     {
         return $this->body;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getJson(): ?array
+    {
+        return $this->json;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getJsonString(): ?string
+    {
+        $result = null;
+
+        if ($this->json !== null) {
+            $result = json_encode($this->json, JSON_THROW_ON_ERROR);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array|null $json
+     */
+    public function setJson(array $json): void
+    {
+        $this->json = $json;
+    }
+
+    /**
+     * @param string $html
+     */
+    public function setJsonHtml(string $html): void
+    {
+        $this->json = ['html' => $html];
     }
 
     /**

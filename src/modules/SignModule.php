@@ -33,7 +33,7 @@ class SignModule extends Module implements ModuleInterface
         } elseif ($request->getLevel1() === 'out') {
             $this->doOut();
         } elseif ($request->getLevel1() === 'form') {
-            $response->getContent()->setBody($this->getFormLogin());
+            $response->getContent()->setJsonHtml($this->getFormLogin());
         } else {
             throw new NotFoundException();
         }

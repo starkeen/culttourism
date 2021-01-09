@@ -136,10 +136,8 @@ class PointsModuleTest extends AbstractModulesTestingDependencies
     private function buildModule(): PointsModule
     {
         $db = $this->getMockDb();
-        $templateEngine = $this->getMockTemplateEngine();
         $this->webUser = $this->getMockWebUser();
-        $globalConfig = $this->getMockGlobalConfig();
 
-        return new PointsModule($db, $templateEngine, $this->webUser, $globalConfig);
+        return new PointsModule($db, $this->webUser);
     }
 }

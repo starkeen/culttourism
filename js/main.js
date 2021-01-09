@@ -18,15 +18,10 @@ $(document).ready(function () {
             return true;
         }
         var id = this.href.split("/").pop();
-        if (/object[0-9]+.html/gi.test(id)) {
-            showWindByURL("/ajax/point/", {
-                id: id.slice(6, -5)
-            });
-        } else {
-            showWindByURL("/ajax/point/s/", {
-                id: id
-            });
-        }
+        showWindByURL("/ajax/point/s/", {
+            id: id
+        });
+
         return false;
     });
     $(".city_weather").each(function () {
@@ -132,7 +127,7 @@ $(document).ready(function () {
 });
 
 //======================= FUNCTIONS ==============================================
-function showWindByURL(url, get) {
+function showWindByURL(url, getParameters) {
     //* функция показа модального окна с контентом по URL */
     var xdata = '<div style="text-align:center;height:200px;padding-top:100px;color:#5478E4"><img src="/img/preloader/horizontal.gif" /><br/>загрузка</div>';
     $.modal(xdata, {
@@ -148,10 +143,12 @@ function showWindByURL(url, get) {
             modal.setPosition();
         }
     });
-    $.get(url, get, function (data) {
-        $("#simplemodal-data").html(data);
+    $.get(url, getParameters, function (data) {
+        var html = typeof data === "string" ? data : data.html;
+        $("#simplemodal-data").html(html);
         if ($("#object_container h2").position() !== undefined) {
-            $("#object_text_container").css("bottom", $("#object_additional").height())
+            $("#object_text_container")
+                .css("bottom", $("#object_additional").height())
                 .css("top", 2.7 * ($("#object_container h2").position().top + $("#object_container h2").height()));
         }
         $("body").trigger('afterShowWindByURL');

@@ -4,28 +4,43 @@ declare(strict_types=1);
 
 namespace app\modules;
 
-use app\core\module\Module;
+use app\core\GlobalConfig;
 use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
+use app\core\WebUser;
+use app\db\MyDB;
 use app\exceptions\AccessDeniedException;
 use app\exceptions\NotFoundException;
 use app\model\entity\Point;
 use app\model\repository\PointsRepository;
+use app\sys\TemplateEngine;
 use MDataCheck;
 use models\MLinks;
 
-class PointsModule extends Module implements ModuleInterface
+class PointsModule implements ModuleInterface
 {
+    private MyDB $db;
+
+    private WebUser $webUser;
+
     private ?PointsRepository $pointsRepository = null;
+
+    public function __construct(MyDB $db, WebUser $webUser)
+    {
+        $this->db = $db;
+        $this->webUser = $webUser;
+    }
 
     /**
      * @inheritDoc
      * @throws NotFoundException
      * @throws AccessDeniedException
      */
-    protected function process(SiteRequest $request, SiteResponse $response): void
+    public function handle(SiteRequest $request, SiteResponse $response): void
     {
+        $this->webUser->getAuth()->checkSession('web');
+
         if (!$request->isAjax()) {
             throw new NotFoundException();
         }
@@ -41,7 +56,7 @@ class PointsModule extends Module implements ModuleInterface
                 if (!$this->webUser->isEditor()) {
                     throw new AccessDeniedException();
                 }
-                $this->saveContacts($pointId, $request);
+                $this->saveContacts($pointId, $request, $response);
             }
         }
 
@@ -51,9 +66,10 @@ class PointsModule extends Module implements ModuleInterface
     /**
      * @param int $pointId
      * @param SiteRequest $request
+     * @param SiteResponse $response
      * @throws NotFoundException
      */
-    private function saveContacts(int $pointId, SiteRequest $request): void
+    private function saveContacts(int $pointId, SiteRequest $request,  SiteResponse $response): void
     {
         $repository = $this->getPointsRepository();
         $point = $repository->getItemByPk($pointId);
@@ -86,6 +102,9 @@ class PointsModule extends Module implements ModuleInterface
         $this->resetCheckerQueue($pointId);
 
         $point = $repository->getItemByPk($pointId);
+
+        $response->getContent()->setJson(['id' => $point->getId()]);
+
         $this->echoPointJson($point);
     }
 
@@ -124,10 +143,7 @@ class PointsModule extends Module implements ModuleInterface
         return $this->pointsRepository;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function getModuleKey(): string
+    private function getModuleKey(): string
     {
         return 'point';
     }

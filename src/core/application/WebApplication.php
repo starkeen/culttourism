@@ -122,7 +122,13 @@ class WebApplication extends Application
         }
 
         $this->getSiteResponse()->getHeaders()->add('X-Powered-By: culttourism');
-        $this->getSiteResponse()->getHeaders()->add('Content-Type: text/html; charset=utf-8');
+
+
+        if ($this->getSiteRequest()->isAjax() && $this->getSiteResponse()->getContent()->getJson() !== null) {
+            $this->getSiteResponse()->getHeaders()->add('Content-Type: application/json');
+        } else {
+            $this->getSiteResponse()->getHeaders()->add('Content-Type: text/html; charset=utf-8');
+        }
 
         if ($this->getSiteResponse()->getLastEditTimestamp() > 0 && !$this->getSiteRequest()->isAjax()) {
             $this->getSiteResponse()->getHeaders()->add('Last-Modified: ' . $this->getSiteResponse()->getLastEditTimeGMT());
@@ -145,7 +151,7 @@ class WebApplication extends Application
         $this->getSiteResponse()->getHeaders()->flush();
 
         if ($this->getSiteRequest()->isAjax()) {
-            echo $this->getSiteResponse()->getContent()->getBody();
+            echo $this->getSiteResponse()->getContent()->getJsonString();
         } else {
             $this->getTemplateEngine()->displayPage(
                 '_main/main.html.tpl',
@@ -225,7 +231,7 @@ class WebApplication extends Application
             new AjaxModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new MapModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new ListModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
-            new PointsModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new PointsModule($this->getDb(),$this->getWebUser()),
             new CityModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new SearchModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig(), $this->getLogger()),
             new BlogModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),

@@ -72,7 +72,7 @@ class BlogModule extends Module implements ModuleInterface
                 throw new AccessDeniedException();
             }
             $response->setLastEditTimestampToFuture();
-            $this->saveFormBlog();
+            $this->saveFormBlog($response);
         } elseif ($request->getLevel1() === 'delentry' && (int) $_GET['bid']) {
             $response->setLastEditTimestampToFuture();
             if (!$this->webUser->isEditor()) {
@@ -255,13 +255,14 @@ class BlogModule extends Module implements ModuleInterface
             $body = $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/blog/ajax.addform.tpl');
         }
 
-        $response->getContent()->setBody($body);
+        $response->getContent()->setJsonHtml($body);
     }
 
     /**
      * Обновление записи в блоге
+     * @param SiteResponse $response
      */
-    private function saveFormBlog(): void
+    private function saveFormBlog(SiteResponse $response): void
     {
         $entry = new BlogEntry([
             'br_title' => $_POST['ntitle'],
@@ -277,5 +278,6 @@ class BlogModule extends Module implements ModuleInterface
         }
 
         $this->blogRepository->save($entry);
+        $response->getContent()->setJson(['result' => true]);
     }
 }
