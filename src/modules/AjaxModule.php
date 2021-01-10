@@ -88,7 +88,7 @@ class AjaxModule implements ModuleInterface
             } elseif ($id === 'getformGPS' && isset($_GET['cid']) && (int) $_GET['cid']) {
                 $response->getContent()->setJsonHtml($this->getFormCityGPS((int) $_GET['cid']));
             } elseif ($id === 'saveformGPS') {
-                $response->getContent()->setBody((string) $this->setFormCityGPS((int) $_GET['cid']));
+                $response->getContent()->setJsonHtml((string) $this->setFormCityGPS((int) $_GET['cid']));
             }
             $response->setLastEditTimestampToFuture();
         } elseif ($request->getLevel1() === 'pointtype') {
