@@ -72,7 +72,7 @@ class MLists extends Model
         return $this->_db->fetchAll();
     }
 
-    public function deleteByPk(int $id): ?int
+    public function deleteByPk(int $id): bool
     {
         return $this->updateByPk($id, [$this->_table_active => 0]);
     }

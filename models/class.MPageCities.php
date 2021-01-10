@@ -475,9 +475,9 @@ class MPageCities extends Model
      *
      * @param int $id
      *
-     * @return int|null
+     * @return bool
      */
-    public function deleteByPk(int $id): ?int
+    public function deleteByPk(int $id): bool
     {
         return $this->updateByPk($id, ['pc_active' => 0,]);
     }

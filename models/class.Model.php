@@ -212,13 +212,13 @@ abstract class Model
      *
      * @param int $id
      *
-     * @return PDOStatement
+     * @return bool
      */
-    public function deleteByPk(int $id)
+    public function deleteByPk(int $id): bool
     {
         $this->_db->sql = "DELETE FROM $this->_table_name WHERE $this->_table_pk = :id";
 
-        return $this->_db->execute(
+        return (bool) $this->_db->execute(
             [
                 ':id' => $id,
             ]
