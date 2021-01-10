@@ -83,7 +83,7 @@ class PointsModuleTest extends AbstractModulesTestingDependencies
         $request->expects(self::once())->method('isAjax')->willReturn(true);
         $request->expects(self::once())->method('isPost')->willReturn(true);
         $request->expects(self::exactly(2))->method('getLevel1')->willReturn('123');
-        $request->expects(self::once())->method('getLevel2')->willReturn('undefined');
+        $request->expects(self::exactly(3))->method('getLevel2')->willReturn('undefined');
 
         $this->expectException(NotFoundException::class);
 

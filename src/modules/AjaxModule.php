@@ -97,12 +97,6 @@ class AjaxModule implements ModuleInterface
             } elseif ($id === 'savetype' && isset($_POST['pid']) && (int) $_POST['pid']) {
                 $response->getContent()->setBody($this->setPointType((int) $_POST['pid']));
             }
-        } elseif ($request->getLevel1() === 'page') {
-            if ($id === 'gps') {
-                $response->getContent()->setJsonHtml($this->getTextPage(31));
-            } else {
-                throw new NotFoundException();
-            }
         } else {
             throw new NotFoundException();
         }
@@ -114,19 +108,6 @@ class AjaxModule implements ModuleInterface
     public function isApplicable(SiteRequest $request): bool
     {
         return $request->getModuleKey() === 'ajax';
-    }
-
-    /**
-     * --------------------------------------------------------- TEXT PAGES ---------
-     * @param int $pgId
-     * @return string
-     */
-    private function getTextPage(int $pgId): string
-    {
-        $mds = new MModules($this->db);
-        $md = $mds->getItemByPk($pgId);
-
-        return '<h3>Экспорт данных GPS</h3>' . $md['md_pagecontent'];
     }
 
     /**
