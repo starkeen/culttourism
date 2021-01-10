@@ -29,7 +29,7 @@ class PointType extends Enum
     public const RESTAURANT = 8;
     public const HOTEL = 9;
 
-    private const SIGHTS = [
+    private static array $sights = [
         self::MONUMENT,
         self::INTERESTING,
         self::CHURCH,
@@ -38,7 +38,7 @@ class PointType extends Enum
         self::CASTLE,
     ];
 
-    private const FULL_NAME = [
+    private static array $fullName = [
         self::MONUMENT => 'памятники',
         self::INTERESTING => 'интересные места',
         self::CHURCH => 'церкви и монастыри',
@@ -50,7 +50,7 @@ class PointType extends Enum
         self::HOTEL => 'гостиницы, мотели, хостелы',
     ];
 
-    private const SHORT_NAME = [
+    private static array $shortName = [
         self::MONUMENT => 'памятники',
         self::INTERESTING => 'интересное',
         self::CHURCH => 'религия',
@@ -62,7 +62,7 @@ class PointType extends Enum
         self::HOTEL => 'гостиницы',
     ];
 
-    private const ICON = [
+    private static array $icon = [
         self::MONUMENT => 'statue.png',
         self::INTERESTING => 'camera.png',
         self::CHURCH => 'religion.png',
@@ -73,4 +73,56 @@ class PointType extends Enum
         self::RESTAURANT => 'cafe.png',
         self::HOTEL => 'hotel.png',
     ];
+
+    /**
+     * Типы, относящиеся к достопримечательностям
+     * @return self[]
+     */
+    public static function getSights(): array
+    {
+        $result = [];
+        foreach (self::values() as $value) {
+            if (in_array($value->getValue(), self::$sights, true)) {
+                $result[] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Сервисные типы точек
+     * @return self[]
+     */
+    public static function getServices(): array
+    {
+        $result = [];
+        foreach (self::values() as $value) {
+            if (!in_array($value->getValue(), self::$sights, true)) {
+                $result[] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    public function getIcon(): string
+    {
+        return self::$icon[$this->getValue()];
+    }
+
+    public function getFullName(): string
+    {
+        return self::$fullName[$this->getValue()];
+    }
+
+    public function getShortName(): string
+    {
+        return self::$shortName[$this->getValue()];
+    }
+
+    public function isSight(): bool
+    {
+        return in_array($this->getValue(), self::$sights, true);
+    }
 }

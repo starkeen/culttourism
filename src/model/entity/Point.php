@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace app\model\entity;
 
+use app\model\constant\PointType;
+
 /**
  * @property int $pt_id
  * @property string $pt_name
@@ -48,5 +50,14 @@ class Point extends Entity
     public function getId(): int
     {
         return $this->pt_id;
+    }
+
+    public function getType(): ?PointType
+    {
+        if ($this->pt_type_id !== 0) {
+            return new PointType($this->pt_type_id);
+        }
+
+        return null;
     }
 }
