@@ -156,13 +156,10 @@ abstract class Model
                     foreach ($files as $file_field => $file) {
                         $this->saveFile($id, $file_field, $file);
                     }
-                    return $id;
                 }
 
-                return null;
+                return $id;
             }
-
-            return null;
         }
 
         return null;
@@ -190,13 +187,10 @@ abstract class Model
                     foreach ($files as $file_field => $file) {
                         $this->saveFile($id, $file_field, $file);
                     }
-                    return $id;
                 }
 
                 return $id;
             }
-
-            return null;
         }
 
         return null;

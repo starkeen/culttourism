@@ -1,9 +1,11 @@
 <?php
 
+use app\services\parser\DocType;
+
 return [
     'komandirovka.ru' => [
         'encoding' => 'utf-8',
-        'doctype' => 'XHTML 1.0 Transitional',
+        'doctype' => DocType::XHTML1,
         'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href]',
         'list_items' => [
             "//div[@class='ajax_objects clearm']/div/div/div[@class='detail_h']/a[1]", //приоритетные
@@ -40,7 +42,7 @@ return [
     ],
     'sobory.ru' => [
         'encoding' => 'utf-8',
-        'doctype' => 'HTML 4.01 Transitional',
+        'doctype' => DocType::HTML41,
         'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],address',
         'list_items' => [
             '//div[@class="ob_line_level_left"]/div/div[@class="ob_name"]/a',
@@ -78,7 +80,7 @@ return [
     ],
     'autotravel.ru' => [
         'encoding' => 'utf-8',
-        'doctype' => 'XHTML 1.0 Transitional',
+        'doctype' => DocType::XHTML1,
         'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],br,font[class]',
         'list_items' => [
             '//a[@class="travell5r"]',
@@ -128,7 +130,7 @@ return [
     ],
     'doroga.ua' => [
         'encoding' => 'utf-8',
-        'doctype' => 'XHTML 1.0 Transitional',
+        'doctype' => DocType::XHTML1,
         'tagsallow' => 'h1,div[class][id],p[class][id],a[href][class],a[class][href],address',
         'list_items' => [
             '//a[@class="ObjectNameLink"]',
@@ -184,7 +186,7 @@ return [
     ],
     'vetert.ru' => [
         'encoding' => 'utf-8',
-        'doctype' => 'XHTML 1.0 Transitional',
+        'doctype' => DocType::XHTML1,
         'tagsallow' => 'h1,div[id],div[class],*[class],p,a[href]',
         'list_items' => [
             '//div[@class="evlist"]/p/a[1]',
@@ -213,7 +215,7 @@ return [
     ],
     'rutraveller.ru' => [
         'encoding' => 'windows-1251',
-        'doctype' => 'XHTML 1.0 Transitional',
+        'doctype' => DocType::XHTML1,
         'tagsallow' => 'h1,div[id],div[class],span[class],*[class],p,a[href],ul[class],ul[id],li[class],li[id]',
         'list_items' => [
             '//a[@class="plc15-item-ttl"]',
