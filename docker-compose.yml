@@ -36,3 +36,6 @@ services:
             MYSQL_PASSWORD: ${DB_PASSWORD}
         ports:
             - 3306:3306
+
+    scaner:
+      image: sonarsource/sonar-scanner-cli

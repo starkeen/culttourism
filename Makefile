@@ -1,3 +1,5 @@
+.PHONY: vendor clean-vendor up down down-clean exec test coverage analyze
+
 PHP = php -d memory_limit=768M
 PHPUNIT = $(PHP) -dxdebug.mode=coverage -f vendor/bin/phpunit -- --verbose --fail-on-warning
 COMPOSER = COMPOSER_ALLOW_XDEBUG=1 COMPOSER_DISABLE_XDEBUG_WARN=1 $(PHP) -d allow_url_fopen=On -f bin/composer.phar
@@ -71,3 +73,13 @@ test: vendor
 coverage: vendor
 	$(PHPUNIT) --coverage-clover build/clover.xml -c tests/phpunit.xml tests/
 	sed -i 's#$(shell pwd)/##g' build/clover.xml
+
+analyze:
+	$(DOCKER_COMPOSE) run \
+		-e SONAR_HOST_URL="http://sonar.starkeen.ru:9000" \
+		-e SONAR_LOGIN="22dfc271ad734bbfb936eb87f7801a5320c8a636" \
+		-v "$(shell pwd):/usr/src" \
+		scaner \
+		-Dsonar.projectBaseDir=/usr/src \
+		-Dsonar.projectKey=culttourism \
+		-Dsonar.sonar.projectVersion=$(git log -1 --pretty=format:"%H")
