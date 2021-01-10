@@ -76,7 +76,7 @@ coverage: vendor
 	sed -i 's#$(shell pwd)/##g' build/clover.xml
 
 analyze: coverage
-	$(DOCKER_COMPOSE) run \
+	$(DOCKER_COMPOSE) run --rm \
 		-e SONAR_HOST_URL="http://sonar.starkeen.ru:9000" \
 		-e SONAR_LOGIN="22dfc271ad734bbfb936eb87f7801a5320c8a636" \
 		-v "$(shell pwd):/usr/src" \
