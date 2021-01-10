@@ -8,6 +8,9 @@ class StaticResources
 {
     private const PREFIX = 'ct';
 
+    private const DIRECTORY_CSS = '/css/';
+    private const DIRECTORY_JS = '/js/';
+
     /**
      * @var StaticFilesConfigInterface
      */
@@ -61,14 +64,14 @@ class StaticResources
     {
         $out = [];
         foreach ($this->config->getCSSList() as $pack => $files) {
-            $file_out = GLOBAL_DIR_ROOT . '/css/' . self::PREFIX . '-' . $pack . '.css';
+            $file_out = GLOBAL_DIR_ROOT . self::DIRECTORY_CSS . self::PREFIX . '-' . $pack . '.css';
             file_put_contents($file_out, '');
             foreach ((array) $files as $file) {
                 file_put_contents($file_out, "/*\n$file\n*/\n\n\n", FILE_APPEND);
                 file_put_contents($file_out, file_get_contents($file) . "\n", FILE_APPEND);
             }
             $file_hash_new = crc32(file_get_contents($file_out));
-            $file_production = GLOBAL_DIR_ROOT . '/css/' . self::PREFIX . '-' . $pack . '-' . $file_hash_new . '.min.css';
+            $file_production = GLOBAL_DIR_ROOT . self::DIRECTORY_CSS . self::PREFIX . '-' . $pack . '-' . $file_hash_new . '.min.css';
             if (!file_exists($file_production)) {
                 $minified = $this->getMinifiedCss(file_get_contents($file_out));
                 if ($minified !== '') {
@@ -89,14 +92,14 @@ class StaticResources
     {
         $out = [];
         foreach ($this->config->getJavascriptList() as $pack => $files) {
-            $file_out = GLOBAL_DIR_ROOT . '/js/' . self::PREFIX . '-' . $pack . '.js';
+            $file_out = GLOBAL_DIR_ROOT . self::DIRECTORY_JS . self::PREFIX . '-' . $pack . '.js';
             file_put_contents($file_out, '');
             foreach ((array) $files as $file) {
                 file_put_contents($file_out, "/*\n$file\n*/\n\n\n", FILE_APPEND);
                 file_put_contents($file_out, file_get_contents($file) . "\n", FILE_APPEND);
             }
             $file_hash_new = crc32(file_get_contents($file_out));
-            $file_production = GLOBAL_DIR_ROOT . '/js/' . self::PREFIX . '-' . $pack . '-' . $file_hash_new . '.min.js';
+            $file_production = GLOBAL_DIR_ROOT . self::DIRECTORY_JS . self::PREFIX . '-' . $pack . '-' . $file_hash_new . '.min.js';
             if (!file_exists($file_production)) {
                 $minified = $this->getMinifiedJavascript(file_get_contents($file_out));
                 if ($minified !== '') {
@@ -129,10 +132,10 @@ class StaticResources
         $mask = [];
 
         foreach ($this->config->getCSSList() as $packName => $file) {
-            $mask[] = GLOBAL_DIR_ROOT . '/css/' . self::PREFIX . '-' . $packName . '-*.min.css';
+            $mask[] = GLOBAL_DIR_ROOT . self::DIRECTORY_CSS . self::PREFIX . '-' . $packName . '-*.min.css';
         }
         foreach ($this->config->getJavascriptList() as $packName => $file) {
-            $mask[] = GLOBAL_DIR_ROOT . '/js/' . self::PREFIX . '-' . $packName . '-*.min.js';
+            $mask[] = GLOBAL_DIR_ROOT . self::DIRECTORY_JS . self::PREFIX . '-' . $packName . '-*.min.js';
         }
 
         $files = [];

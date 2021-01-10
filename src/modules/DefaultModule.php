@@ -96,10 +96,7 @@ class DefaultModule implements ModuleInterface
             $urlParts = array_pop($urlPartsArray);
             if ($urlParts === 'map.html') {
                 $this->redirectToCityMap($url);
-            } elseif ($urlParts === 'index.html') {
-                $url = substr($url, 0, stripos($url, $urlParts));
-                throw new RedirectException($url);
-            } elseif (in_array($urlParts, self::REDIRECT_SUFFIXES, true)) {
+            } elseif ($urlParts === 'index.html' || in_array($urlParts, self::REDIRECT_SUFFIXES, true)) {
                 $url = substr($url, 0, stripos($url, $urlParts));
                 throw new RedirectException($url);
             } elseif (preg_match('/object(\d+)\.html/i', $urlParts, $regs)) {
