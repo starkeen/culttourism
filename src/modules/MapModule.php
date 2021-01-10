@@ -6,30 +6,53 @@ namespace app\modules;
 
 use app\cache\Cache;
 use app\constant\OgType;
+use app\core\GlobalConfig;
 use app\core\module\Module;
 use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
+use app\core\WebUser;
+use app\db\MyDB;
 use app\exceptions\NotFoundException;
+use app\sys\TemplateEngine;
+use app\utils\Urls;
 use MListsItems;
 use MPageCities;
 use MPagePoints;
+use MPhotos;
 use MRefPointtypes;
 
-class MapModule extends Module implements ModuleInterface
+class MapModule implements ModuleInterface
 {
     private const REPLACE_SYMBOLS = "\x00..\x1F,.-";
+
+    private MyDB $db;
+
+    private TemplateEngine $templateEngine;
+
+    private WebUser $webUser;
+
+    private GlobalConfig $globalConfig;
+
+    public function __construct(MyDB $db, TemplateEngine $templateEngine, WebUser $webUser, GlobalConfig $globalConfig)
+    {
+        $this->db = $db;
+        $this->templateEngine = $templateEngine;
+        $this->webUser = $webUser;
+        $this->globalConfig = $globalConfig;
+    }
 
     /**
      * @inheritDoc
      * @throws NotFoundException
      */
-    protected function process(SiteRequest $request, SiteResponse $response): void
+    public function handle(SiteRequest $request, SiteResponse $response): void
     {
         $response->getContent()->setCustomJsModule($request->getModuleKey());
 
         //========================  I N D E X  ================================
         if ($request->getLevel1() === null) {
+            $this->prepareMetaTags($response);
             $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
             $response->getContent()->setBody($this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/map/map.tpl'));
         } //====================  M A P   E N T R Y  ============================
@@ -66,10 +89,29 @@ class MapModule extends Module implements ModuleInterface
         return $request->getModuleKey() === $this->getModuleKey();
     }
 
+    private function prepareMetaTags(SiteResponse $response): void
+    {
+        $photo = $this->getPhotosModel()->getItemByPk(2270);
+        $objImage = Urls::getAbsoluteURL($photo['ph_src']);
+        $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
+        $response->getContent()->getHead()->addMicroData('image', $objImage);
+
+        $response->getContent()->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
+        $response->getContent()->getHead()->addTitleElement('Достопримечательности на интерактивной карте');
+
+        $response->getContent()->setH1('Достопримечательности на карте');
+        $response->getContent()->getHead()->addKeyword($this->globalConfig->getDefaultPageKeywords());
+        $response->getContent()->getHead()->addKeyword('карта, схема, достопримечательности, достопримечательности, расстояния');
+        $response->getContent()->getHead()->addDescription($this->globalConfig->getDefaultPageDescription());
+        $response->getContent()->getHead()->addDescription('Перед поездкой вы можете наглядно спланировать свой маршрут. Найдите на карте все достопримечательности в окрестностях интересного вам места, города или даже региона');
+
+        $response->getContent()->getHead()->setCanonicalUrl('/map/');
+    }
+
     /**
-     * @param $list_id
+     * @param int $listId
      */
-    private function getYMapsMLList($list_id): void
+    private function getYMapsMLList(int $listId): void
     {
         $bounds = [
             'max_lat' => 0,
@@ -85,7 +127,7 @@ class MapModule extends Module implements ModuleInterface
         $pointTypes = $this->getRefPointTypes();
 
         $li = new MListsItems($this->db);
-        $points = $li->getPointsInList($list_id);
+        $points = $li->getPointsInList($listId);
         foreach ($points as $i => $pt) {
             $points[$i]['pt_description'] = strip_tags($points[$i]['pt_description']);
             $points[$i]['pt_description'] = html_entity_decode($points[$i]['pt_description'], ENT_QUOTES, 'UTF-8');
@@ -261,11 +303,12 @@ class MapModule extends Module implements ModuleInterface
      */
     private function getShortDescription(string $longDescription, int $size): string
     {
-        $descriptionLength = mb_strlen($longDescription);
-        $trimBoundary = @mb_strpos($longDescription, ' ', min($size, $descriptionLength), 'utf-8');
+        $plainDescription = strip_tags($longDescription);
+        $descriptionLength = mb_strlen($plainDescription);
+        $trimBoundary = @mb_strpos($plainDescription, ' ', min($size, $descriptionLength), 'utf-8');
 
         return trim(
-            mb_substr($longDescription, 0, $trimBoundary ?: null, 'utf-8'),
+            mb_substr($plainDescription, 0, $trimBoundary ?: null, 'utf-8'),
             self::REPLACE_SYMBOLS
         );
     }
@@ -295,5 +338,10 @@ class MapModule extends Module implements ModuleInterface
         header('Content-type: application/xml');
         header('Cache-Control: no-store, no-cache, must-revalidate');
         header('Expires: ' . date('r'));
+    }
+
+    private function getPhotosModel(): MPhotos
+    {
+        return new MPhotos($this->db);
     }
 }
