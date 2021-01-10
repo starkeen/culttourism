@@ -14,6 +14,7 @@
         {foreach from=$pageContent->getHead()->getCustomMetas() key=property item=content}
             <meta property="{$property}" content="{$content|truncate:800:"…"}"/>
         {/foreach}
+        <meta name="robots" content="max-image-preview:standard">
         {if $pageContent->getHead()->getRobotsIndexing() !== null}
         <meta name="robots" content="{$pageContent->getHead()->getRobotsIndexing()}"/>
         {/if}

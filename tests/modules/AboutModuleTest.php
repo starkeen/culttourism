@@ -12,7 +12,9 @@ class AboutModuleTest extends AbstractModulesTestingDependencies
     public static function setUpBeforeClass(): void
     {
         $_SERVER['REQUEST_URI'] = 'request_uri';
-        define('GLOBAL_SITE_URL', 'site_url');
+        if (!defined('GLOBAL_SITE_URL')) {
+            define('GLOBAL_SITE_URL', 'site.url');
+        }
     }
 
     public function testProcessUndefinedRoute(): void

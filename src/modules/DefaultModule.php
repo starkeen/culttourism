@@ -79,12 +79,6 @@ class DefaultModule implements ModuleInterface
     {
         $this->user->getAuth()->checkSession('web');
 
-        $response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $response->getContent()->getHead()->getTitle());
-        $response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $response->getContent()->getHead()->getDescription());
-        $response->getContent()->getHead()->addOGMeta(OgType::SITE_NAME(), $this->globalConfig->getDefaultPageTitle());
-        $response->getContent()->getHead()->addOGMeta(OgType::LOCALE(), 'ru_RU');
-        $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
-        $response->getContent()->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($_SERVER['REQUEST_URI']));
         $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), GLOBAL_SITE_URL . 'img/logo/culttourism-head.jpg');
         $response->getContent()->getHead()->addMicroData('image', GLOBAL_SITE_URL . 'img/logo/culttourism-head.jpg');
 
@@ -256,7 +250,6 @@ class DefaultModule implements ModuleInterface
         }
 
         $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'article');
-        $response->getContent()->getHead()->addOGMeta(OgType::URL(), $response->getContent()->getHead()->getCanonicalUrl());
         $response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $object['esc_name']);
         $response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $short);
         $response->getContent()->getHead()->addOGMeta(OgType::UPDATED_TIME(), (string) $response->getLastEditTimestamp());
@@ -356,7 +349,6 @@ class DefaultModule implements ModuleInterface
             }
 
             $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'article');
-            $response->getContent()->getHead()->addOGMeta(OgType::URL(), $response->getContent()->getHead()->getCanonicalUrl());
             $response->getContent()->getHead()->addOGMeta(OgType::TITLE(), 'Достопримечательности ' . $row['pc_inwheretext']);
             $response->getContent()->getHead()->addOGMeta(
                 OgType::DESCRIPTION(),

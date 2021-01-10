@@ -125,7 +125,6 @@ class BlogModule extends Module implements ModuleInterface
     private function fetchAllEntries(SiteResponse $response): void
     {
         $response->getContent()->getHead()->setCanonicalUrl('/blog/');
-        $response->getContent()->getHead()->addOGMeta(OgType::URL(), $response->getContent()->getHead()->getCanonicalUrl());
 
         $entries = $this->blogRepository->getLastEntries(20, $this->webUser->isEditor());
         if ($this->webUser->isEditor()) {
@@ -178,7 +177,6 @@ class BlogModule extends Module implements ModuleInterface
 
         $response->setLastEditTimestamp($entry->getTimestamp());
 
-        $response->getContent()->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($entry->getRelativeLink()));
         $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'article');
         $response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $entry->br_title);
         $response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $entry->br_title);

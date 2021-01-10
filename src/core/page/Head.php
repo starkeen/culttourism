@@ -160,6 +160,13 @@ class Head
         $this->addCustomMeta('og:' . $ogType->getValue(), $value);
     }
 
+    public function getOGMeta(OgType $ogType): ?string
+    {
+        $tagName = 'og:' . $ogType->getValue();
+
+        return $this->customTags[$tagName] ?? null;
+    }
+
     public function getCustomMetas(): array
     {
         ksort($this->customTags);

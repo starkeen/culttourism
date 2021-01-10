@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace tests\core\application;
 
 use app\core\application\WebApplication;
+use app\core\GlobalConfig;
 use app\core\page\Content;
 use app\core\page\Headers;
 use app\core\SessionStorage;
@@ -25,6 +26,9 @@ class WebApplicationTest extends TestCase
         }
         if (!defined('GLOBAL_ERROR_REPORTING')) {
             define('GLOBAL_ERROR_REPORTING', false);
+        }
+        if (!defined('GLOBAL_SITE_URL')) {
+            define('GLOBAL_SITE_URL', 'site.url');
         }
         $_SERVER['REQUEST_URI'] = '/';
     }
@@ -50,7 +54,10 @@ class WebApplicationTest extends TestCase
             ->getMock();
         $mockContent = $this->getMockBuilder(Content::class)
             ->disableOriginalConstructor()
-            ->onlyMethods([])
+            ->onlyMethods(['getHead'])
+            ->getMock();
+        $mockGlobalConfig = $this->getMockBuilder(GlobalConfig::class)
+            ->disableOriginalConstructor()
             ->getMock();
 
         $application = new WebApplication();
@@ -61,11 +68,12 @@ class WebApplicationTest extends TestCase
         $application->setSiteRequest($mockRequest);
         $application->setSiteResponse($mockResponse);
         $application->setWebUser($mockUser);
+        $application->setGlobalConfig($mockGlobalConfig);
 
         $mockRequest->expects(self::once())->method('isSSL')->willReturn(false);
         $mockRequest->expects(self::once())->method('getCurrentURL')->willReturn('current_url');
         $mockResponse->expects(self::exactly(6))->method('getHeaders')->willReturn($mockHeaders);
-        $mockResponse->expects(self::once())->method('getContent')->willReturn($mockContent);
+        $mockResponse->expects(self::exactly(11))->method('getContent')->willReturn($mockContent);
         $mockHeaders->expects(self::once())->method('sendRedirect')->with('current_url');
         $mockHeaders->expects(self::once())->method('flush');
 

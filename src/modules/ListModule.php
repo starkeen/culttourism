@@ -18,6 +18,7 @@ class ListModule extends Module implements ModuleInterface
 {
     /**
      * @inheritDoc
+     * @throws NotFoundException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
@@ -30,14 +31,14 @@ class ListModule extends Module implements ModuleInterface
 
         $response->getContent()->setCustomJsModule($request->getModuleKey());
 
-        $url_array = explode('/', $request->getLevel1());
-        $url_last = array_pop($url_array);
+        $urlParts = explode('/', $request->getLevel1() ?? '');
+        $urlLastPart = array_pop($urlParts);
 
         //========================  I N D E X  ================================
         if ($request->getLevel1() === null) {
             $this->prepareIndex($response);
         } //========================   L I S T   ================================
-        elseif (preg_match('/([a-z0-9_-]+)\.html/i', $url_last, $regs)) {
+        elseif (preg_match('/([a-z0-9_-]+)\.html/i', $urlLastPart, $regs)) {
             $this->prepareListBySlug($regs[1], $response);
         }
     }
@@ -79,7 +80,6 @@ class ListModule extends Module implements ModuleInterface
                 $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
             }
             $response->getContent()->getHead()->setCanonicalUrl('/list/' . $slug . '.html');
-            $response->getContent()->getHead()->addOGMeta(OgType::URL(), $response->getContent()->getHead()->getCanonicalUrl());
 
             $response->setLastEditTimestamp($list['last_update']);
 
@@ -100,7 +100,6 @@ class ListModule extends Module implements ModuleInterface
     private function prepareIndex(SiteResponse $response): void
     {
         $response->getContent()->getHead()->setCanonicalUrl('/list/');
-        $response->getContent()->getHead()->addOGMeta(OgType::URL(), $response->getContent()->getHead()->getCanonicalUrl());
 
         $lst = new MLists($this->db);
 

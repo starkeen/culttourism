@@ -56,10 +56,6 @@ abstract class Module
 
         $moduleData = $this->getModelModules()->getModuleByURI($this->getModuleKey());
 
-        $response->getContent()->getHead()->addOGMeta(OgType::SITE_NAME(), $this->globalConfig->getDefaultPageTitle());
-        $response->getContent()->getHead()->addOGMeta(OgType::LOCALE(), 'ru_RU');
-        $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
-        $response->getContent()->getHead()->addOGMeta(OgType::URL(), Urls::getAbsoluteURL($_SERVER['REQUEST_URI']));
         $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), GLOBAL_SITE_URL . 'img/logo/culttourism-head.jpg');
         $response->getContent()->getHead()->addMicroData('image', GLOBAL_SITE_URL . 'img/logo/culttourism-head.jpg');
 
@@ -103,15 +99,6 @@ abstract class Module
     }
 
     /**
-     * @param SiteResponse $response
-     */
-    protected function postProcess(SiteResponse $response): void
-    {
-        $response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $response->getContent()->getHead()->getTitle());
-        $response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $response->getContent()->getHead()->getDescription());
-    }
-
-    /**
      * Обработка запроса
      * @param SiteRequest $request
      * @param SiteResponse $response
@@ -121,7 +108,6 @@ abstract class Module
     {
         $this->preProcess($response);
         $this->process($request, $response);
-        $this->postProcess($response);
     }
 
     /**

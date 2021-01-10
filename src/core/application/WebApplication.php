@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\core\application;
 
+use app\constant\OgType;
 use app\core\CookieStorage;
 use app\core\GlobalConfig;
 use app\core\module\ModuleFetcher;
@@ -34,6 +35,7 @@ use app\modules\RedirectsModule;
 use app\modules\SearchModule;
 use app\modules\SignModule;
 use app\modules\SysModule;
+use app\utils\Urls;
 use Auth;
 use Throwable;
 
@@ -154,6 +156,8 @@ class WebApplication extends Application
         if ($this->getSiteRequest()->isAjax()) {
             echo $this->getSiteResponse()->getContent()->getJsonString();
         } else {
+            $this->processMetaTags();
+
             $this->getTemplateEngine()->displayPage(
                 '_main/main.html.tpl',
                 [
@@ -161,6 +165,27 @@ class WebApplication extends Application
                     'pageContent' => $this->getSiteResponse()->getContent(),
                 ]
             );
+        }
+    }
+
+    private function processMetaTags(): void
+    {
+        $siteName = $this->globalConfig->getDefaultPageTitle();
+        $title = $this->getSiteResponse()->getContent()->getHead()->getTitle();
+        $description = $this->getSiteResponse()->getContent()->getHead()->getDescription();
+        $canonicalUrl = $this->getSiteResponse()->getContent()->getHead()->getCanonicalUrl();
+        if ($canonicalUrl === null) {
+            $canonicalUrl = Urls::getAbsoluteURL($_SERVER['REQUEST_URI']);
+        }
+
+        $this->getSiteResponse()->getContent()->getHead()->addOGMeta(OgType::SITE_NAME(), $siteName);
+        $this->getSiteResponse()->getContent()->getHead()->addOGMeta(OgType::TITLE(), $title);
+        $this->getSiteResponse()->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $description);
+        $this->getSiteResponse()->getContent()->getHead()->addOGMeta(OgType::URL(), $canonicalUrl);
+
+        $this->getSiteResponse()->getContent()->getHead()->addOGMeta(OgType::LOCALE(), 'ru_RU');
+        if ($this->getSiteResponse()->getContent()->getHead()->getOGMeta(OgType::TYPE()) === null) {
+            $this->getSiteResponse()->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
         }
     }
 
@@ -209,6 +234,11 @@ class WebApplication extends Application
             $this->globalConfig = new GlobalConfig($this->getDb());
         }
         return $this->globalConfig;
+    }
+
+    public function setGlobalConfig(GlobalConfig $globalConfig): void
+    {
+        $this->globalConfig = $globalConfig;
     }
 
     private function getWebUser(): WebUser
