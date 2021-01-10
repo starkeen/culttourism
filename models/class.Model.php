@@ -130,13 +130,13 @@ abstract class Model
      * @param array $values
      * @param array|null $files
      *
-     * @return bool
+     * @return int|null
      */
-    public function updateByPk($id, $values = [], $files = [])
+    public function updateByPk(int $id, $values = [], $files = []): ?int
     {
         $new_fields_places = [];
         $new_fields_values = [
-            ':primary_key' => (int) $id,
+            ':primary_key' => $id,
         ];
         foreach ($values as $k => $v) {
             if (in_array($k, $this->_table_fields, true)) {
@@ -157,18 +157,18 @@ abstract class Model
                         $this->saveFile($id, $file_field, $file);
                     }
                     return $id;
-                } else {
-                    return true;
                 }
-            } else {
-                return false;
+
+                return null;
             }
-        } else {
-            return true;
+
+            return null;
         }
+
+        return null;
     }
 
-    public function insert($values = [], $files = [])
+    public function insert($values = [], $files = []): ?int
     {
         $new_fields_places = [];
         $new_fields_values = [];
@@ -191,15 +191,15 @@ abstract class Model
                         $this->saveFile($id, $file_field, $file);
                     }
                     return $id;
-                } else {
-                    return $id;
                 }
-            } else {
-                return false;
+
+                return $id;
             }
-        } else {
-            return true;
+
+            return null;
         }
+
+        return null;
     }
 
     /**

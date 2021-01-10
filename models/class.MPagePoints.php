@@ -315,9 +315,9 @@ class MPagePoints extends Model
      * @param array $values
      * @param array $files
      *
-     * @return boolean
+     * @return int|null
      */
-    public function updateByPk($id, $values = [], $files = [])
+    public function updateByPk(int $id, $values = [], $files = []): ?int
     {
         if (isset($values['pt_latitude'])) {
             $values['pt_latitude'] = (float) str_replace(',', '.', trim($values['pt_latitude']));
@@ -413,9 +413,9 @@ class MPagePoints extends Model
      * @param array $values
      * @param array $files
      *
-     * @return int ID точки
+     * @return int|null ID точки
      */
-    public function insert($values = [], $files = [])
+    public function insert($values = [], $files = []): ?int
     {
         if (isset($values['pt_latitude'])) {
             $values['pt_latitude'] = (float) str_replace(',', '.', trim($values['pt_latitude']));

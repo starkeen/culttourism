@@ -257,9 +257,9 @@ class MPageCities extends Model
      * @param array $values
      * @param array $files
      *
-     * @return int
+     * @return int|null
      */
-    public function updateByPk($id, $values = [], $files = [])
+    public function updateByPk(int $id, $values = [], $files = []): ?int
     {
         if (isset($values['pc_latitude'])) {
             $values['pc_latitude'] = (float) str_replace(',', '.', trim($values['pc_latitude']));
@@ -283,9 +283,9 @@ class MPageCities extends Model
      * @param array $values
      * @param array $files
      *
-     * @return int
+     * @return int|null
      */
-    public function insert($values = [], $files = [])
+    public function insert($values = [], $files = []): ?int
     {
         if (isset($values['pc_latitude'])) {
             $values['pc_latitude'] = (float) str_replace(',', '.', trim($values['pc_latitude']));

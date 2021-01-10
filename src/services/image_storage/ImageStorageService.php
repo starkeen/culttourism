@@ -174,21 +174,22 @@ class ImageStorageService
         return $this->directoryTmp . DIRECTORY_SEPARATOR . $fileName;
     }
 
+    /**
+     * @param string $fileName
+     * @return string
+     * @throws CoreException
+     */
     private function getTargetDirectoryName(string $fileName): string
     {
         $directoryLevel1 = DIRECTORY_SEPARATOR . $fileName[0];
         $concurrentDirectory = $this->photosDirectory . $directoryLevel1;
-        if (!file_exists($concurrentDirectory)) {
-            if (!mkdir($concurrentDirectory, 0700, true)) {
-                throw new CoreException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-            }
+        if (!file_exists($concurrentDirectory) && !mkdir($concurrentDirectory, 0700, true)) {
+            throw new CoreException(sprintf('Directory "%s" was not created', $concurrentDirectory));
         }
         $directoryLevel2 = $directoryLevel1 . DIRECTORY_SEPARATOR . $fileName[1];
         $concurrentDirectory = $this->photosDirectory . $directoryLevel2;
-        if (!file_exists($concurrentDirectory)) {
-            if (!mkdir($concurrentDirectory, 0700, true)) {
-                throw new CoreException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-            }
+        if (!file_exists($concurrentDirectory) && !mkdir($concurrentDirectory, 0700, true)) {
+            throw new CoreException(sprintf('Directory "%s" was not created', $concurrentDirectory));
         }
 
         return $directoryLevel2;
