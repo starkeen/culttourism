@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace app\modules;
 
-use app\core\GlobalConfig;
 use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
@@ -63,11 +62,8 @@ class AjaxModule implements ModuleInterface
             if ($id == '' && isset($_GET['id']) && (int) $_GET['id']) {
                 $response->getContent()->setBody($this->getPoint((int) $_GET['id']));
             } elseif ($id === 's' && isset($_GET['id'])) {
-                $response->getContent()->setJsonHtml($this->getPointBySlugLine(str_replace('.html', '', $_GET['id'])));
-            } elseif ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
-                $response->getContent()->setBody($this->savePointTitle((int) $_GET['id']));
-            } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
-                $response->getContent()->setBody($this->savePointDescription((int) $_GET['id']));
+                $slugLine = str_replace('.html', '', $_GET['id']);
+                $response->getContent()->setJsonHtml($this->getPointBySlugLine($slugLine));
             } elseif ($id === 'getnewform' && isset($_GET['cid'])) {
                 $response->getContent()->setJsonHtml($this->getPointNew((int) $_GET['cid']));
             } elseif ($id === 'savenew' && isset($_GET['cid'])) {
@@ -389,78 +385,6 @@ class AjaxModule implements ModuleInterface
         }
 
         return (int) $pts->insert($add_item);
-    }
-
-    /**
-     * @param int $id
-     * @return mixed
-     * @throws NotFoundException
-     * @throws AccessDeniedException
-     */
-    private function savePointTitle(int $id): string
-    {
-        if ($id === 0) {
-            throw new NotFoundException();
-        }
-        $nid = (int) $_POST['id'];
-        if ($id !== $nid) {
-            throw new NotFoundException();
-        }
-        if (!$this->webUser->isEditor()) {
-            throw new AccessDeniedException();
-        }
-        $pp = new MPagePoints($this->db);
-        $state = $pp->updateByPk(
-            $nid,
-            [
-                'pt_name' => $_POST['nname'],
-                'pt_lastup_user' => $this->webUser->getId(),
-            ]
-        );
-        if ($state) {
-            $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $nid);
-            $point = $pp->getItemByPk($nid);
-
-            return $point['pt_name'];
-        }
-
-        throw new NotFoundException();
-    }
-
-    /**
-     * @param int $id
-     * @return string
-     * @throws NotFoundException
-     * @throws AccessDeniedException
-     */
-    private function savePointDescription(int $id): string
-    {
-        if ($id === 0) {
-            throw new NotFoundException();
-        }
-        $nid = (int) $_POST['id'];
-        if ($id !== $nid) {
-            throw new NotFoundException();
-        }
-        if (!$this->webUser->isEditor()) {
-            throw new AccessDeniedException();
-        }
-        $pp = new MPagePoints($this->db);
-        $state = $pp->updateByPk(
-            $nid,
-            [
-                'pt_description' => $_POST['ndesc'],
-                'pt_lastup_user' => $this->webUser->getId(),
-            ]
-        );
-        if ($state) {
-            $this->mDataCheck->deleteChecked(MDataCheck::ENTITY_POINTS, $nid);
-            $point = $pp->getItemByPk($nid);
-
-            return $point['pt_description'];
-        }
-
-        throw new NotFoundException();
     }
 
     /**

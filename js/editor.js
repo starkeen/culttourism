@@ -2,8 +2,8 @@ $(document).ready(function () {
     // ---------------------- CITY EDIT ------------------------
     $(".hiddenedit").live("click", function () {
         $(this).addClass("hiddenedit_active");
-        this.id == "pc_title_edit" && $("div#pc_title_handler input").show();
-        this.id == "pc_text_edit" && $("div#pc_text_handler input").show();
+        this.id === "pc_title_edit" && $("div#pc_title_handler input").show();
+        this.id === "pc_text_edit" && $("div#pc_text_handler input").show();
         if (this.id == "pc_text_hidd") {
             $(document).css("cursor", "progress");
             $("#pc_text_edit").ckeditor(function () {
@@ -19,12 +19,12 @@ $(document).ready(function () {
             $("#city_announcement").hide();
             $(document).css("cursor", "default");
         }
-        if (this.id == "pt_name_hidd") {//-------- название точки ------
+        if (this.id === "pt_name_hidd") {//-------- название точки ------
             $(this).hide();
             $("#pt_name_edit").show().focus().addClass("hiddenedit_active").val($(this).html());
             $("div#pt_name_handler input").show();
         }
-        if (this.id == "pt_description_hidd") {//---------- описание точки -----
+        if (this.id === "pt_description_hidd") {//---------- описание точки -----
             $(document).css("cursor", "progress");
             $("#pt_description_edit").css("height", "300px").css("width", "100%")
                 .val($(this).html())
@@ -42,7 +42,7 @@ $(document).ready(function () {
     });
     //------------------------ SAVE EDIT FIELD ------------
     $(".formhandler input.dosave").live("click", function () {
-        if ($(this).parent().attr("id") == "pc_title_handler") {//--- название города
+        if ($(this).parent().attr("id") === "pc_title_handler") { // --- название города
             $(document).css("cursor", "progress");
             $("#pc_title_handler input").hide();
             $.post("/ajax/city/savetitle/?id=" + $("#pc_id").val(), {
@@ -56,7 +56,7 @@ $(document).ready(function () {
             $(document).css("cursor", "default");
         }
 
-        if ($(this).parent().attr("id") == "pc_text_handler") {//--- описание города
+        if ($(this).parent().attr("id") === "pc_text_handler") { // --- описание города
             $(document).css("cursor", "progress");
             $("#pc_text_handler input").hide();
             $.post("/ajax/city/savedescr/?id=" + $("#pc_id").val(), {
@@ -74,36 +74,36 @@ $(document).ready(function () {
             });
             $(document).css("cursor", "default");
         }
-        if ($(this).parent().attr("id") == "pt_name_handler") {//--- название точки
+        if ($(this).parent().attr("id") === "pt_name_handler") { // --- название точки
             $(document).css("cursor", "progress");
             $("#pt_name_handler input").hide();
-            $.post("/ajax/point/savetitle/?id=" + $("#pt_id").val(), {
+            $.post("/point/" + $("#pt_id").val() + "/title/", {
                 id:    $("#pt_id").val(),
-                nname: $("#pt_name_edit").val()
-            }, function (a) {
+                title: $("#pt_name_edit").val()
+            }, function (response) {
                 $("div#pt_name_handler input").hide();
                 $("#pt_name_edit").removeClass("hiddenedit_active").hide();
-                $("#pt_name_hidd").text(a).show().removeClass("hiddenedit_active");
-                $("#object_id_" + $("#pt_id").val()).text(a);
+                $("#pt_name_hidd").text(response.title).show().removeClass("hiddenedit_active");
+                $("#object_id_" + $("#pt_id").val()).text(response.title);
             });
             $(document).css("cursor", "default");
         }
-        if ($(this).parent().attr("id") == "pt_description_handler") {//--- описание точки
+        if ($(this).parent().attr("id") === "pt_description_handler") { // --- описание точки
             $("div#pt_description_handler input").hide();
             $(document).css("cursor", "progress");
-            $.post("/ajax/point/savedescr/?id=" + $("#pt_id").val(), {
+            $.post("/point/" +  $("#pt_id").val() + "/description/", {
                 id:    $("#pt_id").val(),
-                ndesc: $("#pt_description_edit").val()
-            }, function (a) {
+                description: $("#pt_description_edit").val()
+            }, function (response) {
                 $("#pt_description_edit").ckeditor(function () {
                     this.destroy();
                 });
                 $("#pt_description_edit").css("height", "0").removeClass("hiddenedit_active").hide();
-                $("#pt_description_hidd").html(a).show().removeClass("hiddenedit_active")
+                $("#pt_description_hidd").html(response.description).show().removeClass("hiddenedit_active")
             });
             $(document).css("cursor", "default");
         }
-        if ($(this).parent().attr("id") == "pt_add_handler") {//--- добавление точки
+        if ($(this).parent().attr("id") === "pt_add_handler") { // --- добавление точки
             $(document).css("cursor", "progress");
             $("#pt_add_handler input").hide();
             $("div#pt_add_handler").html("").text("сохраняется...");
@@ -124,10 +124,11 @@ $(document).ready(function () {
                     this.destroy()
                 });
                 var latlontext = "";
-                if ($("#pt_lat").val() > 0 && $("#pt_lon").val() > 0)
+                if ($("#pt_lat").val() > 0 && $("#pt_lon").val() > 0) {
                     latlontext = "N" + $("#pt_lat").val() + " E" + $("#pt_lon").val();
-                else
+                } else {
                     latlontext = "указать";
+                }
                 $('#whatseelist').append('<tr><td><img class="point_typer" id="type_' + data + '" src="/img/points/x32/star.png" alt="другое" /></td><td><a href="object' + data + '.html" id="object_id_' + data + '" class="objlink" title="подробно: ' + $('#pt_name_add').val() + '">' + $('#pt_name_add').val() + '</a></td><td><a href="#" id="gps_' + data + '" class="point_latlon">' + latlontext + '</a></td><td><img class="point_deleter" id="del_' + data + '" src="/img/btn/ico.delete.gif" /></td></tr>');
                 $.modal.close();
             });
@@ -157,7 +158,7 @@ $(document).ready(function () {
             });
             $(document).css("cursor", "default")
         }
-        if ($(this).parent().attr("id") == "br_save_handler") {//------ запись в блоге
+        if ($(this).parent().attr("id") === "br_save_handler") {//------ запись в блоге
             var record_id = $("#br_id").val();
             $.post("/blog/saveform/?bid=" + record_id, {
                 brid:   record_id,
@@ -165,7 +166,7 @@ $(document).ready(function () {
                 ntext:  $("#eblog_text").val(),
                 ndate:  $("#eblog_date").val(),
                 ntime:  $("#eblog_time").val(),
-                nact:   ($("#eblog_active").attr("checked") == "checked"),
+                nact:   ($("#eblog_active").attr("checked") === "checked"),
                 nurl:   $("#eblog_url").val()
             }, function (data) {
                 if (data) {
@@ -180,11 +181,11 @@ $(document).ready(function () {
     });
     //------------------------ ESCAPE EDIT FIELD ------------
     $(".formhandler input.doesc").live("click", function () {
-        if ($(this).parent().attr("id") == "pc_title_handler") {
+        if ($(this).parent().attr("id") === "pc_title_handler") {
             $("#pc_title_edit").val($("#pc_title_hidd").val()).removeClass("hiddenedit_active");
             $("div#pc_title_handler input").hide();
         }
-        if ($(this).parent().attr("id") == "pc_text_handler") {//------ описание города
+        if ($(this).parent().attr("id") === "pc_text_handler") {//------ описание города
             $("#pc_text_edit").ckeditor(function () {
                 this.destroy();
             });
@@ -195,12 +196,12 @@ $(document).ready(function () {
             $("#city_float").show();
             $("#city_announcement").show();
         }
-        if ($(this).parent().attr("id") == "pt_name_handler") {//------ имя точки
+        if ($(this).parent().attr("id") === "pt_name_handler") {//------ имя точки
             $("#pt_name_edit").hide().removeClass("hiddenedit_active");
             $("#pt_name_hidd").show().removeClass("hiddenedit_active");
             $("div#pt_name_handler input").hide();
         }
-        if ($(this).parent().attr("id") == "pt_description_handler") {//------ описание точки
+        if ($(this).parent().attr("id") === "pt_description_handler") {//------ описание точки
             $("#pt_description_edit").ckeditor(function () {
                 this.destroy();
             });
@@ -208,7 +209,7 @@ $(document).ready(function () {
             $("#pt_description_hidd").show().removeClass("hiddenedit_active");
             $("#pt_description_handler input").hide();
         }
-        if ($(this).parent().attr("id") == "pt_add_handler") {//------ добавление точки
+        if ($(this).parent().attr("id") === "pt_add_handler") {//------ добавление точки
             $("#pt_description_add").ckeditor(function () {
                 this.destroy();
             });
@@ -223,13 +224,13 @@ $(document).ready(function () {
             });
             $.modal.close();
         }
-        if ($(this).parent().attr("id") == "pt_contacts_handler") {//------ сохранение контактов
+        if ($(this).parent().attr("id") === "pt_contacts_handler") {//------ сохранение контактов
             $(".edit_cont").show();
             $("div#pt_contacts_handler input").hide();
             $(".hiddenedit_cont").hide();
             $("#do_cont_edit").show();
         }
-        if ($(this).parent().attr("id") == "br_save_handler") {//------ запись в блоге
+        if ($(this).parent().attr("id") === "br_save_handler") {//------ запись в блоге
             $("#eblog_text").ckeditor(function () {
                 this.destroy();
             });
@@ -428,8 +429,9 @@ $(document).ready(function () {
 
 
 //---------------------------------  CITY AJAX  ----------------------------------
-    if ($("#city_keywds").val())
+    if ($("#city_keywds").val()) {
         $("#city_sign_keywds").text($("#city_keywds").val().length);
+    }
     $("#city_sign_descr").text($("#city_descr").text().length);
     $(document).on("keyup", "#city_keywds", function () {
         $("#city_sign_keywds").text($("#city_keywds").val().length);

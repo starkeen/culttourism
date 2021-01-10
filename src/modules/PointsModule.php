@@ -40,6 +40,7 @@ class PointsModule implements ModuleInterface
             throw new NotFoundException();
         }
 
+        // набор методов для сохранения данных о точках
         if ($request->isPost() && $request->getLevel1() !== null) {
             $pointId = (int) $request->getLevel1();
 
@@ -52,10 +53,22 @@ class PointsModule implements ModuleInterface
                     throw new AccessDeniedException();
                 }
                 $this->saveContacts($pointId, $request, $response);
+            } elseif ($request->getLevel2() === 'title') {
+                if (!$this->webUser->isEditor()) {
+                    throw new AccessDeniedException();
+                }
+                $this->saveTitle($pointId, $request, $response);
+            } elseif ($request->getLevel2() === 'description') {
+                if (!$this->webUser->isEditor()) {
+                    throw new AccessDeniedException();
+                }
+                $this->saveDescription($pointId, $request, $response);
+            } else {
+                throw new NotFoundException();
             }
+        } else {
+            throw new NotFoundException();
         }
-
-        throw new NotFoundException();
     }
 
     /**
@@ -99,6 +112,74 @@ class PointsModule implements ModuleInterface
         $point = $repository->getItemByPk($pointId);
 
         $response->getContent()->setJson(['id' => $point->getId()]);
+    }
+
+    /**
+     * @param int $pointId
+     * @param SiteRequest $request
+     * @param SiteResponse $response
+     * @throws NotFoundException
+     */
+    private function saveTitle(int $pointId, SiteRequest $request,  SiteResponse $response): void
+    {
+        $repository = $this->getPointsRepository();
+        $point = $repository->getItemByPk($pointId);
+
+        if ($point === null) {
+            throw new NotFoundException();
+        }
+
+        $title = $request->getPostParameter('title');
+        if ($title !== null) {
+            $point->pt_name = $title;
+        }
+
+        $point->pt_lastup_user = $this->webUser->getId();
+        $point->pt_lastup_date = $point->now();
+
+        $repository->save($point);
+        $this->resetCheckerQueue($pointId);
+
+        $point = $repository->getItemByPk($pointId);
+
+        $response->getContent()->setJson([
+            'id' => $point->getId(),
+            'title' => $point->pt_name,
+        ]);
+    }
+
+    /**
+     * @param int $pointId
+     * @param SiteRequest $request
+     * @param SiteResponse $response
+     * @throws NotFoundException
+     */
+    private function saveDescription(int $pointId, SiteRequest $request,  SiteResponse $response): void
+    {
+        $repository = $this->getPointsRepository();
+        $point = $repository->getItemByPk($pointId);
+
+        if ($point === null) {
+            throw new NotFoundException();
+        }
+
+        $description = $request->getPostParameter('description');
+        if ($description !== null) {
+            $point->pt_description = $description;
+        }
+
+        $point->pt_lastup_user = $this->webUser->getId();
+        $point->pt_lastup_date = $point->now();
+
+        $repository->save($point);
+        $this->resetCheckerQueue($pointId);
+
+        $point = $repository->getItemByPk($pointId);
+
+        $response->getContent()->setJson([
+            'id' => $point->getId(),
+            'description' => $point->pt_description,
+        ]);
     }
 
     /**
