@@ -544,7 +544,7 @@ class MPagePoints extends Model
      *
      * @return bool
      */
-    public function deleteByPk($id): bool
+    public function deleteByPk(int $id): bool
     {
         return $this->updateByPk($id, [$this->_table_active => 0]);
     }
@@ -570,7 +570,7 @@ class MPagePoints extends Model
      *
      * @return int
      */
-    public function getPointType($name): int
+    private function getPointType(string $name): int
     {
         $rpt = new MRefPointtypes($this->_db);
         $types_markers = $rpt->getMarkers();

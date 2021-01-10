@@ -214,7 +214,7 @@ abstract class Model
      *
      * @return PDOStatement
      */
-    public function deleteByPk($id)
+    public function deleteByPk(int $id)
     {
         $this->_db->sql = "DELETE FROM $this->_table_name WHERE $this->_table_pk = :id";
 
