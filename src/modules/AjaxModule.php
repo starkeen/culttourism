@@ -45,8 +45,6 @@ class AjaxModule implements ModuleInterface
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {
-        $this->webUser->getAuth()->checkSession('web');
-
         $id = $request->getLevel2();
         if ($id === null) {
             throw new NotFoundException();

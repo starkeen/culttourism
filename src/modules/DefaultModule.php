@@ -77,11 +77,6 @@ class DefaultModule implements ModuleInterface
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {
-        $this->user->getAuth()->checkSession('web');
-
-        $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), GLOBAL_SITE_URL . 'img/logo/culttourism-head.jpg');
-        $response->getContent()->getHead()->addMicroData('image', GLOBAL_SITE_URL . 'img/logo/culttourism-head.jpg');
-
         $this->processPageByURL($request, $response);
 
         if ($response->getContent()->getBody() === '') {

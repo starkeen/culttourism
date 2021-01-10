@@ -52,12 +52,7 @@ abstract class Module
      */
     protected function preProcess(SiteResponse $response): void
     {
-        $this->webUser->getAuth()->checkSession('web');
-
         $moduleData = $this->getModelModules()->getModuleByURI($this->getModuleKey());
-
-        $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), GLOBAL_SITE_URL . 'img/logo/culttourism-head.jpg');
-        $response->getContent()->getHead()->addMicroData('image', GLOBAL_SITE_URL . 'img/logo/culttourism-head.jpg');
 
         if (!empty($moduleData)) {
             if ((int) $moduleData['md_photo_id'] !== 0) {

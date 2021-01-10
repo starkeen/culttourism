@@ -54,8 +54,6 @@ class SysModule implements ModuleInterface
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {
-        $this->webUser->getAuth()->checkSession('web');
-
         if ($request->getLevel2() !== null) {
             throw new NotFoundException();
         }

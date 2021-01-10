@@ -55,6 +55,12 @@ class WebApplication extends Application
     {
         $this->getSessionStorage()->start();
         parent::init();
+
+        $this->getWebUser()->getAuth()->checkSession('web');
+
+        $defaultPageImage = GLOBAL_SITE_URL . 'img/logo/culttourism-head.jpg';
+        $this->getSiteResponse()->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $defaultPageImage);
+        $this->getSiteResponse()->getContent()->getHead()->addMicroData('image', $defaultPageImage);
     }
 
     public function run(): void

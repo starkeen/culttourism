@@ -73,7 +73,7 @@ class WebApplicationTest extends TestCase
         $mockRequest->expects(self::once())->method('isSSL')->willReturn(false);
         $mockRequest->expects(self::once())->method('getCurrentURL')->willReturn('current_url');
         $mockResponse->expects(self::exactly(6))->method('getHeaders')->willReturn($mockHeaders);
-        $mockResponse->expects(self::exactly(11))->method('getContent')->willReturn($mockContent);
+        $mockResponse->expects(self::exactly(13))->method('getContent')->willReturn($mockContent);
         $mockHeaders->expects(self::once())->method('sendRedirect')->with('current_url');
         $mockHeaders->expects(self::once())->method('flush');
 

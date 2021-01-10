@@ -36,8 +36,6 @@ class PointsModule implements ModuleInterface
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {
-        $this->webUser->getAuth()->checkSession('web');
-
         if (!$request->isAjax()) {
             throw new NotFoundException();
         }
