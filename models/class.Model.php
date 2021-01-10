@@ -90,13 +90,13 @@ abstract class Model
         $out['binds'][':limit'] = $out['limit'];
 
         $this->_db->sql = "SELECT SQL_CALC_FOUND_ROWS {$out['fields']}
-                            FROM $this->_table_name t
-                                " . (!empty($out['join']) ? implode("\n", $out['join']) : '') . "
-                            " . (!empty($out['where']) ? ('WHERE ' . implode("\n AND ", $out['where'])) : '') . "
-                            " . (!empty($out['having']) ? ('HAVING ' . implode("\n AND ", $out['having'])) : '') . "
-                            " . (!empty($out['groupby']) ? ('GROUP BY ' . implode(", ", $out['groupby'])) : '') . "
-                            ORDER BY {$out['order']}
-                            LIMIT :offset, :limit";
+                            FROM $this->_table_name t"
+            . (!empty($out['join']) ? implode("\n", $out['join']) : '') . PHP_EOL
+            . (!empty($out['where']) ? ('WHERE ' . implode("\n AND ", $out['where'])) : '') . PHP_EOL
+            . (!empty($out['having']) ? ('HAVING ' . implode("\n AND ", $out['having'])) : '') . PHP_EOL
+            . (!empty($out['groupby']) ? ('GROUP BY ' . implode(", ", $out['groupby'])) : '') . PHP_EOL
+            . "ORDER BY {$out['order']}
+            LIMIT :offset, :limit";
         $this->_db->execute($out['binds']);
         $out['items'] = $this->_db->fetchAll();
         $this->_db->sql = "SELECT FOUND_ROWS() AS cnt";
@@ -104,6 +104,7 @@ abstract class Model
         $row = $this->_db->fetch();
         $out['total'] = $row['cnt'];
         $this->_pager->setParam('total', $out['total']);
+
         return $out;
     }
 

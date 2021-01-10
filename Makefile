@@ -12,6 +12,7 @@ PATH_VAR = ${ROOT}/var
 PATH_CACHE = ${PATH_VAR}/cache
 PATH_COMPILED_TEMPLATES = ${PATH_VAR}/templates_c
 PATH_CACHED_TEMPLATES = ${PATH_VAR}/templates_cache
+VERSION=$(shell git log -1 --pretty=format:"%H")
 
 vendor:
 	$(COMPOSER) -- install -o
@@ -82,4 +83,4 @@ analyze:
 		scaner \
 		-Dsonar.projectBaseDir=/usr/src \
 		-Dsonar.projectKey=culttourism \
-		-Dsonar.sonar.projectVersion=$(git log -1 --pretty=format:"%H")
+		-Dsonar.sonar.projectVersion=$(VERSION)
