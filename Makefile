@@ -83,4 +83,4 @@ analyze:
 		scaner \
 		-Dsonar.projectBaseDir=/usr/src \
 		-Dsonar.projectKey=culttourism \
-		-Dsonar.sonar.projectVersion=$(VERSION)
+		-Dsonar.projectVersion=$(VERSION)

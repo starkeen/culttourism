@@ -25,10 +25,8 @@ use app\utils\Urls;
 
 class BlogModule extends Module implements ModuleInterface
 {
-    /**
-     * @var BlogRepository
-     */
-    private $blogRepository;
+    private const MODULE_URL = '/blog/';
+    private BlogRepository $blogRepository;
 
     /**
      * @param MyDB $db
@@ -85,7 +83,7 @@ class BlogModule extends Module implements ModuleInterface
             }
             $this->blogRepository->deleteItem($idFromRequest);
         } elseif ($request->getLevel1() === 'blog') {
-            throw new RedirectException('/blog/');
+            throw new RedirectException(self::MODULE_URL);
         } elseif ($request->getLevel3() !== null) { //одна запись
             $this->processOneEntry(
                 $response,
@@ -124,7 +122,7 @@ class BlogModule extends Module implements ModuleInterface
      */
     private function fetchAllEntries(SiteResponse $response): void
     {
-        $response->getContent()->getHead()->setCanonicalUrl('/blog/');
+        $response->getContent()->getHead()->setCanonicalUrl(self::MODULE_URL);
 
         $entries = $this->blogRepository->getLastEntries(20, $this->webUser->isEditor());
         if ($this->webUser->isEditor()) {
@@ -201,7 +199,7 @@ class BlogModule extends Module implements ModuleInterface
         $response->getContent()->getHead()->addKeyword('год ' . $year);
         $response->getContent()->getHead()->addDescription('Записи в блоге за ' . $year . ' год');
 
-        $canonical = '/blog/' . $year . '/';
+        $canonical = self::MODULE_URL . $year . '/';
 
         if ($month !== null) {
             $monthName = MonthName::getMonthName($month);
