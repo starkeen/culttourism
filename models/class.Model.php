@@ -90,7 +90,7 @@ abstract class Model
         $out['binds'][':limit'] = $out['limit'];
 
         $this->_db->sql = "SELECT SQL_CALC_FOUND_ROWS {$out['fields']}
-                            FROM $this->_table_name t"
+                            FROM $this->_table_name t "
             . (!empty($out['join']) ? implode("\n", $out['join']) : '') . PHP_EOL
             . (!empty($out['where']) ? ('WHERE ' . implode("\n AND ", $out['where'])) : '') . PHP_EOL
             . (!empty($out['having']) ? ('HAVING ' . implode("\n AND ", $out['having'])) : '') . PHP_EOL
