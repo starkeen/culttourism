@@ -26,6 +26,8 @@ class MapModule implements ModuleInterface
 {
     private const REPLACE_SYMBOLS = "\x00..\x1F,.-";
 
+    private const MODULE_IMAGE_ID = 2270;
+
     private MyDB $db;
 
     private TemplateEngine $templateEngine;
@@ -52,8 +54,7 @@ class MapModule implements ModuleInterface
 
         //========================  I N D E X  ================================
         if ($request->getLevel1() === null) {
-            $this->prepareMetaTags($response);
-            $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
+            $this->preparePageMetaTags($response);
             $response->getContent()->setBody($this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/map/map.tpl'));
         } //====================  M A P   E N T R Y  ============================
         elseif ($request->getLevel1() === 'common') {
@@ -89,9 +90,9 @@ class MapModule implements ModuleInterface
         return $request->getModuleKey() === $this->getModuleKey();
     }
 
-    private function prepareMetaTags(SiteResponse $response): void
+    private function preparePageMetaTags(SiteResponse $response): void
     {
-        $photo = $this->getPhotosModel()->getItemByPk(2270);
+        $photo = $this->getPhotosModel()->getItemByPk(self::MODULE_IMAGE_ID);
         $objImage = Urls::getAbsoluteURL($photo['ph_src']);
         $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
         $response->getContent()->getHead()->addMicroData('image', $objImage);
@@ -106,6 +107,8 @@ class MapModule implements ModuleInterface
         $response->getContent()->getHead()->addDescription('Перед поездкой вы можете наглядно спланировать свой маршрут. Найдите на карте все достопримечательности в окрестностях интересного вам места, города или даже региона');
 
         $response->getContent()->getHead()->setCanonicalUrl('/map/');
+
+        $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
     }
 
     /**

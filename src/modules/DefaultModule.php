@@ -36,25 +36,13 @@ class DefaultModule implements ModuleInterface
         'android-app%3A',
     ];
 
-    /**
-     * @var MyDB
-     */
-    private $db;
+    private MyDB $db;
 
-    /**
-     * @var GlobalConfig
-     */
-    private $globalConfig;
+    private GlobalConfig $globalConfig;
 
-    /**
-     * @var TemplateEngine
-     */
-    private $templateEngine;
+    private TemplateEngine $templateEngine;
 
-    /**
-     * @var WebUser
-     */
-    private $user;
+    private WebUser $user;
 
     /**
      * @param MyDB $db
