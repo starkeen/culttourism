@@ -177,7 +177,6 @@ class Auth
     public function checkMailPassword(string $email, string $password): ?string
     {
         $dbu = $this->db->getTableName('users');
-        $dba = $this->db->getTableName('authorizations');
         $this->db->sql = "SELECT us_id, us_email, us_passwrd, us_name
                             FROM $dbu
                             WHERE us_email = :us_email
@@ -189,25 +188,11 @@ class Auth
         );
         $row = $this->db->fetch();
         if ($row !== null && !empty($row['us_id']) && password_verify($password, $row['us_passwrd'])) {
-            $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
-            $this->db->execute(
-                [
-                    ':usid' => $row['us_id'],
-                ]
-            );
-            $this->db->sql = "UPDATE $dba SET au_us_id = :usid WHERE au_key = :key";
-            $this->db->execute(
-                [
-                    ':usid' => $row['us_id'],
-                    ':key' => $this->key,
-                ]
-            );
+            $this->refreshAuthData($row);
+            $this->refreshSessionData($row);
 
             $this->user_id = $row['us_id'];
             $this->username = $row['us_name'];
-            $_SESSION['user_id'] = $row['us_id'];
-            $_SESSION['user_name'] = $row['us_name'];
-            $_SESSION['user_auth'] = $this->key;
 
             return $this->key;
         }
@@ -221,10 +206,9 @@ class Auth
      *
      * @return string|null
      */
-    public function checkPassword(string $login, string $password): ?string
+    public function checkLoginPassword(string $login, string $password): ?string
     {
         $dbu = $this->db->getTableName('users');
-        $dba = $this->db->getTableName('authorizations');
         $this->db->sql = "SELECT us_id, us_login, us_email, us_passwrd, us_name, us_admin
                             FROM $dbu
                             WHERE us_login = :us_login
@@ -236,32 +220,44 @@ class Auth
         );
         $row = $this->db->fetch();
         if ($row !== null && !empty($row['us_id']) && password_verify($password, $row['us_passwrd'])) {
-            $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
-            $this->db->execute(
-                [
-                    ':usid' => $row['us_id'],
-                ]
-            );
-
-            $this->db->sql = "UPDATE $dba SET au_us_id = :usid WHERE au_key = :key";
-            $this->db->execute(
-                [
-                    ':usid' => $row['us_id'],
-                    ':key' => $this->key,
-                ]
-            );
+            $this->refreshAuthData($row);
+            $this->refreshSessionData($row);
 
             $this->user_id = $row['us_id'];
             $this->username = $row['us_name'];
-            $_SESSION['user_id'] = $row['us_id'];
-            $_SESSION['user_name'] = $row['us_name'];
-            $_SESSION['user_admin'] = $row['us_admin'];
-            $_SESSION['user_auth'] = $this->key;
 
             return $this->key;
         }
 
         return null;
+    }
+
+    private function refreshSessionData(array $row): void
+    {
+        $_SESSION['user_id'] = $row['us_id'];
+        $_SESSION['user_name'] = $row['us_name'];
+        $_SESSION['user_admin'] = $row['us_admin'];
+        $_SESSION['user_auth'] = $this->key;
+    }
+
+    private function refreshAuthData(array $row): void
+    {
+        $dba = $this->db->getTableName('authorizations');
+
+        $this->db->sql = "DELETE FROM $dba WHERE au_us_id = :usid";
+        $this->db->execute(
+            [
+                ':usid' => $row['us_id'],
+            ]
+        );
+
+        $this->db->sql = "UPDATE $dba SET au_us_id = :usid WHERE au_key = :key";
+        $this->db->execute(
+            [
+                ':usid' => $row['us_id'],
+                ':key' => $this->key,
+            ]
+        );
     }
 
     /**

@@ -17,7 +17,7 @@ if (isset($_POST) && !empty($_POST)) {
     $pwd = trim($_POST['pass']);
     $retpath = !empty($_GET['r']) ? urldecode(trim($_GET['r'])) : 'index.php';
 
-    if ($ticket->checkPassword($login, $pwd)) {
+    if ($ticket->checkLoginPassword($login, $pwd)) {
         $_SESSION['auth'] = $ticket->key;
         header("Location: $retpath");
         exit();
