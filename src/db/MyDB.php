@@ -3,6 +3,7 @@
 namespace app\db;
 
 use app\db\exceptions\AccessException;
+use app\db\exceptions\DeadLockException;
 use app\db\exceptions\DuplicateKeyException;
 use app\db\exceptions\FieldException;
 use app\db\exceptions\MyPDOException;
@@ -439,6 +440,9 @@ class MyDB
         }
         if ($errorCode === 1146) {
             throw new TableException('Ошибка PDO: table not found', $errorCode, $exception);
+        }
+        if ($errorCode === 1213) {
+            throw new DeadLockException('Ошибка PDO: deadlock', $errorCode, $exception);
         }
         if ($errorCode === 1406) {
             throw new FieldException('Ошибка PDO: data too long for column', $errorCode, $exception);
