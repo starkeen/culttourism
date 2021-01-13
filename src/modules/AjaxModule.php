@@ -116,10 +116,10 @@ class AjaxModule implements ModuleInterface
 
     /**
      * @param int $pid
-     * @return bool
+     * @return int
      * @throws AccessDeniedException
      */
-    private function setFormPointAddr(int $pid): bool
+    private function setFormPointAddr(int $pid): int
     {
         if (!$this->webUser->isEditor()) {
             throw new AccessDeniedException();
