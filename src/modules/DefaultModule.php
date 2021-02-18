@@ -28,7 +28,13 @@ class DefaultModule implements ModuleInterface
 {
     private const DESCRIPTION_THRESHOLD = 300; // обрезаем описание в мета-тегах до этой величины
 
-    private const REDIRECT_BY_ID_MAX = 17000; // редирект с урлов в старом формате не выше этого идентификатора
+    private const REDIRECT_BY_ID_MAX = 18000; // редирект с урлов в старом формате не выше этого идентификатора
+    private const REDIRECT_EXCEPTIONS = [ // редирект с урлов в старом формате включаем для списка идентификаторов
+        18469,
+        18511,
+        19112,
+        19453,
+    ];
 
     private const REDIRECT_SUFFIXES = [
         'undefined',
@@ -101,7 +107,7 @@ class DefaultModule implements ModuleInterface
                 throw new RedirectException($url);
             } elseif (preg_match('/object(\d+)\.html/i', $urlParts, $regs)) {
                 $objectId = (int) $regs[1];
-                if ($objectId > 0 && $objectId < self::REDIRECT_BY_ID_MAX) {
+                if ($this->isLegacyRedirectEnabled($objectId)) {
                     $objectCanonical = $this->getObjectCanonicalById($objectId);
                     if ($objectCanonical !== null) {
                         throw new RedirectException($objectCanonical);
@@ -119,6 +125,15 @@ class DefaultModule implements ModuleInterface
         } else {
             throw new RoutingException('Ошибка в роутинге городов и объектов');
         }
+    }
+
+    /**
+     * @param int $objectId
+     * @return bool
+     */
+    private function isLegacyRedirectEnabled(int $objectId): bool
+    {
+        return $objectId > 0 && ($objectId < self::REDIRECT_BY_ID_MAX || in_array($objectId, self::REDIRECT_EXCEPTIONS, true));
     }
 
     /**
