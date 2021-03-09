@@ -30,7 +30,7 @@ class FeedbackSpamChecker
         if ($url === null) {
             return false;
         }
-        $host = parse_url($url, PHP_URL_HOST);
+        $host = parse_url(trim($url), PHP_URL_HOST);
 
         return in_array($host, self::SPAM_DOMAINS, true);
     }
