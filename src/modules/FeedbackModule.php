@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\modules;
 
+use app\checker\FeedbackSpamChecker;
 use app\core\module\Module;
 use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
@@ -64,6 +65,12 @@ class FeedbackModule extends Module implements ModuleInterface
 
             $loggedSender = $_SESSION['user_id'] ?? null;
             $isAdminSender = $loggedSender !== null && (int) $loggedSender !== 0;
+
+            $spamContentChecker = new FeedbackSpamChecker();
+            if (!$spamStatusOK) {
+                $candidateUrl = $_POST['web'] ?: null;
+                $spamStatusOK = $spamContentChecker->isSpamURL($candidateUrl);
+            }
 
             $cp->add(
                 [
