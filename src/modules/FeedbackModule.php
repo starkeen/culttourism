@@ -67,7 +67,7 @@ class FeedbackModule extends Module implements ModuleInterface
             $isAdminSender = $loggedSender !== null && (int) $loggedSender !== 0;
 
             $spamContentChecker = new FeedbackSpamChecker();
-            if (!$spamStatusOK) {
+            if ($spamStatusOK) {
                 $candidateUrl = $_POST['web'] ?: null;
                 $spamStatusOK = $spamContentChecker->isSpamURL($candidateUrl);
             }
