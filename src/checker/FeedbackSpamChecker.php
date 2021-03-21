@@ -8,7 +8,10 @@ class FeedbackSpamChecker
 {
     private const SPAM_DOMAINS = [
         'advokat-zp.in.ua',
+        'bitdouble.net',
+        'bporno.net',
         'creditonline.in.ua',
+        'credit.poltava.ua',
         'credit-odessa.com',
         'credit-online.ws',
         'credit-ukraine.com',
@@ -19,8 +22,12 @@ class FeedbackSpamChecker
         'www.howmy.com.tw',
         'india-express.net',
         'karantina.pertanian.go.id',
+        'krd-agro.ru',
+        'loveawake.ru',
         'lt.druggstorre.biz',
         'mala-pozyczka-online.pl',
+        'namehistory.su',
+        'onliner.com.ua',
         'pornax.net',
         'seoprofisional.ru',
         'shopbalu.ru',
