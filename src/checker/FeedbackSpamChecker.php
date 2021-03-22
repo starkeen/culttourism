@@ -9,6 +9,7 @@ class FeedbackSpamChecker
     private const SPAM_DOMAINS = [
         'advokat-zp.in.ua',
         'bitdouble.net',
+        'bit.ly',
         'bporno.net',
         'creditonline.in.ua',
         'credit.poltava.ua',
