@@ -39,6 +39,7 @@ class FeedbackSpamChecker
         'www.no-site.com',
         'www.youtube.com',
         'xlib.info',
+        'yandex.ru',
     ];
 
     public function isSpamURL(?string $url): bool
@@ -46,6 +47,12 @@ class FeedbackSpamChecker
         if ($url === null) {
             return false;
         }
+
+        if (strpos($url, 'http://Ваша') === 0) {
+            return false;
+        }
+
+        $url = str_replace('[url=', '', trim($url));
         $host = parse_url(trim($url), PHP_URL_HOST);
 
         return in_array($host, self::SPAM_DOMAINS, true);
