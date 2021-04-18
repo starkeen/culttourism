@@ -14,6 +14,9 @@ namespace app\model\entity;
  */
 class Redirect extends Entity
 {
+    private const REGEXP_DELIMITER = '/';
+    private const REGEXP_MODIFIER = 'i';
+
     /**
      * @param array $row
      */
@@ -33,9 +36,12 @@ class Redirect extends Entity
             // при первом сохранении исправляем формат и добавляем экранирование
             if (strpos($this->rd_from, GLOBAL_SITE_URL) === 0) {
                 $this->rd_from = str_replace(GLOBAL_SITE_URL, '/', $this->rd_from);
+                $this->rd_to = str_replace(GLOBAL_SITE_URL, '/', $this->rd_to);
             }
 
-            $this->rd_from = preg_quote($this->rd_from, '/') . '/i';
+            $this->rd_from = self::REGEXP_DELIMITER
+                . preg_quote($this->rd_from, self::REGEXP_DELIMITER)
+                . self::REGEXP_DELIMITER . self::REGEXP_MODIFIER;
             $this->rd_order = 10;
             $this->rd_active = 1;
         }
