@@ -60,6 +60,8 @@ class DefaultModule implements ModuleInterface
         18511,
         18525,
         18529,
+        18533,
+        18703,
         18753,
         18780,
         18920,
