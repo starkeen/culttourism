@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace app\model\entity;
 
+use InvalidArgumentException;
+
 /**
  * @property int $rd_id
  * @property string $rd_from
@@ -34,6 +36,10 @@ class Redirect extends Entity
     {
         $this->rd_from = trim($this->rd_from);
         $this->rd_to = trim($this->rd_to);
+
+        if ($this->rd_from === $this->rd_to) {
+            throw new InvalidArgumentException('Опасность циклического редиректа');
+        }
 
         if ($this->getId() === null) {
             // при первом сохранении исправляем формат и добавляем экранирование
