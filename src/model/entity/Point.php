@@ -33,6 +33,7 @@ use app\model\constant\PointType;
  * @property int $pt_photo_id
  * @property int $pt_is_best
  * @property int $pt_active
+ * @property int $pt_deleted_at
  */
 class Point extends Entity
 {
