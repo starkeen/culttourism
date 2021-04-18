@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use app\cache\Cache;
+use app\db\exceptions\DuplicateKeyException;
 use app\model\entity\Redirect;
 use app\model\repository\RedirectsRepository;
 
@@ -16,10 +17,15 @@ if ($act === 'upload') {
     $redirect->rd_to = $_POST['to'];
 
     $redirectRepository = new RedirectsRepository($db);
-    $redirectRepository->save($redirect);
 
-    $cache = Cache::i('redirects');
-    $cache->remove('active');
+    try {
+        $redirectRepository->save($redirect);
+
+        $cache = Cache::i('redirects');
+        $cache->remove('active');
+    } catch (DuplicateKeyException $exception) {
+        // пропускаем повторное сохранение редиректа
+    }
 
     header('Location: redirects.php');
     exit;
