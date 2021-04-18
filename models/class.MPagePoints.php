@@ -40,6 +40,7 @@ class MPagePoints extends Model
             'pt_photo_id',
             'pt_is_best',
             'pt_active',
+            'pt_deleted_at',
         ];
         parent::__construct($db);
         $this->addRelatedTable('pagecity');
