@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use app\cache\Cache;
 use app\model\entity\Redirect;
 use app\model\repository\RedirectsRepository;
 
@@ -16,6 +17,9 @@ if ($act === 'upload') {
 
     $redirectRepository = new RedirectsRepository($db);
     $redirectRepository->save($redirect);
+
+    $cache = Cache::i('redirects');
+    $cache->remove('active');
 
     header('Location: redirects.php');
     exit;
