@@ -6,18 +6,20 @@
     <a href="./links.php">Ссылки</a>
 </div>
 
-<div class="points-redirects-form_add">
+<div class="points-redirects-form-add" style="padding: 10px">
     Добавить редирект
     <form method="post" action="?act=upload">
         <label>
             Откуда
-            <input type="text" name="from" style="width:300px;" />
+            <input type="text" name="from" style="width:400px;" />
         </label>
+        <br />
         <br />
         <label>
             Куда
-            <input type="text" name="to" style="width:300px;" />
+            <input type="text" name="to" style="width:400px;" />
         </label>
+        <br />
         <br />
         <input type="submit" value="Добавить" />
     </form>
