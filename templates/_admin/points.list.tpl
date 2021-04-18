@@ -3,6 +3,7 @@
 
 <div class="points-menu-block">
     <a href="./links.php">Ссылки</a>
+    <a href="./redirects.php">Редиректы</a>
 </div>
 
 <fieldset>
@@ -174,3 +175,5 @@
     {/foreach}
 </table>
 {$pager}
+
+<link rel="stylesheet" href="/css/admin/points.css" type="text/css" />

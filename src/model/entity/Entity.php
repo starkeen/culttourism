@@ -15,6 +15,11 @@ abstract class Entity
 
     abstract public function getId(): ?int;
 
+    public function beforeSave(): void
+    {
+        // имплементация возможна в конечных реализациях
+    }
+
     /**
      * @param string $name
      * @return bool

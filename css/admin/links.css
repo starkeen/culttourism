@@ -1,3 +1,12 @@
+.photos-menu-block {
+    padding: 5px;
+    border-bottom: 1px solid #87ceeb;
+}
+
+.photos-menu-block a {
+    color: #87ceeb;
+}
+
 .filter-statuses {
     color: #87ceeb;
 }

@@ -29,7 +29,10 @@ abstract class Repository
 
     public function save(Entity $entity): int
     {
+        $entity->beforeSave();
+
         $id = $entity->getId();
+
         if ($id === null) {
             $id = $this->insert($entity);
         } else {
