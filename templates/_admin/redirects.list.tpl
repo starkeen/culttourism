@@ -11,13 +11,13 @@
     <form method="post" action="?act=upload">
         <label>
             Откуда
-            <input type="text" name="from" style="width:400px;" />
+            <input type="text" name="from" style="width:400px;" autocomplete="off" />
         </label>
         <br />
         <br />
         <label>
             Куда
-            <input type="text" name="to" style="width:400px;" />
+            <input type="text" name="to" style="width:400px;" autocomplete="off" />
         </label>
         <br />
         <br />

@@ -32,6 +32,9 @@ class Redirect extends Entity
 
     public function beforeSave(): void
     {
+        $this->rd_from = trim($this->rd_from);
+        $this->rd_to = trim($this->rd_to);
+
         if ($this->getId() === null) {
             // при первом сохранении исправляем формат и добавляем экранирование
             if (strpos($this->rd_from, GLOBAL_SITE_URL) === 0) {
