@@ -14,6 +14,7 @@ use app\core\WebUser;
 use app\db\MyDB;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
+use app\model\constant\PointsLegacyLinks;
 use app\sys\TemplateEngine;
 use app\utils\Urls;
 use MListsItems;
@@ -27,56 +28,6 @@ use RuntimeException;
 class DefaultModule implements ModuleInterface
 {
     private const DESCRIPTION_THRESHOLD = 300; // обрезаем описание в мета-тегах до этой величины
-
-    private const REDIRECT_BY_ID_MAX = 18000; // редирект с урлов в старом формате не выше этого идентификатора
-    private const REDIRECT_EXCEPTIONS = [ // редирект с урлов в старом формате включаем для списка идентификаторов
-        17053,
-        17058,
-        17107,
-        17147,
-        17150,
-        17297,
-        17493,
-        17544,
-        17563,
-        17646,
-        17613,
-        17630,
-        17647,
-        17651,
-        17699,
-        17701,
-        17719,
-        17797,
-        17790,
-        17798,
-        17813,
-        17895,
-        18029,
-        18040,
-        18405,
-        18449,
-        18469,
-        18511,
-        18525,
-        18529,
-        18533,
-        18703,
-        18753,
-        18780,
-        18920,
-        18971,
-        19086,
-        19112,
-        19306,
-        19216,
-        19443,
-        19453,
-        19522,
-        19762,
-        19827,
-        31033,
-    ];
 
     private const REDIRECT_SUFFIXES = [
         'undefined',
@@ -175,7 +126,10 @@ class DefaultModule implements ModuleInterface
      */
     private function isLegacyRedirectEnabled(int $objectId): bool
     {
-        return $objectId > 0 && ($objectId < self::REDIRECT_BY_ID_MAX || in_array($objectId, self::REDIRECT_EXCEPTIONS, true));
+        return $objectId > 0 && (
+            $objectId < PointsLegacyLinks::REDIRECT_BY_ID_MAX
+            || in_array($objectId, PointsLegacyLinks::REDIRECT_EXCEPTIONS, true)
+            );
     }
 
     /**
