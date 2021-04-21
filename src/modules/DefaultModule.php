@@ -14,7 +14,7 @@ use app\core\WebUser;
 use app\db\MyDB;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
-use app\model\constant\PointsLegacyLinks;
+use app\model\constant\PointsLegacyLinksChecker;
 use app\sys\TemplateEngine;
 use app\utils\Urls;
 use MListsItems;
@@ -100,7 +100,7 @@ class DefaultModule implements ModuleInterface
                 throw new RedirectException($url);
             } elseif (preg_match('/object(\d+)\.html/i', $urlParts, $regs)) {
                 $objectId = (int) $regs[1];
-                if ($this->isLegacyRedirectEnabled($objectId)) {
+                if (PointsLegacyLinksChecker::isLegacyRedirectEnabled($objectId)) {
                     $objectCanonical = $this->getObjectCanonicalById($objectId);
                     if ($objectCanonical !== null) {
                         throw new RedirectException($objectCanonical);
@@ -118,18 +118,6 @@ class DefaultModule implements ModuleInterface
         } else {
             throw new RoutingException('Ошибка в роутинге городов и объектов');
         }
-    }
-
-    /**
-     * @param int $objectId
-     * @return bool
-     */
-    private function isLegacyRedirectEnabled(int $objectId): bool
-    {
-        return $objectId > 0 && (
-            $objectId < PointsLegacyLinks::REDIRECT_BY_ID_MAX
-            || in_array($objectId, PointsLegacyLinks::REDIRECT_EXCEPTIONS, true)
-            );
     }
 
     /**
