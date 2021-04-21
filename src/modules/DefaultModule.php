@@ -14,7 +14,7 @@ use app\core\WebUser;
 use app\db\MyDB;
 use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
-use app\model\constant\PointsLegacyLinksChecker;
+use app\checker\PointsLegacyLinksChecker;
 use app\sys\TemplateEngine;
 use app\utils\Urls;
 use MListsItems;

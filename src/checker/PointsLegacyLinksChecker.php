@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace app\model\constant;
+namespace app\checker;
 
 /**
  * Набор идентификаторов точек, для которых включен редирект со старого формата адресов
