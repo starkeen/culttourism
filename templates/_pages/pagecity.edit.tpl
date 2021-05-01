@@ -6,7 +6,8 @@
     <input type="button" value="сохранить" class="dosave" />
     <input type="button" value="отменить" class="doesc" />
 </div>
-<div id="city_path">{$city.pc_pagepath}</div>
+
+<div class="CityPath">{$city.pc_pagepath}</div>
 
 {if $city.pc_latitude && $city.pc_longitude}
 <div id="map_container">

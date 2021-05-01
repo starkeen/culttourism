@@ -1,6 +1,6 @@
 <h1>{$city.pc_title}</h1>
 
-<div id="city_path">{$city.pc_pagepath}</div>
+<div class="CityPath">{$city.pc_pagepath}</div>
 
 {if $city.pc_latitude && $city.pc_longitude}
 <div id="map_container">
@@ -180,4 +180,4 @@
     <script type="text/javascript" src="https://yastatic.net/share/share.js" charset="utf-8" defer="defer"></script><div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="small" data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki,moimir" data-yashareTheme="counter"></div>
 </div>
 
-<div id="yandex_ad_city" class="yandex_ad"></div>
+<div id="yandex_ad_city" class="CommonYandexAdverts"></div>

@@ -1,28 +1,46 @@
 <h1>{$object.pt_name}</h1>
-<div id="city_path">{$city.pc_pagepath}</div>
+<div class="CityPath">{$city.pc_pagepath}</div>
 
-{if $object.pt_latitude && $object.pt_longitude}
-<div id="map_container">
-    <div id="city_map" style="{if $page_image}background-image: url({$page_image});{/if}"></div>
-    <div id="point_gps">GPS-координаты: {$object.gps_dec}</div>
+{if $page_image}
+<div class="PageObjectPhoto">
+    <img class="PageObjectPhotoImage"
+         src="{$page_image}"
+         alt="{$object.pt_name} ({$city.pc_title})"
+         title="{$object.pt_name}" />
 </div>
+{else}
+    {literal}<style>.PageObjectDescription{margin-right:auto;}</style>{/literal}
 {/if}
 
-<div id="object_description">
-    <img id="object_icon" alt="{$object.tp_name}" title="{$object.tp_name}" src="/img/points/x32/{$object.tp_icon}" />
+<div class="PageObjectDescription">
+    <img class="PageObjectIcon"
+         alt="{$object.tp_name}"
+         title="{$object.tp_name}"
+         src="/img/points/x32/{$object.tp_icon}" />
     {$object.pt_description}
+
     {if !empty($lists)}
-    <p style="font-weight: bold; margin-top: 1em;">Смотрите также:</p>
-    <ul>
+    <p class="PageObjectListsTitle">Смотрите также:</p>
+    <ul class="PageObjectListsBlock">
         {foreach from=$lists item=list}
         <li><a href="/list/{$list.ls_slugline}.html">{$list.ls_title}</a></li>
         {/foreach}
     </ul>
     {/if}
 
-    <p><a href="." id="page_point_link_back" title="перейти к достопримечательностям {$city.pc_inwheretext}">&larr; достопримечательности {$city.pc_inwheretext}</a></p>
+    <p><a href="."
+          class="PageObjectCityLink"
+          title="перейти к достопримечательностям {$city.pc_inwheretext}"
+        >&larr; достопримечательности {$city.pc_inwheretext}</a>
+    </p>
 </div>
-<div id="widget_photos"></div>
+
+{if $object.pt_latitude && $object.pt_longitude}
+<div class="PageObjectMapContainer">
+    <div id="PageObjectMap"></div>
+    <div class="PageObjectMapGPS">GPS-координаты: {$object.gps_dec}</div>
+</div>
+{/if}
 
 {if $object.pt_adress || $object.pt_worktime || $object.pt_website || $object.pt_email || $object.pt_phone}
 <div id="object_contacts_block">
@@ -69,10 +87,10 @@
 <input type="hidden" id="pan_ne_lon" value="{$object.sw_ne.ne.lon}" />
 {/if}
 
-<div style="height:25px;overflow:hidden;margin: 10px;">
+<div class="PageObjectSharing">
     <script type="text/javascript" src="https://yandex.st/share/share.js" charset="utf-8" defer="defer"></script>
-    <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="none" data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki,gplus"></div> 
+    <div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="none" data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki"></div>
 </div>
 
 
-<div id="yandex_ad_point" class="yandex_ad"></div>
+<div class="CommonYandexAdverts" id="PageObjectAdvertsBlock"></div>

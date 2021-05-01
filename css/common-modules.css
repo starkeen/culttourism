@@ -470,7 +470,7 @@ textarea.feedinput {
 }
 
 /*------------------------------- page CITY ----------------------------------*/
-#city_path {
+.CityPath {
     text-align: right;
     border-top: 2px solid #141414;
     color: #ffffff;
@@ -480,7 +480,7 @@ textarea.feedinput {
     background: linear-gradient(to bottom, #292929, #ffffff);
 }
 
-#city_path a {
+.CityPath a {
     color: #ffffff;
     text-decoration: none;
 }
@@ -691,12 +691,12 @@ textarea.feedinput {
     text-align: center;
 }
 
-#object_description {
+.PageObjectDescription {
     position: relative;
     margin-right: 505px;
 }
 
-#object_icon {
+.PageObjectIcon {
     float: left;
     margin: 5px;
     margin-top: -15px;
@@ -706,6 +706,46 @@ textarea.feedinput {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
+}
+
+.PageObjectPhoto {
+    float: right;
+    position: relative;
+    text-align: center;
+}
+
+.PageObjectPhotoImage {
+    height: auto;
+    max-width: 500px;
+    margin: 5px;
+}
+
+.PageObjectListsTitle {
+    font-weight: bold;
+    margin-top: 1em;
+}
+
+.PageObjectCityLink {
+    font-size: 12px;
+    font-style: italic;
+}
+
+.PageObjectMapContainer {
+    clear: both;
+    width: 100%;
+}
+
+.PageObjectMapContainer #PageObjectMap {
+    border: 1px solid #99b099;
+    background-color: #ddfedd;
+    height: 400px;
+    width: 100%;
+    margin: 5px;
+}
+
+.PageObjectMapGPS {
+    font-size: 12px;
+    color: #777777;
 }
 
 #object_contacts_block {
@@ -742,6 +782,12 @@ textarea.feedinput {
 
 #object_contacts img {
     vertical-align: middle;
+}
+
+.PageObjectSharing {
+    height: 25px;
+    overflow: hidden;
+    margin: 10px;
 }
 
 #point_edit_fieldset {

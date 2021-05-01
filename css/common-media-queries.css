@@ -98,9 +98,8 @@
         display: none;
     }
 
-    #object_description {
-        margin: 0;
-        margin-top: 2em;
+    .PageObjectDescription {
+        margin: 2em 0 0;
         padding: 6px;
     }
 
@@ -184,7 +183,7 @@
         font-size: 17px;
     }
 
-    .yandex_ad {
+    .CommonYandexAdverts {
         display: none;
     }
 
@@ -272,7 +271,7 @@
         height: auto;
     }
 
-    #city_path {
+    .CityPath {
         display: none;
     }
 
@@ -280,7 +279,7 @@
         margin: 0;
     }
 
-    #object_icon {
+    .PageObjectIcon {
         display: none;
     }
 
@@ -288,7 +287,7 @@
         display: none;
     }
 
-    #object_description {
+    .PageObjectDescription {
         margin: 0;
         padding: 6px;
     }
@@ -310,6 +309,9 @@
         top: -170px;
     }
 
+    .PageObjectMapGPS {
+        display: none;
+    }
     #point_gps {
         display: none;
     }
@@ -345,7 +347,7 @@
         margin-right: 0;
     }
 
-    .yandex_ad {
+    .CommonYandexAdverts {
         display: none;
     }
 
@@ -410,11 +412,11 @@
         width: 47%;
     }
 
-    #city_path {
+    .CityPath {
         display: none;
     }
 
-    #object_icon {
+    .PageObjectIcon {
         display: none;
     }
 
@@ -435,11 +437,14 @@
         top: -140px;
     }
 
+    .PageObjectMapGPS {
+        display: none;
+    }
     #point_gps {
         display: none;
     }
 
-    #object_description {
+    .PageObjectDescription {
         margin: 0;
         padding: 2px;
     }
@@ -492,7 +497,7 @@
         margin-top: 10px;
     }
 
-    .yandex_ad {
+    .CommonYandexAdverts {
         display: none;
     }
 
@@ -589,11 +594,11 @@
         display: none;
     }
 
-    #city_path {
+    .CityPath {
         display: none;
     }
 
-    #object_icon {
+    .PageObjectIcon {
         display: none;
     }
 
@@ -628,11 +633,14 @@
         margin-right: 10px;
     }
 
+    .PageObjectMapGPS {
+        display: none;
+    }
     #point_gps {
         display: none;
     }
 
-    #object_description {
+    .PageObjectDescription {
         margin: 0;
         padding: 1px;
     }
@@ -699,7 +707,7 @@
         display: none;
     }
 
-    .yandex_ad {
+    .CommonYandexAdverts {
         display: none;
     }
 

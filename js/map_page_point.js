@@ -1,5 +1,5 @@
 ymaps.ready(function () {
-    var myMap = new ymaps.Map("city_map", {
+    var myMap = new ymaps.Map("PageObjectMap", {
         center: [$('#mapobj_pt_longitude').val(), $('#mapobj_pt_latitude').val()],
         zoom: $('#mapobj_pt_zoom').val(),
         type: "yandex#map",

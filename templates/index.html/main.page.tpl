@@ -35,4 +35,4 @@
     {/foreach}
 </div>
 
-<div id="yandex_ad_index" class="yandex_ad"></div>
+<div id="yandex_ad_index" class="CommonYandexAdverts"></div>

@@ -3,7 +3,7 @@
     w[n].push(function() {
         Ya.Context.AdvManager.render({
             blockId: "R-A-94073-2",
-            renderTo: "yandex_ad_point",
+            renderTo: "PageObjectAdvertsBlock",
             async: true
         });
     });
