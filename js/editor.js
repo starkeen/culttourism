@@ -60,14 +60,14 @@ $(document).ready(function () {
             $(document).css("cursor", "progress");
             $("#pc_text_handler input").hide();
             $.post("/ajax/city/savedescr/?id=" + $("#pc_id").val(), {
-                id:    $("#pc_id").val(),
+                id: $("#pc_id").val(),
                 ntext: $("#pc_text_edit").val()
-            }, function (a) {
+            }, function (response) {
                 $("#pc_text_edit").ckeditor(function () {
                     this.destroy();
                 });
                 $("#pc_text_edit").css("height", "0").removeClass("hiddenedit_active").hide();
-                $("#pc_text_hidd").html(a).show().removeClass("hiddenedit_active");
+                $("#pc_text_hidd").html(response.html).show().removeClass("hiddenedit_active");
                 $("#map_container").show();
                 $("#city_float").show();
                 $("#city_announcement").show();
@@ -280,11 +280,11 @@ $(document).ready(function () {
     //---------------------------------------- /  POINT ADD --------------------------
     //------------------------------------------- POINT DEL --------------------------
     $(".point_deleter").live("click", function () {
-        var a = this.id.split("_"), g = $(this).parents("tr");
+        var a = this.id.split("_"), objectRow = $(this).parents("tr");
         confirm('Действительно удалить точку?') && $.post("/ajax/point/delpoint/?pid=" + a[1], {
             pid: a[1]
-        }, function (i) {
-            i && $(g).remove();
+        }, function (response) {
+            response && $(objectRow).remove();
         })
     });
     //---------------------------------------- /  POINT DEL --------------------------
@@ -333,7 +333,7 @@ $(document).ready(function () {
             },
             function (resp) {
                 if (resp) {
-                    $("#gps_" + $("#obj_id").val()).text(resp);
+                    $("#gps_" + $("#obj_id").val()).text(resp.html);
                     $.modal.close()
                 }
             })

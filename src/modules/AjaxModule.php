@@ -69,22 +69,22 @@ class AjaxModule implements ModuleInterface
             } elseif ($id === 'savenew' && isset($_GET['cid'])) {
                 $response->getContent()->setBody((string) $this->savePointNew((int) $_GET['cid']));
             } elseif ($id === 'delpoint' && isset($_GET['pid'])) {
-                $response->getContent()->setBody((string) $this->deletePoint((int) $_GET['pid']));
+                $response->getContent()->setJsonHtml((string) $this->deletePoint((int) $_GET['pid']));
             } elseif ($id === 'getformGPS' && isset($_GET['pid'])) {
                 $response->getContent()->setJsonHtml($this->getFormPointGPS((int) $_GET['pid']));
             } elseif ($id === 'saveformGPS' && isset($_GET['pid'])) {
-                $response->getContent()->setBody($this->setFormPointGPS((int) $_GET['pid']));
+                $response->getContent()->setJsonHtml($this->setFormPointGPS((int) $_GET['pid']));
             } elseif ($id === 'saveAddrGPS' && isset($_GET['pid'])) {
                 $response->getContent()->setBody((string) $this->setFormPointAddr((int) $_GET['pid']));
             } elseif ($id === 'savebest') {
-                $response->getContent()->setBody((string) $this->setFormPointBest((int) $_GET['id']));
+                $response->getContent()->setJsonHtml((string) $this->setFormPointBest((int) $_GET['id']));
             }
             $response->setLastEditTimestampToFuture();
         } elseif ($request->getLevel1() === 'city') {
             if ($id === 'savetitle' && isset($_GET['id']) && (int) $_GET['id']) {
                 $response->getContent()->setBody($this->saveCityTitle((int) $_GET['id']));
             } elseif ($id === 'savedescr' && isset($_GET['id']) && (int) $_GET['id']) {
-                $response->getContent()->setBody($this->saveCityDescription((int) $_GET['id']));
+                $response->getContent()->setJsonHtml($this->saveCityDescription((int) $_GET['id']));
             } elseif ($id === 'getformGPS' && isset($_GET['cid']) && (int) $_GET['cid']) {
                 $response->getContent()->setJsonHtml($this->getFormCityGPS((int) $_GET['cid']));
             } elseif ($id === 'saveformGPS') {
@@ -146,7 +146,7 @@ class AjaxModule implements ModuleInterface
         $state = (int) (!empty($_POST['nstate']) && $_POST['nstate'] === 'checked');
         $p = new MPagePoints($this->db);
 
-        return $p->updateByPk($pid, ['pt_is_best' => $state]);
+        return (bool) $p->updateByPk($pid, ['pt_is_best' => $state]);
     }
 
     /**
