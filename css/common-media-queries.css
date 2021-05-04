@@ -64,6 +64,22 @@
         overflow: hidden;
     }
 
+    .PageObjectPhoto {
+    }
+
+    .PageObjectPhotoImage {
+        max-width: 400px;
+        max-height: 300px;
+    }
+
+    .PageObjectMapContainer {
+        height: 200px;
+    }
+
+    .PageObjectMapContainer #PageObjectMap {
+        height: 200px;
+    }
+
     #map_container {
         float: none;
         width: 100%;
@@ -135,8 +151,9 @@
         width: 16px;
     }
 
-    #object_contacts_block {
+    .PageObjectContactsBlock {
         width: 100%;
+        margin-top: 25px;
     }
 
     .textmarker {
@@ -292,6 +309,22 @@
         padding: 6px;
     }
 
+    .PageObjectPhoto {
+    }
+
+    .PageObjectPhotoImage {
+        max-width: 300px;
+        max-height: 300px;
+    }
+
+    .PageObjectMapContainer {
+        height: 200px;
+    }
+
+    .PageObjectMapContainer #PageObjectMap {
+        height: 200px;
+    }
+
     #map_container {
         float: none;
         width: 100%;
@@ -312,6 +345,7 @@
     .PageObjectMapGPS {
         display: none;
     }
+
     #point_gps {
         display: none;
     }
@@ -339,7 +373,7 @@
         display: none;
     }
 
-    #object_contacts_block {
+    .PageObjectContactsBlock {
         width: 100%;
     }
 
@@ -398,7 +432,7 @@
 
     #content h1 {
         width: 100%;
-        padding-left: 0px;
+        padding-left: 0;
         height: 15px;
         font-size: 11pt;
     }
@@ -420,6 +454,26 @@
         display: none;
     }
 
+    .PageObjectPhoto {
+        clear: both;
+        width: 100%;
+        text-align: center;
+        margin-top: 60px;
+    }
+
+    .PageObjectPhotoImage {
+        max-height: 300px;
+    }
+
+    .PageObjectMapContainer {
+        height: 200px;
+    }
+
+    .PageObjectMapContainer #PageObjectMap {
+        height: 200px;
+    }
+
+
     #map_container {
         float: none;
         width: 100%;
@@ -440,6 +494,7 @@
     .PageObjectMapGPS {
         display: none;
     }
+
     #point_gps {
         display: none;
     }
@@ -472,7 +527,7 @@
         display: none;
     }
 
-    #object_contacts_block {
+    .PageObjectContactsBlock {
         width: 100%;
     }
 
@@ -533,6 +588,14 @@
     #header {
         height: 31px;
         background: none;
+    }
+
+    #header-slogan {
+        position: relative;
+        right: auto;
+        margin: 0 auto;
+        width: 100%;
+        font-size: 30px;
     }
 
     #mainmenu-container {
@@ -602,6 +665,25 @@
         display: none;
     }
 
+    .PageObjectPhoto {
+        clear: both;
+        width: 100%;
+        text-align: center;
+        margin-top: 60px;
+    }
+
+    .PageObjectPhotoImage {
+        max-height: 300px;
+    }
+
+    .PageObjectMapContainer {
+        height: 200px;
+    }
+
+    .PageObjectMapContainer #PageObjectMap {
+        height: 200px;
+    }
+
     #city_float {
         display: none;
     }
@@ -636,6 +718,7 @@
     .PageObjectMapGPS {
         display: none;
     }
+
     #point_gps {
         display: none;
     }
@@ -668,7 +751,7 @@
         font-size: 140%;
     }
 
-    #object_contacts_block {
+    .PageObjectContactsBlock {
         width: 100%;
     }
 
@@ -713,6 +796,6 @@
 
     #footer {
         min-width: 0;
-        margin: -20px auto 0;
+        margin: -10px auto 0;
     }
 }

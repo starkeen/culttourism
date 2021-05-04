@@ -717,6 +717,7 @@ textarea.feedinput {
 .PageObjectPhotoImage {
     height: auto;
     max-width: 500px;
+    max-height: 300px;
     margin: 5px;
 }
 
@@ -748,7 +749,7 @@ textarea.feedinput {
     color: #777777;
 }
 
-#object_contacts_block {
+.PageObjectContactsBlock {
     position: relative;
     width: 50%;
     margin: 1em 0 1em 0;

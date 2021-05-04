@@ -43,7 +43,7 @@
 {/if}
 
 {if $object.pt_adress || $object.pt_worktime || $object.pt_website || $object.pt_email || $object.pt_phone}
-<div id="object_contacts_block">
+<div class="PageObjectContactsBlock">
     <div id="object_contacts_header">Контактная информация</div>
     <ul id="object_contacts">
         {if $object.pt_adress}
