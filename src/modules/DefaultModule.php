@@ -242,7 +242,7 @@ class DefaultModule implements ModuleInterface
             $photo = $this->getModelPhotos()->getItemByPk($object['pt_photo_id']);
             $objImage = Urls::getAbsoluteURL($photo['ph_src']);
             $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
-            $response->getContent()->getHead()->addKeyword('фото' . $object['esc_name']);
+            $response->getContent()->getHead()->addKeyword('фото');
             $response->getContent()->getHead()->addDescription('Фото ' . $object['esc_name']);
         }
 
