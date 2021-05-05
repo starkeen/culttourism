@@ -187,6 +187,11 @@ class DefaultModule implements ModuleInterface
 
         $response->setLastEditTimestamp($object['last_update']);
 
+        // скрываем удалённые объекты из поиска
+        if ((int)$object['pt_active'] === 0) {
+            $response->getContent()->getHead()->setRobotsIndexing('noindex,follow');
+        }
+
         //------------------  s t a t i s t i c s  ------------------------
         $this->getModelStatPoints()->add($object['pt_id'], $this->user->getHash());
 
@@ -237,6 +242,8 @@ class DefaultModule implements ModuleInterface
             $photo = $this->getModelPhotos()->getItemByPk($object['pt_photo_id']);
             $objImage = Urls::getAbsoluteURL($photo['ph_src']);
             $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
+            $response->getContent()->getHead()->addKeyword('фото' . $object['esc_name']);
+            $response->getContent()->getHead()->addDescription('Фото ' . $object['esc_name']);
         }
 
         if (!empty($object['pt_website'])) {
