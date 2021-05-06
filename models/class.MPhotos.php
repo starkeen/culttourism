@@ -110,4 +110,46 @@ class MPhotos extends Model
 
         return parent::getItemsByFilter($filter);
     }
+
+    public function getLegacyPhotos(int $count): array
+    {
+        $this->_db->sql = "SELECT *
+                            FROM {$this->_table_name}
+                            WHERE ph_src LIKE 'http%flickr.com%'
+                                AND ph_active = 1
+                            ORDER BY ph_id ASC
+                            LIMIT :limit";
+        $this->_db->execute(
+            [
+                ':limit' => $count,
+            ]
+        );
+        return $this->_db->fetchAll();
+    }
+
+    public function updateObjectLink(int $oldPhotoId, int $newPhotoId): void
+    {
+        $this->_db->sql = "UPDATE {$this->_tables_related['pagepoints']}
+                            SET pt_photo_id = :new_id
+                            WHERE pt_photo_id = :old_id";
+        $this->_db->execute(
+            [
+                ':old_id' => $oldPhotoId,
+                ':new_id' => $newPhotoId,
+            ]
+        );
+    }
+
+    public function updateRegionLink(int $oldPhotoId, int $newPhotoId): void
+    {
+        $this->_db->sql = "UPDATE {$this->_tables_related['pagecity']}
+                            SET pc_coverphoto_id = :new_id
+                            WHERE pc_coverphoto_id = :old_id";
+        $this->_db->execute(
+            [
+                ':old_id' => $oldPhotoId,
+                ':new_id' => $newPhotoId,
+            ]
+        );
+    }
 }
