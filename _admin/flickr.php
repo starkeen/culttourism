@@ -17,7 +17,7 @@ $api = new FlickrAPI($apikey);
 
 if (isset($_GET['mode']) && $_GET['mode'] === 'repair') {
     $service = ImageStorageFactory::build();
-    $list = $ph->getLegacyPhotos(10);
+    $list = $ph->getLegacyPhotos(20);
     foreach ($list as $item) {
         $cityId = (int) $item['ph_pc_id'];
         $pointId = (int) $item['ph_pt_id'];
