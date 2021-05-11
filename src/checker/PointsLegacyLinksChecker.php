@@ -32,6 +32,7 @@ class PointsLegacyLinksChecker
         19306,
         19216,
         19443,
+        19446,
         19453,
         19522,
         19762,
