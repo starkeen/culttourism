@@ -69,6 +69,7 @@ class MCandidatePoints extends Model
         $data['cp_date'] = $this->now();
         $data['cp_state'] = $data['cp_state'] ?? self::STATUS_NEW;
         $data['cp_active'] = $data['cp_active'] ?? 1;
+        $data['cp_text'] = htmlentities($data['cp_text'] ?? '', ENT_QUOTES|ENT_SUBSTITUTE|ENT_DISALLOWED);
         if (empty($data['cp_title'])) {
             $data['cp_title'] = '[без названия]';
         }
