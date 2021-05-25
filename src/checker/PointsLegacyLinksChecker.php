@@ -14,6 +14,7 @@ class PointsLegacyLinksChecker
     private const REDIRECT_EXCEPTIONS = [ // редирект с урлов в старом формате включаем для списка идентификаторов
         18029,
         18040,
+        18146,
         18405,
         18449,
         18469,
@@ -21,10 +22,12 @@ class PointsLegacyLinksChecker
         18525,
         18529,
         18533,
+        18678,
         18703,
         18753,
         18780,
         18920,
+        18934,
         18971,
 
         19086,
