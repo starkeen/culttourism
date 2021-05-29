@@ -36,13 +36,13 @@
             <input type="checkbox" id="photos-upload-bind-pt-bind"
                    name="ptid_add"
                    title="Прикрепить к странице объекта"
+                   checked="checked"
                    value="1" />
             <input type="button" id="photos-upload-bind-pt-clean" value="X" />
         </div>
         <input type="submit" value="Загрузить" />
     </form>
 </div>
-
 
 <div id="photos-list" class="photos-block">
     <form action="" method="get">
