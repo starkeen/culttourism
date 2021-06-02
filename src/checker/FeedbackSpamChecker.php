@@ -18,6 +18,7 @@ class FeedbackSpamChecker
         'credit-ukraine.com',
         'credit-ukraine.org',
         'de.online-television.net',
+        'elojobmax.com.br',
         'forum.3u.com',
         'qadigitin.com',
         'www.howmy.com.tw',
