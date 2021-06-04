@@ -16,6 +16,7 @@ class PointsLegacyLinksChecker
         18040,
         18146,
         18147,
+        18148,
         18405,
         18449,
         18465,
