@@ -28,7 +28,7 @@ class FeedbackSpamChecker
         }
 
         if (strpos($url, 'http://Ваша') === 0) {
-            return false;
+            return true;
         }
 
         $host = $this->getDomain($url);

@@ -100,10 +100,11 @@ if (isset($_GET['id'], $_GET['act'])) {
             $dc->deleteChecked(MDataCheck::ENTITY_CANDIDATES, $out['id']);
             break;
         case 'set_ignore':
+            $newStateId = (int) $_GET['state_id'];
             $out['state'] = $c->updateByPk(
                 $out['id'],
                 [
-                    'cp_state' => (int) $_GET['state_id'],
+                    'cp_state' => $newStateId,
                     'cp_active' => 0,
                 ]
             );
