@@ -441,6 +441,9 @@ class MyDB
         if ($errorCode === 1146) {
             throw new TableException('Ошибка PDO: table not found', $errorCode, $exception);
         }
+        if ($errorCode === 1205) {
+            throw new DeadLockException('Ошибка PDO: lock timeout', $errorCode, $exception);
+        }
         if ($errorCode === 1213) {
             throw new DeadLockException('Ошибка PDO: deadlock', $errorCode, $exception);
         }
