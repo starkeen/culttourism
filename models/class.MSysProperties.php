@@ -2,6 +2,7 @@
 
 use app\cache\Cache;
 use app\db\MyDB;
+use config\CachesConfig;
 
 /**
  * Модель таблицы системных настроек
@@ -28,7 +29,7 @@ class MSysProperties extends Model
             //'sp_whatis',
         ];
         parent::__construct($db);
-        $this->cache = Cache::i('sysprops');
+        $this->cache = Cache::i(CachesConfig::SYSPROPS);
     }
 
     /**

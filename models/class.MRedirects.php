@@ -2,6 +2,7 @@
 
 use app\cache\Cache;
 use app\db\MyDB;
+use config\CachesConfig;
 
 class MRedirects extends Model
 {
@@ -19,7 +20,7 @@ class MRedirects extends Model
             'rd_active',
         ];
         parent::__construct($db);
-        $this->cache = Cache::i('redirects');
+        $this->cache = Cache::i(CachesConfig::REDIRECTS);
     }
 
     public function getActive(): array

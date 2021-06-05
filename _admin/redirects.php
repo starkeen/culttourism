@@ -6,6 +6,7 @@ use app\cache\Cache;
 use app\db\exceptions\DuplicateKeyException;
 use app\model\entity\Redirect;
 use app\model\repository\RedirectsRepository;
+use config\CachesConfig;
 
 include('common.php');
 
@@ -21,7 +22,7 @@ if ($act === 'upload') {
     try {
         $redirectRepository->save($redirect);
 
-        $cache = Cache::i('redirects');
+        $cache = Cache::i(CachesConfig::REDIRECTS);
         $cache->remove('active');
     } catch (DuplicateKeyException $exception) {
         // пропускаем повторное сохранение редиректа

@@ -2,6 +2,7 @@
 
 namespace app\cache;
 
+use config\CachesConfig;
 use Throwable;
 
 /**
@@ -9,26 +10,10 @@ use Throwable;
  */
 class Cache
 {
-    protected static $_instance = [];
-
     /**
-     * Список доступных кэшей
-     * @var array
+     * @var self[]
      */
-    private const CONFIG = [
-        'refs' => [
-            'dir' => 'refs',
-            'lifetime' => 3600,
-        ],
-        'sysprops' => [
-            'dir' => 'sysprops',
-            'lifetime' => 3600,
-        ],
-        'redirects' => [
-            'dir' => 'redirects',
-            'lifetime' => 3600,
-        ],
-    ];
+    protected static array $instances = [];
 
     /** @var string */
     private $cacheDir;
@@ -38,8 +23,8 @@ class Cache
 
     private function __construct(string $cacheId)
     {
-        if (isset(self::CONFIG[$cacheId])) {
-            $this->cacheCurrent = self::CONFIG[$cacheId];
+        if (isset(CachesConfig::CONFIG[$cacheId])) {
+            $this->cacheCurrent = CachesConfig::CONFIG[$cacheId];
             $this->cacheDir = GLOBAL_DIR_CACHE;
         }
     }
@@ -53,12 +38,12 @@ class Cache
      */
     public static function i(string $cache): self
     {
-        if (!isset(self::$_instance[$cache])) {
+        if (!isset(self::$instances[$cache])) {
             // создаем новый экземпляр
-            self::$_instance[$cache] = new self($cache);
+            self::$instances[$cache] = new self($cache);
         }
 
-        return self::$_instance[$cache];
+        return self::$instances[$cache];
     }
 
     /**

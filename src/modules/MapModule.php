@@ -16,6 +16,7 @@ use app\db\MyDB;
 use app\exceptions\NotFoundException;
 use app\sys\TemplateEngine;
 use app\utils\Urls;
+use config\CachesConfig;
 use MListsItems;
 use MPageCities;
 use MPagePoints;
@@ -289,7 +290,7 @@ class MapModule implements ModuleInterface
      */
     private function getRefPointTypes(): array
     {
-        $cache = Cache::i('refs');
+        $cache = Cache::i(CachesConfig::REFS);
         $types = $cache->get('point_types');
         if (empty($types)) {
             $ref = new MRefPointtypes($this->db);

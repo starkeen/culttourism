@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace app\checker;
 
+use app\cache\Cache;
+
 class FeedbackSpamChecker
 {
+    private const CACHE_KEY = 'list';
+
     private const SPAM_DOMAINS = [
         'advokat-zp.in.ua',
         'bitdouble.net',
@@ -43,6 +47,13 @@ class FeedbackSpamChecker
         'yandex.ru',
     ];
 
+    private Cache $cache;
+
+    public function __construct(Cache $cache)
+    {
+        $this->cache = $cache;
+    }
+
     public function isSpamURL(?string $url): bool
     {
         if ($url === null) {
@@ -56,6 +67,12 @@ class FeedbackSpamChecker
         $url = str_replace('[url=', '', trim($url));
         $host = parse_url(trim($url), PHP_URL_HOST);
 
-        return in_array($host, self::SPAM_DOMAINS, true);
+        $spamDomains = $this->cache->get(self::CACHE_KEY);
+        if (empty($spamDomains)) {
+            $spamDomains = self::SPAM_DOMAINS;
+            $this->cache->put(self::CACHE_KEY, $spamDomains);
+        }
+
+        return in_array($host, $spamDomains, true);
     }
 }
