@@ -6,12 +6,17 @@ namespace app\modules;
 
 use app\cache\Cache;
 use app\checker\FeedbackSpamChecker;
+use app\core\GlobalConfig;
 use app\core\module\Module;
 use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
+use app\core\WebUser;
+use app\db\MyDB;
 use app\exceptions\NotFoundException;
 use app\includes\ReCaptcha;
+use app\model\repository\CandidateDomainBlacklistRepository;
+use app\sys\TemplateEngine;
 use config\CachesConfig;
 use GuzzleHttp\Client;
 use Mailing;
@@ -20,6 +25,15 @@ use MFeedback;
 
 class FeedbackModule extends Module implements ModuleInterface
 {
+    private CandidateDomainBlacklistRepository $candidateDomainBlacklistRepository;
+
+    public function __construct(MyDB $db, TemplateEngine $templateEngine, WebUser $webUser, GlobalConfig $globalConfig)
+    {
+        parent::__construct($db, $templateEngine, $webUser, $globalConfig);
+
+        $this->candidateDomainBlacklistRepository = new CandidateDomainBlacklistRepository($this->db);
+    }
+
     /**
      * @inheritDoc
      * @throws NotFoundException
@@ -68,7 +82,7 @@ class FeedbackModule extends Module implements ModuleInterface
             $loggedSender = $_SESSION['user_id'] ?? null;
             $isAdminSender = $loggedSender !== null && (int) $loggedSender !== 0;
 
-            $spamContentChecker = new FeedbackSpamChecker(Cache::i(CachesConfig::CANDIDATES_BLACKLIST));
+            $spamContentChecker = new FeedbackSpamChecker(Cache::i(CachesConfig::CANDIDATES_BLACKLIST), $this->candidateDomainBlacklistRepository);
             if ($spamStatusOK) {
                 $candidateUrl = $_POST['web'] ?: null;
                 $spamStatusOK = !$spamContentChecker->isSpamURL($candidateUrl);
