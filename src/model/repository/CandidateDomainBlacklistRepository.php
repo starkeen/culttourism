@@ -9,6 +9,8 @@ use app\model\entity\CandidateBlockedDomain;
 
 class CandidateDomainBlacklistRepository
 {
+    private const TABLE_NAME = 'candidate_domains_blacklist';
+
     /**
      * @var MyDB
      */
@@ -29,7 +31,7 @@ class CandidateDomainBlacklistRepository
     {
         $result = [];
 
-        $table = $this->db->getTableName('candidate_domains_blacklist');
+        $table = $this->db->getTableName(self::TABLE_NAME);
         $this->db->sql = "SELECT domain
                             FROM $table
                             WHERE active = 1";
@@ -55,5 +57,16 @@ class CandidateDomainBlacklistRepository
         }
 
         return $result;
+    }
+
+    public function append(string $domain): void
+    {
+        $table = $this->db->getTableName(self::TABLE_NAME);
+        $this->db->sql = "INSERT INTO $table
+                          SET domain = :domain, weight = 1, created_at = NOW(), last_at = NOW(), active = 0
+                          ON DUPLICATE KEY UPDATE weight = weight+1, last_at = NOW()";
+        $this->db->execute([
+            ':domain' => $domain,
+        ]);
     }
 }

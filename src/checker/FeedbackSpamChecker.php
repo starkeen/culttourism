@@ -31,8 +31,7 @@ class FeedbackSpamChecker
             return false;
         }
 
-        $url = str_replace('[url=', '', trim($url));
-        $host = parse_url(trim($url), PHP_URL_HOST);
+        $host = $this->getDomain($url);
 
         $spamDomains = $this->cache->get(self::CACHE_KEY);
         if (empty($spamDomains)) {
@@ -41,5 +40,21 @@ class FeedbackSpamChecker
         }
 
         return in_array($host, $spamDomains, true);
+    }
+
+    public function appendURL(string $url): void
+    {
+        if (trim($url) !== '') {
+            $host = $this->getDomain($url);
+            $this->repository->append($host);
+            $this->cache->remove(self::CACHE_KEY);
+        }
+    }
+
+    private function getDomain(string $url): string
+    {
+        $url = str_replace('[url=', '', trim($url));
+
+        return parse_url(trim($url), PHP_URL_HOST);
     }
 }

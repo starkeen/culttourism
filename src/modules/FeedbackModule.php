@@ -104,6 +104,7 @@ class FeedbackModule extends Module implements ModuleInterface
                     'cp_active' => $spamStatusOK === true ? 1 : 0,
                 ]
             );
+            $spamContentChecker->appendURL($_POST['web'] ?? '');
 
             if ($spamStatusOK === true && $isAdminSender !== true) {
                 $mailAttrs = [
