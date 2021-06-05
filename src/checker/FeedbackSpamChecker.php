@@ -32,6 +32,9 @@ class FeedbackSpamChecker
         }
 
         $host = $this->getDomain($url);
+        if ($host === null) {
+            return false;
+        }
 
         $spamDomains = $this->cache->get(self::CACHE_KEY);
         if (empty($spamDomains)) {
@@ -46,15 +49,21 @@ class FeedbackSpamChecker
     {
         if (trim($url) !== '') {
             $host = $this->getDomain($url);
-            $this->repository->append($host);
-            $this->cache->remove(self::CACHE_KEY);
+            if ($host !== null) {
+                $this->repository->append($host);
+                $this->cache->remove(self::CACHE_KEY);
+            }
         }
     }
 
-    private function getDomain(string $url): string
+    private function getDomain(string $url): ?string
     {
-        $url = str_replace('[url=', '', trim($url));
+        $url = trim($url);
+        $url = str_replace('[url=', '', $url);
+        if (strpos($url, 'http') !== 0) {
+            $url = 'http://' . $url;
+        }
 
-        return parse_url(trim($url), PHP_URL_HOST);
+        return parse_url($url, PHP_URL_HOST);
     }
 }
