@@ -51,7 +51,6 @@ class FeedbackSpamChecker
             $host = $this->getDomain($url);
             if ($host !== null) {
                 $this->repository->append($host);
-                $this->cache->remove(self::CACHE_KEY);
             }
         }
     }

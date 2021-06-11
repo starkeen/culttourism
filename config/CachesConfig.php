@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace config;
 
 /**
- * Список доступных кэшей
+ * Список доступных кэшей и их настройки
  */
 class CachesConfig
 {
