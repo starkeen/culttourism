@@ -39,7 +39,6 @@ class FeedbackSpamChecker
         $spamDomains = $this->cache->get(self::CACHE_KEY);
         if (empty($spamDomains)) {
             $spamDomains = $this->repository->getActualDomainsList();
-            throw new \RuntimeException('temp: ' . var_export($spamDomains[0], true));
             $this->cache->put(self::CACHE_KEY, $spamDomains);
         }
 

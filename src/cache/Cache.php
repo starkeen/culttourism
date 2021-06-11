@@ -3,6 +3,7 @@
 namespace app\cache;
 
 use config\CachesConfig;
+use http\Exception\RuntimeException;
 use Throwable;
 
 /**
@@ -87,6 +88,7 @@ class Cache
 
         $fileName = $fileDir . $key;
         $data = $this->serialize($value);
+        throw new RuntimeException($fileName . ' => data;' . $data);
 
         return (bool) file_put_contents($fileName, $data, LOCK_EX) > 0;
     }
