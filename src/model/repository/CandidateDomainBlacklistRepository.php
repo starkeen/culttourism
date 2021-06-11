@@ -53,7 +53,7 @@ class CandidateDomainBlacklistRepository
 
         $result = [];
         foreach ($list as $item) {
-            $result[] = $item;
+            $result[] = $item->domain;
         }
 
         return $result;
