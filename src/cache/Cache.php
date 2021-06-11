@@ -88,7 +88,7 @@ class Cache
 
         $fileName = $fileDir . $key;
         $data = $this->serialize($value);
-        throw new RuntimeException($fileName . ' => data;' . $data);
+        throw new \RuntimeException($fileName . ' => data;' . $data);
 
         return (bool) file_put_contents($fileName, $data, LOCK_EX) > 0;
     }
