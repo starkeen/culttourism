@@ -9,7 +9,7 @@ use app\model\repository\CandidateDomainBlacklistRepository;
 
 class FeedbackSpamChecker
 {
-    private const CACHE_KEY = 'list';
+    private const CACHE_KEY = 'spam_domains';
 
     private Cache $cache;
 
