@@ -82,11 +82,7 @@ class Cache
     {
         $fileDir = $this->cacheDir . '/' . $this->cacheCurrent['dir'] . '/';
         if (!file_exists($fileDir)) {
-            try {
-                mkdir($fileDir);
-            } catch (Throwable $e) {
-                // ничего страшного
-            }
+            mkdir($fileDir);
         }
 
         $fileName = $fileDir . $key;
