@@ -89,7 +89,9 @@ class Cache
         $fileName = $fileDir . $key;
         $data = $this->serialize($value);
 
-        return (bool) file_put_contents($fileName, $data, LOCK_EX) > 0;
+        $result = file_put_contents($fileName, $data, LOCK_EX);
+
+        return $result > 0;
     }
 
     /**
