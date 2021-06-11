@@ -88,7 +88,6 @@ class Cache
 
         $fileName = $fileDir . $key;
         $data = $this->serialize($value);
-        throw new \RuntimeException($fileName . ' => data;' . $data);
 
         return (bool) file_put_contents($fileName, $data, LOCK_EX) > 0;
     }
@@ -124,7 +123,7 @@ class Cache
      */
     private function serialize($data): string
     {
-        return serialize($data);
+        return json_encode($data, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -134,6 +133,6 @@ class Cache
      */
     private function unserialize(string $data)
     {
-        return unserialize($data, []);
+        return json_decode($data, true, 512, JSON_THROW_ON_ERROR);
     }
 }
