@@ -46,6 +46,9 @@ class PointsLegacyLinksChecker
         19762,
         19827,
 
+        20192,
+        20193,
+
         24428,
 
         31033,
