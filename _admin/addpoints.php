@@ -112,7 +112,7 @@ if (isset($_GET['id'], $_GET['act'])) {
             );
             if ($newStateId === MCandidatePoints::STATUS_SPAM) {
                 $spamDomainsRepository = new CandidateDomainBlacklistRepository($db);
-                $domain = FeedbackSpamChecker::getDomain($_POST['web'] ?? '');
+                $domain = FeedbackSpamChecker::getDomain($_GET['web'] ?? '');
                 $domainEntity = $spamDomainsRepository->getEntityByDomain($domain);
                 if ($domainEntity !== null) {
                     $domainEntity->active = 1;
