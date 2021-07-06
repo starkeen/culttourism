@@ -15,12 +15,12 @@ class CandidateDomainBlacklistRepository extends Repository
     {
         $result = [];
 
-        $table = $this->db->getTableName(self::getTableName());
-        $this->db->sql = "SELECT domain
+        $table = $this->getDb()->getTableName(self::getTableName());
+        $this->getDb()->sql = "SELECT domain
                             FROM $table
                             WHERE active = 1";
-        $this->db->exec();
-        while ($row = $this->db->fetch()) {
+        $this->getDb()->exec();
+        while ($row = $this->getDb()->fetch()) {
             $entry = new CandidateBlockedDomain($row);
             $result[] = $entry;
         }
@@ -45,11 +45,11 @@ class CandidateDomainBlacklistRepository extends Repository
 
     public function append(string $domain): void
     {
-        $table = $this->db->getTableName(self::getTableName());
-        $this->db->sql = "INSERT INTO $table
+        $table = $this->getDb()->getTableName(self::getTableName());
+        $this->getDb()->sql = "INSERT INTO $table
                           SET domain = :domain, weight = 1, created_at = NOW(), last_at = NOW(), active = 0
                           ON DUPLICATE KEY UPDATE weight = weight+1, last_at = NOW()";
-        $this->db->execute([
+        $this->getDb()->execute([
             ':domain' => $domain,
         ]);
     }
@@ -59,13 +59,13 @@ class CandidateDomainBlacklistRepository extends Repository
         $result = null;
 
         if ($domain !== null && $domain !== '') {
-            $table = $this->db->getTableName(self::getTableName());
-            $this->db->sql = "SELECT *
+            $table = $this->getDb()->getTableName(self::getTableName());
+            $this->getDb()->sql = "SELECT *
                             FROM $table
                             WHERE domain = :domain
                             LIMIT 1";
-            $this->db->execute([':domain' => $domain]);
-            while ($row = $this->db->fetch()) {
+            $this->getDb()->execute([':domain' => $domain]);
+            while ($row = $this->getDb()->fetch()) {
                 $result = new CandidateBlockedDomain($row);
             }
         }
