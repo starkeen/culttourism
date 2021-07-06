@@ -2,7 +2,9 @@
 
 use app\api\yandex_search\Factory;
 use app\api\yandex_search\ResultItem;
+use app\checker\FeedbackSpamChecker;
 use app\exceptions\NotFoundException;
+use app\model\repository\CandidateDomainBlacklistRepository;
 
 include('common.php');
 
@@ -108,6 +110,15 @@ if (isset($_GET['id'], $_GET['act'])) {
                     'cp_active' => 0,
                 ]
             );
+            if ($newStateId === MCandidatePoints::STATUS_SPAM) {
+                $spamDomainsRepository = new CandidateDomainBlacklistRepository($db);
+                $domain = FeedbackSpamChecker::getDomain($_POST['web'] ?? '');
+                $domainEntity = $spamDomainsRepository->getEntityByDomain($domain);
+                if ($domainEntity !== null) {
+                    $domainEntity->active = 1;
+                    $spamDomainsRepository->save($domainEntity);
+                }
+            }
             break;
         case 'move':
             $pt = new MPagePoints($db);

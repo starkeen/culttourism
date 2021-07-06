@@ -4,26 +4,10 @@ declare(strict_types=1);
 
 namespace app\model\repository;
 
-use app\db\MyDB;
 use app\model\entity\CandidateBlockedDomain;
 
-class CandidateDomainBlacklistRepository
+class CandidateDomainBlacklistRepository extends Repository
 {
-    private const TABLE_NAME = 'candidate_domains_blacklist';
-
-    /**
-     * @var MyDB
-     */
-    private MyDB $db;
-
-    /**
-     * @param MyDB $db
-     */
-    public function __construct(MyDB $db)
-    {
-        $this->db = $db;
-    }
-
     /**
      * @return CandidateBlockedDomain[]
      */
@@ -31,7 +15,7 @@ class CandidateDomainBlacklistRepository
     {
         $result = [];
 
-        $table = $this->db->getTableName(self::TABLE_NAME);
+        $table = $this->db->getTableName(self::getTableName());
         $this->db->sql = "SELECT domain
                             FROM $table
                             WHERE active = 1";
@@ -61,12 +45,41 @@ class CandidateDomainBlacklistRepository
 
     public function append(string $domain): void
     {
-        $table = $this->db->getTableName(self::TABLE_NAME);
+        $table = $this->db->getTableName(self::getTableName());
         $this->db->sql = "INSERT INTO $table
                           SET domain = :domain, weight = 1, created_at = NOW(), last_at = NOW(), active = 0
                           ON DUPLICATE KEY UPDATE weight = weight+1, last_at = NOW()";
         $this->db->execute([
             ':domain' => $domain,
         ]);
+    }
+
+    public function getEntityByDomain(?string $domain): ?CandidateBlockedDomain
+    {
+        $result = null;
+
+        if ($domain !== null && $domain !== '') {
+            $table = $this->db->getTableName(self::getTableName());
+            $this->db->sql = "SELECT *
+                            FROM $table
+                            WHERE domain = :domain
+                            LIMIT 1";
+            $this->db->execute([':domain' => $domain]);
+            while ($row = $this->db->fetch()) {
+                $result = new CandidateBlockedDomain($row);
+            }
+        }
+
+        return $result;
+    }
+
+    protected static function getTableName(): string
+    {
+        return 'candidate_domains_blacklist';
+    }
+
+    protected static function getPkName(): string
+    {
+        return 'id';
     }
 }

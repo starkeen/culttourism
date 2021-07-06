@@ -31,7 +31,7 @@ class FeedbackSpamChecker
             return true;
         }
 
-        $host = $this->getDomain($url);
+        $host = self::getDomain($url);
         if ($host === null) {
             return false;
         }
@@ -48,14 +48,14 @@ class FeedbackSpamChecker
     public function appendURL(string $url): void
     {
         if (trim($url) !== '') {
-            $host = $this->getDomain($url);
+            $host = self::getDomain($url);
             if ($host !== null) {
                 $this->repository->append($host);
             }
         }
     }
 
-    private function getDomain(string $url): ?string
+    public static function getDomain(string $url): ?string
     {
         $url = trim($url);
         $url = str_replace('[url=', '', $url);
@@ -63,6 +63,6 @@ class FeedbackSpamChecker
             $url = 'http://' . $url;
         }
 
-        return parse_url($url, PHP_URL_HOST);
+        return parse_url($url, PHP_URL_HOST) ?: null;
     }
 }
