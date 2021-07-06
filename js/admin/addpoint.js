@@ -82,6 +82,7 @@ $(document).ready(function () {
         $.getJSON("addpoints.php", {
             act: "set_ignore",
             id: item_id,
+            web: $(".pointadding-item-web").value(),
             state_id: $(this).data("state")
         }, function (data) {
             if (data.state) {
