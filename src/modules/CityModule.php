@@ -418,6 +418,7 @@ class CityModule extends Module implements ModuleInterface
                         ':name' => $translit,
                     ]
                 );
+                $inBase[$id]['latlon'] = null;
                 if ($state) {
                     $row = $this->db->fetch();
                     if ($row === null) {
@@ -429,7 +430,6 @@ class CityModule extends Module implements ModuleInterface
                     $latitude .= abs($row['ll_lat']);
                     $longitude = $row['ll_lon'] >= 0 ? 'E' : 'W';
                     $longitude .= abs($row['ll_lon']);
-                    $inBase[$id]['latlon'] = null;
                     if ($latitude !== 'N0' && $longitude !== 'E0') {
                         $inBase[$id]['latlon'] = "{$row['ll_name']}: $latitude, $longitude";
                     }
