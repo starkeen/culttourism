@@ -318,7 +318,7 @@ class CityModule extends Module implements ModuleInterface
     private function addCity(SiteResponse $response): void
     {
         $newcity = '';
-        $inbase = [];
+        $inBase = [];
         $already = [];
 
         if (isset($_POST) && !empty($_POST)) {
@@ -407,11 +407,11 @@ class CityModule extends Module implements ModuleInterface
                 ]
             );
             while ($row = $this->db->fetch()) {
-                $inbase[] = $row;
+                $inBase[] = $row;
             }
-            foreach ($inbase as $id => $city) {
+            foreach ($inBase as $id => $city) {
                 $translit = Strings::getTransliteration($city['name']);
-                $inbase[$id]['translit'] = $translit;
+                $inBase[$id]['translit'] = $translit;
                 $this->db->sql = "SELECT * FROM $dbll WHERE LOWER(ll_name) = LOWER(:name) LIMIT 1";
                 $state = $this->db->execute(
                     [
@@ -420,16 +420,18 @@ class CityModule extends Module implements ModuleInterface
                 );
                 if ($state) {
                     $row = $this->db->fetch();
-                    $inbase[$id]['lat'] = $row['ll_lat'];
-                    $inbase[$id]['lon'] = $row['ll_lon'];
+                    if ($row === null) {
+                        continue;
+                    }
+                    $inBase[$id]['lat'] = $row['ll_lat'];
+                    $inBase[$id]['lon'] = $row['ll_lon'];
                     $latitude = $row['ll_lat'] >= 0 ? 'N' : 'S';
-                    $latitude = $latitude . abs($row['ll_lat']);
-                    $lolgitude = $row['ll_lon'] >= 0 ? 'E' : 'W';
-                    $lolgitude = $lolgitude . abs($row['ll_lon']);
-                    if ($latitude !== 'N0' && $lolgitude !== 'E0') {
-                        $inbase[$id]['latlon'] = "{$row['ll_name']}: $latitude, $lolgitude";
-                    } else {
-                        $inbase[$id]['latlon'] = null;
+                    $latitude .= abs($row['ll_lat']);
+                    $longitude = $row['ll_lon'] >= 0 ? 'E' : 'W';
+                    $longitude .= abs($row['ll_lon']);
+                    $inBase[$id]['latlon'] = null;
+                    if ($latitude !== 'N0' && $longitude !== 'E0') {
+                        $inBase[$id]['latlon'] = "{$row['ll_name']}: $latitude, $longitude";
                     }
                 }
             }
@@ -437,7 +439,7 @@ class CityModule extends Module implements ModuleInterface
             //-------------------------------------------------------------------
         }
 
-        $this->templateEngine->assign('inbase', $inbase);
+        $this->templateEngine->assign('inbase', $inBase);
         $this->templateEngine->assign('addregion', $newcity);
         $this->templateEngine->assign('already', $already);
         $this->templateEngine->assign('freeplace', mb_strlen($newcity) >= 5 ? $newcity : null);
