@@ -85,15 +85,29 @@ class BlogModule extends Module implements ModuleInterface
         } elseif ($request->getLevel1() === 'blog') {
             throw new RedirectException(self::MODULE_URL);
         } elseif ($request->getLevel3() !== null) { //одна запись
+            $year = (int) $request->getLevel1();
+            $month = $request->getLevel2();
+            $tail = $request->getLevel3();
+            if (strlen($month) !== 2) {
+                $newUrl = sprintf('/blog/%d/%02d/%s', $year, $month, $tail);
+                throw new RedirectException($newUrl);
+            }
             $this->processOneEntry(
                 $response,
-                $request->getLevel3(),
-                (int) $request->getLevel1(),
-                (int) $request->getLevel2()
+                $tail,
+                $year,
+                (int) $month
             );
         } elseif ($request->getLevel1() !== null) { //календарь
             $year = (int) $request->getLevel1();
-            $month = $request->getLevel2() !== null ? (int) $request->getLevel2() : null;
+            $month = $request->getLevel2();
+            if (strlen($month) !== 2) {
+                $newUrl = sprintf('/blog/%d/%02d/', $year, $month);
+                throw new RedirectException($newUrl);
+            }
+            if ($month !== null) {
+                $month = (int) $request->getLevel2();
+            }
             if ($year === 0 || $month === 0) {
                 throw new NotFoundException();
             }
