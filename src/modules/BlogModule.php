@@ -101,7 +101,7 @@ class BlogModule extends Module implements ModuleInterface
         } elseif ($request->getLevel1() !== null) { //календарь
             $year = (int) $request->getLevel1();
             $month = $request->getLevel2();
-            if (strlen($month) !== 2) {
+            if ($month !== null && strlen($month) !== 2) {
                 $newUrl = sprintf('/blog/%d/%02d/', $year, $month);
                 throw new RedirectException($newUrl);
             }
@@ -197,6 +197,7 @@ class BlogModule extends Module implements ModuleInterface
         }
 
         $this->templateEngine->assign('entry', $entry);
+        $this->templateEngine->assign('isAdmin', $this->webUser->isEditor());
         $contentBody = $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/blog/blog.one.tpl');
 
         $response->getContent()->setBody($contentBody);
@@ -233,6 +234,7 @@ class BlogModule extends Module implements ModuleInterface
         $this->templateEngine->assign('entries', $entries);
         $this->templateEngine->assign('years', $this->blogRepository->getYears());
         $this->templateEngine->assign('cur_year', $year);
+        $this->templateEngine->assign('isAdmin', $this->webUser->isEditor());
 
         $body = $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/blog/blog.calendar.tpl');
 
