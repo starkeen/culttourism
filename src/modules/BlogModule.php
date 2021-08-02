@@ -228,8 +228,10 @@ class BlogModule extends Module implements ModuleInterface
 
         $entries = $this->blogRepository->getCalendarItems($year, $month);
         $lastMonth = array_key_last($entries);
-        foreach ($entries[$lastMonth] as $entry) {
-            $response->setMaxLastEditTimestamp($entry->getTimestamp());
+        if ($lastMonth !== null) {
+            foreach ($entries[$lastMonth] as $entry) {
+                $response->setMaxLastEditTimestamp($entry->getTimestamp());
+            }
         }
         $this->templateEngine->assign('entries', $entries);
         $this->templateEngine->assign('years', $this->blogRepository->getYears());
