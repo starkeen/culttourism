@@ -21,5 +21,5 @@
 <p>
     Перейти:
     <a href="/blog/{$entry->getYear()}/">этот год</a>,
-    <a href="/blog/{$entry->getYear()}/{$entry->getMonthNumber()}/">этот месяц</a>
+    <a href="/blog/{$entry->getYear()}/{$entry->getMonthString()}/">этот месяц</a>
 </p>
