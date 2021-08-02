@@ -227,12 +227,17 @@ class BlogModule extends Module implements ModuleInterface
         $response->getContent()->getHead()->setCanonicalUrl($canonical);
 
         $entries = $this->blogRepository->getCalendarItems($year, $month);
+        if (count($entries) === 0) {
+            $response->getContent()->getHead()->setRobotsIndexing('noindex,follow');
+        }
+
         $lastMonth = array_key_last($entries);
         if ($lastMonth !== null) {
             foreach ($entries[$lastMonth] as $entry) {
                 $response->setMaxLastEditTimestamp($entry->getTimestamp());
             }
         }
+
         $this->templateEngine->assign('entries', $entries);
         $this->templateEngine->assign('years', $this->blogRepository->getYears());
         $this->templateEngine->assign('cur_year', $year);
