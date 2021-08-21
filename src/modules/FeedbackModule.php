@@ -25,6 +25,8 @@ use MFeedback;
 
 class FeedbackModule extends Module implements ModuleInterface
 {
+    private const URL_PATTERN = '/https?\:\/\/[^\" ]+/i';
+
     private CandidateDomainBlacklistRepository $candidateDomainBlacklistRepository;
 
     public function __construct(MyDB $db, TemplateEngine $templateEngine, WebUser $webUser, GlobalConfig $globalConfig)
@@ -82,10 +84,18 @@ class FeedbackModule extends Module implements ModuleInterface
             $loggedSender = $_SESSION['user_id'] ?? null;
             $isAdminSender = $loggedSender !== null && (int) $loggedSender !== 0;
 
+            $webURL = $_POST['web'] ?: null;
+            if ($webURL === null) {
+                $matches = [];
+                preg_match(self::URL_PATTERN, $_POST['descr'], $matches);
+                if (!empty($matches[0])) {
+                    $webURL = $matches[0];
+                }
+            }
+
             $spamContentChecker = new FeedbackSpamChecker(Cache::i(CachesConfig::CANDIDATES_BLACKLIST), $this->candidateDomainBlacklistRepository);
             if ($spamStatusOK) {
-                $candidateUrl = $_POST['web'] ?: null;
-                $spamStatusOK = !$spamContentChecker->isSpamURL($candidateUrl);
+                $spamStatusOK = !$spamContentChecker->isSpamURL($webURL);
             }
 
             $cp->add(
@@ -95,7 +105,7 @@ class FeedbackModule extends Module implements ModuleInterface
                     'cp_text' => $_POST['descr'],
                     'cp_addr' => $_POST['addrs'] ?? '',
                     'cp_phone' => $_POST['phone'],
-                    'cp_web' => $_POST['web'],
+                    'cp_web' => $webURL,
                     'cp_worktime' => $_POST['worktime'],
                     'cp_referer' => $_SESSION['feedback_referer'],
                     'cp_sender' => $_POST['name'] . ' <' . $_POST['email'] . '>',
