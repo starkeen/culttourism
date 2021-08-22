@@ -84,10 +84,12 @@ class FeedbackModule extends Module implements ModuleInterface
             $loggedSender = $_SESSION['user_id'] ?? null;
             $isAdminSender = $loggedSender !== null && (int) $loggedSender !== 0;
 
+            $description = strip_tags($_POST['descr']);
+
             $webURL = $_POST['web'] ?: null;
             if ($webURL === null) {
                 $matches = [];
-                preg_match(self::URL_PATTERN, $_POST['descr'], $matches);
+                preg_match(self::URL_PATTERN, $description, $matches);
                 if (!empty($matches[0])) {
                     $webURL = $matches[0];
                 }
@@ -102,7 +104,7 @@ class FeedbackModule extends Module implements ModuleInterface
                 [
                     'cp_title' => $_POST['title'],
                     'cp_city' => $_POST['region'],
-                    'cp_text' => $_POST['descr'],
+                    'cp_text' => $description,
                     'cp_addr' => $_POST['addrs'] ?? '',
                     'cp_phone' => $_POST['phone'],
                     'cp_web' => $webURL,
@@ -122,7 +124,7 @@ class FeedbackModule extends Module implements ModuleInterface
                     'user_mail' => $_POST['email'],
                     'add_city' => $_POST['region'],
                     'add_title' => $_POST['title'],
-                    'add_text' => $_POST['descr'],
+                    'add_text' => $description,
                     'add_contacts' => $_POST['addrs']
                         . ' ' . $_POST['phone']
                         . ' ' . $_POST['web']
@@ -133,7 +135,7 @@ class FeedbackModule extends Module implements ModuleInterface
                 Mailing::sendLetterCommon($this->globalConfig->getMailFeedback(), 5, $mailAttrs);
             }
 
-            $response->getContent()->setBody($this->getAddingSuccess($_POST['title'], $_POST['descr'], $_POST['region']));
+            $response->getContent()->setBody($this->getAddingSuccess($_POST['title'], $description, $_POST['region']));
             unset($_POST);
         } else {
             $response->getContent()->setBody($this->getAddingForm($response));
