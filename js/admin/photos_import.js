@@ -28,7 +28,7 @@ $(document).ready(function () {
         $("#photos-object-detail-region").text($element.data("region_name"));
         $("#photos-object-detail-title").text($element.data("name"));
         $("#photos-object-detail-id").val($element.data("id"));
-        $("#photos-object-detail-address").val($element.data("address"));
+        $("#photos-object-detail-address").text($element.data("address"));
         $("#photos-object-detail-latitude").val($element.data("latitude"));
         $("#photos-object-detail-longitude").val($element.data("longitude"));
         $("#photos-object-detail").show();
@@ -159,6 +159,7 @@ $(document).ready(function () {
         $("#photos-object-detail-preview").empty();
         $("#photos-object-detail-region").text("");
         $("#photos-object-detail-title").text("");
+        $("#photos-object-detail-address").text("");
         $("#photos-object-detail-id").val("");
         $("#photos-object-detail-latitude").val("");
         $("#photos-object-detail-longitude").val("");
