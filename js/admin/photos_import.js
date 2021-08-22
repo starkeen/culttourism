@@ -11,6 +11,7 @@ $(document).ready(function () {
                 $element.data("region_id", value.pc_id);
                 $element.data("region_name", value.pc_title_unique);
                 $element.data("name", value.pt_name);
+                $element.data("address", value.pt_adress);
                 $element.data("latitude", value.pt_latitude);
                 $element.data("longitude", value.pt_longitude);
                 $("#photos-objects-suggestions ul").append($element);
@@ -27,6 +28,7 @@ $(document).ready(function () {
         $("#photos-object-detail-region").text($element.data("region_name"));
         $("#photos-object-detail-title").text($element.data("name"));
         $("#photos-object-detail-id").val($element.data("id"));
+        $("#photos-object-detail-address").val($element.data("address"));
         $("#photos-object-detail-latitude").val($element.data("latitude"));
         $("#photos-object-detail-longitude").val($element.data("longitude"));
         $("#photos-object-detail").show();

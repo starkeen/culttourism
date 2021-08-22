@@ -18,6 +18,7 @@
         <img id="photos-object-detail-search"
              src="/img/btn/btn.search.png"
              title="Искать" />
+        <div id="photos-object-detail-address"></div>
         <input type="hidden" id="photos-object-detail-id" value="" />
         <input type="hidden" id="photos-object-detail-latitude" value="" />
         <input type="hidden" id="photos-object-detail-longitude" value="" />

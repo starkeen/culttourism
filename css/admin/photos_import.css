@@ -49,6 +49,11 @@
     cursor: pointer;
 }
 
+#photos-object-detail-address {
+    font-size: 90%;
+    color: #7e7e7e;
+}
+
 #photos-object-detail-results {
     margin: 5px;
     padding: 5px;
