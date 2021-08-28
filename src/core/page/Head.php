@@ -132,7 +132,7 @@ class Head
             $data = $this->microMarking;
             $data['@context'] = 'http://schema.org';
             ksort($data);
-            $result = json_encode($data);
+            $result = json_encode($data, JSON_THROW_ON_ERROR);
         }
 
         return $result;

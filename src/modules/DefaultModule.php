@@ -205,7 +205,7 @@ class DefaultModule implements ModuleInterface
         $response->getContent()->getHead()->addMicroData('description', $short);
         $response->getContent()->getHead()->addMicroData('address', [
             '@type' => 'PostalAddress',
-            'addressLocality' => $city['pc_title_unique'],
+            'addressLocality' => $object['pt_adress'],
         ]);
 
         if ($object['tr_sight']) {
@@ -244,6 +244,20 @@ class DefaultModule implements ModuleInterface
             $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
             $response->getContent()->getHead()->addKeyword('фото');
             $response->getContent()->getHead()->addDescription('Фото ' . $object['esc_name']);
+            $response->getContent()->getHead()->addMicroData(
+                'photo',
+                [
+                    '@type' => 'ImageObject',
+                    'name' => $object['esc_name'],
+                    'caption' => $object['esc_name'] . ' (' . $city['pc_title'] . ')',
+                    'description' => 'Фото ' . $object['esc_name']  . ' ' . $city['pc_inwheretext'],
+                    'url' => $objImage,
+                    'contentUrl' => $objImage,
+                    'uploadDate' => $photo['ph_date_add'],
+                    'height' => $photo['ph_height'] . ' px',
+                    'width' => $photo['ph_width'] . ' px',
+                ]
+            );
         }
 
         if (!empty($object['pt_website'])) {
