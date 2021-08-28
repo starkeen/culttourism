@@ -4,7 +4,7 @@ use app\utils\Keyboard;
 
 class MPageCities extends Model
 {
-    public const BREADCRUMBS_DELIMITER = '>';
+    public const BREADCRUMBS_DELIMITER = ' > '; // концевые пробелы важны для парсинга
     public const BREADCRUMBS_PATTERN = '<a href="%s" title="%s">%s</a>';
 
     protected $_table_pk = 'pc_id';
@@ -464,7 +464,7 @@ class MPageCities extends Model
                 );
             }
 
-            $out[$row['pc_id']] = implode(' ' . self::BREADCRUMBS_DELIMITER . ' ', $itemElements);
+            $out[$row['pc_id']] = implode(self::BREADCRUMBS_DELIMITER, $itemElements);
         }
 
         return $out;

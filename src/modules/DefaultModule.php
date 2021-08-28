@@ -201,11 +201,11 @@ class DefaultModule implements ModuleInterface
         $breadcrumbs = explode(MPageCities::BREADCRUMBS_DELIMITER, $city['pc_pagepath'] ?? '');
         foreach ($breadcrumbs as $breadcrumb) {
             $matches = [];
-            preg_match('/<a\s[^>]*href=\"([^\"]*)\"[^>]*>(.*)<\/a>/i', trim($breadcrumb), $matches);
+            preg_match('/<a\s[^>]*href=\"([^\"]*)\"[^>]*>(.*)<\/a>/i', $breadcrumb, $matches);
             if (!empty($matches)) {
                 $response->getContent()->getHead()->addBreadcrumb($matches[2], $matches[1]);
             } else {
-                $response->getContent()->getHead()->addBreadcrumb(trim($breadcrumb), '/');
+                $response->getContent()->getHead()->addBreadcrumb($breadcrumb, '/');
             }
         }
         $response->getContent()->getHead()->addBreadcrumb($object['esc_name'], $object['url_canonical']);
