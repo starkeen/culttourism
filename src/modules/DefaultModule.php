@@ -198,8 +198,6 @@ class DefaultModule implements ModuleInterface
         $response->getContent()->getHead()->addTitleElement($city['pc_title_unique']);
         $response->getContent()->getHead()->addTitleElement($object['esc_name']);
 
-        $response->getContent()->getHead()->addCustomMeta('business:contact_data:locality', $city['pc_title_unique']);
-
         $response->getContent()->getHead()->addMicroData('@type', 'Place');
         $response->getContent()->getHead()->addMicroData('name', $object['esc_name']);
         $response->getContent()->getHead()->addMicroData('description', $short);
@@ -213,8 +211,6 @@ class DefaultModule implements ModuleInterface
         }
         if (!empty($object['pt_latitude']) && !empty($object['pt_longitude'])) {
             $response->getContent()->getHead()->addDescription('GPS-координаты');
-            $response->getContent()->getHead()->addCustomMeta('place:location:latitude', (string) $object['pt_latitude']);
-            $response->getContent()->getHead()->addCustomMeta('place:location:longitude', (string) $object['pt_longitude']);
             $response->getContent()->getHead()->addMicroData(
                 'geo',
                 [
@@ -261,17 +257,11 @@ class DefaultModule implements ModuleInterface
         }
 
         if (!empty($object['pt_website'])) {
-            $response->getContent()->getHead()->addCustomMeta('business:contact_data:website', $object['pt_website']);
             $response->getContent()->getHead()->addMicroData('url', $object['pt_website']);
         }
         if (!empty($object['pt_phone'])) {
-            $response->getContent()->getHead()->addCustomMeta('business:contact_data:phone_number', $object['pt_phone']);
             $response->getContent()->getHead()->addMicroData('telephone', $object['pt_phone']);
         }
-        if (!empty($object['pt_worktime'])) {
-            $response->getContent()->getHead()->addMicroData('openingHours', $object['pt_worktime']);
-        }
-
         $response->getContent()->setCustomJsModule('point');
 
         return $this->templateEngine->getContent(
