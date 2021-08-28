@@ -60,7 +60,7 @@ class WebApplication extends Application
 
         $defaultPageImage = GLOBAL_SITE_URL . 'img/logo/culttourism-head.jpg';
         $this->getSiteResponse()->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $defaultPageImage);
-        $this->getSiteResponse()->getContent()->getHead()->addMicroData('image', $defaultPageImage);
+        $this->getSiteResponse()->getContent()->getHead()->addMainMicroData('image', $defaultPageImage);
     }
 
     public function run(): void

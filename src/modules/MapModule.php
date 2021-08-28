@@ -96,7 +96,7 @@ class MapModule implements ModuleInterface
         $photo = $this->getPhotosModel()->getItemByPk(self::MODULE_IMAGE_ID);
         $objImage = Urls::getAbsoluteURL($photo['ph_src']);
         $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
-        $response->getContent()->getHead()->addMicroData('image', $objImage);
+        $response->getContent()->getHead()->addMainMicroData('image', $objImage);
 
         $response->getContent()->getHead()->addTitleElement($this->globalConfig->getDefaultPageTitle());
         $response->getContent()->getHead()->addTitleElement('Достопримечательности на интерактивной карте');

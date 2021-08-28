@@ -60,7 +60,7 @@ abstract class Module
                 $photo = $ph->getItemByPk($moduleData['md_photo_id']);
                 $objImage = Urls::getAbsoluteURL($photo['ph_src']);
                 $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
-                $response->getContent()->getHead()->addMicroData('image', $objImage);
+                $response->getContent()->getHead()->addMainMicroData('image', $objImage);
             }
 
             if ($moduleData['md_redirect'] !== null) {

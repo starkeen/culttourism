@@ -109,7 +109,7 @@ class Head
      * @param string $key
      * @param string|array $value
      */
-    public function addMicroData(string $key, $value): void
+    public function addMainMicroData(string $key, $value): void
     {
         if (is_scalar($value)) {
             $val = trim(html_entity_decode(strip_tags($value)));
@@ -151,6 +151,7 @@ class Head
                 '@type' => 'SearchAction',
                 'target' => 'https://culttourism.ru/search/?&q={query}',
                 'query' => 'required',
+                'query-input' => 'required name=query',
             ],
         ];
 

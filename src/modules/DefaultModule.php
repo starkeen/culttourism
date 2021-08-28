@@ -198,10 +198,10 @@ class DefaultModule implements ModuleInterface
         $response->getContent()->getHead()->addTitleElement($city['pc_title_unique']);
         $response->getContent()->getHead()->addTitleElement($object['esc_name']);
 
-        $response->getContent()->getHead()->addMicroData('@type', 'Place');
-        $response->getContent()->getHead()->addMicroData('name', $object['esc_name']);
-        $response->getContent()->getHead()->addMicroData('description', $short);
-        $response->getContent()->getHead()->addMicroData('address', [
+        $response->getContent()->getHead()->addMainMicroData('@type', 'Place');
+        $response->getContent()->getHead()->addMainMicroData('name', $object['esc_name']);
+        $response->getContent()->getHead()->addMainMicroData('description', $short);
+        $response->getContent()->getHead()->addMainMicroData('address', [
             '@type' => 'PostalAddress',
             'addressLocality' => $city['pc_title'],
             'streetAddress' => $object['pt_adress'],
@@ -212,7 +212,7 @@ class DefaultModule implements ModuleInterface
         }
         if (!empty($object['pt_latitude']) && !empty($object['pt_longitude'])) {
             $response->getContent()->getHead()->addDescription('GPS-координаты');
-            $response->getContent()->getHead()->addMicroData(
+            $response->getContent()->getHead()->addMainMicroData(
                 'geo',
                 [
                     '@type' => 'GeoCoordinates',
@@ -241,7 +241,7 @@ class DefaultModule implements ModuleInterface
             $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
             $response->getContent()->getHead()->addKeyword('фото');
             $response->getContent()->getHead()->addDescription('Фото ' . $object['esc_name']);
-            $response->getContent()->getHead()->addMicroData(
+            $response->getContent()->getHead()->addMainMicroData(
                 'photo',
                 [
                     '@type' => 'ImageObject',
@@ -258,10 +258,10 @@ class DefaultModule implements ModuleInterface
         }
 
         if (!empty($object['pt_website'])) {
-            $response->getContent()->getHead()->addMicroData('url', $object['pt_website']);
+            $response->getContent()->getHead()->addMainMicroData('url', $object['pt_website']);
         }
         if (!empty($object['pt_phone'])) {
-            $response->getContent()->getHead()->addMicroData('telephone', $object['pt_phone']);
+            $response->getContent()->getHead()->addMainMicroData('telephone', $object['pt_phone']);
         }
         $response->getContent()->setCustomJsModule('point');
 
