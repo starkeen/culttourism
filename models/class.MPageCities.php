@@ -5,6 +5,7 @@ use app\utils\Keyboard;
 class MPageCities extends Model
 {
     public const BREADCRUMBS_DELIMITER = '>';
+    public const BREADCRUMBS_PATTERN = '<a href="%s" title="%s">%s</a>';
 
     protected $_table_pk = 'pc_id';
     protected $_table_order = 'pc_order';
@@ -436,7 +437,7 @@ class MPageCities extends Model
                 $itemElements[] = $row['country_name'];
             } else {
                 $itemElements[] = sprintf(
-                    '<a href="%s" title="%s">%s</a>',
+                    self::BREADCRUMBS_PATTERN,
                     $row['country_url'] . '/',
                     'достопримечательности ' . $row['country_genitive_name'],
                     $row['country_name']
@@ -446,7 +447,7 @@ class MPageCities extends Model
             //-------------- регион или город в стране --
             if ($row['region_name'] !== $row['country_name']) {
                 $itemElements[] = sprintf(
-                    '<a href="%s" title="%s">%s</a>',
+                    self::BREADCRUMBS_PATTERN,
                     $row['region_url'] . '/',
                     'достопримечательности ' . $row['region_genitive_name'],
                     $row['region_name']
@@ -456,7 +457,7 @@ class MPageCities extends Model
             //-------------- город в регионе --
             if ($row['city_name'] !== $row['region_name']) {
                 $itemElements[] = sprintf(
-                    '<a href="%s" title="%s">%s</a>',
+                    self::BREADCRUMBS_PATTERN,
                     $row['city_url'] . '/',
                     'достопримечательности ' . $row['city_genitive_name'],
                     $row['city_name']
