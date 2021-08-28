@@ -399,59 +399,71 @@ class MPageCities extends Model
 
     public function getListWithoutBreadcrumbs(): array
     {
-        $this->_db->sql = "SELECT pc.pc_id, pc.pc_title,
-                    pc.pc_country_id, rs.name AS country_name,
-                    pc.pc_region_id, pc_reg.pc_title AS region_name, rr.name AS region_name2, ru_reg.url AS region_url,
-                    pc.pc_city_id, rc.name AS city_name, ru_city.url AS city_url
-                FROM $this->_table_name pc
+        $this->_db->sql = 'SELECT pc.pc_id,
+                    pc.pc_country_id AS country_id,
+                        pc_cou.pc_title AS country_name,
+                        pc_cou.pc_inwheretext AS country_genitive_name,
+                        ru_cou.url AS country_url,
+                    pc.pc_region_id AS region_id,
+                        pc_reg.pc_title AS region_name,
+                        pc_reg.pc_inwheretext AS region_genitive_name,
+                        ru_reg.url AS region_url,
+                    pc.pc_city_id AS city_id,
+                        pc.pc_title AS city_name,
+                        pc.pc_inwheretext AS city_genitive_name,
+                        ru_city.url AS city_url
+                FROM pagecity pc
                     LEFT JOIN ref_country rs ON rs.id = pc.pc_country_id
                     LEFT JOIN ref_region rr ON rr.id = pc.pc_region_id AND rr.country_id = pc.pc_country_id
                     LEFT JOIN ref_city rc ON rc.id = pc.pc_city_id AND rc.country_id = pc.pc_country_id AND rc.region_id = pc.pc_region_id
-    
-                    LEFT JOIN $this->_table_name pc_reg ON pc_reg.pc_region_id = pc.pc_region_id AND pc_reg.pc_city_id = 0 AND pc_reg.pc_country_id = pc.pc_country_id
-                    LEFT JOIN $this->_table_name pc_cou ON pc_cou.pc_country_id = pc.pc_country_id AND pc_reg.pc_region_id = 0 AND pc_reg.pc_city_id = 0
-    
-                    LEFT JOIN region_url ru_cou  ON ru_cou.uid  = pc_cou.pc_url_id
-                    LEFT JOIN region_url ru_reg  ON ru_reg.uid  = pc_reg.pc_url_id
-                    LEFT JOIN region_url ru_city ON ru_city.uid = pc.pc_url_id
+
+                    LEFT JOIN pagecity pc_reg ON pc_reg.pc_region_id = pc.pc_region_id AND pc_reg.pc_city_id = 0 AND pc_reg.pc_country_id = pc.pc_country_id AND pc_reg.pc_rank != 0
+                    LEFT JOIN pagecity pc_cou ON pc_cou.pc_country_id = pc.pc_country_id AND pc_cou.pc_region_id = 0 AND pc_cou.pc_city_id = 0 AND pc_cou.pc_id != 120 AND pc_reg.pc_rank != 0
+
+                    LEFT JOIN region_url AS ru_cou  ON ru_cou.uid  = pc_cou.pc_url_id
+                    LEFT JOIN region_url AS ru_reg  ON ru_reg.uid  = pc_reg.pc_url_id
+                    LEFT JOIN region_url AS ru_city ON ru_city.uid = pc.pc_url_id
                 WHERE pc.pc_pagepath IS NULL
-                ORDER BY pc.pc_id";
+                ORDER BY pc.pc_id';
         $this->_db->exec();
 
         $out = [];
         while ($row = $this->_db->fetch()) {
-            $out[$row['pc_id']] = '';
+            $itemElements = [];
 
             //-------------- страна --
-            if ($row['country_name']) {
-                $out[$row['pc_id']] .= $row['country_name'];
+            if ($row['country_url'] === null) { // Россия живёт в корне сайта
+                $itemElements[] = $row['country_name'];
+            } else {
+                $itemElements[] = sprintf(
+                    '<a href="%s" title="%s">%s</a>',
+                    $row['country_url'] . '/',
+                    'достопримечательности ' . $row['country_genitive_name'],
+                    $row['country_name']
+                );
             }
 
-            //-------------- регион --
-            if ($row['region_url'] && $row['region_name']) {
-                $out[$row['pc_id']] .= sprintf(
-                    ' %s <a href="%s" title="%s">%s</a>',
-                    self::BREADCRUMBS_DELIMITER,
+            //-------------- регион или город в стране --
+            if ($row['region_name'] !== $row['country_name']) {
+                $itemElements[] = sprintf(
+                    '<a href="%s" title="%s">%s</a>',
                     $row['region_url'] . '/',
-                    'перейти к странице ' . $row['region_name'],
+                    'достопримечательности ' . $row['region_genitive_name'],
                     $row['region_name']
                 );
-            } elseif ($row['region_name']) {
-                $out[$row['pc_id']] .= ' ' . self::BREADCRUMBS_DELIMITER . " {$row['region_name']}";
-            } elseif ($row['region_name2']) {
-                $out[$row['pc_id']] .= ' ' . self::BREADCRUMBS_DELIMITER . " {$row['region_name2']}";
             }
 
-            //-------------- город --
-            if ($row['city_url'] && $row['city_name']) {
-                $out[$row['pc_id']] .= sprintf(
-                    ' %s <a href="%s" title="%s">%s</a>',
-                    self::BREADCRUMBS_DELIMITER,
+            //-------------- город в регионе --
+            if ($row['city_name'] !== $row['region_name']) {
+                $itemElements[] = sprintf(
+                    '<a href="%s" title="%s">%s</a>',
                     $row['city_url'] . '/',
-                    'перейти к странице ' . $row['pc_title'],
-                    $row['pc_title']
+                    'достопримечательности ' . $row['city_genitive_name'],
+                    $row['city_name']
                 );
             }
+
+            $out[$row['pc_id']] = implode(' ' . self::BREADCRUMBS_DELIMITER . ' ', $itemElements);
         }
 
         return $out;
@@ -463,7 +475,7 @@ class MPageCities extends Model
      * @param int $id
      * @param string $path
      */
-    public function updatePagePath(int $id, string $path): void
+    public function updateBreadcrumbs(int $id, string $path): void
     {
         $this->_db->sql = "UPDATE $this->_table_name 
                             SET pc_pagepath = :path

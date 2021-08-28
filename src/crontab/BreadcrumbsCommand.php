@@ -20,7 +20,7 @@ class BreadcrumbsCommand extends CrontabCommand
         $list = $this->pageCitiesModel->getListWithoutBreadcrumbs();
 
         foreach ($list as $cid => $link) {
-            $this->pageCitiesModel->updatePagePath($cid, $link);
+            $this->pageCitiesModel->updateBreadcrumbs($cid, $link);
         }
     }
 }
