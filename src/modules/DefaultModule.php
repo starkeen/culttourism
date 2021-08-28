@@ -198,17 +198,8 @@ class DefaultModule implements ModuleInterface
         $response->getContent()->getHead()->addTitleElement($city['pc_title_unique']);
         $response->getContent()->getHead()->addTitleElement($object['esc_name']);
 
-        $breadcrumbs = explode(MPageCities::BREADCRUMBS_DELIMITER, $city['pc_pagepath'] ?? '');
-        foreach ($breadcrumbs as $breadcrumb) {
-            $matches = [];
-            preg_match('/<a\s[^>]*href=\"([^\"]*)\"[^>]*>(.*)<\/a>/i', $breadcrumb, $matches);
-            if (!empty($matches)) {
-                $response->getContent()->getHead()->addBreadcrumb($matches[2], $matches[1]);
-            } else {
-                $response->getContent()->getHead()->addBreadcrumb($breadcrumb, '/');
-            }
-        }
-        $response->getContent()->getHead()->addBreadcrumb($object['esc_name'], $object['url_canonical']);
+        $this->parseBreadcrumbs($city['pc_pagepath'] ?? '', $response);
+        $response->getContent()->getHead()->addBreadcrumb(html_entity_decode($object['esc_name']), $object['url_canonical']);
 
         $response->getContent()->getHead()->addMainMicroData('@type', 'Place');
         $response->getContent()->getHead()->addMainMicroData('name', $object['esc_name']);
@@ -322,6 +313,7 @@ class DefaultModule implements ModuleInterface
             if ($row['url_canonical'] !== ($url . '/')) {
                 throw new RedirectException($row['url_canonical']);
             }
+            $this->parseBreadcrumbs($row['pc_pagepath'] ?? '', $response);
 
             $points_data = $this->getModelPagePoints()->getPointsByCity($row['pc_id'], $this->user->isEditor());
 
@@ -395,6 +387,20 @@ class DefaultModule implements ModuleInterface
         $city = $this->getModelPageCities()->getCityByUrl(str_replace('/map.html', '', $url));
         $location = "/map/#center={$city['pc_longitude']},{$city['pc_latitude']}&zoom={$city['pc_latlon_zoom']}";
         throw new RedirectException($location);
+    }
+
+    private function parseBreadcrumbs(string $pagePath, SiteResponse $response): void
+    {
+        $breadcrumbs = explode(MPageCities::BREADCRUMBS_DELIMITER, $pagePath);
+        foreach ($breadcrumbs as $breadcrumb) {
+            $matches = [];
+            preg_match('/<a\s[^>]*href=\"([^\"]*)\"[^>]*>(.*)<\/a>/i', $breadcrumb, $matches);
+            if (!empty($matches)) {
+                $response->getContent()->getHead()->addBreadcrumb($matches[2], $matches[1]);
+            } else {
+                $response->getContent()->getHead()->addBreadcrumb($breadcrumb, '/');
+            }
+        }
     }
 
     /**
