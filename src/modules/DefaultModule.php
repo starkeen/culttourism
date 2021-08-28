@@ -201,7 +201,7 @@ class DefaultModule implements ModuleInterface
         $breadcrumbs = explode(MPageCities::BREADCRUMBS_DELIMITER, $city['pc_pagepath'] ?? '');
         foreach ($breadcrumbs as $breadcrumb) {
             $matches = [];
-            preg_match('/<a href="(.+)">(.+)<\/a>/', trim($breadcrumb), $matches);
+            preg_match('/<a\s[^>]*href=\"([^\"]*)\"[^>]*>(.*)<\/a>/i', trim($breadcrumb), $matches);
             if (!empty($matches)) {
                 $response->getContent()->getHead()->addBreadcrumb($matches[2], $matches[1]);
             } else {
