@@ -44,11 +44,14 @@
             <script type="text/javascript" src="/addons/jquery.ui/jquery.ui.datepicker-ru.js" defer="defer"></script>
             <link rel="stylesheet" href="/addons/jquery.ui/ui-lightness/jquery-ui-1.8.2.custom.css" type="text/css"/>
         {/if}
-        {if !empty($pageContent->getHead()->getMicroDataJSON())}
+        {if !empty($pageContent->getHead()->getMainMicroDataJSON())}
             <script type="application/ld+json">
-                {$pageContent->getHead()->getMicroDataJSON()}
+                {$pageContent->getHead()->getMainMicroDataJSON()}
             </script>
         {/if}
+        <script type="application/ld+json">
+            {$pageContent->getHead()->getWebsiteMicroDataJSON()}
+        </script>
     </head>
     <body>
         {literal}

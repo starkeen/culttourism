@@ -124,18 +124,37 @@ class Head
     /**
      * @return string
      */
-    public function getMicroDataJSON(): ?string
+    public function getMainMicroDataJSON(): ?string
     {
         $result = null;
 
         if (!empty($this->microMarking['@type'])) {
             $data = $this->microMarking;
-            $data['@context'] = 'http://schema.org';
+            $data['@context'] = 'https://schema.org';
             ksort($data);
             $result = json_encode($data, JSON_THROW_ON_ERROR);
         }
 
         return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebsiteMicroDataJSON(): ?string
+    {
+        $data = [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            'url' => 'https://culttourism.ru/',
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => 'https://culttourism.ru/search/?&q={query}',
+                'query' => 'required',
+            ],
+        ];
+
+        return json_encode($data, JSON_THROW_ON_ERROR);
     }
 
     /**

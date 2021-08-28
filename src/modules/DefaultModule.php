@@ -203,7 +203,8 @@ class DefaultModule implements ModuleInterface
         $response->getContent()->getHead()->addMicroData('description', $short);
         $response->getContent()->getHead()->addMicroData('address', [
             '@type' => 'PostalAddress',
-            'addressLocality' => $object['pt_adress'],
+            'addressLocality' => $city['pc_title'],
+            'streetAddress' => $object['pt_adress'],
         ]);
 
         if ($object['tr_sight']) {
