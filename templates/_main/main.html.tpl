@@ -49,6 +49,11 @@
                 {$pageContent->getHead()->getMainMicroDataJSON()}
             </script>
         {/if}
+        {if !empty($pageContent->getHead()->getBreadcrumbsMicroDataJSON())}
+            <script type="application/ld+json">
+                {$pageContent->getHead()->getBreadcrumbsMicroDataJSON()}
+            </script>
+        {/if}
         <script type="application/ld+json">
             {$pageContent->getHead()->getWebsiteMicroDataJSON()}
         </script>

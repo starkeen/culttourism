@@ -37,7 +37,12 @@ class Head
     /**
      * @var array
      */
-    private $microMarking = [];
+    private array $microMarking = [];
+
+    /**
+     * @var array
+     */
+    private array $breadcrumbsMarking = [];
 
     /**
      * @var array
@@ -156,6 +161,36 @@ class Head
         ];
 
         return json_encode($data, JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * @return string
+     */
+    public function getBreadcrumbsMicroDataJSON(): ?string
+    {
+        $result = null;
+
+        if (!empty($this->breadcrumbsMarking)) {
+            $data = [
+                '@context' => 'https://schema.org',
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [],
+            ];
+            $position = 1;
+            foreach ($this->breadcrumbsMarking as $pageItem) {
+                $data[] = [
+                    '@type' => 'ListItem',
+                    'position' => $position++,
+                    'item' => [
+                        '@id' => $pageItem,
+                        'name' => $pageItem,
+                    ],
+                ];
+            }
+            $result = json_encode($data, JSON_THROW_ON_ERROR);
+        }
+
+        return $result;
     }
 
     /**

@@ -4,6 +4,8 @@ use app\utils\Keyboard;
 
 class MPageCities extends Model
 {
+    public const BREADCRUMBS_DELIMITER = '>';
+
     protected $_table_pk = 'pc_id';
     protected $_table_order = 'pc_order';
     protected $_table_active = 'pc_active';
@@ -395,15 +397,76 @@ class MPageCities extends Model
         $this->_db->exec();
     }
 
+    public function getListWithoutBreadcrumbs(): array
+    {
+        $this->_db->sql = "SELECT pc.pc_id, pc.pc_title,
+                    pc.pc_country_id, rs.name AS country_name,
+                    pc.pc_region_id, pc_reg.pc_title AS region_name, rr.name AS region_name2, ru_reg.url AS region_url,
+                    pc.pc_city_id, rc.name AS city_name, ru_city.url AS city_url
+                FROM $this->_table_name pc
+                    LEFT JOIN ref_country rs ON rs.id = pc.pc_country_id
+                    LEFT JOIN ref_region rr ON rr.id = pc.pc_region_id AND rr.country_id = pc.pc_country_id
+                    LEFT JOIN ref_city rc ON rc.id = pc.pc_city_id AND rc.country_id = pc.pc_country_id AND rc.region_id = pc.pc_region_id
+    
+                    LEFT JOIN $this->_table_name pc_reg ON pc_reg.pc_region_id = pc.pc_region_id AND pc_reg.pc_city_id = 0 AND pc_reg.pc_country_id = pc.pc_country_id
+                    LEFT JOIN $this->_table_name pc_cou ON pc_cou.pc_country_id = pc.pc_country_id AND pc_reg.pc_region_id = 0 AND pc_reg.pc_city_id = 0
+    
+                    LEFT JOIN region_url ru_cou  ON ru_cou.uid  = pc_cou.pc_url_id
+                    LEFT JOIN region_url ru_reg  ON ru_reg.uid  = pc_reg.pc_url_id
+                    LEFT JOIN region_url ru_city ON ru_city.uid = pc.pc_url_id
+                WHERE pc.pc_pagepath IS NULL
+                ORDER BY pc.pc_id";
+        $this->_db->exec();
+
+        $out = [];
+        while ($row = $this->_db->fetch()) {
+            $out[$row['pc_id']] = '';
+
+            //-------------- страна --
+            if ($row['country_name']) {
+                $out[$row['pc_id']] .= $row['country_name'];
+            }
+
+            //-------------- регион --
+            if ($row['region_url'] && $row['region_name']) {
+                $out[$row['pc_id']] .= sprintf(
+                    ' %s <a href="%s" title="%s">%s</a>',
+                    self::BREADCRUMBS_DELIMITER,
+                    $row['region_url'] . '/',
+                    'перейти к странице ' . $row['region_name'],
+                    $row['region_name']
+                );
+            } elseif ($row['region_name']) {
+                $out[$row['pc_id']] .= ' ' . self::BREADCRUMBS_DELIMITER . " {$row['region_name']}";
+            } elseif ($row['region_name2']) {
+                $out[$row['pc_id']] .= ' ' . self::BREADCRUMBS_DELIMITER . " {$row['region_name2']}";
+            }
+
+            //-------------- город --
+            if ($row['city_url'] && $row['city_name']) {
+                $out[$row['pc_id']] .= sprintf(
+                    ' %s <a href="%s" title="%s">%s</a>',
+                    self::BREADCRUMBS_DELIMITER,
+                    $row['city_url'] . '/',
+                    'перейти к странице ' . $row['pc_title'],
+                    $row['pc_title']
+                );
+            }
+        }
+
+        return $out;
+    }
+
     /**
      * Крошки обновляем по странице региона
      *
      * @param int $id
      * @param string $path
      */
-    public function updatePagepath(int $id, string $path): void
+    public function updatePagePath(int $id, string $path): void
     {
-        $this->_db->sql = "UPDATE $this->_table_name SET pc_pagepath = :path
+        $this->_db->sql = "UPDATE $this->_table_name 
+                            SET pc_pagepath = :path
                             WHERE pc_id = :id AND pc_pagepath IS NULL";
         $this->_db->execute(
             [

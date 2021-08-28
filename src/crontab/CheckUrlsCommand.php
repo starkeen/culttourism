@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 declare(strict_types=1);
 
 namespace app\crontab;
@@ -12,7 +14,6 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\RedirectMiddleware;
 use GuzzleHttp\RequestOptions;
 use models\MLinks;
-use RuntimeException;
 use Throwable;
 
 class CheckUrlsCommand extends CrontabCommand
@@ -37,12 +38,12 @@ class CheckUrlsCommand extends CrontabCommand
     /**
      * @var MLinks
      */
-    private $linksModel;
+    private MLinks $linksModel;
 
     /**
      * @var ClientInterface
      */
-    private $httpClient;
+    private ClientInterface $httpClient;
 
     public function __construct(MLinks $linksModel, ClientInterface $httpClient)
     {
