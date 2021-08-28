@@ -163,6 +163,14 @@ class Head
         return json_encode($data, JSON_THROW_ON_ERROR);
     }
 
+    public function addBreadcrumb(string $title, string $url): void
+    {
+        $this->breadcrumbsMarking[] = [
+            'title' => $title,
+            'url' => $url,
+        ];
+    }
+
     /**
      * @return string
      */
@@ -178,13 +186,11 @@ class Head
             ];
             $position = 1;
             foreach ($this->breadcrumbsMarking as $pageItem) {
-                $data[] = [
+                $data['itemListElement'][] = [
                     '@type' => 'ListItem',
                     'position' => $position++,
-                    'item' => [
-                        '@id' => $pageItem,
-                        'name' => $pageItem,
-                    ],
+                    'item' => Urls::getAbsoluteURL($pageItem['url']),
+                    'name' => $pageItem['title'],
                 ];
             }
             $result = json_encode($data, JSON_THROW_ON_ERROR);

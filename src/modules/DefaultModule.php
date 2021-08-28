@@ -198,6 +198,18 @@ class DefaultModule implements ModuleInterface
         $response->getContent()->getHead()->addTitleElement($city['pc_title_unique']);
         $response->getContent()->getHead()->addTitleElement($object['esc_name']);
 
+        $breadcrumbs = explode(MPageCities::BREADCRUMBS_DELIMITER, $city['pc_pagepath'] ?? '');
+        foreach ($breadcrumbs as $breadcrumb) {
+            $matches = [];
+            preg_match('/<a href="(.+)">(.+)<\/a>/', trim($breadcrumb), $matches);
+            if (!empty($matches)) {
+                $response->getContent()->getHead()->addBreadcrumb($matches[2], $matches[1]);
+            } else {
+                $response->getContent()->getHead()->addBreadcrumb(trim($breadcrumb), '/');
+            }
+        }
+        $response->getContent()->getHead()->addBreadcrumb($object['esc_name'], $object['url_canonical']);
+
         $response->getContent()->getHead()->addMainMicroData('@type', 'Place');
         $response->getContent()->getHead()->addMainMicroData('name', $object['esc_name']);
         $response->getContent()->getHead()->addMainMicroData('description', $short);
