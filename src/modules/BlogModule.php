@@ -313,13 +313,13 @@ class BlogModule extends Module implements ModuleInterface
     private function addYearBreadcrumbs(int $year, SiteResponse $response): void
     {
         $response->getContent()->getHead()->addBreadcrumb('Блог', self::MODULE_URL);
-        $response->getContent()->getHead()->addBreadcrumb($year . ' год', self::MODULE_URL . $year . '/');
+        $response->getContent()->getHead()->addBreadcrumb('Записи за ' . $year . ' год', self::MODULE_URL . $year . '/');
     }
 
     private function addMonthBreadcrumbs(int $year, string $monthNumber, SiteResponse $response): void
     {
         $response->getContent()->getHead()->addBreadcrumb(
-            MonthName::getMonthName((int) $monthNumber) . ' ' . $year . ' года',
+            'Записи за ' . MonthName::getMonthName((int) $monthNumber) . ' ' . $year . ' года',
             self::MODULE_URL . $year . '/' . $monthNumber . '/'
         );
     }
