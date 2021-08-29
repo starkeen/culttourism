@@ -138,6 +138,8 @@ class BlogModule extends Module implements ModuleInterface
     {
         $response->getContent()->getHead()->setCanonicalUrl(self::MODULE_URL);
 
+        $response->getContent()->getHead()->addBreadcrumb('Блог', self::MODULE_URL);
+
         $entries = $this->blogRepository->getLastEntries(20, $this->webUser->isEditor());
         if ($this->webUser->isEditor()) {
             $response->setLastEditTimestampToFuture();
@@ -187,6 +189,10 @@ class BlogModule extends Module implements ModuleInterface
         $response->getContent()->getHead()->addKeyword($entry->getYear() . ' год');
         $response->getContent()->getHead()->setCanonicalUrl($entry->getRelativeLink());
 
+        $this->addYearBreadcrumbs($entry->getYear(), $response);
+        $this->addMonthBreadcrumbs($entry->getYear(), $entry->getMonthString(), $response);
+        $response->getContent()->getHead()->addBreadcrumb($entry->br_title, $entry->getRelativeLink());
+
         $response->setLastEditTimestamp($entry->getTimestamp());
 
         $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'article');
@@ -216,12 +222,16 @@ class BlogModule extends Module implements ModuleInterface
 
         $canonical = self::MODULE_URL . $year . '/';
 
+        $this->addYearBreadcrumbs($year, $response);
+
         if ($month !== null) {
+            $monthStringNumber = sprintf('%02d', $month);
             $monthName = MonthName::getMonthName($month);
             $response->getContent()->getHead()->addTitleElement(mb_convert_case($monthName, MB_CASE_TITLE, 'UTF-8'));
             $response->getContent()->getHead()->addKeyword('месяц ' . $monthName);
             $response->getContent()->getHead()->addDescription("Записи в блоге за $monthName");
-            $canonical .= sprintf('%02d', $month) . '/';
+            $this->addMonthBreadcrumbs($year, $monthStringNumber, $response);
+            $canonical .= $monthStringNumber . '/';
         }
 
         $response->getContent()->getHead()->setCanonicalUrl($canonical);
@@ -298,5 +308,19 @@ class BlogModule extends Module implements ModuleInterface
 
         $this->blogRepository->save($entry);
         $response->getContent()->setJson(['result' => true]);
+    }
+
+    private function addYearBreadcrumbs(int $year, SiteResponse $response): void
+    {
+        $response->getContent()->getHead()->addBreadcrumb('Блог', self::MODULE_URL);
+        $response->getContent()->getHead()->addBreadcrumb($year . ' год', self::MODULE_URL . $year . '/');
+    }
+
+    private function addMonthBreadcrumbs(int $year, string $monthNumber, SiteResponse $response): void
+    {
+        $response->getContent()->getHead()->addBreadcrumb(
+            MonthName::getMonthName((int) $monthNumber) . ' ' . $year . ' года',
+            self::MODULE_URL . $year . '/' . $monthNumber . '/'
+        );
     }
 }

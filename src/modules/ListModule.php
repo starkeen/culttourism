@@ -79,7 +79,11 @@ class ListModule extends Module implements ModuleInterface
                 $objImage = Urls::getAbsoluteURL($list['ls_image']);
                 $response->getContent()->getHead()->addOGMeta(OgType::IMAGE(), $objImage);
             }
-            $response->getContent()->getHead()->setCanonicalUrl('/list/' . $slug . '.html');
+            $canonical = '/list/' . $slug . '.html';
+            $response->getContent()->getHead()->setCanonicalUrl($canonical);
+
+            $response->getContent()->getHead()->addBreadcrumb('Списки достопримечательностей', '/list/');
+            $response->getContent()->getHead()->addBreadcrumb($list['ls_title'], $canonical);
 
             $response->setLastEditTimestamp($list['last_update']);
 
@@ -100,6 +104,8 @@ class ListModule extends Module implements ModuleInterface
     private function prepareIndex(SiteResponse $response): void
     {
         $response->getContent()->getHead()->setCanonicalUrl('/list/');
+
+        $response->getContent()->getHead()->addBreadcrumb('Списки достопримечательностей', '/list/');
 
         $lst = new MLists($this->db);
 

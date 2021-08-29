@@ -55,6 +55,8 @@ abstract class Module
         $moduleData = $this->getModelModules()->getModuleByURI($this->getModuleKey());
 
         if (!empty($moduleData)) {
+            $canonical = '/' . $moduleData['md_url'] . '/';
+
             if ((int) $moduleData['md_photo_id'] !== 0) {
                 $ph = new MPhotos($this->db);
                 $photo = $ph->getItemByPk($moduleData['md_photo_id']);
@@ -76,7 +78,7 @@ abstract class Module
             $response->getContent()->getHead()->addDescription($this->globalConfig->getDefaultPageDescription());
             $response->getContent()->getHead()->addDescription($moduleData['md_description']);
 
-            $response->getContent()->getHead()->setCanonicalUrl('/' . $moduleData['md_url'] . '/');
+            $response->getContent()->getHead()->setCanonicalUrl($canonical);
 
             $response->getContent()->getHead()->addOGMeta(OgType::TITLE(), $this->globalConfig->getDefaultPageTitle());
             $response->getContent()->getHead()->addOGMeta(OgType::DESCRIPTION(), $this->globalConfig->getDefaultPageDescription());

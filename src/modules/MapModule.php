@@ -110,6 +110,8 @@ class MapModule implements ModuleInterface
         $response->getContent()->getHead()->setCanonicalUrl('/map/');
 
         $response->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
+
+        $response->getContent()->getHead()->addBreadcrumb('Карта достопримечательностей', '/map/');
     }
 
     /**
