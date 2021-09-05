@@ -20,7 +20,7 @@ class MainPageModule extends Module implements ModuleInterface
 {
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
-        if ($request->getGETParam('from') !== null) {
+        if ($request->getGETParam('from') !== null || $request->getGETParam('ref') !== null) {
             throw new RedirectException('/');
         }
 
