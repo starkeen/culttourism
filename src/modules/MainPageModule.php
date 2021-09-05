@@ -11,6 +11,7 @@ use app\core\SiteRequest;
 use app\core\SiteResponse;
 use app\core\WebUser;
 use app\db\MyDB;
+use app\exceptions\RedirectException;
 use app\sys\TemplateEngine;
 use MBlogEntries;
 use MNewsItems;
@@ -19,6 +20,10 @@ class MainPageModule extends Module implements ModuleInterface
 {
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
+        if ($request->getGETParam('from') !== null) {
+            throw new RedirectException('/');
+        }
+
         $bg = new MBlogEntries($this->db);
         $ns = new MNewsItems($this->db);
 
