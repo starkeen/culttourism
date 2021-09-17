@@ -89,7 +89,7 @@
                             <a href="/" title="Главная страница">Главная</a>
                         </li>
                         <li class="navigate" id="mainmenu_item_2">
-                            <a href="/city/" title="Города">Города</a>
+                            <a href="/map/" title="Карта достопримечательностей">Карта</a>
                         </li>
                         <li class="navigate" id="mainmenu_item_3">
                             <a href="/blog/" title="Блог проекта">Блог</a>
