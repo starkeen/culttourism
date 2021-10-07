@@ -40,6 +40,8 @@ class ListModule extends Module implements ModuleInterface
         } //========================   L I S T   ================================
         elseif (preg_match('/([a-z0-9_-]+)\.html/i', $urlLastPart, $regs)) {
             $this->prepareListBySlug($regs[1], $response);
+        } else {
+            throw new NotFoundException();
         }
     }
 
