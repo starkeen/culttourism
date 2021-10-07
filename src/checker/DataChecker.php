@@ -392,7 +392,9 @@ class DataChecker
             $items = $this->getCheckingPortion($count, 'pt_active');
             foreach ($items as $item) {
                 $result = $this->typograph->typo($item[$this->entityField]);
-                $pt->updateByPk($item[$this->entityId], [$this->entityField => $result]);
+                if ($result !== $item[$this->entityField]) {
+                    $pt->updateByPk($item[$this->entityId], [$this->entityField => $result]);
+                }
                 $dc->markChecked($this->entityType, $item[$this->entityId], $this->entityField, $result);
             }
         }
@@ -420,7 +422,9 @@ class DataChecker
             $items = $this->getCheckingPortion($count, 'pc_active');
             foreach ($items as $item) {
                 $result = $this->typograph->typo($item[$this->entityField]);
-                $pc->updateByPk($item[$this->entityId], [$this->entityField => $result]);
+                if ($result !== $item[$this->entityField]) {
+                    $pc->updateByPk($item[$this->entityId], [$this->entityField => $result]);
+                }
                 $dc->markChecked($this->entityType, $item[$this->entityId], $this->entityField, $result);
             }
         }
