@@ -276,7 +276,10 @@ class MPageCities extends Model
                 unset($values['pc_longitude']);
             }
         }
-        $values['pc_lastup_date'] = $this->now();
+        if (!$this->skipLastUpdate) {
+            $values['pc_lastup_date'] = $this->now();
+            $values['pc_lastup_user'] = $this->getUserId();
+        }
         return parent::updateByPk($id, $values, $files);
     }
 

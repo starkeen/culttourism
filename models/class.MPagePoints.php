@@ -339,8 +339,10 @@ class MPagePoints extends Model
             $values['pt_website'] = 'http://' . trim($values['pt_website']);
         }
 
-        $values['pt_lastup_date'] = $this->now();
-        $values['pt_lastup_user'] = $this->getUserId();
+        if (!$this->skipLastUpdate) {
+            $values['pt_lastup_date'] = $this->now();
+            $values['pt_lastup_user'] = $this->getUserId();
+        }
 
         return parent::updateByPk($id, $values, $files);
     }

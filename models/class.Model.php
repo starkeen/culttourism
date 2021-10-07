@@ -19,6 +19,8 @@ abstract class Model
     protected $_files_dir = 'files'; // директория для привязанных файлов
     protected $_pager; // листалка для многостраничной выборки
 
+    protected bool $skipLastUpdate = false;
+
     /**
      * @param MyDB $db
      */
@@ -284,5 +286,10 @@ abstract class Model
     public function getUserId(): int
     {
         return isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : 1;
+    }
+
+    public function setSkipUpdateDate(bool $flag): void
+    {
+        $this->skipLastUpdate = $flag;
     }
 }
