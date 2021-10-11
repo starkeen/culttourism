@@ -114,6 +114,7 @@ class ListModule extends Module implements ModuleInterface
         $indexLists = [];
         foreach ($lst->getActive() as $list) {
             $response->setMaxLastEditTimestamp($list['last_update']);
+            $list['image'] = $list['ph_src'] ?? $list['ls_image'];
             $indexLists[] = $list;
         }
 

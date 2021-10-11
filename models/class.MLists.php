@@ -18,6 +18,7 @@ class MLists extends Model
             'ls_description',
             'ls_text',
             'ls_image',
+            'photo_id',
             'ls_update_date',
             'ls_order',
             'ls_active',
@@ -61,13 +62,15 @@ class MLists extends Model
     public function getActive(): array
     {
         $this->_db->sql = "SELECT ls.*,
+                                ph.ph_src,
                                 UNIX_TIMESTAMP(ls.ls_update_date) AS last_update,
                                 (SELECT COUNT(*) FROM {$this->_tables_related['lists_items']} WHERE li_ls_id = ls.ls_id) AS cnt,
                                 CHAR_LENGTH(TRIM(ls_description)) AS len_descr,
                                 CHAR_LENGTH(TRIM(ls_text)) AS len_text
                             FROM $this->_table_name ls
+                            LEFT JOIN photos AS ph ON ph.ph_id = ls.photo_id
                             WHERE ls.ls_active = 1
-                            ORDER BY $this->_table_order ASC";
+                            ORDER BY ls_order ASC";
         $this->_db->exec();
         return $this->_db->fetchAll();
     }
