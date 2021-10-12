@@ -384,7 +384,7 @@ class DataChecker
         $this->entityId = 'pt_id';
         $dc = new MDataCheck($this->db);
         $pt = new MPagePoints($this->db);
-        $pt->setSkipUpdateDate(false);
+        $pt->setSkipUpdateDate(true);
 
         $fields = ['pt_name', 'pt_description', 'pt_adress'];
         foreach ($fields as $fld) {
@@ -414,7 +414,7 @@ class DataChecker
         $this->entityId = 'pc_id';
         $dc = new MDataCheck($this->db);
         $pc = new MPageCities($this->db);
-        $pc->setSkipUpdateDate(false);
+        $pc->setSkipUpdateDate(true);
 
         $fields = ['pc_text', 'pc_announcement', 'pc_description'];
         foreach ($fields as $fld) {
