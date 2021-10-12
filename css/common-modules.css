@@ -181,7 +181,7 @@
     left: 1px;
     height: 180px;
     width: 330px;
-    opacity: 0.40;
+    opacity: 0.60;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -194,7 +194,7 @@
     width: 318px;
     margin: 0 1px 0 1px;
     padding: 4px;
-    opacity: 0.70;
+    opacity: 0.90;
     color: #ffffff;
     background-color: #14649d;
     font-weight: bold;
@@ -206,9 +206,14 @@
     bottom: 1px;
     left: 1px;
     width: 328px;
+    min-height: 62px;
+    max-height: 100px;
     margin: 0 3px 0 0;
-    opacity: 0.70;
-    background-color: #ffffff;
+    opacity: 0.5;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 110%;
+    vertical-align: bottom;
 }
 
 .list-half-left {
