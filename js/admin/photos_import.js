@@ -33,7 +33,7 @@ $(document).ready(function () {
         $("#photos-object-detail-longitude").val($element.data("longitude"));
         $("#photos-object-detail").show();
         $("#photos-object-search").click();
-        $("#photos-object-upload-form").show();
+        $("#photos-object-upload-form-block").show();
         $("#photos-upload-bind-ptid").val($element.data("id"));
     });
 
@@ -135,7 +135,7 @@ $(document).ready(function () {
             function (response) {
                 if (response.photo_id) {
                     $("#photos-object-detail-preview").empty().hide();
-                    $("#photos-object-upload-form").hide();
+                    $("#photos-object-upload-form-block").hide();
                 } else {
                     alert(response.error_text);
                 }
@@ -157,10 +157,12 @@ $(document).ready(function () {
     });
 
     $("#photos-object-upload-button").live("click", function () {
-        $("#photos-object-upload-form").hide();
+        $("#photos-object-upload-form").submit();
+        $("#photos-object-upload-form-block").hide();
+        $("#photos-object-upload-file").val("");
     });
 
-    // Очистка блока поиска
+        // Очистка блока поиска
     $("#photos-object-clear").live("click", function () {
         $("#photos-object-detail-results").empty();
         $("#photos-object-detail-preview").empty();
