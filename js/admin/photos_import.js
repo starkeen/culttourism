@@ -33,6 +33,8 @@ $(document).ready(function () {
         $("#photos-object-detail-longitude").val($element.data("longitude"));
         $("#photos-object-detail").show();
         $("#photos-object-search").click();
+        $("#photos-object-upload-form").show();
+        $("#photos-upload-bind-ptid").val($element.data("id"));
     });
 
     // Поиск готовых картинок
@@ -151,6 +153,11 @@ $(document).ready(function () {
         } else {
             alert('Please allow popups for this website');
         }
+    });
+
+    $("#photos-object-upload-button").live("click", function () {
+        $("#photos-object-upload-form").hide();
+        $("#photos-object-upload-file").val("");
     });
 
     // Очистка блока поиска

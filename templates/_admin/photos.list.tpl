@@ -2,7 +2,6 @@
 <h3>{$title}</h3>
 
 <div id="photos-to-flickr" class="photos-block">
-    <a href="./flickr.php">Импорт из Flickr</a>
     <a href="./photos_import.php">Импорт фото</a>
 </div>
 
