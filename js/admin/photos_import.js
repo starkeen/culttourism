@@ -158,7 +158,6 @@ $(document).ready(function () {
 
     $("#photos-object-upload-button").live("click", function () {
         $("#photos-object-upload-form").hide();
-        $("#photos-object-upload-file").val("");
     });
 
     // Очистка блока поиска

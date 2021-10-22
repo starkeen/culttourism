@@ -31,11 +31,9 @@
             <form action="./photos.php?act=upload" method="post" target="_blank" enctype="multipart/form-data">
                 <input type="file" id="photos-object-upload-file" name="photo" accept="image/jpeg,image/png" />
                 <input type="hidden" name="pcid" value="0" />
+                <input type="hidden" id="photos-upload-bind-ptid" name="ptid" value="0">
                 <input type="hidden" name="pcid_add" value="0" />
                 <input type="hidden" name="ptid_add" value="1">
-                <input type="hidden" name="mdid" value="0" />
-                <input type="hidden" name="pgid" value="0" />
-                <input type="hidden" id="photos-upload-bind-ptid" name="ptid" value="0">
                 <input type="submit" id="photos-object-upload-button" value="Загрузить" />
             </form>
         </div>
