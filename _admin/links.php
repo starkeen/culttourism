@@ -122,6 +122,10 @@ foreach ($pager->out as $link) {
         $currentUrlDomain = parse_url($link['url'], PHP_URL_HOST);
         $redirectUrlDomain = parse_url($link['redirect_url'], PHP_URL_HOST);
 
+        if ($currentUrlDomain === null) {
+            $currentUrlDomain = '-empty-';
+        }
+
         if (strpos($currentUrlDomain, 'www.') === 0) {
             $currentUrlDomain = str_replace('www.', '', $currentUrlDomain);
         }
