@@ -19,7 +19,7 @@ class PlainHttpClientTest extends TestCase
     {
         $guzzleMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->addMethods(['get'])
+            ->onlyMethods(['get'])
             ->getMock();
         $responseMock = $this->getMockBuilder(Response::class)
             ->disableOriginalConstructor()
@@ -47,7 +47,7 @@ class PlainHttpClientTest extends TestCase
     {
         $guzzleMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
-            ->addMethods(['get'])
+            ->onlyMethods(['get'])
             ->getMock();
         $responseMock = $this->getMockBuilder(Response::class)
             ->disableOriginalConstructor()
