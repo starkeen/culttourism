@@ -1,4 +1,9 @@
 <?php
 
+use app\crontab\WordstatTrendsCommand;
+
+
 $ws = new MWordstatTrends($db);
-$ws->calcToday();
+
+$command = new WordstatTrendsCommand($ws);
+$command->run();
