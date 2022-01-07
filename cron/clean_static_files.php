@@ -1,5 +1,6 @@
 <?php
 
-use app\core\assets\AssetsServiceBuilder;
+use app\crontab\CleanStaticFilesCommand;
 
-AssetsServiceBuilder::build()->clean();
+$command = new CleanStaticFilesCommand();
+$command->run();

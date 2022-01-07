@@ -1,3 +1,6 @@
 <?php
 
-$cnt = Mailing::sendFromPool(10);
+use app\crontab\MailerCommand;
+
+$command = new MailerCommand();
+$command->run();
