@@ -57,6 +57,16 @@
         <script type="application/ld+json">
             {$pageContent->getHead()->getWebsiteMicroDataJSON()}
         </script>
+        <link rel="preconnect" href="https://mc.yandex.ru" />
+        <link rel="preconnect" href="https://www.google.com" />
+        <link rel="preconnect" href="https://api-maps.yandex.ru" />
+        <link rel="preconnect" href="https://core-renderer-tiles.maps.yandex.net" />
+        <link rel="dns-prefetch" href="https://mc.yandex.ru" />
+        <link rel="dns-prefetch" href="https://www.google.com" />
+        <link rel="dns-prefetch" href="https://api-maps.yandex.ru" />
+        <link rel="dns-prefetch" href="https://core-renderer-tiles.maps.yandex.net" />
+        <link rel="prerender" href="https://culttourism.ru/list/" />
+        <link rel="prerender" href="https://culttourism.ru/map/" />
     </head>
     <body>
         {literal}
