@@ -403,10 +403,10 @@ class AjaxModule implements ModuleInterface
 
     /**
      * @param string $slugLine
-     * @return null|string
+     * @return string
      * @throws NotFoundException
      */
-    private function getPointBySlugLine(string $slugLine): ?string
+    private function getPointBySlugLine(string $slugLine): string
     {
         if ($slugLine === '') {
             throw new NotFoundException();
@@ -416,7 +416,7 @@ class AjaxModule implements ModuleInterface
         $objects = $pts->searchSlugline($slugLine);
         $object = $objects[0] ?? false;
         if (!$object) {
-            return null;
+            throw new NotFoundException();
         }
 
         $object['page_link'] = $object['url_canonical'];
