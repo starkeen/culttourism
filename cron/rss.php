@@ -18,7 +18,7 @@ $be = new MBlogEntries($db);
 
 $gen = new RSSGenerator();
 
-$bitlyed = new RSSBitlyer($this->generator, $bitly);
+$bitlyed = new RSSBitlyer($gen, $bitly);
 
 $command = new RSSCommand($gen, $be, $bitlyed);
 $command->run();
