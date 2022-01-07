@@ -16,7 +16,7 @@ use GuzzleHttp\RequestOptions;
 use models\MLinks;
 use Throwable;
 
-class CheckUrlsCommand extends CrontabCommand
+class CheckUrlsCommand extends AbstractCrontabCommand
 {
     private const HTTP_REQUEST_OPTIONS = [
         RequestOptions::ALLOW_REDIRECTS => [

@@ -8,7 +8,7 @@ use app\db\MyDB;
 use app\exceptions\CrontabException;
 use app\sys\TemplateEngine;
 
-class SitemapCommand extends CrontabCommand
+class SitemapCommand extends AbstractCrontabCommand
 {
     private MyDB $db;
 

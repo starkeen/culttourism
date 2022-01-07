@@ -6,7 +6,7 @@ namespace app\crontab;
 
 use MPageCities;
 
-class BreadcrumbsCommand extends CrontabCommand
+class BreadcrumbsCommand extends AbstractCrontabCommand
 {
     private MPageCities $pageCitiesModel;
 

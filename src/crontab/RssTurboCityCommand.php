@@ -7,7 +7,7 @@ namespace app\crontab;
 use MPageCities;
 use SimpleXMLElement;
 
-class RssTurboCityCommand extends CrontabCommand
+class RssTurboCityCommand extends AbstractCrontabCommand
 {
     /**
      * @var MPageCities

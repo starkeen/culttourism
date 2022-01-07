@@ -7,7 +7,7 @@ namespace app\crontab;
 use MBlogEntries;
 use SimpleXMLElement;
 
-class RssTurboBlogCommand extends CrontabCommand
+class RssTurboBlogCommand extends AbstractCrontabCommand
 {
     /**
      * @var MBlogEntries

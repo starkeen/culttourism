@@ -8,7 +8,7 @@ use app\api\YandexWebmasterAPI;
 use app\model\criteria\PointCriteria;
 use app\rss\YandexTurboPointsGenerator;
 
-class RssTurboPointsCommand extends CrontabCommand
+class RssTurboPointsCommand extends AbstractCrontabCommand
 {
     /**
      * @var YandexTurboPointsGenerator

@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Throwable;
 
-class ImportNewsCommand extends CrontabCommand
+class ImportNewsCommand extends AbstractCrontabCommand
 {
     private const RSS_TAGS = [
         'title',

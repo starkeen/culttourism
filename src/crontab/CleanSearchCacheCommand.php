@@ -6,7 +6,7 @@ namespace app\crontab;
 
 use MSearchLog;
 
-class CleanSearchCacheCommand extends CrontabCommand
+class CleanSearchCacheCommand extends AbstractCrontabCommand
 {
     /**
      * @var MSearchLog
