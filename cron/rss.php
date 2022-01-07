@@ -1,11 +1,9 @@
 <?php
 
+use app\crontab\RSSCommand;
 use app\includes\Bitly;
-use app\rss\IRSSGenerator;
-use app\rss\RSSAddUTM;
 use app\rss\RSSBitlyer;
 use app\rss\RSSGenerator;
-use app\rss\RSSInstantArticler;
 use GuzzleHttp\Client;
 
 $client = new Client(
@@ -17,31 +15,10 @@ $curlCache = new MCurlCache($db);
 $bitly = new Bitly($client, $curlCache);
 
 $be = new MBlogEntries($db);
-$entries = $be->getLastActive(5);
 
 $gen = new RSSGenerator();
-$gen->title = 'Культурный туризм в России';
-$gen->link = GLOBAL_SITE_URL;
-$gen->email = 'abuse@culttourism.ru';
-$gen->description = 'Достопримечательности России и ближнего зарубежья: музеи, церкви и монастыри, памятники архитектуры';
 
-$bitlyed = new RSSBitlyer($gen, $bitly);
+$bitlyed = new RSSBitlyer($this->generator, $bitly);
 
-$generators = [
-    'blog.xml' => new RSSAddUTM($bitlyed, 'feedburner'),
-    'blog-dlvrit.xml' => new RSSAddUTM($bitlyed, 'dlvrit'),
-    'blog-facebook.xml' => new RSSAddUTM(new RSSInstantArticler($bitlyed), 'facebook'),
-    'blog-facebook-dev.xml' => new RSSAddUTM(new RSSInstantArticler($bitlyed), 'facebook'),
-    'blog-facebook-ifttt.xml' => new RSSAddUTM(new RSSInstantArticler($bitlyed), 'facebook'),
-    'blog-twitter.xml' => new RSSAddUTM($bitlyed, 'twitter'),
-    'blog-telegram.xml' => new RSSAddUTM($bitlyed, 'telegram'),
-    'blog-zen.xml' => new RSSAddUTM($bitlyed, 'zen'),
-];
-
-foreach ($generators as $fileType => $generator) {
-    /** @var IRSSGenerator $generator */
-    $fileName = sprintf('%s/feed/%s', GLOBAL_DIR_DATA, $fileType); // имя RSS-файла
-    $generator->url = sprintf('%sdata/feed/%s', GLOBAL_SITE_URL, $fileType); // URL файла
-
-    file_put_contents($fileName, $generator->process($entries));
-}
+$command = new RSSCommand($gen, $be, $bitlyed);
+$command->run();
