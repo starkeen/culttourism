@@ -94,10 +94,15 @@ class FeedbackModule extends Module implements ModuleInterface
                     $webURL = $matches[0];
                 }
             }
+            $senderName = trim(strip_tags($_POST['name'] ?? ''));
 
-            $spamContentChecker = new FeedbackSpamChecker(Cache::i(CachesConfig::CANDIDATES_BLACKLIST), $this->candidateDomainBlacklistRepository);
+            $spamDomainsCache = Cache::i(CachesConfig::CANDIDATES_BLACKLIST);
+            $spamContentChecker = new FeedbackSpamChecker($spamDomainsCache, $this->candidateDomainBlacklistRepository);
             if ($spamStatusOK) {
                 $spamStatusOK = !$spamContentChecker->isSpamURL($webURL);
+            }
+            if ($spamStatusOK) {
+                $spamStatusOK = !$spamContentChecker->isSpamSender($senderName);
             }
 
             $cp->add(
@@ -110,7 +115,7 @@ class FeedbackModule extends Module implements ModuleInterface
                     'cp_web' => $webURL,
                     'cp_worktime' => $_POST['worktime'],
                     'cp_referer' => $_SESSION['feedback_referer'],
-                    'cp_sender' => $_POST['name'] . ' <' . $_POST['email'] . '>',
+                    'cp_sender' => $senderName . ' <' . $_POST['email'] . '>',
                     'cp_source_id' => MCandidatePoints::SOURCE_FORM,
                     'cp_state' => $spamStatusOK === true ? MCandidatePoints::STATUS_NEW : MCandidatePoints::STATUS_SPAM,
                     'cp_active' => $spamStatusOK === true ? 1 : 0,

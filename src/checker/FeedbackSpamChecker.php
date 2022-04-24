@@ -45,6 +45,11 @@ class FeedbackSpamChecker
         return in_array($host, $spamDomains, true);
     }
 
+    public function isSpamSender(string $sender): bool
+    {
+        return $sender === 'Eric';
+    }
+
     public function appendURL(string $url): void
     {
         if (trim($url) !== '') {
