@@ -40,14 +40,15 @@ class RankerCommand extends AbstractCrontabCommand
                                 pp.pt_rank = 1000 * pp.pt_cnt_shows / (DATEDIFF(now(), pp.pt_create_date) + 1) + 100 * pp.pt_is_best
                           ";
         $this->db->exec();
-        $this->db->sql = "
+        $pdo = $this->db->getPDO();
+        $sql = "
                             SET @counter = 0;
                             UPDATE $dbp 
                             SET pt_order = @counter := @counter + 1
                             WHERE pt_deleted_at IS NULL
                             ORDER BY pt_rank DESC;
                           ";
-        $this->db->exec();
+        $pdo->exec($sql);
 
         $this->db->sql = "UPDATE $dbc pc SET pc.pc_cnt_shows = pc.pc_cnt_shows + 
             (SELECT 100*count(sc.sc_id) as cnt FROM $dbsc sc WHERE sc.sc_citypage_id = pc.pc_id)";

@@ -113,7 +113,7 @@ class MyDB
      * @return PDO
      * @throws MyPDOException
      */
-    private function getPDO(): PDO
+    public function getPDO(): PDO
     {
         if ($this->pdo === null) {
             try {
