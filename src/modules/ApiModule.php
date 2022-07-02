@@ -96,7 +96,7 @@ class ApiModule extends Module implements ModuleInterface
                     LEFT JOIN $dprt rt ON rt.tp_id = pt.pt_type_id
                     LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
                     LEFT JOIN $dpru ru ON ru.uid = pc.pc_url_id
-                    WHERE pt.pt_active = 1
+                    WHERE pt.pt_deleted_at IS NULL
                     $filter
                     AND pt.pt_latitude > 0 AND pt.pt_longitude > 0
                     ORDER BY dist_m
@@ -134,7 +134,7 @@ class ApiModule extends Module implements ModuleInterface
                     LEFT JOIN $dprt rt ON rt.tp_id = pt.pt_type_id
                     LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
                     LEFT JOIN $dpru ru ON ru.uid = pc.pc_url_id
-                    WHERE pt.pt_active = 1
+                    WHERE pt.pt_deleted_at IS NULL
                     AND pt.pt_id = '$id'
                     LIMIT 1";
         $db->exec();
@@ -198,7 +198,7 @@ class ApiModule extends Module implements ModuleInterface
                     LEFT JOIN $dprt rt ON rt.tp_id = pt.pt_type_id
                     LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
                     LEFT JOIN $dpru ru ON ru.uid = pc.pc_url_id
-                    WHERE pt.pt_active = 1
+                    WHERE pt.pt_deleted_at IS NULL
                     $filter
                     AND pt.pt_latitude > 0 AND pt.pt_longitude > 0
                     ORDER BY dist_m
@@ -252,7 +252,7 @@ class ApiModule extends Module implements ModuleInterface
                     LEFT JOIN $dprt rt ON rt.tp_id = pt.pt_type_id
                     LEFT JOIN $dbpc pc ON pc.pc_id = pt.pt_citypage_id
                     LEFT JOIN $dpru ru ON ru.uid = pc.pc_url_id
-                    WHERE pt.pt_active = 1
+                    WHERE pt.pt_deleted_at IS NULL
                     AND pt.pt_id = '$id'
                     LIMIT 1";
         $db->exec();

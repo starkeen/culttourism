@@ -23,16 +23,16 @@ use app\model\constant\PointType;
  * @property int $pt_city_id
  * @property int $pt_region_id
  * @property int $pt_country_id
- * @property int $pt_cnt_shows
- * @property int $pt_rank
  * @property string|null $pt_website
  * @property string|null $pt_worktime
  * @property string|null $pt_adress
  * @property string|null $pt_phone
  * @property string|null $pt_email
  * @property int $pt_photo_id
+ * @property int $pt_cnt_shows
+ * @property int $pt_rank
+ * @property int|null $pt_order
  * @property int $pt_is_best
- * @property int $pt_active
  * @property int $pt_deleted_at
  */
 class Point extends Entity

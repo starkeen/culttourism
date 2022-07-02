@@ -500,7 +500,7 @@ class MPageCities extends Model
         $this->_db->sql = "UPDATE $this->_table_name pc
                             LEFT JOIN (SELECT pt.pt_citypage_id AS pc, COUNT(1) cnt
                                         FROM {$this->_tables_related['pagepoints']} pt
-                                        WHERE pt.pt_active = 1
+                                        WHERE pt.pt_deleted_at IS NULL
                                         GROUP BY pt.pt_citypage_id) AS stat
                                 ON stat.pc = pc.pc_id
                             SET pc.pc_count_points = stat.cnt";

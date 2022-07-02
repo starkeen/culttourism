@@ -188,7 +188,7 @@ class DefaultModule implements ModuleInterface
         $response->setLastEditTimestamp($object['last_update']);
 
         // скрываем удалённые объекты из поиска
-        if ((int) $object['pt_active'] === 0) {
+        if ($object['pt_deleted_at'] !== null) {
             $response->getContent()->getHead()->setRobotsIndexing('noindex,follow');
         }
 

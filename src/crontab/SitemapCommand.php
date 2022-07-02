@@ -69,7 +69,7 @@ class SitemapCommand extends AbstractCrontabCommand
             FROM pagepoints p
                 LEFT JOIN pagecity c ON c.pc_id = p.pt_citypage_id
                     LEFT JOIN region_url u ON u.uid = c.pc_url_id
-            WHERE pt_active = 1
+            WHERE pt_deleted_at IS NULL
             ORDER BY p.pt_lastup_date DESC";
         $this->db->exec();
         while ($row = $this->db->fetch()) {

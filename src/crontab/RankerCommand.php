@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\crontab;
 
+use app\db\exceptions\MyPDOException;
 use app\db\MyDB;
 
 class RankerCommand extends AbstractCrontabCommand
@@ -15,6 +16,10 @@ class RankerCommand extends AbstractCrontabCommand
         $this->db = $db;
     }
 
+    /**
+     * @return void
+     * @throws MyPDOException
+     */
     public function run(): void
     {
         $dbp = $this->db->getTableName('pagepoints');
@@ -29,7 +34,19 @@ class RankerCommand extends AbstractCrontabCommand
         $this->db->sql = "TRUNCATE TABLE $dbsp";
         $this->db->exec();
 
-        $this->db->sql = "UPDATE $dbp pp SET pp.pt_rank = 1000*pp.pt_cnt_shows/(DATEDIFF(now(),pp.pt_create_date)+1) + 100 * pp.pt_is_best";
+        $this->db->sql = "UPDATE $dbp pp
+                            SET
+                                pp.pt_order = NULL,
+                                pp.pt_rank = 1000 * pp.pt_cnt_shows / (DATEDIFF(now(), pp.pt_create_date) + 1) + 100 * pp.pt_is_best
+                          ";
+        $this->db->exec();
+        $this->db->sql = "
+                            SET @counter = 0;
+                            UPDATE $dbp 
+                            SET pt_order = @counter := @counter + 1
+                            WHERE pt_deleted_at IS NULL
+                            ORDER BY pt_rank DESC;
+                          ";
         $this->db->exec();
 
         $this->db->sql = "UPDATE $dbc pc SET pc.pc_cnt_shows = pc.pc_cnt_shows + 

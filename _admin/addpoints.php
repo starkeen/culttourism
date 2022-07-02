@@ -148,7 +148,6 @@ if (isset($_GET['id'], $_GET['act'])) {
                         'pt_phone' => $candidate['cp_phone'],
                         'pt_email' => $candidate['cp_email'],
                         'pt_is_best' => 0,
-                        'pt_active' => 1,
                     ]
                 );
                 $out['state'] = $c->updateByPk(

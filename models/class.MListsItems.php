@@ -93,7 +93,7 @@ class MListsItems extends Model
                             FROM {$this->_tables_related['pagepoints']} pt
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
                             WHERE pt.pt_name LIKE :name
-                                AND pt.pt_active = 1
+                                AND pt.pt_deleted_at IS NULL
                                 AND pt.pt_id NOT IN (SELECT li_pt_id FROM $this->_table_name WHERE li_ls_id = '$this->_list_id')
                             ORDER BY pt.pt_name";
         $this->_db->execute(
@@ -135,7 +135,7 @@ class MListsItems extends Model
                                         LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc.pc_url_id
                             WHERE li_ls_id = '$this->_list_id'
                                 AND li.li_active = 1
-                                AND pt.pt_active = 1
+                                AND pt.pt_deleted_at IS NULL
                             GROUP BY pt.pt_id
                             ORDER BY $this->_table_order ASC, pt.pt_rank DESC";
         $this->_db->exec();
@@ -154,7 +154,7 @@ class MListsItems extends Model
                                     LEFT JOIN {$this->_tables_related['ref_pointtypes']} pt ON pt.tp_id = pp.pt_type_id
                                     LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pp.pt_citypage_id
                                         LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc.pc_url_id
-                            WHERE pp.pt_active = 1
+                            WHERE pp.pt_deleted_at IS NULL
                                 AND pt_latitude != 0
                                 AND pt_longitude != 0
                                 AND li.li_active

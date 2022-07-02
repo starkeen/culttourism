@@ -101,7 +101,7 @@
                 {/if}
             </td>
             <td>
-                <a href="{$item.url_canonical}" id="object_id_{$item.pt_id}" class="objlink" title="подробно: {$item.pt_name}" {if !$item.pt_active}style="color:#777;"{/if}>
+                <a href="{$item.url_canonical}" id="object_id_{$item.pt_id}" class="objlink" title="подробно: {$item.pt_name}" {if $item.pt_deleted_at !== null}style="color:#777;"{/if}>
                    {$item.pt_name}
             </a>
         </td>
@@ -149,7 +149,7 @@
             {/if}
         </td>
         <td>
-            <a href="{$item.url_canonical}" id="object_id_{$item.pt_id}" class="objlink" title="подробно: {$item.pt_name}" {if !$item.pt_active}style="color:#777;"{/if}>
+            <a href="{$item.url_canonical}" id="object_id_{$item.pt_id}" class="objlink" title="подробно: {$item.pt_name}" {if $item.pt_deleted_at !== null}style="color:#777;"{/if}>
                {$item.pt_name}
         </a>
     </td>

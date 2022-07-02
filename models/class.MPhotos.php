@@ -71,7 +71,7 @@ class MPhotos extends Model
                             LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
                             WHERE pt.pt_photo_id = 0
                             AND pts.tr_sight = 1
-                            AND pt.pt_active = 1
+                            AND pt.pt_deleted_at IS NULL
                             ORDER BY pt.pt_is_best DESC, pt.pt_rank DESC
                             LIMIT :limit";
         $this->_db->execute(

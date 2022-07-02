@@ -119,7 +119,7 @@
         </td>
         <td>
             <a href="#" class="points-editprop" data-prop="pt_name" data-oid="{$point.pt_id}">
-                {if $point.pt_active == 0}<s>{$point.pt_name}</s>{else}{$point.pt_name}{/if}
+                {if $point.pt_deleted_at !== null}<s>{$point.pt_name}</s>{else}{$point.pt_name}{/if}
             </a>
             <div style="text-align: right;">
                 <a href="#" class="points-editprop" data-prop="pt_slugline" data-oid="{$point.pt_id}" style="color:green;border: none;">

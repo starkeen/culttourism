@@ -9,7 +9,6 @@ class MPagePoints extends Model
 {
     protected $_table_pk = 'pt_id';
     protected $_table_order = 'pt_id';
-    protected $_table_active = 'pt_active';
 
     public function __construct(MyDB $db)
     {
@@ -30,16 +29,16 @@ class MPagePoints extends Model
             'pt_region_id',
             'pt_country_id',
             'pt_citypage_id',
-            'pt_cnt_shows',
-            'pt_rank',
             'pt_website',
             'pt_worktime',
             'pt_adress',
             'pt_phone',
             'pt_email',
             'pt_photo_id',
+            'pt_cnt_shows',
+            'pt_rank',
+            'pt_order',
             'pt_is_best',
-            'pt_active',
             'pt_deleted_at',
         ];
         parent::__construct($db);
@@ -79,9 +78,9 @@ class MPagePoints extends Model
                                 LEFT JOIN {$this->_tables_related['ref_pointtypes']} rt ON rt.tp_id = pt.pt_type_id
                             WHERE pt.pt_citypage_id = :city_id\n";
         if (!$show_all) {
-            $this->_db->sql .= "AND pt.pt_active = 1\n";
+            $this->_db->sql .= "AND pt.pt_deleted_at IS NULL\n";
         }
-        $this->_db->sql .= "ORDER BY pt.pt_active DESC, rt.tr_sight desc, pt.pt_rank desc, rt.tr_order, pt.pt_name";
+        $this->_db->sql .= "ORDER BY pt.pt_deleted_at ASC, rt.tr_sight desc, pt.pt_rank desc, rt.tr_order, pt.pt_name";
 
         $this->_db->execute(
             [
@@ -155,7 +154,7 @@ class MPagePoints extends Model
                                 LEFT JOIN {$this->_tables_related['ref_pointtypes']} pt ON pt.tp_id = pp.pt_type_id
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pp.pt_citypage_id
                                     LEFT JOIN {$this->_tables_related['region_url']} ru ON ru.uid = pc.pc_url_id
-                            WHERE pp.pt_active = 1
+                            WHERE pp.pt_deleted_at IS NULL
                                 AND pp.pt_latitude BETWEEN :bounds_min_lat AND :bounds_max_lat
                                 AND pp.pt_longitude BETWEEN :bounds_min_lon AND :bounds_max_lon
                                 OR pp.pt_id = :selected_object_id1
@@ -297,7 +296,7 @@ class MPagePoints extends Model
                             WHERE pt_citypage_id = :cid
                                 AND pt_latitude != ''
                                 AND pt_longitude != ''
-                                AND pt_active = 1";
+                                AND pt_deleted_at IS NULL";
 
         $this->_db->execute(
             [
@@ -364,7 +363,7 @@ class MPagePoints extends Model
                                 LEFT JOIN {$this->_tables_related['data_check']} dc ON dc.dc_item_id = pt.pt_id
                                     AND dc.dc_type = 'pagepoints'
                                     AND dc.dc_field = 'pt_adress'
-                            WHERE pt.pt_active = 1
+                            WHERE pt.pt_deleted_at IS NULL
                                 AND pt.pt_adress NOT REGEXP '([0-9])+'
                                 AND pt.pt_latitude IS NOT NULL
                             ORDER BY dc.dc_date
@@ -395,7 +394,7 @@ class MPagePoints extends Model
                                 LEFT JOIN {$this->_tables_related['data_check']} dc ON dc.dc_item_id = pt.pt_id
                                     AND dc.dc_type = 'pagepoints'
                                     AND dc.dc_field = 'pt_latitude'
-                            WHERE pt.pt_active = 1
+                            WHERE pt.pt_deleted_at IS NULL
                                 AND pt.pt_adress REGEXP '([0-9])+'
                                 AND (pt.pt_latitude IS NULL OR pt.pt_latitude = 0)
                                 AND dc.dc_id IS NULL
@@ -480,7 +479,7 @@ class MPagePoints extends Model
                 LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
               LEFT JOIN {$this->_tables_related['ref_pointtypes']} types ON types.tp_id = t.pt_type_id
               LEFT JOIN {$this->_tables_related['photos']} ph ON ph.ph_id = t.pt_photo_id
-            WHERE {$this->_table_active} = 1
+            WHERE t.pt_deleted_at IS NULL
               AND {$whereString}
             ORDER BY {$orderString}
             LIMIT :limit
@@ -511,7 +510,7 @@ class MPagePoints extends Model
                                 LEFT JOIN {$this->_tables_related['data_check']} dc ON dc.dc_item_id = pt.pt_id
                                     AND dc.dc_type = 'pagepoints'
                                     AND dc.dc_field = 'pt_phone'
-                            WHERE pt.pt_active = 1
+                            WHERE pt.pt_deleted_at IS NULL
                                 AND pt.pt_phone != ''
                             ORDER BY dc.dc_date, pt.pt_is_best DESC, pt.pt_rank DESC
                             LIMIT :limit";
@@ -607,7 +606,7 @@ class MPagePoints extends Model
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
                                     LEFT JOIN {$this->_tables_related['region_url']} url ON url.uid = pc.pc_url_id
                             WHERE pt.pt_name LIKE :name1 OR pt_name LIKE :name2
-                                AND pt.pt_active = 1
+                                AND pt.pt_deleted_at IS NULL
                             ORDER BY pc.pc_title_unique, pt.pt_name";
 
         $this->_db->execute(

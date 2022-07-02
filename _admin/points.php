@@ -127,7 +127,7 @@ $points = [];
 $db->sql = "SELECT SQL_CALC_FOUND_ROWS
                 pp.pt_id, pp.pt_name, pp.pt_slugline,
                 pp.pt_adress, pp.pt_phone, pp.pt_website,
-                pp.pt_latitude, pp.pt_longitude, pp.pt_active,
+                pp.pt_latitude, pp.pt_longitude, pp.pt_deleted_at,
                 CHAR_LENGTH(TRIM(pt_description)) AS descr_len,
                 pt.tp_icon, pt.tp_short, pt.tp_name,
                 pc.pc_title, url.url,

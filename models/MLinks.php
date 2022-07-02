@@ -62,7 +62,7 @@ class MLinks extends Model
     public function makeCache(): void
     {
         $this->_db->sql = "INSERT $this->_table_name (id_object, url, fetch_date, last_date)
-                            (SELECT pt_id, pt_website, NOW(), NOW() FROM {$this->_tables_related['pagepoints']} AS o WHERE pt_website IS NOT NULL AND pt_website != '' AND pt_active = 1)
+                            (SELECT pt_id, pt_website, NOW(), NOW() FROM {$this->_tables_related['pagepoints']} AS o WHERE pt_website IS NOT NULL AND pt_website != '' AND pt_deleted_at IS NULL)
                            ON DUPLICATE KEY UPDATE url = pt_website, last_date = NOW()";
         $this->_db->exec();
     }
@@ -78,7 +78,7 @@ class MLinks extends Model
                            FROM $this->_table_name AS u
                            LEFT JOIN {$this->_tables_related['pagepoints']} AS o ON o.pt_id = u.id_object
                            LEFT JOIN {$this->_tables_related['pagecity']} AS c ON c.pc_id = o.pt_citypage_id
-                           WHERE o.pt_active = 1
+                           WHERE o.pt_deleted_at IS NULL
                            ORDER BY status_date ASC
                            LIMIT :limit";
         $this->_db->execute(
@@ -170,7 +170,7 @@ class MLinks extends Model
                            LEFT JOIN {$this->_tables_related['ref_pointtypes']} pt ON pt.tp_id = o.pt_type_id
                            WHERE u.is_ok = 0
                              AND u.status_count > :threshold
-                             AND o.pt_active = 1 \n";
+                             AND o.pt_deleted_at IS NULL \n";
         if ($status !== null) {
             $this->_db->sql .= "AND u.status = :status\n";
             $params[':status'] = $status;
@@ -194,7 +194,7 @@ class MLinks extends Model
                            LEFT JOIN {$this->_tables_related['pagepoints']} AS o ON o.pt_id = u.id_object
                            WHERE u.is_ok = 0
                              AND u.status_count > :threshold
-                             AND o.pt_active = 1
+                             AND o.pt_deleted_at IS NULL
                            GROUP BY u.status";
         $this->_db->execute(
             [
@@ -214,7 +214,7 @@ class MLinks extends Model
                            LEFT JOIN {$this->_tables_related['ref_pointtypes']} pt ON pt.tp_id = o.pt_type_id
                            WHERE u.is_ok = 0
                              AND u.status_count > :threshold
-                             AND o.pt_active = 1
+                             AND o.pt_deleted_at IS NULL
                            GROUP BY o.pt_type_id";
         $this->_db->execute(
             [
