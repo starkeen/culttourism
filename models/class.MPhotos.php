@@ -72,7 +72,7 @@ class MPhotos extends Model
                             WHERE pt.pt_photo_id = 0
                             AND pts.tr_sight = 1
                             AND pt.pt_deleted_at IS NULL
-                            ORDER BY pt.pt_is_best DESC, pt.pt_rank DESC
+                            ORDER BY pt.pt_is_best DESC, pt.pt_order ASC
                             LIMIT :limit";
         $this->_db->execute(
             [
