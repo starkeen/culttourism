@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="https://www.facebook.com/2008/fbml">
+<html lang="ru" xml:lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="https://www.facebook.com/2008/fbml">
     <head>
         <meta charset="utf-8"/>
         <!--[if lt IE 9]>
@@ -14,6 +14,11 @@
         {foreach from=$pageContent->getHead()->getCustomMetas() key=property item=content}
             <meta property="{$property}" content="{$content|truncate:800:"…"}"/>
         {/foreach}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@ourways_ru" />
+        <meta name="twitter:title" content="{$pageContent->getHead()->getTitle()|escape:"html"}" />
+        <meta name="twitter:description" content="{$pageContent->getHead()->getDescription()|escape:"html"}" />
+        <meta name="twitter:url" content="{$pageContent->getHead()->getCanonicalUrl()}" />
         <meta name="robots" content="max-image-preview:standard">
         {if $pageContent->getHead()->getRobotsIndexing() !== null}
         <meta name="robots" content="{$pageContent->getHead()->getRobotsIndexing()}"/>
@@ -92,7 +97,7 @@
                     <ul id="mainmenu" class="menu_common">
                         <li id="mainmenu_item_0">
                             <a href="/" title="Главная страница">
-                                <img src="/img/header/logo-sign-32.png" />
+                                <img src="/img/header/logo-sign-32.png" alt="КТ" width="32" height="32" />
                             </a>
                         </li>
                         <li class="navigate" id="mainmenu_item_1">
@@ -117,7 +122,7 @@
                         </li>
                         <li id="mainmenu_item_7">
                             <a id="show_auth_form" href="/sign/in/" title="Вход" rel="nofollow">
-                                <img src="/img/elements/lock-32.png" />
+                                <img src="/img/elements/lock-32.png" alt="вход" />
                             </a>
                         </li>
                     </ul>
