@@ -107,9 +107,11 @@
                 </td>
                 <td>{$ph.ph_author}</td>
                 <td>
-                    <a href="{$ph.ph_link}" target="_blank">
-                        {$ph.ph_link|truncate:25:"…"}
-                    </a>
+                    {if $ph.ph_link}
+                        <a href="{$ph.ph_link}" target="_blank">
+                            {$ph.ph_link|truncate:25:"…"}
+                        </a>
+                    {/if}
                 </td>
                 <td>
                     {$ph.ph_width}x{$ph.ph_height}
