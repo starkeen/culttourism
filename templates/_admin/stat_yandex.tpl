@@ -113,7 +113,7 @@
                     <td>{$item.country_name}</td>
                     <td>{$item.region_name}</td>
                     <td>{$item.city_name}</td>
-                    <td align="center">{$item.pc_add_date|date_format:"%d.%m.%Y"}</td>
+                    <td align="center">{$item.pc_add_date}</td>
                     <td align="center" class="ws-counts" nowrap>
                         <a href="http://wordstat.yandex.ru/#!/?words={$item.city_name} достопримечательности" title="{$item.ws_weight_date}">{$item.ws_weight}</a>
                         <span class="ws-counts-minmax">

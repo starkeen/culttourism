@@ -87,7 +87,7 @@
         {foreach from=$list item=req}
         <tr>
             <td class="{if $req.dc_id}m_checked{/if}">{counter}</td>
-            <td>{$req.cp_date|date_format:"%d.%m.%Y"}</td>
+            <td>{$req.cp_date}</td>
             <td title="{$req.type_title}" class="m_center"><img src="/img/points/x16/{$req.type_icon|default:'star.png'}"/></td>
             <td>{$req.cp_city}</td>
             <td><a href="{$req.page_url}" target="_blank">{$req.page_title}</a></td>
