@@ -68,7 +68,7 @@ foreach ($scripts as $job) {
         }
         $cr->markWorkFinish($script_id, $content, $execTime);
 
-        $logger->cronMonitorDone($monitorId, $execTime);
+        $logger->cronMonitorDone($monitorId, (int) $execTime);
     } catch (Throwable $exception) {
         $logger->sendSentryException($exception);
         $logger->cronMonitorFail($monitorId);
