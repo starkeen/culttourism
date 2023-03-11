@@ -157,7 +157,6 @@ class SentryLogger
                 ],
             ]
         );
-        $this->captureMessage(new Severity(LogLevel::INFO), 'send monitoring', ['payload' => $payload, 'url' => $this->getUrl($monitorId)]);
     }
 
     private function getUrl(string $monitorId): string

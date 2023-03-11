@@ -172,6 +172,7 @@ class SearchModule extends Module implements ModuleInterface
                 $errorText = $searchResult->getErrorText();
                 $loggerContext = [
                     'query' => $searchKeywords,
+                    'error_code' => $searchResult->getErrorCode(),
                     'error_text' => $searchResult->getErrorText(),
                     'limit' => $yandexSearcher->getCurrentLimit(),
                 ];
