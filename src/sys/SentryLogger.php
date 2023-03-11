@@ -156,6 +156,7 @@ class SentryLogger
                 ],
             ]
         );
+        $this->captureMessage('info', 'send monitoring', ['payload' => $payload, 'url' => $this->getUrl($monitorId)]);
     }
 
     private function getUrl(string $monitorId): string
