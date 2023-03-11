@@ -11,6 +11,7 @@ use app\db\MyDB;
 use app\sys\Logger;
 use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
+use GuzzleHttp\Client;
 use MSysProperties;
 
 abstract class Application
@@ -38,7 +39,7 @@ abstract class Application
     public function getLogger(): Logger
     {
         if ($this->logger === null) {
-            $sentryLogger = new SentryLogger(SENTRY_DSN);
+            $sentryLogger = new SentryLogger(new Client(), SENTRY_DSN, SENTRY_ORGANIZATION);
             $this->logger = new Logger($sentryLogger);
         }
 

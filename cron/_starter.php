@@ -34,6 +34,7 @@ $nologging_ids = [2,];
 foreach ($scripts as $job) {
     $script = $job['cr_script'];
     $script_id = (int) $job['cr_id'];
+    $monitorId = $job['monitor_id'] ?: null;
     $logContext = [
         'id' => $script_id,
         'title' => $job['cr_title'],
@@ -41,23 +42,36 @@ foreach ($scripts as $job) {
         'timing' => null,
     ];
 
-    if (!in_array($script_id, $nologging_ids, true)) {
-        $logger->debug('Начало работы задачи crontab', $logContext);
-    }
+    try {
+        if (!in_array($script_id, $nologging_ids, true)) {
+            $logger->debug('Начало работы задачи crontab', $logContext);
+        }
 
-    $cr->markWorkStart($script_id);
+        $logger->cronMonitorRun($monitorId);
 
-    $_timer_start_script = microtime(true);
-    ob_start();
-    include(GLOBAL_DIR_ROOT . "/cron/$script");
-    $content = ob_get_contents();
-    ob_end_clean();
-    $execTime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах
-    if (strlen($content) !== 0) {
-        $content .= "<hr>время: $execTime c.";
-        Mailing::sendDirect($global_cron_email, 'Cron on ' . GLOBAL_URL_ROOT, $content, 'X-Mailru-Msgtype:cronreport');
+        $cr->markWorkStart($script_id);
+
+        $_timer_start_script = microtime(true);
+        ob_start();
+        include(GLOBAL_DIR_ROOT . "/cron/$script");
+        $content = ob_get_contents();
+        ob_end_clean();
+        $execTime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах
+        if (strlen($content) !== 0) {
+            $content .= "<hr>время: $execTime c.";
+            Mailing::sendDirect(
+                $global_cron_email,
+                'Cron on ' . GLOBAL_URL_ROOT,
+                $content,
+                'X-Mailru-Msgtype:cronreport'
+            );
+        }
+        $cr->markWorkFinish($script_id, $content, $execTime);
+
+        $logger->cronMonitorDone($monitorId, $execTime);
+    } catch (Throwable $exception) {
+        $logger->cronMonitorFail($monitorId);
     }
-    $cr->markWorkFinish($script_id, $content, $execTime);
 
     if ($execTime >= 0.01 && !in_array($script_id, $nologging_ids, true)) {
         $logContext['content'] = $content;

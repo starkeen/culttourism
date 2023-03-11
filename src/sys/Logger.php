@@ -24,10 +24,7 @@ class Logger implements LoggerInterface
         LogLevel::INFO,
     ];
 
-    /**
-     * @var SentryLogger
-     */
-    private $sentry;
+    private SentryLogger $sentry;
 
     /**
      * @param SentryLogger $sentry
@@ -104,6 +101,30 @@ class Logger implements LoggerInterface
     public function sendSentryException(Throwable $exception): void
     {
         $this->sentry->captureException($exception);
+    }
+
+    public function cronMonitorRun(?string $monitorId): void
+    {
+        if ($monitorId === null) {
+            return;
+        }
+        $this->sentry->cronMonitoringSend($monitorId, SentryLogger::CRON_MONITORING_RUN);
+    }
+
+    public function cronMonitorDone(?string $monitorId, int $duration): void
+    {
+        if ($monitorId === null) {
+            return;
+        }
+        $this->sentry->cronMonitoringSend($monitorId, SentryLogger::CRON_MONITORING_DONE, $duration);
+    }
+
+    public function cronMonitorFail(?string $monitorId): void
+    {
+        if ($monitorId === null) {
+            return;
+        }
+        $this->sentry->cronMonitoringSend($monitorId, SentryLogger::CRON_MONITORING_FAIL);
     }
 
     /**

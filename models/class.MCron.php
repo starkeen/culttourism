@@ -39,8 +39,9 @@ class MCron extends Model
 
     public function getPortion(): array
     {
-        $this->_db->sql = "SELECT *, DATE_FORMAT(cr_period, '%d %H:%i') as period FROM $this->_table_name
-                WHERE cr_active = 1 AND cr_isrun = 0 AND cr_datenext <= NOW()";
+        $this->_db->sql = "SELECT *, DATE_FORMAT(cr_period, '%d %H:%i') as period 
+                            FROM $this->_table_name
+                            WHERE cr_active = 1 AND cr_isrun = 0 AND cr_datenext <= NOW()";
         $this->_db->exec();
         return $this->_db->fetchAll();
     }

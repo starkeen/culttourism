@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace tests\sys;
 
 use app\sys\SentryLogger;
+use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -13,7 +14,7 @@ class SentryLoggerTest extends TestCase
     /**
      * @var SentryLogger
      */
-    private $logger;
+    private SentryLogger $logger;
 
     public static function setUpBeforeClass(): void
     {
@@ -24,7 +25,8 @@ class SentryLoggerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->logger = new SentryLogger('');
+        $guzzleMock = $this->getMockBuilder(Client::class)->disableOriginalConstructor()->getMock();
+        $this->logger = new SentryLogger($guzzleMock, '', '');
     }
 
     /**

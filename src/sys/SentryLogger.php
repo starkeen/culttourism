@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace app\sys;
 
+use app\exceptions\BaseApplicationException;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use InvalidArgumentException;
 use Sentry\ClientBuilder;
 use Sentry\ClientInterface;
@@ -17,26 +20,33 @@ use Throwable;
 
 class SentryLogger
 {
-    /**
-     * @var ClientInterface
-     */
-    private $client;
+    public const CRON_MONITORING_RUN = 'in_progress';
+    public const CRON_MONITORING_DONE = 'ok';
+    public const CRON_MONITORING_FAIL = 'error';
 
-    /**
-     * @var HubInterface
-     */
-    private $hub;
+    private const VALID_STATUSES = [self::CRON_MONITORING_FAIL, self::CRON_MONITORING_DONE, self::CRON_MONITORING_RUN];
+
+    private ClientInterface $client;
+
+    private HubInterface|Hub $hub;
+    private Client $guzzleClient;
+    private string $organizationSlug;
+    private string $sentryDSN;
 
     /**
      * @param string $dsn
      */
-    public function __construct(string $dsn)
+    public function __construct(Client $guzzleClient, string $dsn, string $organizationSlug)
     {
+        $this->guzzleClient = $guzzleClient;
+        $this->sentryDSN = $dsn;
+        $this->organizationSlug = $organizationSlug;
+
         $options = new Options(
             [
-                'dsn' => $dsn,
+                'dsn' => $this->sentryDSN,
                 'capture_silenced_errors' => true,
-                'traces_sample_rate' => 1.0,
+                'traces_sample_rate' => 0.2,
                 'environment' => GLOBAL_ERROR_REPORTING ? 'developer' : 'production',
                 'send_default_pii' => true,
             ]
@@ -118,5 +128,42 @@ class SentryLogger
         }
 
         return array_merge($result);
+    }
+
+    public function cronMonitoringSend(string $monitorId, string $status, int $duration = null): void
+    {
+        if (!in_array($status, self::VALID_STATUSES, true)) {
+            throw new BaseApplicationException('Unexpected status');
+        }
+
+        $this->send($monitorId, $status, $duration);
+    }
+
+    private function send(string $monitorId, string $status, ?int $duration = null): void
+    {
+        $payload = ['status' => $status];
+        if ($duration !== null) {
+            $payload['duration'] = $duration;
+        }
+
+        $this->guzzleClient->post(
+            $this->getUrl($monitorId),
+            [
+                RequestOptions::JSON => $payload,
+                RequestOptions::HEADERS => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'DSN ' . $this->sentryDSN,
+                ],
+            ]
+        );
+    }
+
+    private function getUrl(string $monitorId): string
+    {
+        return sprintf(
+            'https://sentry.io/api/0/organizations/%s/monitors/%s/checkins/',
+            $this->organizationSlug,
+            $monitorId
+        );
     }
 }
