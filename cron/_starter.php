@@ -70,6 +70,7 @@ foreach ($scripts as $job) {
 
         $logger->cronMonitorDone($monitorId, $execTime);
     } catch (Throwable $exception) {
+        $logger->sendSentryException($exception);
         $logger->cronMonitorFail($monitorId);
     }
 
