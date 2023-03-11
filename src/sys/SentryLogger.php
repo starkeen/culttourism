@@ -8,6 +8,7 @@ use app\exceptions\BaseApplicationException;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use InvalidArgumentException;
+use Psr\Log\LogLevel;
 use Sentry\ClientBuilder;
 use Sentry\ClientInterface;
 use Sentry\Options;
@@ -156,7 +157,7 @@ class SentryLogger
                 ],
             ]
         );
-        $this->captureMessage('info', 'send monitoring', ['payload' => $payload, 'url' => $this->getUrl($monitorId)]);
+        $this->captureMessage(new Severity(LogLevel::INFO), 'send monitoring', ['payload' => $payload, 'url' => $this->getUrl($monitorId)]);
     }
 
     private function getUrl(string $monitorId): string
