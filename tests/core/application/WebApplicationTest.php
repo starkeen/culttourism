@@ -24,6 +24,9 @@ class WebApplicationTest extends TestCase
         if (!defined('SENTRY_DSN')) {
             define('SENTRY_DSN', 'https://key1@key2.ingest.sentry.io/12345');
         }
+        if (!defined('SENTRY_ORGANIZATION')) {
+            define('SENTRY_ORGANIZATION', 'org-name');
+        }
         if (!defined('GLOBAL_ERROR_REPORTING')) {
             define('GLOBAL_ERROR_REPORTING', false);
         }
@@ -60,7 +63,7 @@ class WebApplicationTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $application = new WebApplication();
+        $application = new WebApplication('');
         $application->setDb($mockDb);
         $application->setTemplateEngine($mockTemplateEngine);
         $application->setSysPropertiesModel($mockSysProperties);
