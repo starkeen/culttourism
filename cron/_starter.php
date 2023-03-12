@@ -56,7 +56,8 @@ foreach ($scripts as $job) {
         include(GLOBAL_DIR_ROOT . "/cron/$script");
         $content = ob_get_contents();
         ob_end_clean();
-        $execTime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах
+        $execTimeMs = (microtime(true) - $_timer_start_script) * 1000;
+        $execTime = substr($execTimeMs / 1000, 0, 6); // время выполнения в секундах
         if (strlen($content) !== 0) {
             $content .= "<hr>время: $execTime c.";
             Mailing::sendDirect(
@@ -68,7 +69,7 @@ foreach ($scripts as $job) {
         }
         $cr->markWorkFinish($script_id, $content, $execTime);
 
-        $logger->cronMonitorDone($monitorId, (int) $execTime);
+        $logger->cronMonitorDone($monitorId, (int) $execTimeMs);
     } catch (Throwable $exception) {
         $logger->sendSentryException($exception);
         $logger->cronMonitorFail($monitorId);
