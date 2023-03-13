@@ -6,9 +6,9 @@ namespace app\sys;
 
 use app\exceptions\BaseApplicationException;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 use InvalidArgumentException;
-use Psr\Log\LogLevel;
 use Sentry\ClientBuilder;
 use Sentry\ClientInterface;
 use Sentry\Options;
@@ -147,16 +147,20 @@ class SentryLogger
             $payload['duration'] = $duration;
         }
 
-        $this->guzzleClient->post(
-            $this->getUrl($monitorId),
-            [
-                RequestOptions::JSON => $payload,
-                RequestOptions::HEADERS => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'DSN ' . $this->sentryDSN,
-                ],
-            ]
-        );
+        try {
+            $this->guzzleClient->post(
+                $this->getUrl($monitorId),
+                [
+                    RequestOptions::JSON => $payload,
+                    RequestOptions::HEADERS => [
+                        'Content-Type' => 'application/json',
+                        'Authorization' => 'DSN ' . $this->sentryDSN,
+                    ],
+                ]
+            );
+        } catch (ClientException $exception) {
+            $this->captureException($exception);
+        }
     }
 
     private function getUrl(string $monitorId): string
