@@ -12,6 +12,7 @@ use app\api\google_search\ResultItem;
 use app\db\exceptions\DuplicateKeyException;
 use app\services\image_storage\exceptions\SourceUnreachedException;
 use app\services\image_storage\ImageStorageFactory;
+use app\utils\JSON;
 
 require_once('common.php');
 
@@ -23,7 +24,7 @@ switch ($act) {
     case 'suggest':
         $ph = new MPhotos($db);
         $out['data'] = $ph->getPopularObjectsWithoutPhoto(30);
-        json($out);
+        JSON::echo($out);
         break;
     case 'search':
         $query = $_GET['q'] ?? '';
@@ -63,7 +64,7 @@ switch ($act) {
             $out['data'] = [];
             $out['error_text'] = $exception->getMessage();
         }
-        json($out);
+        JSON::echo($out);
         break;
     case 'upload':
         $out['point_id'] = (int) ($_POST['point_id'] ?? 0);
@@ -88,16 +89,9 @@ switch ($act) {
             $out['photo_id'] = null;
             $out['error_text'] = 'Такая фотография уже есть';
         }
-        json($out);
+        JSON::echo($out);
         break;
     default:
         $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/photos_import.list.tpl'));
         $smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
-}
-
-function json(array $data): void
-{
-    header('Content-Type: application/json');
-    echo json_encode($data);
-    exit();
 }

@@ -5,6 +5,7 @@ use app\api\yandex_search\ResultItem;
 use app\checker\FeedbackSpamChecker;
 use app\exceptions\NotFoundException;
 use app\model\repository\CandidateDomainBlacklistRepository;
+use app\utils\JSON;
 
 include('common.php');
 
@@ -163,9 +164,7 @@ if (isset($_GET['id'], $_GET['act'])) {
         default: throw new NotFoundException();
     }
     $out['data'] = $c->getItemByPk($out['id']);
-    header('Content-type: text/json');
-    echo json_encode($out);
-    exit();
+    JSON::echo($out);
 } elseif (isset($_GET['id']) && !isset($_GET['act'])) {
     $rpt = new MRefPointtypes($db);
 

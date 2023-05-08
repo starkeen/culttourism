@@ -1,5 +1,7 @@
 <?php
 
+use app\utils\JSON;
+
 include('common.php');
 
 $smarty->assign('title', 'Парсер');
@@ -44,9 +46,7 @@ if (isset($_GET['act'])) {
         default:
             throw new InvalidArgumentException('Ошибка роутинга');
     }
-    header('Content-type: application/json');
-    echo json_encode($out);
-    exit();
+    JSON::echo($out);
 }
 
 $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/parser.start.tpl'));

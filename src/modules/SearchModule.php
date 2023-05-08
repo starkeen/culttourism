@@ -16,6 +16,7 @@ use app\db\MyDB;
 use app\exceptions\NotFoundException;
 use app\sys\Logger;
 use app\sys\TemplateEngine;
+use app\utils\JSON;
 use MPageCities;
 use MPagePoints;
 use MSearchCache;
@@ -94,7 +95,7 @@ class SearchModule extends Module implements ModuleInterface
             ];
         }
 
-        $this->echoJson($out);
+        JSON::echo($out);
     }
 
     /**
@@ -121,7 +122,7 @@ class SearchModule extends Module implements ModuleInterface
             ];
         }
 
-        $this->echoJson($out);
+        JSON::echo($out);
     }
 
     /**
@@ -234,15 +235,5 @@ class SearchModule extends Module implements ModuleInterface
     private function getCleanedQuery(string $raw): string
     {
         return htmlentities(trim(strip_tags($raw)), ENT_QUOTES, 'UTF-8');
-    }
-
-    /**
-     * @param array $data
-     */
-    private function echoJson(array $data): void
-    {
-        header('Content-type: application/json');
-        echo json_encode($data);
-        exit();
     }
 }

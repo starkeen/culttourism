@@ -2,6 +2,7 @@
 
 use app\db\exceptions\DuplicateKeyException;
 use app\services\image_storage\ImageStorageFactory;
+use app\utils\JSON;
 
 require_once('common.php');
 
@@ -140,9 +141,7 @@ if (isset($_GET['act'])) {
         $out['data'] = $ph->getPopularObjectsWithoutPhoto();
     }
 
-    header('Content-Type: application/json');
-    echo json_encode($out);
-    exit();
+    JSON::echo($out);
 }
 
 $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/flickr.import.tpl'));

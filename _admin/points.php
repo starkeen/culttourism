@@ -1,5 +1,7 @@
 <?php
 
+use app\utils\JSON;
+
 include('common.php');
 
 $smarty->assign('title', 'Объекты в базе');
@@ -58,9 +60,7 @@ if (isset($_GET['act'])) {
         default:
             throw new InvalidArgumentException('Ошибка роутинга');
     }
-    header('Content-type: application/json');
-    echo json_encode($data);
-    exit();
+    JSON::echo($data);
 }
 
 $filter = [

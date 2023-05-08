@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use app\sys\TemplateEngine;
+use app\utils\JSON;
 use models\MLinks;
 
 include('common.php');
@@ -34,7 +35,7 @@ if ($act === 'process-redirect') {
     $out = [
         'state' => $state,
     ];
-    answer($out);
+    JSON::echo($out);
 } elseif ($act === 'process-delete') {
     $id = (int) $_POST['id'];
     $state = false;
@@ -52,7 +53,7 @@ if ($act === 'process-redirect') {
     $out = [
         'state' => $state,
     ];
-    answer($out);
+    JSON::echo($out);
 } elseif ($act === 'process-edit') {
     $id = (int) $_POST['id'];
     $value = trim($_POST['value']);
@@ -75,7 +76,7 @@ if ($act === 'process-redirect') {
         'state' => $state,
         'value' => $newValue,
     ];
-    answer($out);
+    JSON::echo($out);
 } elseif ($act === 'process-disable') {
     $id = (int) $_POST['id'];
     $state = false;
@@ -96,7 +97,7 @@ if ($act === 'process-redirect') {
     $out = [
         'state' => $state,
     ];
-    answer($out);
+    JSON::echo($out);
 }
 
 $urls = $linksModel->getHandProcessingList(1000, $status ?: null, $type ?: null);
@@ -151,13 +152,4 @@ $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/links.
 
 $smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 
-
 exit();
-
-
-function answer(array $data): void
-{
-    header('Content-Type: application/json');
-    echo json_encode($data);
-    exit();
-}

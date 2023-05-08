@@ -69,9 +69,10 @@ class MPhotos extends Model
                             FROM {$this->_tables_related['pagepoints']} pt
                             LEFT JOIN {$this->_tables_related['ref_pointtypes']} pts ON pts.tp_id = pt.pt_type_id
                             LEFT JOIN {$this->_tables_related['pagecity']} pc ON pc.pc_id = pt.pt_citypage_id
-                            WHERE pt.pt_photo_id = 0
+                            WHERE (pt.pt_photo_id = 0 OR pt.pt_photo_id IS NULL)
                             AND pts.tr_sight = 1
                             AND pt.pt_deleted_at IS NULL
+                            AND (pt.pt_type_id = 6 OR pt.pt_order IS NULL) -- временно работаем только с одним типом
                             ORDER BY pt.pt_is_best DESC, pt.pt_order ASC
                             LIMIT :limit";
         $this->_db->execute(

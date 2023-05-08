@@ -1,5 +1,7 @@
 <?php
 
+use app\utils\JSON;
+
 include('common.php');
 
 $smarty->assign('title', 'Списки объектов');
@@ -50,14 +52,12 @@ if (isset($_GET['id'])) {
         }
         if (empty($out['suggestions'])) {
             $out['suggestions'][] = [
-                'value' => "-- не найдено --",
-                'oid' => "",
+                'value' => '-- не найдено --',
+                'oid' => '',
             ];
         }
     }
-    header('Content-type: application/json');
-    echo json_encode($out);
-    exit();
+    JSON::echo($out);
 } elseif (isset($_GET['json'])) {
     $out = ['state' => false, 'newval' => null];
 
@@ -69,9 +69,7 @@ if (isset($_GET['id'])) {
 
     $lst->updateByPk((int) $_GET['lid'], ['ls_update_date' => date('Y-m-D H:i:s')]);
 
-    header('Content-type: application/json');
-    echo json_encode($out);
-    exit();
+    JSON::echo($out);
 } else {
     $smarty->assign('lists', $lst->getAll());
     $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/lists.list.tpl'));

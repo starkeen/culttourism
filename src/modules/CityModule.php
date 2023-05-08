@@ -15,6 +15,7 @@ use app\exceptions\RedirectException;
 use app\model\repository\WordstatRepository;
 use app\services\openweathermap\WeatherFactory;
 use app\services\openweathermap\WeatherService;
+use app\utils\JSON;
 use app\utils\Strings;
 use MPageCities;
 use MPhotos;
@@ -98,9 +99,8 @@ class CityModule extends Module implements ModuleInterface
                 'weatherData' => $weatherData,
             ]);
         }
-        header('Content-type: application/json');
-        echo json_encode($out);
-        exit();
+
+        JSON::echo($out);
     }
 
     /**
