@@ -90,14 +90,13 @@ class WebApplication extends Application
         } catch (RedirectException $exception) {
             $this->getSiteResponse()->getHeaders()->sendRedirect($exception->getTargetUrl(), true);
         } catch (NotFoundException $exception) {
-            $this->getLogger()->notice('Ошибка 404', [
-                'srv' => $_SERVER ?? [],
-                'trace' => $exception->getTrace(),
-            ]);
+            $this->logError404($exception);
 
             $this->getSiteResponse()->getHeaders()->add('HTTP/1.0 404 Not Found');
 
-            $this->getSiteResponse()->getContent()->getHead()->addTitleElement('404 Not Found - страница не найдена на сервере');
+            $this->getSiteResponse()->getContent()->getHead()->addTitleElement(
+                '404 Not Found - страница не найдена на сервере'
+            );
             $this->getSiteResponse()->getContent()->setH1('Не найдено');
             $this->getTemplateEngine()->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
             $this->getTemplateEngine()->assign('host', GLOBAL_SITE_URL);
@@ -194,6 +193,28 @@ class WebApplication extends Application
         if ($this->getSiteResponse()->getContent()->getHead()->getOGMeta(OgType::TYPE()) === null) {
             $this->getSiteResponse()->getContent()->getHead()->addOGMeta(OgType::TYPE(), 'website');
         }
+    }
+
+    private function logError404($exception): void
+    {
+        $url = $this->getSiteRequest()->getUrl();
+        if (
+            in_array(
+                $url,
+                [
+                    '/wp-login.php',
+                    '/xmlrpc.php',
+                ],
+                true
+            )
+        ) {
+            return;
+        }
+
+        $this->getLogger()->notice('Ошибка 404', [
+            'srv' => $_SERVER ?? [],
+            'trace' => $exception->getTrace(),
+        ]);
     }
 
     private function getSessionStorage(): SessionStorage
