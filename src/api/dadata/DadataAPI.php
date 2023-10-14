@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-namespace app\api;
+namespace app\api\dadata;
 
 use app\db\MyDB;
 use Curl;
-use InvalidArgumentException;
 use MSysProperties;
-use RuntimeException;
 use stdClass;
 
 class DadataAPI
@@ -44,9 +42,9 @@ class DadataAPI
 
     private MSysProperties $sysProperties;
 
-    private ?string $keyToken;
+    private ?string $keyToken = null;
 
-    private ?string $keySecret;
+    private ?string $keySecret = null;
 
     private Curl $curl;
 
@@ -87,7 +85,7 @@ class DadataAPI
     public function check($type, $data): array
     {
         if (!array_key_exists($type, self::FIELDS)) {
-            throw new InvalidArgumentException('Unsupported checking type');
+            throw new DaDataException('Unsupported checking type');
         }
         $context = is_array($data) ? $data : [$data];
         $response = $this->request($type, $context);
@@ -109,7 +107,7 @@ class DadataAPI
         $json = $this->curl->get('https://dadata.ru/api/v2/profile/balance');
 
         if ($json === null) {
-            throw new RuntimeException('Пустой ответ Dadata');
+            throw new DaDataException('Пустой ответ Dadata');
         }
         $data = json_decode($json);
 
@@ -133,8 +131,8 @@ class DadataAPI
         $this->curl->config(CURLOPT_SSL_VERIFYPEER, false);
         $out = $this->curl->post(self::BASE_URL . $type, $json);
 
-        if ($json === null) {
-            throw new RuntimeException('Пустой ответ Dadata');
+        if ($out === null) {
+            throw new DaDataException('Пустой ответ Dadata');
         }
 
         return json_decode($out);

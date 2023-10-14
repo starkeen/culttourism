@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\checker;
 
-use app\api\DadataAPI;
+use app\api\dadata\DadataAPI;
 use app\component\typograph\Typograph;
 use app\db\MyDB;
 use app\utils\GPS;
