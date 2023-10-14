@@ -8,6 +8,7 @@ use app\db\MyDB;
 use Curl;
 use InvalidArgumentException;
 use MSysProperties;
+use RuntimeException;
 use stdClass;
 
 class DadataAPI
@@ -18,21 +19,6 @@ class DadataAPI
     private const KEY_DIRECT = 'direct';
 
     private const BASE_URL = 'https://dadata.ru/api/v2/clean/';
-
-    /**
-     * @var MSysProperties
-     */
-    private $sysProperties;
-
-    /**
-     * @var string|null
-     */
-    private $keyToken;
-
-    /**
-     * @var string|null
-     */
-    private $keySecret;
 
     private const FIELDS = [
         self::TYPE_ADDRESS => [
@@ -56,10 +42,13 @@ class DadataAPI
         ],
     ];
 
-    /**
-     * @var Curl
-     */
-    private $curl;
+    private MSysProperties $sysProperties;
+
+    private ?string $keyToken;
+
+    private ?string $keySecret;
+
+    private Curl $curl;
 
     /**
      *
@@ -74,7 +63,7 @@ class DadataAPI
     private function getToken(): string
     {
         if ($this->keyToken === null) {
-            $this->keyToken = $this->keyToken = $this->sysProperties->getByName('app_dadata_token');
+            $this->keyToken = $this->sysProperties->getByName('app_dadata_token');
         }
 
         return $this->keyToken;
@@ -118,6 +107,10 @@ class DadataAPI
 
         $this->curl->setTTL(0);
         $json = $this->curl->get('https://dadata.ru/api/v2/profile/balance');
+
+        if ($json === null) {
+            throw new RuntimeException('Пустой ответ Dadata');
+        }
         $data = json_decode($json);
 
         return (float) $data->balance;
@@ -139,6 +132,10 @@ class DadataAPI
         $this->curl->addHeader('X-Secret', $this->getSecret());
         $this->curl->config(CURLOPT_SSL_VERIFYPEER, false);
         $out = $this->curl->post(self::BASE_URL . $type, $json);
+
+        if ($json === null) {
+            throw new RuntimeException('Пустой ответ Dadata');
+        }
 
         return json_decode($out);
     }
