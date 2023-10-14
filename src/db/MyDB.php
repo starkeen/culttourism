@@ -27,9 +27,9 @@ class MyDB
         PDO::ATTR_TIMEOUT => 600,
     ];
 
-    protected ?string $prefix;
+    protected ?string $prefix = null;
 
-    private ?string $_sql;
+    private ?string $_sql = null;
 
     /**
      * @var string
