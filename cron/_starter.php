@@ -18,7 +18,7 @@ $smarty = $app->getTemplateEngine();
 $sp = new MSysProperties($db);
 $cr = new MCron($db);
 
-$global_cron_email = $sp->getByName('mail_report_cron');
+$globalCronEmail = $sp->getByName('mail_report_cron');
 
 //-- если больше двух часов работает скрипт - зарубить
 $cr->killPhantoms();
@@ -29,27 +29,30 @@ if (empty($scripts)) {
     exit();
 }
 
-$nologging_ids = [2,];
+$nologgingIDs = [2,];
+
+$execTime = 0;
+$content = null;
 
 foreach ($scripts as $job) {
     $script = $job['cr_script'];
-    $script_id = (int) $job['cr_id'];
+    $scriptId = (int) $job['cr_id'];
     $monitorId = $job['monitor_id'] ?: null;
     $logContext = [
-        'id' => $script_id,
+        'id' => $scriptId,
         'title' => $job['cr_title'],
         'content' => null,
         'timing' => null,
     ];
 
     try {
-        if (!in_array($script_id, $nologging_ids, true)) {
+        if (!in_array($scriptId, $nologgingIDs, true)) {
             $logger->debug('Начало работы задачи crontab', $logContext);
         }
 
         $logger->cronMonitorRun($monitorId);
 
-        $cr->markWorkStart($script_id);
+        $cr->markWorkStart($scriptId);
 
         $_timer_start_script = microtime(true);
         ob_start();
@@ -61,13 +64,13 @@ foreach ($scripts as $job) {
         if (strlen($content) !== 0) {
             $content .= "<hr>время: $execTime c.";
             Mailing::sendDirect(
-                $global_cron_email,
+                $globalCronEmail,
                 'Cron on ' . GLOBAL_URL_ROOT,
                 $content,
-                'X-Mailru-Msgtype:cronreport'
+                'X-Mailru-Msgtype: cronreport'
             );
         }
-        $cr->markWorkFinish($script_id, $content, $execTime);
+        $cr->markWorkFinish($scriptId, $content, $execTime);
 
         $logger->cronMonitorDone($monitorId, (int) $execTimeMs);
     } catch (Throwable $exception) {
@@ -75,7 +78,7 @@ foreach ($scripts as $job) {
         $logger->cronMonitorFail($monitorId);
     }
 
-    if ($execTime >= 0.01 && !in_array($script_id, $nologging_ids, true)) {
+    if ($execTime >= 0.01 && !in_array($scriptId, $nologgingIDs, true)) {
         $logContext['content'] = $content;
         $logContext['timing'] = $execTime;
         $logger->debug('Окончание работы задачи crontab', $logContext);
