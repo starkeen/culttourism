@@ -1,46 +1,51 @@
 {
-    "name"       : "starkeen/culttourism",
-    "license"    : "MIT",
-    "authors"    : [
+    "name": "starkeen/culttourism",
+    "license": "MIT",
+    "authors": [
         {
-            "name" : "culttourism",
+            "name": "culttourism",
             "email": "andrey@culttourism.ru"
         }
     ],
-    "require"    : {
-        "php"                : "^8.1",
-        "smarty/smarty"      : "^4.2",
+    "require": {
+        "php": "^8.1",
+        "smarty/smarty": "^4.2",
         "phpmailer/phpmailer": "^6.0",
         "ezyang/htmlpurifier": "^4.7",
-        "sentry/sdk"         : "^3.3",
-        "guzzlehttp/guzzle"  : "^7.5",
-        "fanamurov/mdash"    : "^1.0",
-        "vlucas/phpdotenv"   : "^4.1",
-        "myclabs/php-enum"   : "^1.7",
-        "ext-pdo"            : "*",
-        "ext-curl"           : "*",
-        "ext-SimpleXML"      : "*",
-        "ext-json"           : "*",
-        "ext-fileinfo"       : "*",
-        "ext-iconv"          : "*",
-        "ext-gd"             : "*",
-        "ext-dom"            : "*"
+        "sentry/sdk": "^3.5",
+        "guzzlehttp/guzzle": "^7.8",
+        "fanamurov/mdash": "^1.0",
+        "vlucas/phpdotenv": "^4.1",
+        "myclabs/php-enum": "^1.7",
+        "ext-pdo": "*",
+        "ext-curl": "*",
+        "ext-SimpleXML": "*",
+        "ext-json": "*",
+        "ext-fileinfo": "*",
+        "ext-iconv": "*",
+        "ext-gd": "*",
+        "ext-dom": "*"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
-        "phpunit/phpunit"          : "^9.5"
+        "phpunit/phpunit": "^9.6"
     },
-    "autoload"   : {
-        "psr-4"                : {
-            "app\\"  : "src/",
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "src/",
             "tests\\": "tests/",
-            ""       : ""
+            "": ""
         },
-        "classmap"             : [
+        "classmap": [
             "includes/",
             "models/"
         ],
-        "files"                : [
+        "files": [
             "includes/functions.php"
         ],
         "exclude-from-classmap": [
