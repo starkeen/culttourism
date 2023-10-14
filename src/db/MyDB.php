@@ -8,6 +8,7 @@ use app\db\exceptions\DuplicateKeyException;
 use app\db\exceptions\FieldException;
 use app\db\exceptions\MyPDOException;
 use app\db\exceptions\ServerException;
+use app\db\exceptions\ServerGoneAwayException;
 use app\db\exceptions\TableException;
 use app\db\exceptions\TooManyConnectionsException;
 use PDO;
@@ -26,15 +27,9 @@ class MyDB
         PDO::ATTR_TIMEOUT => 600,
     ];
 
-    /**
-     * @var string|null
-     */
-    protected $prefix;
+    protected ?string $prefix;
 
-    /**
-     * @var string
-     */
-    private $_sql;
+    private ?string $_sql;
 
     /**
      * @var string
@@ -452,6 +447,9 @@ class MyDB
         }
         if ($errorCode === 2002) {
             throw new ServerException('Ошибка PDO: server unavailable', $errorCode, $exception);
+        }
+        if ($errorCode === 2006) {
+            throw new ServerGoneAwayException('Ошибка PDO: server has gone away', $errorCode, $exception);
         }
 
         throw new MyPDOException('Ошибка PDO: ' . $errorCode, $errorCode, $exception);
