@@ -8,7 +8,7 @@ $md_id = null;
 
 $dbm = $db->getTableName('modules');
 
-if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
+if (isset($_GET['id']) && strlen($_GET['id']) !== 0) {
     $md_id = (int) $_GET['id'];
 
     if (isset($_POST['sender'])) {
@@ -29,7 +29,6 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
         $md_description = trim($_POST['md_description']);
         $md_pagecontent = isset($_POST['md_pagecontent']) ? trim($_POST['md_pagecontent']) : '';
         $md_active = (int) $_POST['md_active'];
-        $md_css = (int) $_POST['md_css'];
         $md_robots = trim($_POST['md_robots']);
         $md_sort = (int) $_POST['md_sort'];
 
@@ -46,7 +45,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
                     SET md_title='$md_title', md_pagecontent = '$md_pagecontent',
                     md_url = '$md_url', md_redirect = $redir,
                     md_description = '$md_description', md_keywords = '$md_keywords',
-                    md_active = '$md_active', md_css='$md_css',
+                    md_active = '$md_active',
                     md_robots='$md_robots', md_sort='$md_sort'
                     WHERE md_id = '$md_id'";
             $db->exec($sql);
@@ -56,7 +55,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
                     md_pagecontent = '$md_pagecontent',
                     md_url = '$md_url', md_redirect = $redir,
                     md_description = '$md_description', md_keywords = '$md_keywords',
-                    md_active = '$md_active', md_css='$md_css',
+                    md_active = '$md_active',
                     md_robots='$md_robots', md_sort='$md_sort'";
             $db->exec($sql);
             $newmd = $db->getLastInserted();
@@ -67,7 +66,7 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
 
     //============================== / SAVE DATA ===========================
 
-    if ($md_id != 'add') {
+    if ($md_id !== 'add') {
         $db->sql = "SELECT * FROM $dbm WHERE md_id = '$md_id' LIMIT 1";
         $res = $db->exec();
         $row = $db->fetch();
@@ -80,7 +79,6 @@ if (isset($_GET['id']) && strlen($_GET['id']) != 0) {
         $row['md_keywords'] = '';
         $row['md_description'] = '';
         $row['md_active'] = 1;
-        $row['md_css'] = 0;
         $row['md_robots'] = 'index, follow';
         $row['md_sort'] = '0';
         $row['md_redirect'] = '';
