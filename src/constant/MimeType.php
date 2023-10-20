@@ -21,7 +21,7 @@ class MimeType extends Enum
     public const GIF = 'image/gif';
     public const WEBP = 'image/webp';
 
-    private $extensions = [
+    private const EXTENSIONS = [
         self::UNDEFINED => '',
         self::JPEG => 'jpg',
         self::PNG => 'png',
@@ -31,6 +31,6 @@ class MimeType extends Enum
 
     public function getDefaultExtension(): string
     {
-        return $this->extensions[$this->value];
+        return self::EXTENSIONS[$this->value];
     }
 }

@@ -8,7 +8,7 @@
 <div id="photos-upload" class="photos-block">
     <form action="?act=upload" method="post" enctype="multipart/form-data">
         Добавить фото
-        <input type="file" name="photo" accept="image/jpeg,image/png" />
+        <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" />
         <div id="photos-upload-data">
             <input type="text" name="title" placeholder="Название" />
             <input type="text" name="author" placeholder="Автор" />
