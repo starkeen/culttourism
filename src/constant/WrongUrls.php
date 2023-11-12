@@ -14,5 +14,6 @@ class WrongUrls
         '/culttourism.tar.gz',
         '/wordpress',
         '/wordpress/',
+        '/wp/',
     ];
 }
