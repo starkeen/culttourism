@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\core\application;
 
 use app\constant\OgType;
+use app\constant\WrongUrls;
 use app\core\CookieStorage;
 use app\core\GlobalConfig;
 use app\core\module\ModuleFetcher;
@@ -195,19 +196,10 @@ class WebApplication extends Application
         }
     }
 
-    private function logError404($exception): void
+    private function logError404(Throwable $exception): void
     {
         $url = $this->getSiteRequest()->getUrl();
-        if (
-            in_array(
-                $url,
-                [
-                    '/wp-login.php',
-                    '/xmlrpc.php',
-                ],
-                true
-            )
-        ) {
+        if (in_array($url, WrongUrls::LIST, true)) {
             return;
         }
 
