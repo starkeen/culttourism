@@ -39,10 +39,7 @@ class SentryLoggerTest extends TestCase
         $this->assertSame($expected, $this->logger->plainContext($in));
     }
 
-    /**
-     * @return array
-     */
-    public function getExamples(): array
+    public static function getExamples(): array
     {
         $object = new stdClass();
         $object->prop1 = 'a';

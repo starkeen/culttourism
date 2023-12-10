@@ -28,10 +28,7 @@ class MapModuleTest extends AbstractModulesTestingDependencies
         self::assertEquals($isApplicable, $result);
     }
 
-    /**
-     * @return array[]
-     */
-    public function getRequestExamples(): array
+    public static function getRequestExamples(): array
     {
         return [
             'подходящий запрос' => ['map', true],

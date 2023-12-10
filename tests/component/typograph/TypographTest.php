@@ -46,7 +46,7 @@ class TypographTest extends TestCase
         self::assertEquals($output, $this->service->typo($input));
     }
 
-    public function getExamples(): array
+    public static function getExamples(): array
     {
         return [
             'пустая строка' => ['', ''],

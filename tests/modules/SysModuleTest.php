@@ -31,7 +31,7 @@ class SysModuleTest extends AbstractModulesTestingDependencies
     /**
      * @return array[]
      */
-    public function getRequestExamples(): array
+    public static function getRequestExamples(): array
     {
         return [
             'подходящий запрос' => ['sys', true],

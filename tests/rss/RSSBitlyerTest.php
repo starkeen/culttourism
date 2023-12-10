@@ -41,7 +41,7 @@ class RSSBitlyerTest extends TestCase
 
         $this->bitly = $this->getMockBuilder(Bitly::class)
                             ->disableOriginalConstructor()
-                            ->setMethods(['short'])
+                            ->onlyMethods(['short'])
                             ->getMock();
         $this->bitly->method('short')->willReturnCallback(
             static function ($arg) {
@@ -68,10 +68,7 @@ class RSSBitlyerTest extends TestCase
         $this->assertEquals($expected, $out);
     }
 
-    /**
-     * @return array
-     */
-    public function getExamples(): array
+    public static function getExamples(): array
     {
         return [
             [

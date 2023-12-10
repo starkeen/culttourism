@@ -46,10 +46,7 @@ class RedirectsModuleTest extends AbstractModulesTestingDependencies
         }
     }
 
-    /**
-     * @return array[]
-     */
-    public function getExampleApplicableRoutes(): array
+    public static function getExampleApplicableRoutes(): array
     {
         return [
             'не редиректим' => ['one/two/three', false],

@@ -9,19 +9,18 @@ use Psr\Http\Message\StreamInterface;
 
 class BitlyTest extends TestCase
 {
-    /** @var Client|MockObject */
-    private $guzzleClient;
-    /** @var ResponseInterface|MockObject */
-    private $guzzleResponse;
-    /** @var StreamInterface|MockObject */
-    private $guzzleResponseBody;
-    /** @var MCurlCache|MockObject */
-    private $curlCache;
+    private Client|MockObject $guzzleClient;
+
+    private ResponseInterface|MockObject $guzzleResponse;
+
+    private MockObject|StreamInterface $guzzleResponseBody;
+
+    private MCurlCache|MockObject $curlCache;
 
     public function setUp(): void
     {
         $this->guzzleClient = $this->getMockBuilder(Client::class)
-                                   ->setMethods(['get'])
+                                   ->onlyMethods(['get'])
                                    ->getMock();
         $this->guzzleResponse = $this->getMockBuilder(ResponseInterface::class)
                                      ->getMock();
@@ -29,7 +28,7 @@ class BitlyTest extends TestCase
                                          ->getMock();
         $this->curlCache = $this->getMockBuilder(MCurlCache::class)
                                 ->disableOriginalConstructor()
-                                ->setMethods(['get', 'put'])
+                                ->onlyMethods(['get', 'put'])
                                 ->getMock();
     }
 

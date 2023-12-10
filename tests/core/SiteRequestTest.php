@@ -22,7 +22,7 @@ class SiteRequestTest extends TestCase
         self::assertEquals($url, $request->getUrl());
     }
 
-    public function getExamples(): array
+    public static function getExamples(): array
     {
         return [
             'главная страница' => [

@@ -55,10 +55,7 @@ class AboutModuleTest extends AbstractModulesTestingDependencies
         self::assertEquals($isApplicable, $result);
     }
 
-    /**
-     * @return array[]
-     */
-    public function getRequestExamples(): array
+    public static function getRequestExamples(): array
     {
         return [
             'подходящий запрос' => ['about', true],

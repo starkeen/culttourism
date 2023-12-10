@@ -19,10 +19,7 @@ class DatesTest extends TestCase
         $this->assertSame($expected, Dates::normalToSQL($in));
     }
 
-    /**
-     * @return array
-     */
-    public function getExamples(): array
+    public static function getExamples(): array
     {
         return [
             'пустая дата' => ['', null],

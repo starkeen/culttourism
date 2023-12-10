@@ -22,10 +22,7 @@ class MimeTypeTest extends TestCase
         self::assertEquals($extension, $mimeType->getDefaultExtension());
     }
 
-    /**
-     * @return array[]
-     */
-    public function getKnownTypes(): array
+    public static function getKnownTypes(): array
     {
         return [
             'jpeg' => ['image/jpeg', 'jpg'],
@@ -36,6 +33,6 @@ class MimeTypeTest extends TestCase
     public function testUnknownType(): void
     {
         $this->expectException(UnexpectedValueException::class);
-        $mimeType = new MimeType('unknown');
+        new MimeType('unknown');
     }
 }

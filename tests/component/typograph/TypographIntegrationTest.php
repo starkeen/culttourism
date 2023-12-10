@@ -10,10 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class TypographIntegrationTest extends TestCase
 {
-    /**
-     * @var Typograph
-     */
-    private $service;
+    private Typograph $service;
 
     public function setUp(): void
     {
@@ -31,7 +28,7 @@ class TypographIntegrationTest extends TestCase
         self::assertEquals($output, $this->service->typo($input));
     }
 
-    public function getExamples(): array
+    public static function getExamples(): array
     {
         return [
             'номер телефона - 1' => [

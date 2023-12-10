@@ -49,10 +49,7 @@ class RSSAddUTMTest extends TestCase
         $this->assertEquals($expected, $out);
     }
 
-    /**
-     * @return array
-     */
-    public function getExamples(): array
+    public static function getExamples(): array
     {
         return [
             [

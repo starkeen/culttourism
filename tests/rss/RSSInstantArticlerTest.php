@@ -47,7 +47,7 @@ class RSSInstantArticlerTest extends TestCase
     /**
      * @return array
      */
-    public function getExamples(): array
+    public static function getExamples(): array
     {
         return [
             [

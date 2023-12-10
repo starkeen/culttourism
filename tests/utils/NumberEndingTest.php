@@ -20,7 +20,7 @@ class NumberEndingTest extends TestCase
         self::assertEquals($expected, $result);
     }
 
-    public function getVariants(): array
+    public static function getVariants(): array
     {
         return [
             'минус сто тридцать семь' => [-137, 'штук'],
