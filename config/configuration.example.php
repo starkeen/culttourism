@@ -26,6 +26,10 @@ define('GLOBAL_MAIL_FROMNAME', 'Культурный туризм');
 
 define('YANDEX_XML_USER', 'user');
 define('YANDEX_XML_KEY', 'absdef');
+
+define('YANDEX_SEARCH_ID', 'abcdef'); // Folder ID
+define('YANDEX_SEARCH_KEY', 'AABBccDDeeFF');
+
 define('GOOGLE_CUSTOM_SEARCH_KEY', 'absdef');
 define('GOOGLE_CUSTOM_SEARCH_CX', 'absdef');
 
