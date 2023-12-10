@@ -66,6 +66,9 @@ down: _dev-env-docker
 down-clean: _dev-env-docker
 	$(DOCKER_COMPOSE) down -v --remove-orphans
 
+clean:
+	docker system prune -a --volumes
+
 exec:
 	$(DOCKER_COMPOSE) exec -u nobody app bash
 
