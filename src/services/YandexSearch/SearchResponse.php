@@ -44,6 +44,9 @@ class SearchResponse
         $this->results[] = new SearchResultItem($title, $url, $snippet);
     }
 
+    /**
+     * @return array|SearchResultItem[]
+     */
     public function getResults(): array
     {
         return $this->results;

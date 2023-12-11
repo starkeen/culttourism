@@ -1,10 +1,11 @@
 <?php
 
-use app\api\yandex_search\Factory;
-use app\api\yandex_search\ResultItem;
 use app\checker\FeedbackSpamChecker;
 use app\exceptions\NotFoundException;
 use app\model\repository\CandidateDomainBlacklistRepository;
+use app\services\YandexSearch\SearchRequest;
+use app\services\YandexSearch\SearchResultItem;
+use app\services\YandexSearch\ServiceBuilder;
 use app\utils\JSON;
 
 include('common.php');
@@ -40,22 +41,23 @@ if (isset($_GET['id'], $_GET['act'])) {
             );
             break;
         case 'get_analogs':
-            $searchRequest = $_GET['pname'] . ' host:' . GLOBAL_URL_ROOT;
-            $searcher = Factory::build();
-            $searcher->setDocumentsOnPage(10);
-            $result = $searcher->searchPages($searchRequest, 0);
+            $searchQuery = $_GET['pname'] . ' host:culttourism.ru';
+            $searchService = ServiceBuilder::build();
+            $searchQuery = new SearchRequest($searchQuery);
+            $searchQuery->setPage(0);
+            $searchResult = $searchService->search($searchQuery);
 
             $out['founded'] = array_map(
-                static function (ResultItem $item) {
+                static function (SearchResultItem $item) {
                     return [
                         'url' => $item->getUrl(),
                         'title' => $item->getTitle(),
                     ];
                 },
-                $result->getItems()
+                $searchResult->getResults()
             );
-            $out['error'] = $result->getErrorText();
-            $out['state'] = !$result->isError();
+            $out['error'] = $searchResult->getErrorText();
+            $out['state'] = !$searchResult->isError();
             break;
         case 'citysuggest':
             $pc = new MPageCities($db);
