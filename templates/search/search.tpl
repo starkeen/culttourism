@@ -1,14 +1,22 @@
 <form method="get" id="searchrorm_form">
     <a href="http://yandex.ru/"><img src="/img/yandex.png" alt="Поиск от Яндекс" style="vertical-align:middle" /></a>
-    <input type="text" id="searchform_input" name="q" value="{$search}" autocomplete="off" />
+    <input type="text" id="searchform_input" name="q" value="{$meta.query}" autocomplete="off" />
     <input type="submit" id="searchform_submit" value="Искать" />
-    {if $error}<p style="color:red;margin:5px;">{$error}</p>{/if}
+
+    {if $meta.text_source}
+        <p>В запросе исправлена опечатка: {$meta.text_result}</p>
+    {/if}
+
+    {if $error}
+        <p style="color:red;margin:5px;">{$error}</p>
+    {/if}
 </form>
 
-{if $search && !$error}
+{if $meta.query && !$error}
 <h2>Результаты поиска</h2>
 
 {if $result}
+
 <ul style="margin:1em;">
     {foreach from=$result item=res}
     <li>
@@ -17,6 +25,7 @@
     </li>
     {/foreach}
 </ul>
+
 <p>
     Найдено {$meta.resolution}
     <br/>
@@ -30,7 +39,7 @@
     {/if}
 </p>
 {else}
-<p>Увы, по запросу "{$search}" ничего найти не удалось</p>
+<p>Увы, по запросу "{$meta.query}" ничего найти не удалось</p>
 {/if}
 
 {else}

@@ -36,6 +36,8 @@ use app\modules\RedirectsModule;
 use app\modules\SearchModule;
 use app\modules\SignModule;
 use app\modules\SysModule;
+use app\services\YandexSearch\ServiceBuilder;
+use app\services\YandexSearch\YandexSearchService;
 use app\utils\Urls;
 use Auth;
 use Throwable;
@@ -274,6 +276,11 @@ class WebApplication extends Application
         $this->user = $webUser;
     }
 
+    private function getSearchService(): YandexSearchService
+    {
+        return ServiceBuilder::build();
+    }
+
     private function getModuleFetcher(): ModuleFetcher
     {
         $modules =  [
@@ -285,7 +292,14 @@ class WebApplication extends Application
             new PointsModule($this->getDb(),$this->getWebUser()),
             new CityModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new PictureModule($this->getDb(), $this->getWebUser()),
-            new SearchModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig(), $this->getLogger()),
+            new SearchModule(
+                $this->getDb(),
+                $this->getTemplateEngine(),
+                $this->getWebUser(),
+                $this->getGlobalConfig(),
+                $this->getLogger(),
+                $this->getSearchService()
+            ),
             new BlogModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new FeedbackModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new AboutModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),

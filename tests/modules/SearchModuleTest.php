@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace tests\modules;
 
 use app\modules\SearchModule;
+use app\services\YandexSearch\YandexSearchService;
 
 class SearchModuleTest extends AbstractModulesTestingDependencies
 {
@@ -20,8 +21,11 @@ class SearchModuleTest extends AbstractModulesTestingDependencies
         $webUser = $this->getMockWebUser();
         $globalConfig = $this->getMockGlobalConfig();
         $logger = $this->getMockLogger();
+        $searchServiceMock = $this->getMockBuilder(YandexSearchService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $module = new SearchModule($db, $templateEngine, $webUser, $globalConfig, $logger);
+        $module = new SearchModule($db, $templateEngine, $webUser, $globalConfig, $logger, $searchServiceMock);
 
         $request = $this->getMockRequest();
         $request->expects(self::once())->method('getModuleKey')->willReturn($key);

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace app\modules;
 
-use app\api\yandex_search\Result;
-use app\api\yandex_search\Factory;
 use app\core\GlobalConfig;
 use app\core\module\Module;
 use app\core\module\ModuleInterface;
@@ -14,6 +12,10 @@ use app\core\SiteResponse;
 use app\core\WebUser;
 use app\db\MyDB;
 use app\exceptions\NotFoundException;
+use app\services\YandexSearch\SearchRequest;
+use app\services\YandexSearch\SearchResponse;
+use app\services\YandexSearch\ServiceBuilder;
+use app\services\YandexSearch\YandexSearchService;
 use app\sys\Logger;
 use app\sys\TemplateEngine;
 use app\utils\JSON;
@@ -23,10 +25,14 @@ use MSearchCache;
 
 class SearchModule extends Module implements ModuleInterface
 {
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private const PAGE_SIZE = 15;
+    private const MAX_PASSAGES = 4;
+
+    private const SEARCH_POSTFIX = 'host:culttourism.ru';
+
+    private Logger $logger;
+
+    private YandexSearchService $searchService;
 
     /**
      * @param MyDB $db
@@ -35,10 +41,17 @@ class SearchModule extends Module implements ModuleInterface
      * @param GlobalConfig $globalConfig
      * @param Logger $logger
      */
-    public function __construct(MyDB $db, TemplateEngine $templateEngine, WebUser $webUser, GlobalConfig $globalConfig, Logger $logger)
-    {
+    public function __construct(
+        MyDB $db,
+        TemplateEngine $templateEngine,
+        WebUser $webUser,
+        GlobalConfig $globalConfig,
+        Logger $logger,
+        YandexSearchService $searchService
+    ) {
         parent::__construct($db, $templateEngine, $webUser, $globalConfig);
         $this->logger = $logger;
+        $this->searchService = $searchService;
     }
 
     /**
@@ -130,74 +143,85 @@ class SearchModule extends Module implements ModuleInterface
      */
     private function getSearchYandex(): string
     {
-        $query = '';
         $errorText = '';
-        $result = [];
-        $resultMeta = [];
+        $dataResult = [];
+        $resultMeta = [
+            'query' => '', // запрос
+            'page' => 0, // текущая страница
+            'pages_all' => 0, // всего доступно страниц
+            'resolution' => '', // результаты поиска текстом
+            'text_source' => '', // в случае исправлений: исходный текст
+            'text_result' => '', // в случае исправлений: исправленный текст
+        ];
 
         if (isset($_GET['q'])) {
             $query = $this->getCleanedQuery($_GET['q']);
+            $page = array_key_exists('page', $_GET) ? (int) $_GET['page'] : 0;
+
+            $resultMeta['page'] = $page;
+            $resultMeta['query'] = $query;
 
             $this->log($query);
 
-            $resultMeta = [
-                'query' => $query,
-                'page' => array_key_exists('page', $_GET) ? (int) $_GET['page'] : 0,
-                'per_page' => 15, // документов на странице
-                'pages_all' => 0, // всего доступно страниц
-                'total' => 0, // всего найдено документов
-                'resolution' => '', // результаты поиска текстом
-                'text_source' => '', // в случае исправлений: исходный текст
-                'text_result' => '', // в случае исправлений: исправленный текст
-            ];
+            $searchKeywords = $query . ' ' . self::SEARCH_POSTFIX;
 
-            $searchKeywords = $query . ' host:culttourism.ru';
-            $yandexSearcher = Factory::build();
-            $yandexSearcher->setDocumentsOnPage($resultMeta['per_page']);
+            $request = new SearchRequest($searchKeywords);
+            $request->setNumResults(self::PAGE_SIZE);
+            $request->setPage($page);
+            $request->setMaxPassages(self::MAX_PASSAGES);
 
-            $searchResult = $yandexSearcher->searchPages($searchKeywords, $resultMeta['page']);
+            $result = $this->searchService->search($request);
 
-            if (!$searchResult->isError()) {
-                $result = $this->makeResults($searchResult);
+            if (!$result->isError()) {
+                $dataResult = $this->makeResults($result);
 
-                $resultMeta['pages_all'] = $searchResult->getPagesCount();
-                $resultMeta['total'] = $searchResult->getDocumentsCount();
-                $resultMeta['resolution'] = str_replace('нашёл', '', $searchResult->getHumanResolution());
+                $resultMeta['pages_all'] = $result->getPagesCount();
+                $resultMeta['resolution'] = str_replace('нашёл', '', $result->getTotalCountHuman());
 
-                $correctionInfo = $searchResult->getCorrection();
+                $correctionInfo = $result->getCorrection();
                 if ($correctionInfo !== null) {
-                    $resultMeta['text_source'] = $correctionInfo->getSourceText();
-                    $resultMeta['text_result'] = $correctionInfo->getResultText();
+                    $resultMeta['text_source'] = str_replace(
+                        self::SEARCH_POSTFIX ,
+                        '',
+                        $correctionInfo->getSourceText()
+                    );
+                    $resultMeta['text_result'] = str_replace(
+                        self::SEARCH_POSTFIX,
+                        '',
+                        $correctionInfo->getResultText()
+                    );
+                    $resultMeta['query'] = $resultMeta['text_result'];
                 }
             } else {
-                $errorText = $searchResult->getErrorText();
+                $errorText = $result->getErrorText();
                 $loggerContext = [
                     'query' => $searchKeywords,
-                    'error_code' => $searchResult->getErrorCode(),
-                    'error_text' => $searchResult->getErrorText(),
-                    'limit' => $yandexSearcher->getCurrentLimit(),
+                    'page' => $result->getPage(),
+                    'request_id' => $result->getRequestID(),
+                    'error_code' => $result->getErrorCode(),
+                    'error_text' => $result->getErrorText(),
+                    'limit' => $request->getNumResults(),
                 ];
                 $this->logger->warning('Ошибка в поиске', $loggerContext);
             }
         }
 
-        $this->templateEngine->assign('search', $query);
         $this->templateEngine->assign('error', $errorText);
-        $this->templateEngine->assign('result', $result);
+        $this->templateEngine->assign('result', $dataResult);
         $this->templateEngine->assign('meta', $resultMeta);
 
         return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/search/search.tpl');
     }
 
     /**
-     * @param Result $searchResult
+     * @param SearchResponse $searchResult
      * @return array
      */
-    private function makeResults(Result $searchResult): array
+    private function makeResults(SearchResponse $searchResult): array
     {
         $results = [];
 
-        foreach ($searchResult->getItems() as $resultItem) {
+        foreach ($searchResult->getResults() as $resultItem) {
             $titleItemElements = explode($this->globalConfig->getTitleDelimiter(), $resultItem->getTitle());
             if (count($titleItemElements) > 1) {
                 array_pop($titleItemElements);
@@ -205,8 +229,8 @@ class SearchModule extends Module implements ModuleInterface
 
             $results[] = [
                 'title' => str_replace(' , ', ', ', trim(implode(', ', $titleItemElements))),
-                'descr' => $resultItem->getDescription(),
-                'url' => $resultItem->getUrl(),
+                'descr' => $resultItem->getSnippet(),
+                'url' => $resultItem->getURL(),
             ];
         }
 
