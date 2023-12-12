@@ -29,6 +29,11 @@ class SearchResultItem
         return $this->url;
     }
 
+    public function getDomain(): string
+    {
+        return parse_url($this->url, PHP_URL_HOST);
+    }
+
     public function getSnippet(): ?string
     {
         return $this->snippet;

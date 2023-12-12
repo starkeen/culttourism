@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace app\crontab;
 
-use app\api\yandex_search\Factory;
+use app\services\YandexSearch\SearchRequest;
+use app\services\YandexSearch\YandexSearchService;
 use app\sys\Logger;
 use MWordstat;
 
@@ -14,11 +15,13 @@ class WordstatPositionsCommand extends AbstractCrontabCommand
     private const LIMIT_DOMAINS_PER_ANSWER = 90;
 
     private MWordstat $wordstatModel;
+    private YandexSearchService $searchService;
     private Logger $logger;
 
-    public function __construct(MWordstat $ws, Logger $logger)
+    public function __construct(MWordstat $ws, YandexSearchService $searchService, Logger $logger)
     {
         $this->wordstatModel = $ws;
+        $this->searchService = $searchService;
         $this->logger = $logger;
     }
 
@@ -26,17 +29,19 @@ class WordstatPositionsCommand extends AbstractCrontabCommand
     {
         $cities = $this->wordstatModel->getPortionPosition(self::PORTION_SIZE);
 
-        $searcher = Factory::build();
-        $searcher->setDocumentsOnPage(self::LIMIT_DOMAINS_PER_ANSWER);
-
         foreach ($cities as $city) {
             $domains = [
                 0 => null,
             ];
             $query = sprintf('%s  достопримечательности', $city['ws_city_title']);
-            $result = $searcher->searchPages($query);
+
+            $request = new SearchRequest($query);
+            $request->setNumResults(self::LIMIT_DOMAINS_PER_ANSWER);
+
+            $result =  $this->searchService->search($request);
+
             if (!$result->isError()) {
-                foreach ($result->getItems() as $site) {
+                foreach ($result->getResults() as $site) {
                     $domains[] = $site->getDomain();
                 }
 
@@ -59,7 +64,7 @@ class WordstatPositionsCommand extends AbstractCrontabCommand
                     'Ошибка в скрипте wordstat',
                     [
                         'query' => $query,
-                        'limit' => $searcher->getCurrentLimit(),
+                        'limit' => $request->getNumResults(),
                         'error_code' => $result->getErrorCode(),
                         'error_text' => $result->getErrorText(),
                     ]
