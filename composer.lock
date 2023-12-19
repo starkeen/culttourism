@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0bbe3c1bbb2683c4acfbb3ccd812ee31",
+    "content-hash": "1d465ad4d9afbed43fce7a02393c437a",
     "packages": [
         {
             "name": "ezyang/htmlpurifier",
@@ -1180,16 +1180,16 @@
         },
         {
             "name": "starkeen/yandex-search-api",
-            "version": "0.0.2",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/starkeen/yandex-search-api.git",
-                "reference": "acee786dfbc59a4a0ad2f7c9e174e56824e5838a"
+                "reference": "b454c6a06f984822485aac7d38ff277aed0562c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/starkeen/yandex-search-api/zipball/acee786dfbc59a4a0ad2f7c9e174e56824e5838a",
-                "reference": "acee786dfbc59a4a0ad2f7c9e174e56824e5838a",
+                "url": "https://api.github.com/repos/starkeen/yandex-search-api/zipball/b454c6a06f984822485aac7d38ff277aed0562c6",
+                "reference": "b454c6a06f984822485aac7d38ff277aed0562c6",
                 "shasum": ""
             },
             "require": {
@@ -1231,9 +1231,9 @@
             ],
             "support": {
                 "issues": "https://github.com/starkeen/yandex-search-api/issues",
-                "source": "https://github.com/starkeen/yandex-search-api/tree/0.0.2"
+                "source": "https://github.com/starkeen/yandex-search-api/tree/1.0.1"
             },
-            "time": "2023-12-19T06:44:31+00:00"
+            "time": "2023-12-19T17:06:16+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
