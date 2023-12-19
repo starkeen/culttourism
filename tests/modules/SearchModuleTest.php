@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace tests\modules;
 
 use app\modules\SearchModule;
-use app\services\YandexSearch\YandexSearchService;
+use YandexSearchAPI\YandexSearchService;
 
 class SearchModuleTest extends AbstractModulesTestingDependencies
 {
