@@ -33,6 +33,8 @@ define('YANDEX_SEARCH_KEY', 'AABBccDDeeFF');
 define('GOOGLE_CUSTOM_SEARCH_KEY', 'absdef');
 define('GOOGLE_CUSTOM_SEARCH_CX', 'absdef');
 
+define('GOOGLE_STATIC_MAPS_API_KEY', 'AIza123456aBcDeF');
+
 /*
  * Don't change anything below in this file!
  * You can edit HOSTING.CONF.PHP for change base url, base path
