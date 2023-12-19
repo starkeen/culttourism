@@ -3,10 +3,12 @@
 use app\checker\FeedbackSpamChecker;
 use app\exceptions\NotFoundException;
 use app\model\repository\CandidateDomainBlacklistRepository;
-use app\services\YandexSearch\SearchRequest;
-use app\services\YandexSearch\SearchResultItem;
-use app\services\YandexSearch\ServiceBuilder;
 use app\utils\JSON;
+use GuzzleHttp\Client;
+use YandexSearchAPI\Result;
+use YandexSearchAPI\SearchException;
+use YandexSearchAPI\SearchRequest;
+use YandexSearchAPI\YandexSearchService;
 
 include('common.php');
 
@@ -42,22 +44,31 @@ if (isset($_GET['id'], $_GET['act'])) {
             break;
         case 'get_analogs':
             $searchQuery = $_GET['pname'] . ' host:culttourism.ru';
-            $searchService = ServiceBuilder::build();
+            $searchService = new YandexSearchService(new Client(), $logger);
+            $searchService->setApiId(YANDEX_SEARCH_ID);
+            $searchService->setApiKey(YANDEX_SEARCH_KEY);
+
             $searchQuery = new SearchRequest($searchQuery);
             $searchQuery->setPage(0);
-            $searchResult = $searchService->search($searchQuery);
+            try {
+                $searchResult = $searchService->search($searchQuery);
 
-            $out['founded'] = array_map(
-                static function (SearchResultItem $item) {
-                    return [
-                        'url' => $item->getUrl(),
-                        'title' => $item->getTitle(),
-                    ];
-                },
-                $searchResult->getResults()
-            );
-            $out['error'] = $searchResult->getErrorText();
-            $out['state'] = !$searchResult->isError();
+                $out['founded'] = array_map(
+                    static function (Result $item) {
+                        return [
+                            'url' => $item->getUrl(),
+                            'title' => $item->getTitle(),
+                        ];
+                    },
+                    $searchResult->getResults()
+                );
+                $out['state'] = true;
+                $out['error'] = null;
+            } catch (SearchException $exception) {
+                $out['founded'] = [];
+                $out['state'] = false;
+                $out['error'] = $exception->getMessage();
+            }
             break;
         case 'citysuggest':
             $pc = new MPageCities($db);

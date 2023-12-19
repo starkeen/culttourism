@@ -1,10 +1,13 @@
 <?php
 
 use app\crontab\WordstatPositionsCommand;
-use app\services\YandexSearch\ServiceBuilder;
+use GuzzleHttp\Client;
+use YandexSearchAPI\YandexSearchService;
 
 $ws = new MWordstat($db);
-$searchService = ServiceBuilder::build();
+$searchService = new YandexSearchService(new Client(), $logger);
+$searchService->setApiId(YANDEX_SEARCH_ID);
+$searchService->setApiKey(YANDEX_SEARCH_KEY);
 
 $command = new WordstatPositionsCommand($ws, $searchService, $logger);
 $command->run();

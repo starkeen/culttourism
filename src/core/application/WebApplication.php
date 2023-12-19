@@ -36,11 +36,11 @@ use app\modules\RedirectsModule;
 use app\modules\SearchModule;
 use app\modules\SignModule;
 use app\modules\SysModule;
-use app\services\YandexSearch\ServiceBuilder;
-use app\services\YandexSearch\YandexSearchService;
 use app\utils\Urls;
 use Auth;
+use GuzzleHttp\Client;
 use Throwable;
+use YandexSearchAPI\YandexSearchService;
 
 class WebApplication extends Application
 {
@@ -278,7 +278,11 @@ class WebApplication extends Application
 
     private function getSearchService(): YandexSearchService
     {
-        return ServiceBuilder::build();
+        $service = new YandexSearchService(new Client(), $this->getLogger());
+        $service->setApiId(YANDEX_SEARCH_ID);
+        $service->setApiKey(YANDEX_SEARCH_KEY);
+
+        return $service;
     }
 
     private function getModuleFetcher(): ModuleFetcher

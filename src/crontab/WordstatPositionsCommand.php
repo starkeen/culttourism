@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace app\crontab;
 
-use app\services\YandexSearch\SearchRequest;
-use app\services\YandexSearch\YandexSearchService;
 use app\sys\Logger;
 use MWordstat;
+use YandexSearchAPI\SearchException;
+use YandexSearchAPI\SearchRequest;
+use YandexSearchAPI\YandexSearchService;
 
 class WordstatPositionsCommand extends AbstractCrontabCommand
 {
@@ -38,9 +39,8 @@ class WordstatPositionsCommand extends AbstractCrontabCommand
             $request = new SearchRequest($query);
             $request->setNumResults(self::LIMIT_DOMAINS_PER_ANSWER);
 
-            $result =  $this->searchService->search($request);
-
-            if (!$result->isError()) {
+            try {
+                $result = $this->searchService->search($request);
                 foreach ($result->getResults() as $site) {
                     $domains[] = $site->getDomain();
                 }
@@ -59,16 +59,19 @@ class WordstatPositionsCommand extends AbstractCrontabCommand
                         'ws_position_date' => $this->wordstatModel->now(),
                     ]
                 );
-            } elseif ($result->getErrorCode() !== 15) {
-                $this->logger->warning(
-                    'Ошибка в скрипте wordstat',
-                    [
-                        'query' => $query,
-                        'limit' => $request->getNumResults(),
-                        'error_code' => $result->getErrorCode(),
-                        'error_text' => $result->getErrorText(),
-                    ]
-                );
+            } catch (SearchException $exception) {
+                $errorCode = $exception->getCode();
+                if ($errorCode !== 15) {
+                    $this->logger->warning(
+                        'Ошибка в скрипте wordstat',
+                        [
+                            'query' => $query,
+                            'limit' => $request->getNumResults(),
+                            'error_code' => $exception->getCode(),
+                            'error_text' => $exception->getMessage(),
+                        ]
+                    );
+                }
             }
         }
     }

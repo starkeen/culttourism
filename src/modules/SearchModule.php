@@ -12,16 +12,16 @@ use app\core\SiteResponse;
 use app\core\WebUser;
 use app\db\MyDB;
 use app\exceptions\NotFoundException;
-use app\services\YandexSearch\SearchRequest;
-use app\services\YandexSearch\SearchResponse;
-use app\services\YandexSearch\ServiceBuilder;
-use app\services\YandexSearch\YandexSearchService;
 use app\sys\Logger;
 use app\sys\TemplateEngine;
 use app\utils\JSON;
 use MPageCities;
 use MPagePoints;
 use MSearchCache;
+use YandexSearchAPI\SearchException;
+use YandexSearchAPI\SearchRequest;
+use YandexSearchAPI\SearchResponse;
+use YandexSearchAPI\YandexSearchService;
 
 class SearchModule extends Module implements ModuleInterface
 {
@@ -170,13 +170,12 @@ class SearchModule extends Module implements ModuleInterface
             $request->setPage($page);
             $request->setMaxPassages(self::MAX_PASSAGES);
 
-            $result = $this->searchService->search($request);
-
-            if (!$result->isError()) {
+            try {
+                $result = $this->searchService->search($request);
                 $dataResult = $this->makeResults($result);
 
-                $resultMeta['pages_all'] = $result->getPagesCount();
-                $resultMeta['resolution'] = str_replace('нашёл', '', $result->getTotalCountHuman());
+                $resultMeta['pages_all'] = $result->getPagination()->getPagesCount();
+                $resultMeta['resolution'] = str_replace('нашёл', '', $result->getPagination()->getTotalHuman());
 
                 $correctionInfo = $result->getCorrection();
                 if ($correctionInfo !== null) {
@@ -192,14 +191,13 @@ class SearchModule extends Module implements ModuleInterface
                     );
                     $resultMeta['query'] = $resultMeta['text_result'];
                 }
-            } else {
-                $errorText = $result->getErrorText();
+            } catch (SearchException $exception) {
+                $errorText = $exception->getMessage();
                 $loggerContext = [
                     'query' => $searchKeywords,
-                    'page' => $result->getPage(),
-                    'request_id' => $result->getRequestID(),
-                    'error_code' => $result->getErrorCode(),
-                    'error_text' => $result->getErrorText(),
+                    'page' => $request->getPage(),
+                    'error_code' => $exception->getCode(),
+                    'error_text' => $errorText,
                     'limit' => $request->getNumResults(),
                 ];
                 $this->logger->warning('Ошибка в поиске', $loggerContext);

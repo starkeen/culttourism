@@ -17,6 +17,7 @@
         "fanamurov/mdash": "^1.0",
         "vlucas/phpdotenv": "^4.1",
         "myclabs/php-enum": "^1.7",
+        "starkeen/yandex-search-api": "^0.0.2",
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-SimpleXML": "*",
