@@ -33,6 +33,7 @@ define('YANDEX_SEARCH_KEY', 'AABBccDDeeFF');
 define('GOOGLE_CUSTOM_SEARCH_KEY', 'absdef');
 define('GOOGLE_CUSTOM_SEARCH_CX', 'absdef');
 
+// https://console.cloud.google.com/google/maps-apis/credentials?project=project-name
 define('GOOGLE_STATIC_MAPS_API_KEY', 'AIza123456aBcDeF');
 
 /*
