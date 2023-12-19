@@ -12,6 +12,8 @@ ct-*.css
 ct-*.js
 sitemap.xml
 robots.txt
+/tests/.phpunit.cache
+.phpunit.cache
 .phpunit.result.cache
 .env
 .scannerwork

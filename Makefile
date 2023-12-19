@@ -81,10 +81,11 @@ coverage: vendor
 
 analyze: coverage
 	$(DOCKER_COMPOSE) run --rm \
-		-e SONAR_HOST_URL="http://sonar.starkeen.ru:9000" \
-		-e SONAR_LOGIN="22dfc271ad734bbfb936eb87f7801a5320c8a636" \
+		-e SONAR_HOST_URL="https://sonarcloud.io" \
+		-e SONAR_LOGIN="321b014667d2206b576400d48c8beab8319434fd" \
 		-v "$(shell pwd):/usr/src" \
 		scaner \
 		-Dsonar.projectBaseDir=/usr/src \
-		-Dsonar.projectKey=culttourism \
+		-Dsonar.organization=starkeen \
+		-Dsonar.projectKey=starkeen_culttourism \
 		-Dsonar.projectVersion=$(VERSION)
