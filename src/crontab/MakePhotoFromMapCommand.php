@@ -44,7 +44,7 @@ class MakePhotoFromMapCommand extends AbstractCrontabCommand
                 ' ',
                 '_',
                 preg_replace(
-                    "/[^a-zA-ZА-Яа-я0-9ё\s]/ui",
+                    '/[^A-zА-я0-9ё\s]/ui',
                     '',
                     mb_strtolower($pc['pc_title_unique'])
                 )
