@@ -10,7 +10,7 @@ use YandexSearchAPI\SearchException;
 use YandexSearchAPI\SearchRequest;
 use YandexSearchAPI\YandexSearchService;
 
-include('common.php');
+require_once 'common.php';
 
 $smarty->assign('title', 'Заявки на добавление');
 

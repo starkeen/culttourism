@@ -22,7 +22,7 @@ session_start();
  */
 function CheckAuthentication()
 {
-    return (isset($_SESSION['user_id']) && $_SESSION['user_id'] > 0);
+    return isset($_SESSION['user_id']) && $_SESSION['user_id'] > 0;
 }
 
 // LicenseKey : Paste your license key here. If left blank, CKFinder will be
@@ -115,9 +115,9 @@ $config['ForceAscii'] = false;
 
 $config['XSendfile'] = false;
 
-include_once "plugins/imageresize/plugin.php";
-include_once "plugins/fileeditor/plugin.php";
-include_once "plugins/zip/plugin.php";
+require_once 'plugins/imageresize/plugin.php';
+require_once 'plugins/fileeditor/plugin.php';
+require_once 'plugins/zip/plugin.php';
 
 $config['plugin_imageresize']['smallThumb'] = '90x90';
 $config['plugin_imageresize']['mediumThumb'] = '120x120';

@@ -27,19 +27,22 @@ class CKFinder_Connector_Utils_Misc
 {
     public static function getErrorMessage($number, $arg = "") {
         $langCode = 'en';
-        if (!empty($_GET['langCode']) && preg_match("/^[a-z\-]+$/", $_GET['langCode'])) {
-            if (file_exists(CKFINDER_CONNECTOR_LANG_PATH . "/" . $_GET['langCode'] . ".php"))
-                $langCode = $_GET['langCode'];
+        if (
+            !empty($_GET['langCode'])
+            && preg_match("/^[a-z\-]+$/", $_GET['langCode'])
+            && file_exists(CKFINDER_CONNECTOR_LANG_PATH . "/" . $_GET['langCode'] . ".php")
+        ) {
+            $langCode = $_GET['langCode'];
         }
-        include CKFINDER_CONNECTOR_LANG_PATH . "/" . $langCode . ".php";
+        require_once CKFINDER_CONNECTOR_LANG_PATH . "/" . $langCode . ".php";
         if ($number) {
             if (!empty ($GLOBALS['CKFLang']['Errors'][$number])) {
-                $errorMessage = str_replace("%1", $arg, $GLOBALS['CKFLang']['Errors'][$number]);
+                $errorMessage = str_replace('%1', $arg, $GLOBALS['CKFLang']['Errors'][$number]);
             } else {
-                $errorMessage = str_replace("%1", $number, $GLOBALS['CKFLang']['ErrorUnknown']);
+                $errorMessage = str_replace('%1', $number, $GLOBALS['CKFLang']['ErrorUnknown']);
             }
         } else {
-            $errorMessage = "";
+            $errorMessage = '';
         }
         return $errorMessage;
     }

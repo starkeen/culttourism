@@ -1,3 +1,3 @@
 <?php
 
-include(realpath(dirname(__FILE__) . '/../../config/config.ckfinder.php'));
+require_once dirname(__DIR__, 2) . '/config/config.ckfinder.php';

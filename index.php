@@ -1,9 +1,9 @@
 <?php
 
-include __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 use app\core\application\WebApplication;
 
-include 'config/configuration.php';
+require_once 'config/configuration.php';
 $app = new WebApplication();
 $app->run();

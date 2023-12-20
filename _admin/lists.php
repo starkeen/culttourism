@@ -2,7 +2,7 @@
 
 use app\utils\JSON;
 
-include('common.php');
+require_once 'common.php';
 
 $smarty->assign('title', 'Списки объектов');
 

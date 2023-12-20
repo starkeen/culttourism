@@ -8,8 +8,8 @@ ini_set('display_errors', 'Off');
 ini_set('memory_limit', '512M');
 session_start();
 
-include dirname(__DIR__) . '/vendor/autoload.php';
-include dirname(__DIR__) . '/config/configuration.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/config/configuration.php';
 $app = new AdminApplication();
 $app->run();
 

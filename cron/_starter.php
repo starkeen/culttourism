@@ -6,8 +6,8 @@ error_reporting(E_ALL & ~E_DEPRECATED);
 ini_set('display_errors', false);
 $_timer_start_main = microtime(true);
 header('Content-Type: text/html; charset=utf-8');
-include(dirname(__DIR__) . '/config/configuration.php');
-include __DIR__ . '/../vendor/autoload.php';
+require_once dirname(__DIR__) . '/config/configuration.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 $app = new CrontabApplication();
 $app->run();
 
@@ -56,7 +56,7 @@ foreach ($scripts as $job) {
 
         $_timer_start_script = microtime(true);
         ob_start();
-        include(GLOBAL_DIR_ROOT . "/cron/$script");
+        require_once(GLOBAL_DIR_ROOT . "/cron/$script");
         $content = ob_get_contents();
         ob_end_clean();
         $execTimeMs = (microtime(true) - $_timer_start_script) * 1000;

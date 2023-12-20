@@ -2,8 +2,7 @@
 
 use app\utils\JSON;
 
-include('common.php');
-
+require_once 'common.php';
 $smarty->assign('title', 'Объекты в базе');
 
 $dbpc = $db->getTableName('pagecity');
