@@ -1,51 +1,52 @@
 <?php
 
-use PHPHtmlParser\Dom;
+use app\db\MyDB;
 
 class Parser
 {
-    private $_curl;
-    private $_text;
-    private $_dom;
-    private $_url = [];
-    private $_purifier;
-    private $_sites = [];
-    private $_config;
+    private $dom;
+    private $config;
 
-    public function __construct($db, $url)
+    public function __construct(MyDB $db, string $url)
     {
         if (empty($url)) {
             throw new InvalidArgumentException('Не передан URL');
         }
-        $this->_sites = include GLOBAL_DIR_ROOT . '/config/config.parser.php';
-        $this->_url = parse_url($url);
-        $this->_url['domain'] = str_replace('www.', '', $this->_url['host']);
-        $this->_config = $this->_sites[$this->_url['domain']];
-        $this->_curl = new Curl($db);
-        $this->_curl->setTTLDays(30);
-        $this->_curl->setEncoding($this->_config['encoding']);
 
-        $pconfig = HTMLPurifier_Config::createDefault();
-        $pconfig->set('Core.Encoding', $this->_config['encoding']);
-        $pconfig->set('HTML.Doctype', $this->_config['doctype']);
-        $pconfig->set('URI.MakeAbsolute', true);
-        $pconfig->set('HTML.Allowed', $this->_config['tagsallow']);
-        $pconfig->set('URI.Base', $this->_url['scheme'] . '://' . $this->_url['host']);
-        $pconfig->set('AutoFormat.AutoParagraph', true);
-        $pconfig->set('Cache.DefinitionImpl', null);
-        $pconfig->set('HTML.TidyLevel', 'heavy');
+        $sites = require_once GLOBAL_DIR_ROOT . '/config/config.parser.php';
+        if ($sites === true) {
+            throw new RuntimeException('Не найден файл конфигурации парсера');
+        }
 
-        $this->_purifier = new HTMLPurifier($pconfig);
-        $text = $this->_curl->get($url);
-        $this->_text = $this->_purifier->purify($text);
+        $urlDetails = parse_url($url);
+        $urlDetails['domain'] = str_replace('www.', '', $urlDetails['host']);
+        $this->config = $sites[$urlDetails['domain']];
 
-        $this->_dom = new DOMDocument('1.0', 'utf-8');
-        $this->_dom->encoding = 'UTF-8';
-        $encoded = $this->cleanXML($this->_text);
-        @$this->_dom->loadHTML($encoded);
-        $this->_dom->formatOutput = true;
-        $this->_dom->preserveWhiteSpace = false;
-        $this->_dom->normalizeDocument();
+        $curl = new Curl($db);
+        $curl->setTTLDays(30);
+        $curl->setEncoding($this->config['encoding']);
+
+        $purifierConfig = HTMLPurifier_Config::createDefault();
+        $purifierConfig->set('Core.Encoding', $this->config['encoding']);
+        $purifierConfig->set('HTML.Doctype', $this->config['doctype']);
+        $purifierConfig->set('URI.MakeAbsolute', true);
+        $purifierConfig->set('HTML.Allowed', $this->config['tagsallow']);
+        $purifierConfig->set('URI.Base', $urlDetails['scheme'] . '://' . $urlDetails['host']);
+        $purifierConfig->set('AutoFormat.AutoParagraph', true);
+        $purifierConfig->set('Cache.DefinitionImpl', null);
+        $purifierConfig->set('HTML.TidyLevel', 'heavy');
+
+        $purifier = new HTMLPurifier($purifierConfig);
+        $rawText = $curl->get($url);
+        $cleanText = $purifier->purify($rawText);
+
+        $this->dom = new DOMDocument('1.0', 'utf-8');
+        $this->dom->encoding = 'UTF-8';
+        $encoded = $this->cleanXML($cleanText);
+        @$this->dom->loadHTML($encoded);
+        $this->dom->formatOutput = true;
+        $this->dom->preserveWhiteSpace = false;
+        $this->dom->normalizeDocument();
     }
 
     /**
@@ -54,8 +55,8 @@ class Parser
     public function getList(): array
     {
         $out = [];
-        $finder = new DomXPath($this->_dom);
-        foreach ((array) $this->_config['list_items'] as $xpath) {
+        $finder = new DomXPath($this->dom);
+        foreach ((array) $this->config['list_items'] as $xpath) {
             $elements = $finder->query($xpath);
             if ($elements->length > 0) {
                 foreach ($elements as $element) {
@@ -121,8 +122,8 @@ class Parser
             ],
         ];
 
-        $finder = new DomXPath($this->_dom);
-        foreach ((array) $this->_config['item'] as $k => $item) {
+        $finder = new DomXPath($this->dom);
+        foreach ((array) $this->config['item'] as $k => $item) {
             $data = [];
             foreach ((array) $item['path'] as $path) {
                 $elements = $finder->query($path);
@@ -187,7 +188,7 @@ class Parser
         if ($out['geo_latlon_degmin1'] != '') {
             $latlon = trim($out['geo_latlon_degmin1'], '.');
             $matches = [];
-            if (preg_match('/^N([0-9]*)\s(.*) E([0-9]*)\s(.*)/', $latlon, $matches)) {
+            if (preg_match('/^N(\d*)\s(.*) E(\d*)\s(.*)/', $latlon, $matches)) {
                 $out['geo_lat'] = (int) $matches[1];
                 $out['geo_lon'] = (int) $matches[3];
                 $out['geo_lat'] += (float) $matches[2] / 60;
@@ -197,7 +198,7 @@ class Parser
         if ($out['geo_latlon_degminsec'] != '') {
             $latlon = trim($out['geo_latlon_degminsec']);
             $matches = [];
-            if (preg_match("/^([0-9]*)°([0-9]*)'([0-9\.]*)''N, ([0-9]*)°([0-9]*)'([0-9\.]*)''E/", $latlon, $matches)) {
+            if (preg_match("/^(\d*)°(\d*)'([0-9\.]*)''N, (\d*)°(\d*)'([0-9\.]*)''E/", $latlon, $matches)) {
                 $out['geo_lat'] = (int) $matches[1];
                 $out['geo_lon'] = (int) $matches[4];
                 $out['geo_lat'] += (float) $matches[2] / 60;

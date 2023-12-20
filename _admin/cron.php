@@ -22,7 +22,7 @@ if (!isset($_GET['crid']) && !isset($_GET['act'])) {
 }
 //-------------------------------------------------------------------------
 elseif (isset($_GET['crid'], $_GET['act']) && $_GET['act'] === 'edit') {
-    $crid = (int) $_GET['crid'];
+    $cronId = (int) $_GET['crid'];
 
     if (isset($_POST) && !empty($_POST)) {
         $ch_act = (int) $_POST['ch_act'];
@@ -33,7 +33,7 @@ elseif (isset($_GET['crid'], $_GET['act']) && $_GET['act'] === 'edit') {
         $db->sql = "UPDATE $dbcron SET
                     cr_active='$ch_act', cr_period='$period', cr_isrun='$ch_run',
                     cr_datenext='$next_day $next_time'
-                    WHERE cr_id = '$crid'";
+                    WHERE cr_id = '$cronId'";
         if ($db->exec()) {
             redirect();
         }
@@ -45,7 +45,7 @@ elseif (isset($_GET['crid'], $_GET['act']) && $_GET['act'] === 'edit') {
                 DATE_FORMAT(cr_datenext, '%Y-%m-%d') as day_next,
                 DATE_FORMAT(cr_datenext, '%H:%i:%s') as time_next
                 FROM $dbcron
-                WHERE cr_id = '$crid'";
+                WHERE cr_id = '$cronId'";
     $db->exec();
     $row = $db->fetch();
     $smarty->assign('task', $row);
@@ -53,8 +53,10 @@ elseif (isset($_GET['crid'], $_GET['act']) && $_GET['act'] === 'edit') {
 }
 //-------------------------------------------------------------------------
 elseif (isset($_GET['crid'], $_GET['act']) && $_GET['act'] === 'run') {
-    $crid = (int) $_GET['crid'];
-    $db->sql = "SELECT cr_id, cr_script, DATE_FORMAT(cr_period, '%d %H:%i') as period FROM $dbcron WHERE cr_id = '$crid'";
+    $cronId = (int) $_GET['crid'];
+    $db->sql = "SELECT cr_id, cr_script, DATE_FORMAT(cr_period, '%d %H:%i') as period
+                FROM $dbcron
+                WHERE cr_id = $cronId";
     if ($db->exec()) {
         $job = $db->fetch();
         $script = $job['cr_script'];
@@ -65,7 +67,7 @@ elseif (isset($_GET['crid'], $_GET['act']) && $_GET['act'] === 'run') {
 
         $_timer_start_script = microtime(true);
         ob_start();
-        include(GLOBAL_DIR_ROOT . "/cron/$script");
+        require_once GLOBAL_DIR_ROOT . "/cron/$script";
         $content = ob_get_contents();
         ob_end_clean();
         $exectime = substr((microtime(true) - $_timer_start_script), 0, 6); // время выполнения в секундах
@@ -85,14 +87,14 @@ elseif (isset($_GET['crid'], $_GET['act']) && $_GET['act'] === 'run') {
 }
 //-------------------------------------------------------------------------
 elseif (isset($_GET['crid']) && isset($_GET['act']) && $_GET['act'] === 'stop') {
-    $crid = (int) $_GET['crid'];
+    $cronId = (int) $_GET['crid'];
     $db->sql = "UPDATE $dbcron SET
-                cr_active='0', cr_isrun='0'
-                WHERE cr_id = '$crid'";
+                cr_active = 0, cr_isrun = 0
+                WHERE cr_id = '$cronId'";
     if ($db->exec()) {
         redirect();
     } else {
-        header('Location: cron.php?crid=' . $crid . '&act=edit');
+        header('Location: cron.php?crid=' . $cronId . '&act=edit');
         exit();
     }
 }
