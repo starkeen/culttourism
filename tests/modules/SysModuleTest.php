@@ -15,12 +15,7 @@ class SysModuleTest extends AbstractModulesTestingDependencies
      */
     public function testApplicableMethod(string $key, bool $isApplicable): void
     {
-        $db = $this->getMockDb();
-        $templateEngine = $this->getMockTemplateEngine();
-        $webUser = $this->getMockWebUser();
-        $logger = $this->getMockLogger();
-
-        $module = new SysModule($db, $templateEngine, $webUser, $logger);
+        $module = new SysModule();
 
         $request = $this->getMockRequest();
         $request->expects(self::once())->method('getModuleKey')->willReturn($key);
