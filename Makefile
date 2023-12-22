@@ -79,6 +79,13 @@ coverage: vendor
 	$(PHPUNIT) --coverage-clover build/clover.xml -c tests/phpunit.xml tests/
 	sed -i 's#$(shell pwd)/##g' build/clover.xml
 
+deploy:
+	@echo "Deploying version $(VERSION)"
+	git fetch origin
+	git reset origin/deploy --hard
+	./bin/composer.phar install --no-dev --optimize-autoloader
+	@echo "Deploy complete"
+
 analyze: coverage
 	$(DOCKER_COMPOSE) run --rm \
 		-e SONAR_HOST_URL="https://sonarcloud.io" \
