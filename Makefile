@@ -82,7 +82,7 @@ coverage: vendor
 deploy:
 	@echo "Deploying version $(VERSION)"
 	git fetch origin
-	git reset origin/deploy --hard
+	git pull
 	./bin/composer.phar install --no-dev --optimize-autoloader
 	@echo "Deploy complete"
 
