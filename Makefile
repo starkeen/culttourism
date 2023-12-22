@@ -84,6 +84,8 @@ deploy:
 	git fetch origin
 	git reset origin/main --hard
 	./bin/composer.phar install --no-dev --optimize-autoloader
+	rm -rf var/templates_c/*
+	rm -rf var/tmp/*
 	@echo "Deploy complete"
 
 analyze: coverage
