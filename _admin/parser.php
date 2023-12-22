@@ -1,5 +1,6 @@
 <?php
 
+use app\services\parser\Parser;
 use app\utils\JSON;
 
 require_once 'common.php';

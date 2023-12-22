@@ -1,6 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+namespace app\services\parser;
+
 use app\db\MyDB;
+use Curl;
+use DOMDocument;
+use DOMXPath;
+use HTMLPurifier;
+use HTMLPurifier_Config;
+use InvalidArgumentException;
 
 class Parser
 {
@@ -15,7 +25,7 @@ class Parser
 
         $sites = require_once GLOBAL_DIR_ROOT . '/config/config.parser.php';
         if ($sites === true) {
-            throw new RuntimeException('Не найден файл конфигурации парсера');
+            throw new ParserException('Не найден файл конфигурации парсера');
         }
 
         $urlDetails = parse_url($url);
