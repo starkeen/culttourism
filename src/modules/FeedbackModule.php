@@ -29,6 +29,8 @@ class FeedbackModule extends Module implements ModuleInterface
 
     private CandidateDomainBlacklistRepository $candidateDomainBlacklistRepository;
 
+    private ?ReCaptcha $reCaptcha = null;
+
     public function __construct(MyDB $db, TemplateEngine $templateEngine, WebUser $webUser, GlobalConfig $globalConfig)
     {
         parent::__construct($db, $templateEngine, $webUser, $globalConfig);
@@ -232,7 +234,7 @@ class FeedbackModule extends Module implements ModuleInterface
      */
     private function getCommonForm(array $data): string
     {
-        $data['recaptcha_key'] = ReCaptcha::KEY;
+        $data['recaptcha_key'] = $this->getReCaptcha()->getKey();
         return $this->templateEngine->getContent('feedback/feedback_form_page.tpl', $data);
     }
 
@@ -254,7 +256,7 @@ class FeedbackModule extends Module implements ModuleInterface
         $response->getContent()->getHead()->addTitleElement('Добавить объект (музей, гостиницу, кафе и др.)');
 
         return $this->templateEngine->getContent('feedback/point_add_form_page.tpl', [
-            'recaptcha_key' => ReCaptcha::KEY,
+            'recaptcha_key' => $this->getReCaptcha()->getKey(),
         ]);
     }
 
@@ -277,7 +279,11 @@ class FeedbackModule extends Module implements ModuleInterface
      */
     private function getReCaptcha(): ReCaptcha
     {
-        $httpClient = new Client();
-        return new ReCaptcha($httpClient);
+        if ($this->reCaptcha === null) {
+            $httpClient = new Client();
+            return new ReCaptcha($httpClient, RECAPCHA_KEY, RECAPCHA_SECRET);
+        }
+
+        return $this->reCaptcha;
     }
 }

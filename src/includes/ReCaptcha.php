@@ -3,26 +3,28 @@
 namespace app\includes;
 
 use GuzzleHttp\Client;
-use RuntimeException;
+use Throwable;
 
 class ReCaptcha
 {
-    public const KEY = '6LcLZRoUAAAAADiMQC7i3obCBBRkKJZihgJZx2cV';
-    private const SECRET = '6LcLZRoUAAAAAGXgjcBiEFGtfKPJODLsInmOqNxT';
     private const URL = 'https://www.google.com/recaptcha/api/siteverify';
 
     private Client $httpClient;
 
-    public function __construct(Client $client)
+    private string $key;
+    private string $secret;
+
+    public function __construct(Client $client, string $key, string $secret)
     {
         $this->httpClient = $client;
+        $this->key = $key;
+        $this->secret = $secret;
     }
 
     /**
      * @param string $token
      *
      * @return boolean
-     * @throws RuntimeException
      */
     public function check(string $token): bool
     {
@@ -30,7 +32,7 @@ class ReCaptcha
             $response = $this->httpClient->post(self::URL, $this->getRequestData($token));
             $content = $response->getBody()->getContents();
             $answer = json_decode($content, true);
-        } catch (RuntimeException $exception) {
+        } catch (Throwable $exception) {
             $answer = null;
         }
 
@@ -46,10 +48,15 @@ class ReCaptcha
     {
         return [
             'form_params' => [
-                'secret' => self::SECRET,
+                'secret' => $this->secret,
                 'response' => $token,
                 'remoteip' => $_SERVER['REMOTE_ADDR'],
             ],
         ];
+    }
+
+    public function getKey(): string
+    {
+        return $this->key;
     }
 }
