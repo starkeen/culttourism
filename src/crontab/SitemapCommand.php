@@ -85,8 +85,7 @@ class SitemapCommand extends AbstractCrontabCommand
 
         $fileContent = $this->smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_XML/sitemap.sm.xml');
 
-        chmod($filename, 0777);
-        $fileHandler = fopen((string) $filename, 'wb+');
+        $fileHandler = fopen($filename, 'wb+');
         if (!$fileHandler) {
             throw new CrontabException('Ошибка доступа к файлу!');
         }
