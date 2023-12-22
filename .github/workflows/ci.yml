@@ -65,6 +65,15 @@ jobs:
           source: Makefile
           target: ${{ secrets.DEPLOY_PATH }}
 
+      - name: Run deploy script
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USERNAME }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          key: ${{ secrets.DEPLOY_SSHKEY }}
+          run: cd ${{ secrets.DEPLOY_PATH }} && make deploy
+
   sentry:
     name: Sentry
     needs:
