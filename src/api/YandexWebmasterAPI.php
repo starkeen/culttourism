@@ -9,15 +9,9 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class YandexWebmasterAPI
 {
-    /**
-     * @var Client
-     */
-    private $client;
+    private Client $client;
 
-    /**
-     * @var string
-     */
-    private $token = 'AQAAAAAApEgZAAUEehmzNwnqz0GTqcBNuB9DSxs';
+    private string $token = YANDEX_WEBMASTER_TOKEN;
 
     /**
      * @var string
@@ -90,7 +84,7 @@ class YandexWebmasterAPI
     private function getUserId(): int
     {
         if ($this->userId === null) {
-            $this->userId = 10766361;
+            $this->userId = YANDEX_WEBMASTER_USER_ID;
         }
 
         return $this->userId;

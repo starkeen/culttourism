@@ -27,6 +27,10 @@ const SENTRY_ORGANIZATION = 'org-name';
 const YANDEX_SEARCH_ID = 'abcdef'; // Folder ID
 const YANDEX_SEARCH_KEY = 'AABBccDDeeFF';
 
+// https://oauth.yandex.com/client/abcdef
+const YANDEX_WEBMASTER_USER_ID = 10123456;
+const YANDEX_WEBMASTER_TOKEN = 'AQAAAAAArABCDEFHGHIJKLMNOPQRSTUVWXYZ';
+
 // https://console.cloud.google.com/google/maps-apis/credentials?project=project-name
 const GOOGLE_CUSTOM_SEARCH_KEY = 'absdef';
 const GOOGLE_CUSTOM_SEARCH_CX = 'absdef';
