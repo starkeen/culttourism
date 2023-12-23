@@ -26,8 +26,6 @@ abstract class Application
 
     public function __construct()
     {
-        error_reporting(E_ALL);
-
         $exceptionHandler = new ExceptionsHandler($this->getLogger());
         set_exception_handler([$exceptionHandler, 'errorsExceptionsHandler']);
         register_shutdown_function([$exceptionHandler, 'shutdown']);

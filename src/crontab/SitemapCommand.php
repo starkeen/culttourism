@@ -102,7 +102,7 @@ class SitemapCommand extends AbstractCrontabCommand
     private function notifyGoogle(): void
     {
         $ch = curl_init();
-        $url = 'http://www.google.com/webmasters/sitemaps/ping?sitemap=https://culttourism.ru/sitemap.xml';
+        $url = 'https://www.google.com/webmasters/sitemaps/ping?sitemap=https://culttourism.ru/sitemap.xml';
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_exec($ch);
