@@ -20,6 +20,8 @@ class Content
 
     private string $urlRss;
 
+    private ?string $yandexMapsKey = null;
+
     private ?string $customJsModule = null;
 
     private array $jsResources = [];
@@ -190,5 +192,15 @@ class Content
     public function setJsResources(array $map): void
     {
         $this->jsResources = $map;
+    }
+
+    public function getYandexMapsKey(): string
+    {
+        return $this->yandexMapsKey;
+    }
+
+    public function setYandexMapsKey(string $yandexMapsKey): void
+    {
+        $this->yandexMapsKey = $yandexMapsKey;
     }
 }

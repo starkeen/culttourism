@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru" xml:lang="ru" xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#" xmlns:fb="https://www.facebook.com/2008/fbml">
+<html lang="ru"
+      xml:lang="ru"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="https://www.facebook.com/2008/fbml">
     <head>
         <meta charset="utf-8"/>
         <!--[if lt IE 9]>
@@ -37,7 +41,7 @@
         {/if}
         <script type="text/javascript" src="https://www.google.com/recaptcha/api.js" defer="defer"></script>
         <script type="text/javascript"
-                src="https://api-maps.yandex.ru/2.1/?apikey=74d288bb-04a5-43b1-bf52-e90eeccd2683&lang=ru_RU&coordorder=longlat"
+                src="https://api-maps.yandex.ru/2.1/?apikey={$pageContent->getYandexMapsKey()}&lang=ru_RU&coordorder=longlat"
                 defer="defer"></script>
         <script type="text/javascript" src="https://yastatic.net/pcode-native/loaders/loader.js" defer="defer"></script>
         <script type="text/javascript" src="{$pageContent->getUrlJs()}" defer="defer"></script>

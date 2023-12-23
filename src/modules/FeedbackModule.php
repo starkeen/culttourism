@@ -281,7 +281,7 @@ class FeedbackModule extends Module implements ModuleInterface
     {
         if ($this->reCaptcha === null) {
             $httpClient = new Client();
-            return new ReCaptcha($httpClient, RECAPCHA_KEY, RECAPCHA_SECRET);
+            return new ReCaptcha($httpClient, RECAPTCHA_KEY, RECAPTCHA_SECRET);
         }
 
         return $this->reCaptcha;

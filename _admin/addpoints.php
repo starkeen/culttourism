@@ -1,6 +1,7 @@
 <?php
 
 use app\checker\FeedbackSpamChecker;
+use app\core\GlobalConfig;
 use app\exceptions\NotFoundException;
 use app\model\repository\CandidateDomainBlacklistRepository;
 use app\utils\JSON;
@@ -181,11 +182,14 @@ if (isset($_GET['id'], $_GET['act'])) {
 } elseif (isset($_GET['id']) && !isset($_GET['act'])) {
     $rpt = new MRefPointtypes($db);
 
+    $globalConfig = new GlobalConfig($db);
+
     $item = $c->getItemByPk((int) $_GET['id']);
 
     $smarty->assign('claim', $item);
     $smarty->assign('referer', $_SERVER['HTTP_REFERER'] ?? 'addpoints.php');
     $smarty->assign('ref_types', $rpt->getActive());
+    $smarty->assign('yandex_maps_key', $globalConfig->getYandexMapsKey());
     // -----------   обработка заявки ----------
     $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/pointadding.item.tpl'));
 } else {

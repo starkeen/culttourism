@@ -82,6 +82,7 @@ class WebApplication extends Application
 
             $this->getSiteResponse()->getContent()->getHead()->setTitleDelimiter($this->getGlobalConfig()->getTitleDelimiter());
             $this->getSiteResponse()->getContent()->setUrlRss($this->getGlobalConfig()->getUrlRSS());
+            $this->getSiteResponse()->getContent()->setYandexMapsKey($this->getGlobalConfig()->getYandexMapsKey());
             $this->getSiteResponse()->getContent()->setJsResources($this->getGlobalConfig()->getJsResources());
             $this->getSiteResponse()->getContent()->setUrlCss($this->getGlobalConfig()->getUrlCss());
             $this->getSiteResponse()->getContent()->setUrlJs($this->getGlobalConfig()->getUrlJs());

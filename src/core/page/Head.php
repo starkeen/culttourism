@@ -12,27 +12,27 @@ class Head
     /**
      * @var string[]
      */
-    private $titleElements = [];
+    private array $titleElements = [];
 
     /**
      * @var string[]
      */
-    private $keywordsElements = [];
+    private array $keywordsElements = [];
 
     /**
      * @var string[]
      */
-    private $descriptionElements = [];
+    private array $descriptionElements = [];
 
     /**
      * @var string
      */
-    private $titleDelimiter = ' - ';
+    private string $titleDelimiter = ' - ';
 
     /**
      * @var string|null
      */
-    private $canonicalUrl;
+    private ?string $canonicalUrl;
 
     /**
      * @var array
@@ -47,12 +47,14 @@ class Head
     /**
      * @var array
      */
-    private $customTags = [];
+    private array $customTags = [];
 
     /**
      * @var string
      */
-    private $robotsIndexing = 'index,follow';
+    private string $robotsIndexing = 'index,follow';
+
+    private ?string $yandexMapsKey = null;
 
     public function addTitleElement(string $element): void
     {

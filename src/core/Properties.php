@@ -64,14 +64,14 @@ class Properties
         'app_openweather_key',
     ];
 
-    private $values = [];
+    private array $values = [];
 
-    public function __isset($name): bool
+    public function __isset(string $name): bool
     {
         return isset($this->values[$name]) && in_array($name, self::KEYS, true);
     }
 
-    public function __set($name, $value): void
+    public function __set(string $name, string $value): void
     {
         if (!in_array($name, self::KEYS, true)) {
             throw new CoreException('Указано несуществующее свойство');
@@ -80,7 +80,7 @@ class Properties
         $this->values[$name] = $value;
     }
 
-    public function __get($name): string
+    public function __get(string $name): string
     {
         if (isset($this->values[$name]) && in_array($name, self::KEYS, true)) {
             return $this->values[$name];

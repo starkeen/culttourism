@@ -138,7 +138,7 @@ class SignModule extends Module implements ModuleInterface
         }
 
         $this->templateEngine->assign('baseurl', GLOBAL_SITE_URL);
-        $this->templateEngine->assign('authkey', 'ewtheqryb35yqb356y4ery');
+        $this->templateEngine->assign('authkey', $this->webUser->getAuth()->getRandomKey());
 
         return $this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/sign/authform.tpl');
     }

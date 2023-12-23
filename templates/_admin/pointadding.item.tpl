@@ -118,7 +118,7 @@
 </table>
 
 <script type="text/javascript"
-        src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&coordorder=longlat&apikey=74d288bb-04a5-43b1-bf52-e90eeccd2683"
+        src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&coordorder=longlat&apikey={$yandex_maps_key}"
         defer="defer"></script>
 <script type="text/javascript" src="/js/admin/addpoint.js" defer="defer"></script>
 

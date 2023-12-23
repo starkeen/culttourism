@@ -9,19 +9,10 @@ use MSysProperties;
 
 class GlobalConfig
 {
-    /**
-     * @var MSysProperties
-     */
-    private $propertiesModel;
+    private MSysProperties $propertiesModel;
 
-    /**
-     * @var Properties
-     */
-    private $properties;
+    private ?Properties $properties = null;
 
-    /**
-     * @param MyDB $db
-     */
     public function __construct(MyDB $db)
     {
         $this->propertiesModel = new MSysProperties($db);

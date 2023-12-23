@@ -332,6 +332,11 @@ class Auth
         );
     }
 
+    public function getRandomKey(): string
+    {
+        return random_bytes(16);
+    }
+
     /**
      * @return string
      */
