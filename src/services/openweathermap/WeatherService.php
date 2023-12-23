@@ -6,7 +6,7 @@ namespace app\services\openweathermap;
 
 class WeatherService
 {
-    private const URL = 'http://api.openweathermap.org/data/2.5/weather';
+    private const URL = 'https://api.openweathermap.org/data/2.5/weather';
 
     /**
      * @var HttpClientInterface

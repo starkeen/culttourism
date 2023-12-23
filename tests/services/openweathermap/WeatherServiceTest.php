@@ -20,7 +20,7 @@ class WeatherServiceTest extends TestCase
 
         $http->expects(self::once())
             ->method('fetchData')
-            ->with('http://api.openweathermap.org/data/2.5/weather?lat=12.34&lon=56.78&APPID=test_key_example&lang=ru&units=metric')
+            ->with('https://api.openweathermap.org/data/2.5/weather?lat=12.34&lon=56.78&APPID=test_key_example&lang=ru&units=metric')
             ->willReturn($resultMock);
 
         $result = $service->getWeatherByCoordinates(12.34, 56.78);
