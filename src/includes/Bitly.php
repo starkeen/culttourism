@@ -11,23 +11,17 @@ class Bitly
     private const BITLY_HOST = 'https://api-ssl.bitly.com';
     public const CURL_CACHE_TTL = 86400;
 
-    /** @var Client */
-    private $client;
+    private Client $client;
 
-    /** @var MCurlCache */
-    private $curlCache;
+    private MCurlCache $curlCache;
 
-    /** @var string */
-    private $bitlyHost;
+    private ?string $bitlyHost = null;
 
-    /** @var string */
-    private $token = 'cdba9cb93629303877a0e9ae5a33ff0a6877eac5';
+    private ?string $token = null;
 
-    /** @var string */
-    private $clientId = '937164071db5a7fab7f82e56aa5198616c96bf37';
+    private string $clientId = BITLY_CLIENT_ID;
 
-    /** @var string */
-    private $clientSecret = 'ccd85b27dc6d77ddf409250b5f5f07f8924fdd6b';
+    private string $clientSecret = BITLY_CLIENT_SECRET;
 
     /**
      * @param Client $client
@@ -100,12 +94,7 @@ class Bitly
         $this->bitlyHost = $host;
     }
 
-    /**
-     * @param $url
-     *
-     * @return string
-     */
-    private function buildUrl($url): string
+    private function buildUrl(string $url): string
     {
         $pattern = '%s/v3/shorten?access_token=%s&longUrl=%s&format=json';
 

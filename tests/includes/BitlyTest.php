@@ -7,6 +7,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
+const BITLY_CLIENT_ID = 'client_id_string';
+const BITLY_CLIENT_SECRET = 'client_secret_string';
+
 class BitlyTest extends TestCase
 {
     private Client|MockObject $guzzleClient;
@@ -164,7 +167,7 @@ class BitlyTest extends TestCase
     /**
      * В заголовке ответа код с ошибкой
      */
-    public function testShorterErrorHeaderCode()
+    public function testShorterErrorHeaderCode(): void
     {
         $input = 'http://host.tld/';
         $expected = $input;

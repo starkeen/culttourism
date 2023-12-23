@@ -42,6 +42,10 @@ const GOOGLE_STATIC_MAPS_API_KEY = 'AIza123456aBcDeF';
 const RECAPTCHA_KEY = 'abcdefghijk';
 const RECAPTCHA_SECRET = 'ABCDEFGHIJK';
 
+// https://app.bitly.com/settings/api
+const BITLY_CLIENT_ID = 'abcdef1234567890abcdef1234567890abcdef12';
+const BITLY_CLIENT_SECRET = 'zxcvbnmasdfghjklqwertyuiop1234567890asdfghjkl';
+
 /*
  * ============================================================
  * Don't change anything below in this file!
