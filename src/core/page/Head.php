@@ -29,10 +29,7 @@ class Head
      */
     private string $titleDelimiter = ' - ';
 
-    /**
-     * @var string|null
-     */
-    private ?string $canonicalUrl;
+    private ?string $canonicalUrl = null;
 
     /**
      * @var array
@@ -53,8 +50,6 @@ class Head
      * @var string
      */
     private string $robotsIndexing = 'index,follow';
-
-    private ?string $yandexMapsKey = null;
 
     public function addTitleElement(string $element): void
     {
