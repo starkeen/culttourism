@@ -91,7 +91,7 @@ deploy:
 analyze: coverage
 	$(DOCKER_COMPOSE) run --rm \
 		-e SONAR_HOST_URL="https://sonarcloud.io" \
-		-e SONAR_LOGIN="321b014667d2206b576400d48c8beab8319434fd" \
+		-e SONAR_TOKEN="$(TOKEN)" \
 		-v "$(shell pwd):/usr/src" \
 		scaner \
 		-Dsonar.projectBaseDir=/usr/src \
