@@ -334,7 +334,7 @@ class MWordstat extends Model
      * Распределение позиций по диапазонам
      * @return array
      */
-    public function getStatPositionsRanges()
+    public function getStatPositionsRanges(): array
     {
         $out = [
             'none' => 0,
@@ -342,7 +342,7 @@ class MWordstat extends Model
             '20' => 0,
             '50' => 0,
         ];
-        $this->_db->sql = "SELECT count(*) AS cnt, 
+        $this->_db->sql = "SELECT count(*) AS cnt,
                                 IF(ws_position = 0, 0, IF(ws_position > 50, 0, IF(ws_position > 20, 50, IF(ws_position > 10, 20, 10)))) AS xtop
                             FROM $this->_table_name ws
                                 LEFT JOIN {$this->_tables_related['pagecity']} pc

@@ -280,6 +280,7 @@ class MPageCities extends Model
             $values['pc_lastup_date'] = $this->now();
             $values['pc_lastup_user'] = $this->getUserId();
         }
+
         return parent::updateByPk($id, $values, $files);
     }
 
@@ -481,7 +482,7 @@ class MPageCities extends Model
      */
     public function updateBreadcrumbs(int $id, string $path): void
     {
-        $this->_db->sql = "UPDATE $this->_table_name 
+        $this->_db->sql = "UPDATE $this->_table_name
                             SET pc_pagepath = :path
                             WHERE pc_id = :id AND pc_pagepath IS NULL";
         $this->_db->execute(

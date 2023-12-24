@@ -14,7 +14,7 @@ use app\services\image_storage\exceptions\SourceUnreachedException;
 use app\services\image_storage\ImageStorageFactory;
 use app\utils\JSON;
 
-require_once('common.php');
+require_once 'common.php';
 
 $smarty->assign('title', 'Импорт фотографий');
 

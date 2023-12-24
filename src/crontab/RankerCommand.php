@@ -27,7 +27,7 @@ class RankerCommand extends AbstractCrontabCommand
         $dbsp = $this->db->getTableName('statpoints');
         $dbsc = $this->db->getTableName('statcity');
 
-        $this->db->sql = "UPDATE $dbp pp SET pp.pt_cnt_shows = pp.pt_cnt_shows + 
+        $this->db->sql = "UPDATE $dbp pp SET pp.pt_cnt_shows = pp.pt_cnt_shows +
             (SELECT count(sp.sp_id) as cnt FROM $dbsp sp WHERE sp.sp_pagepoint_id = pp.pt_id)";
         $this->db->exec();
 
@@ -43,14 +43,14 @@ class RankerCommand extends AbstractCrontabCommand
         $pdo = $this->db->getPDO();
         $sql = "
                             SET @counter = 0;
-                            UPDATE $dbp 
+                            UPDATE $dbp
                             SET pt_order = @counter := @counter + 1
                             WHERE pt_deleted_at IS NULL
                             ORDER BY pt_rank DESC;
                           ";
         $pdo->exec($sql);
 
-        $this->db->sql = "UPDATE $dbc pc SET pc.pc_cnt_shows = pc.pc_cnt_shows + 
+        $this->db->sql = "UPDATE $dbc pc SET pc.pc_cnt_shows = pc.pc_cnt_shows +
             (SELECT 100*count(sc.sc_id) as cnt FROM $dbsc sc WHERE sc.sc_citypage_id = pc.pc_id)";
         $this->db->exec();
 

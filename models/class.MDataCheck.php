@@ -58,7 +58,7 @@ class MDataCheck extends Model
      */
     public function deleteChecked(string $entityType, int $id): void
     {
-        $this->_db->sql = "DELETE FROM $this->_table_name 
+        $this->_db->sql = "DELETE FROM $this->_table_name
                             WHERE dc_type = :type
                             AND dc_item_id = :id";
         $this->_db->execute(
