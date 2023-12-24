@@ -37,8 +37,8 @@ class ListModule extends Module implements ModuleInterface
         //========================  I N D E X  ================================
         if ($request->getLevel1() === null) {
             $this->prepareIndex($response);
-        } //========================   L I S T   ================================
-        elseif (preg_match('/([a-z0-9_-]+)\.html/i', $urlLastPart, $regs)) {
+        } elseif (preg_match('/([a-z0-9_-]+)\.html/i', $urlLastPart, $regs)) {
+            //========================   L I S T   ================================
             $this->prepareListBySlug($regs[1], $response);
         } else {
             throw new NotFoundException();

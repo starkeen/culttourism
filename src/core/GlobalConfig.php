@@ -151,13 +151,13 @@ class GlobalConfig
     private function getProperties(): Properties
     {
         if ($this->properties === null) {
-
             $this->properties = new Properties();
             $globals = $this->propertiesModel->getPublic();
             foreach ($globals as $key => $value) {
                 $this->properties->{$key} = $value;
             }
         }
+
         return $this->properties;
     }
 }

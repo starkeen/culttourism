@@ -60,7 +60,6 @@ class PictureModule implements ModuleInterface
             $resultImage = imagecreatetruecolor(1200, 900);
             if ($photo->ph_mime === MimeType::JPEG) {
                 $sourceImage = imagecreatefromjpeg(GLOBAL_DIR_ROOT . $photo->ph_src);
-
             } elseif ($photo->ph_mime === MimeType::PNG) {
                 $sourceImage = imagecreatefrompng(GLOBAL_DIR_ROOT . $photo->ph_src);
             } else {

@@ -31,20 +31,15 @@ class CheckUrlsCommand extends AbstractCrontabCommand
         RequestOptions::FORCE_IP_RESOLVE => 'v4',
         RequestOptions::VERIFY => false,
         RequestOptions::HEADERS => [
-            'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36 / culttourism bot/1.0',
+            'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                . 'Chrome/86.0.4240.75 Safari/537.36 / culttourism bot/1.0',
         ],
     ];
 
     private const COOKIES_PATH = GLOBAL_DIR_VAR . '/cookies';
 
-    /**
-     * @var MLinks
-     */
     private MLinks $linksModel;
 
-    /**
-     * @var ClientInterface
-     */
     private ClientInterface $httpClient;
 
     public function __construct(MLinks $linksModel, ClientInterface $httpClient)
@@ -145,7 +140,8 @@ class CheckUrlsCommand extends AbstractCrontabCommand
      */
     private function getCookieFilePath(string $url): string
     {
-        if (!file_exists(self::COOKIES_PATH)
+        if (
+            !file_exists(self::COOKIES_PATH)
             && !mkdir(self::COOKIES_PATH, 0700, true)
             && !is_dir(self::COOKIES_PATH)
         ) {

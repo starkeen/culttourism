@@ -180,9 +180,7 @@ class FeedbackModule extends Module implements ModuleInterface
      */
     private function processFeedbackPosting(SiteRequest $request, SiteResponse $response): void
     {
-        if ((!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] === null)
-            && $request->getReferer() !== null
-        ) {
+        if (!isset($_SESSION['feedback_referer']) && $request->getReferer() !== null) {
             $_SESSION['feedback_referer'] = $request->getReferer();
         }
         $referer = !empty($_SESSION['feedback_referer']) ? $_SESSION['feedback_referer'] : null;

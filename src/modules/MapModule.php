@@ -53,12 +53,12 @@ class MapModule implements ModuleInterface
     {
         $response->getContent()->setCustomJsModule($request->getModuleKey());
 
-        //========================  I N D E X  ================================
         if ($request->getLevel1() === null) {
+            //========================  I N D E X  ================================
             $this->preparePageMetaTags($response);
             $response->getContent()->setBody($this->templateEngine->fetch(GLOBAL_DIR_TEMPLATES . '/map/map.tpl'));
-        } //====================  M A P   E N T R Y  ============================
-        elseif ($request->getLevel1() === 'common') {
+        } elseif ($request->getLevel1() === 'common') {
+            //====================  M A P   E N T R Y  ============================
             $this->webUser->getAuth()->setService('map');
             $this->getYMapsMLCommon($_GET);
         } elseif ($request->getLevel1() === 'city' && isset($_GET['cid']) && (int) $_GET['cid'] > 0) {
@@ -69,8 +69,8 @@ class MapModule implements ModuleInterface
             $this->getYMapsMLList((int) $_GET['lid']);
         } elseif ($request->getLevel1() === 'gpx' && isset($_GET['cid']) && (int) $_GET['cid']) {
             $this->showCityPointsGPX((int) $_GET['cid']);
-        } //==========================  E X I T  ================================
-        else {
+        } else {
+            //==========================  E X I T  ================================
             throw new NotFoundException();
         }
     }

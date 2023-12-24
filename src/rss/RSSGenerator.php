@@ -15,7 +15,7 @@ use SimpleXMLElement;
  */
 class RSSGenerator implements IRSSGenerator
 {
-    protected $props = [
+    protected array $props = [
         'title' => '',
         'link' => '',
         'url' => '',
@@ -26,7 +26,7 @@ class RSSGenerator implements IRSSGenerator
     ];
 
     /**
-     * @param  array $data
+     * @param array $data
      * @return string
      */
     public function process(array $data)
@@ -41,10 +41,10 @@ class RSSGenerator implements IRSSGenerator
         $channel->addChild('webMaster', $this->props['webMaster']);
         $channel->addChild('lastBuildDate', date('r'));
         $channel->addChild('pubDate', date('r'));
-        $channel->addChild('generator', 'RSS-gen / '. $this->props['link']);
+        $channel->addChild('generator', 'RSS-gen / ' . $this->props['link']);
         $channel->addChild('language', 'ru-RU');
         $atom = $channel->addChild('atom:link', null, 'http://www.w3.org/2005/Atom');
-        $atom ->addAttribute('href', $this->props['url']);
+        $atom->addAttribute('href', $this->props['url']);
         $atom->addAttribute('rel', 'self');
         $atom->addAttribute('type', 'application/rss+xml');
 
@@ -63,7 +63,7 @@ class RSSGenerator implements IRSSGenerator
     }
 
     /**
-     * @param  array $entry
+     * @param array $entry
      * @return array
      */
     protected function mapEntity(array $entry): array
@@ -84,6 +84,7 @@ class RSSGenerator implements IRSSGenerator
     private function buildXML(): SimpleXMLElement
     {
         $docType = '<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" />';
+
         return new RSSElement($docType);
     }
 

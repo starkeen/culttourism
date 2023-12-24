@@ -30,7 +30,8 @@ class SysModule implements ModuleInterface
             throw new RedirectException('/');
         }
 
-        if ($request->getLevel1() === 'static'
+        if (
+            $request->getLevel1() === 'static'
             && $request->getGETParam('type') !== null
             && $request->getGETParam('pack') !== null
         ) {

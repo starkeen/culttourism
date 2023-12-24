@@ -7,12 +7,9 @@ namespace app\rss;
  */
 class RSSAddUTM extends RSSComponent
 {
-    /**
-     * @var string
-     */
-    public $rootUrl;
+    public ?string $rootUrl = null;
 
-    protected $utm = [
+    protected array $utm = [
         'utm_source' => null,
         'utm_medium' => 'blog',
         'utm_content' => null,
@@ -27,14 +24,14 @@ class RSSAddUTM extends RSSComponent
     }
 
     /**
-     * @param  array $data
+     * @param array $data
      * @return string
      */
     public function process(array $data): string
     {
         $pattern = sprintf('#(.*)href="(%s.*)"(.*)#uUi', $this->getRootUrl());
 
-        foreach($data as $i => $item) {
+        foreach ($data as $i => $item) {
             $text = preg_replace_callback(
                 $pattern,
                 function ($matches) use ($item) {
@@ -54,7 +51,7 @@ class RSSAddUTM extends RSSComponent
     }
 
     /**
-     * @param string      $link
+     * @param string $link
      * @param string|null $content
      *
      * @return string

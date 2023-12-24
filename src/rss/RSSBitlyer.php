@@ -33,12 +33,13 @@ class RSSBitlyer extends RSSComponent
     {
         $pattern = sprintf('#(.*)href="(%s.*)"(.*)#uUi', $this->getRootUrl());
 
-        foreach($data as $i => $item) {
+        foreach ($data as $i => $item) {
             $text = preg_replace_callback(
                 $pattern,
                 function ($matches) {
                     $linkOld = $matches[2];
                     $linkNew = $this->bitly->short($linkOld);
+
                     return str_replace($linkOld, $linkNew, $matches[0]);
                 },
                 $item['br_text_absolute']
@@ -57,6 +58,7 @@ class RSSBitlyer extends RSSComponent
         if ($this->rootUrl === null) {
             $this->rootUrl = GLOBAL_SITE_URL;
         }
+
         return $this->rootUrl;
     }
 }
