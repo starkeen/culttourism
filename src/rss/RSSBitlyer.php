@@ -8,12 +8,12 @@ use RuntimeException;
 class RSSBitlyer extends RSSComponent
 {
     /**
-     * @var Bitly 
+     * @var Bitly
      */
     private $bitly;
 
     /**
-     * @var string 
+     * @var string
      */
     public $rootUrl;
 
@@ -35,11 +35,13 @@ class RSSBitlyer extends RSSComponent
 
         foreach($data as $i => $item) {
             $text = preg_replace_callback(
-                $pattern, function ($matches) {
+                $pattern,
+                function ($matches) {
                     $linkOld = $matches[2];
                     $linkNew = $this->bitly->short($linkOld);
                     return str_replace($linkOld, $linkNew, $matches[0]);
-                }, $item['br_text_absolute']
+                },
+                $item['br_text_absolute']
             );
             $data[$i]['br_text_absolute'] = $text;
         }

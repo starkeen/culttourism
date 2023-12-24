@@ -64,13 +64,14 @@ require_once CKFINDER_CONNECTOR_LIB_DIR . '/Core/Hooks.php';
  * @param string $baseUrl
  * @return string
  */
-function resolveUrl($baseUrl) {
-    $fileSystem =& CKFinder_Connector_Core_Factory::getInstance("Utils_FileSystem");
+function resolveUrl($baseUrl)
+{
+    $fileSystem = &CKFinder_Connector_Core_Factory::getInstance("Utils_FileSystem");
     $baseUrl = preg_replace("|^http(s)?://[^/]+|i", "", $baseUrl);
     return $fileSystem->getDocumentRootPath() . $baseUrl;
 }
 
-$utilsSecurity =& CKFinder_Connector_Core_Factory::getInstance("Utils_Security");
+$utilsSecurity = &CKFinder_Connector_Core_Factory::getInstance("Utils_Security");
 $utilsSecurity->getRidOfMagicQuotes();
 
 /**
@@ -84,10 +85,11 @@ $config['Plugins'] = array();
  * Fix cookies bug in Flash.
  */
 if (!empty($_GET['command']) && $_GET['command'] == 'FileUpload' && !empty($_POST)) {
-	foreach ($_POST as $key => $val) {
-		if (strpos($key, "ckfcookie_") === 0)
-			$_COOKIE[str_replace("ckfcookie_", "", $key)] = $val;
-	}
+    foreach ($_POST as $key => $val) {
+        if (strpos($key, "ckfcookie_") === 0) {
+            $_COOKIE[str_replace("ckfcookie_", "", $key)] = $val;
+        }
+    }
 }
 
 /**
@@ -96,11 +98,10 @@ if (!empty($_GET['command']) && $_GET['command'] == 'FileUpload' && !empty($_POS
 require_once CKFINDER_CONNECTOR_CONFIG_FILE_PATH;
 
 CKFinder_Connector_Core_Factory::initFactory();
-$connector =& CKFinder_Connector_Core_Factory::getInstance("Core_Connector");
+$connector = &CKFinder_Connector_Core_Factory::getInstance("Core_Connector");
 
 if(isset($_GET['command'])) {
     $connector->executeCommand($_GET['command']);
-}
-else {
+} else {
     $connector->handleInvalidCommand();
 }

@@ -17,12 +17,12 @@ class Cache
     protected static array $instances = [];
 
     /**
-     * @var string 
+     * @var string
      */
     private $cacheDir;
 
     /**
-     * @var mixed 
+     * @var mixed
      */
     private $cacheCurrent;
 

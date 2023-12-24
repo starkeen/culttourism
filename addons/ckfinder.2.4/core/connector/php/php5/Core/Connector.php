@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -35,9 +37,9 @@ class CKFinder_Connector_Core_Connector
      */
     private $_registry;
 
-    function __construct()
+    public function __construct()
     {
-        $this->_registry =& CKFinder_Connector_Core_Factory::getInstance("Core_Registry");
+        $this->_registry = &CKFinder_Connector_Core_Factory::getInstance("Core_Registry");
         $this->_registry->set("errorHandler", "ErrorHandler_Base");
     }
 
@@ -48,7 +50,7 @@ class CKFinder_Connector_Core_Connector
      */
     public function handleInvalidCommand()
     {
-        $oErrorHandler =& $this->getErrorHandler();
+        $oErrorHandler = &$this->getErrorHandler();
         $oErrorHandler->throwError(CKFINDER_CONNECTOR_ERROR_INVALID_COMMAND);
     }
 
@@ -64,26 +66,25 @@ class CKFinder_Connector_Core_Connector
             return;
         }
 
-        switch ($command)
-        {
+        switch ($command) {
             case 'FileUpload':
-            $this->_registry->set("errorHandler", "ErrorHandler_FileUpload");
-            $obj =& CKFinder_Connector_Core_Factory::getInstance("CommandHandler_".$command);
-            $obj->sendResponse();
-            break;
+                $this->_registry->set("errorHandler", "ErrorHandler_FileUpload");
+                $obj = &CKFinder_Connector_Core_Factory::getInstance("CommandHandler_".$command);
+                $obj->sendResponse();
+                break;
 
             case 'QuickUpload':
-            $this->_registry->set("errorHandler", "ErrorHandler_QuickUpload");
-            $obj =& CKFinder_Connector_Core_Factory::getInstance("CommandHandler_".$command);
-            $obj->sendResponse();
-            break;
+                $this->_registry->set("errorHandler", "ErrorHandler_QuickUpload");
+                $obj = &CKFinder_Connector_Core_Factory::getInstance("CommandHandler_".$command);
+                $obj->sendResponse();
+                break;
 
             case 'DownloadFile':
             case 'Thumbnail':
-            $this->_registry->set("errorHandler", "ErrorHandler_Http");
-            $obj =& CKFinder_Connector_Core_Factory::getInstance("CommandHandler_".$command);
-            $obj->sendResponse();
-            break;
+                $this->_registry->set("errorHandler", "ErrorHandler_Http");
+                $obj = &CKFinder_Connector_Core_Factory::getInstance("CommandHandler_".$command);
+                $obj->sendResponse();
+                break;
 
             case 'CopyFiles':
             case 'CreateFolder':
@@ -96,13 +97,13 @@ class CKFinder_Connector_Core_Connector
             case 'MoveFiles':
             case 'RenameFile':
             case 'RenameFolder':
-            $obj =& CKFinder_Connector_Core_Factory::getInstance("CommandHandler_".$command);
-            $obj->sendResponse();
-            break;
+                $obj = &CKFinder_Connector_Core_Factory::getInstance("CommandHandler_".$command);
+                $obj->sendResponse();
+                break;
 
             default:
-            $this->handleInvalidCommand();
-            break;
+                $this->handleInvalidCommand();
+                break;
         }
     }
 
@@ -115,7 +116,7 @@ class CKFinder_Connector_Core_Connector
     public function &getErrorHandler()
     {
         $_errorHandler = $this->_registry->get("errorHandler");
-        $oErrorHandler =& CKFinder_Connector_Core_Factory::getInstance($_errorHandler);
+        $oErrorHandler = &CKFinder_Connector_Core_Factory::getInstance($_errorHandler);
         return $oErrorHandler;
     }
 }

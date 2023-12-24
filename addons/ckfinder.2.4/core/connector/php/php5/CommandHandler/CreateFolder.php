@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -51,7 +53,7 @@ class CKFinder_Connector_CommandHandler_CreateFolder extends CKFinder_Connector_
             $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_INVALID_REQUEST);
         }
 
-        $_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+        $_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
         if (!$this->_currentFolder->checkAcl(CKFINDER_CONNECTOR_ACL_FOLDER_CREATE)) {
             $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UNAUTHORIZED);
         }
@@ -82,8 +84,7 @@ class CKFinder_Connector_CommandHandler_CreateFolder extends CKFinder_Connector_
             $oldUmask = umask(0);
             $bCreated = @mkdir($sServerDir, $perms);
             umask($oldUmask);
-        }
-        else {
+        } else {
             $bCreated = @mkdir($sServerDir);
         }
 

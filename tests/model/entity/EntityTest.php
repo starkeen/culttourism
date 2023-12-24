@@ -19,8 +19,7 @@ class EntityTest extends TestCase
         /**
          * @property string $field_string
          */
-        $this->entity = new class extends Entity {
-
+        $this->entity = new class () extends Entity {
             public function getId(): ?int
             {
                 return 12345;

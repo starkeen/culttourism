@@ -46,7 +46,7 @@ class RSSCommand extends AbstractCrontabCommand
 
         foreach ($generators as $fileType => $generator) {
             /**
- * @var IRSSGenerator $generator 
+ * @var IRSSGenerator $generator
 */
             $fileName = sprintf('%s/feed/%s', GLOBAL_DIR_DATA, $fileType); // имя RSS-файла
             $generator->url = sprintf('%sdata/feed/%s', GLOBAL_SITE_URL, $fileType); // URL файла

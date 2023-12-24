@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -45,8 +47,7 @@ class CKFinder_Connector_ErrorHandler_Http extends CKFinder_Connector_ErrorHandl
             return false;
         }
 
-        switch ($number)
-        {
+        switch ($number) {
             case CKFINDER_CONNECTOR_ERROR_INVALID_REQUEST:
             case CKFINDER_CONNECTOR_ERROR_INVALID_NAME:
             case CKFINDER_CONNECTOR_ERROR_THUMBNAILS_DISABLED:

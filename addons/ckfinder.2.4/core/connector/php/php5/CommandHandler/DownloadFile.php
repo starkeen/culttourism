@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -77,8 +79,7 @@ class CKFinder_Connector_CommandHandler_DownloadFile extends CKFinder_Connector_
         header("Expires: 0");
         if (!empty($_GET['format']) && $_GET['format'] == 'text') {
             header("Content-Type: text/plain; charset=utf-8");
-        }
-        else {
+        } else {
             $user_agent = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : "";
             $encodedName = str_replace("\"", "\\\"", $fileName);
             if (strpos($user_agent, "MSIE") !== false) {

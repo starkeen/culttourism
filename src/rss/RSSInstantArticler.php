@@ -7,8 +7,8 @@ namespace app\rss;
  */
 class RSSInstantArticler extends RSSComponent
 {
-    const PATTERN = '~(<p[^>]+>)(\s*<a[^>]+>\s*<img[^>]+>\s*</a>\s*)(</p>)~uis';
-    const REPLACE = '$2';
+    public const PATTERN = '~(<p[^>]+>)(\s*<a[^>]+>\s*<img[^>]+>\s*</a>\s*)(</p>)~uis';
+    public const REPLACE = '$2';
 
     /**
      * @param  array $data

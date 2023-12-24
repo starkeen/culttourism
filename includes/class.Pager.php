@@ -54,15 +54,13 @@ class Pager
                     $linktext = '&nbsp;' . $linktext . '&nbsp;';
                 }
 
-                if ($i == $cur_page) //__________ текущая страница
-                {
+                if ($i == $cur_page) { //__________ текущая страница
                     $pagebutton .= '<span class="pager_nolink" title="вы на странице ' . $linktext . '">' . $linktext . '</span>';
                 } elseif (
                     $i == 0                     //первая
                     || abs($i - $cur_page) < 3  //по две рядом с текущей
                     || $i == ($cnt_pages - 1)   //последняя
-                ) //__________ первая и последняя страницы, по две сбоку текущей
-                {
+                ) { //__________ первая и последняя страницы, по две сбоку текущей
                     $pagebutton .= "<a href=\"?$linkbutton\" class=\"pager_link\" title=\"перейти к странице $linktext\">$linktext</a>";
                 } elseif ($i < $cur_page && !$empty_before) {
                     //__________ между первой и текущей
@@ -78,9 +76,9 @@ class Pager
             }
             if ($this->show_total) {
                 $this->pages .= "всего: $this->cnt_total " . NumberEnding::getNumEnding(
-                        $this->cnt_total,
-                        ['строка', 'строки', 'строк']
-                    );
+                    $this->cnt_total,
+                    ['строка', 'строки', 'строк']
+                );
             }
             if ($this->show_selector) {
                 //------------------- селектор -------------------

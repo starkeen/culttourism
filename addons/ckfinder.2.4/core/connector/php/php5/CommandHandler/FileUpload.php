@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -44,8 +46,8 @@ class CKFinder_Connector_CommandHandler_FileUpload extends CKFinder_Connector_Co
     {
         $iErrorNumber = CKFINDER_CONNECTOR_ERROR_NONE;
 
-        $_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
-        $oRegistry =& CKFinder_Connector_Core_Factory::getInstance("Core_Registry");
+        $_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+        $oRegistry = &CKFinder_Connector_Core_Factory::getInstance("Core_Registry");
         $oRegistry->set("FileUpload_fileName", "unknown file");
 
         $uploadedFile = array_shift($_FILES);
@@ -58,7 +60,7 @@ class CKFinder_Connector_CommandHandler_FileUpload extends CKFinder_Connector_Co
         $sFileName = CKFinder_Connector_Utils_FileSystem::secureFileName($sUnsafeFileName);
 
         if ($sFileName != $sUnsafeFileName) {
-          $iErrorNumber = CKFINDER_CONNECTOR_ERROR_UPLOADED_INVALID_NAME_RENAMED;
+            $iErrorNumber = CKFINDER_CONNECTOR_ERROR_UPLOADED_INVALID_NAME_RENAMED;
         }
         $oRegistry->set("FileUpload_fileName", $sFileName);
 
@@ -83,7 +85,7 @@ class CKFinder_Connector_CommandHandler_FileUpload extends CKFinder_Connector_Co
         $oRegistry->set("FileUpload_url", $this->_currentFolder->getUrl());
 
         $maxSize = $resourceTypeInfo->getMaxSize();
-        if (!$_config->checkSizeAfterScaling() && $maxSize && $uploadedFile['size']>$maxSize) {
+        if (!$_config->checkSizeAfterScaling() && $maxSize && $uploadedFile['size'] > $maxSize) {
             $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UPLOADED_TOO_BIG);
         }
 
@@ -92,13 +94,13 @@ class CKFinder_Connector_CommandHandler_FileUpload extends CKFinder_Connector_Co
 
         if ($htmlExtensions
         && !CKFinder_Connector_Utils_Misc::inArrayCaseInsensitive($sExtension, $htmlExtensions)
-        && ($detectHtml = CKFinder_Connector_Utils_FileSystem::detectHtml($uploadedFile['tmp_name'])) === true ) {
+        && ($detectHtml = CKFinder_Connector_Utils_FileSystem::detectHtml($uploadedFile['tmp_name'])) === true) {
             $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UPLOADED_WRONG_HTML_FILE);
         }
 
         $secureImageUploads = $_config->getSecureImageUploads();
         if ($secureImageUploads
-        && ($isImageValid = CKFinder_Connector_Utils_FileSystem::isImageValid($uploadedFile['tmp_name'], $sExtension)) === false ) {
+        && ($isImageValid = CKFinder_Connector_Utils_FileSystem::isImageValid($uploadedFile['tmp_name'], $sExtension)) === false) {
             $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UPLOADED_CORRUPT);
         }
 
@@ -131,8 +133,7 @@ class CKFinder_Connector_CommandHandler_FileUpload extends CKFinder_Connector_Co
 
         $sServerDir = $this->_currentFolder->getServerPath();
 
-        while (true)
-        {
+        while (true) {
             $sFilePath = CKFinder_Connector_Utils_FileSystem::combinePaths($sServerDir, $sFileName);
 
             if (file_exists($sFilePath)) {
@@ -143,13 +144,11 @@ class CKFinder_Connector_CommandHandler_FileUpload extends CKFinder_Connector_Co
             } else {
                 if (false === move_uploaded_file($uploadedFile['tmp_name'], $sFilePath)) {
                     $iErrorNumber = CKFINDER_CONNECTOR_ERROR_ACCESS_DENIED;
-                }
-                else {
+                } else {
                     if (isset($detectHtml) && $detectHtml === -1 && CKFinder_Connector_Utils_FileSystem::detectHtml($sFilePath) === true) {
                         @unlink($sFilePath);
                         $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UPLOADED_WRONG_HTML_FILE);
-                    }
-                    else if (isset($isImageValid) && $isImageValid === -1 && CKFinder_Connector_Utils_FileSystem::isImageValid($sFilePath, $sExtension) === false) {
+                    } elseif (isset($isImageValid) && $isImageValid === -1 && CKFinder_Connector_Utils_FileSystem::isImageValid($sFilePath, $sExtension) === false) {
                         @unlink($sFilePath);
                         $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UPLOADED_CORRUPT);
                     }
@@ -171,18 +170,17 @@ class CKFinder_Connector_CommandHandler_FileUpload extends CKFinder_Connector_Co
         require_once CKFINDER_CONNECTOR_LIB_DIR . "/CommandHandler/Thumbnail.php";
         $_imagesConfig = $_config->getImagesConfig();
 
-        if ($_imagesConfig->getMaxWidth()>0 && $_imagesConfig->getMaxHeight()>0 && $_imagesConfig->getQuality()>0) {
+        if ($_imagesConfig->getMaxWidth() > 0 && $_imagesConfig->getMaxHeight() > 0 && $_imagesConfig->getQuality() > 0) {
             CKFinder_Connector_CommandHandler_Thumbnail::createThumb($sFilePath, $sFilePath, $_imagesConfig->getMaxWidth(), $_imagesConfig->getMaxHeight(), $_imagesConfig->getQuality(), true) ;
         }
 
         if ($_config->checkSizeAfterScaling()) {
             //check file size after scaling, attempt to delete if too big
             clearstatcache();
-            if ($maxSize && filesize($sFilePath)>$maxSize) {
+            if ($maxSize && filesize($sFilePath) > $maxSize) {
                 @unlink($sFilePath);
                 $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UPLOADED_TOO_BIG);
-            }
-            else {
+            } else {
                 $this->_errorHandler->throwError($iErrorNumber, true, false);
             }
         }

@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -40,9 +42,9 @@ class CKFinder_Connector_CommandHandler_QuickUpload extends CKFinder_Connector_C
      */
     protected $command = "QuickUpload";
 
-    function sendResponse()
+    public function sendResponse()
     {
-        $oRegistry =& CKFinder_Connector_Core_Factory::getInstance("Core_Registry");
+        $oRegistry = &CKFinder_Connector_Core_Factory::getInstance("Core_Registry");
         $oRegistry->set("FileUpload_url", $this->_currentFolder->getUrl());
 
         return parent::sendResponse();

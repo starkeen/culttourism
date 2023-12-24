@@ -12,7 +12,9 @@
 *
 * CKFinder extension: resize image according to a given size
 */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * Include base XML command handler
@@ -24,7 +26,7 @@ class CKFinder_Connector_CommandHandler_ImageResize extends CKFinder_Connector_C
     /**
      * @access private
      */
-    function getConfig()
+    public function getConfig()
     {
         $config = array();
         if (isset($GLOBALS['config']['plugin_imageresize'])) {
@@ -47,7 +49,7 @@ class CKFinder_Connector_CommandHandler_ImageResize extends CKFinder_Connector_C
      * @access protected
      *
      */
-    function buildXml()
+    public function buildXml()
     {
         if (empty($_POST['CKFinderCommand']) || $_POST['CKFinderCommand'] != 'true') {
             $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_INVALID_REQUEST);
@@ -61,7 +63,7 @@ class CKFinder_Connector_CommandHandler_ImageResize extends CKFinder_Connector_C
             $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UNAUTHORIZED);
         }
 
-        $_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+        $_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
         $resourceTypeInfo = $this->_currentFolder->getResourceTypeConfig();
 
         if (!isset($_POST["fileName"])) {
@@ -114,7 +116,7 @@ class CKFinder_Connector_CommandHandler_ImageResize extends CKFinder_Connector_C
             $maxWidth = $_imagesConfig->getMaxWidth();
             $maxHeight = $_imagesConfig->getMaxHeight();
             // Shouldn't happen as the JavaScript validation should not allow this.
-            if ( ( $maxWidth > 0 && $newWidth > $maxWidth ) || ( $maxHeight > 0 && $newHeight > $maxHeight ) ) {
+            if (($maxWidth > 0 && $newWidth > $maxWidth) || ($maxHeight > 0 && $newHeight > $maxHeight)) {
                 $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_INVALID_REQUEST);
             }
         }
@@ -148,7 +150,7 @@ class CKFinder_Connector_CommandHandler_ImageResize extends CKFinder_Connector_C
     /**
      * @access public
      */
-    function onInitCommand( &$connectorNode )
+    public function onInitCommand(&$connectorNode)
     {
         // "@" protects against E_STRICT (Only variables should be assigned by reference)
         @$pluginsInfo = &$connectorNode->getChild("PluginsInfo");
@@ -166,10 +168,9 @@ class CKFinder_Connector_CommandHandler_ImageResize extends CKFinder_Connector_C
     /**
      * @access public
      */
-    function onBeforeExecuteCommand( &$command )
+    public function onBeforeExecuteCommand(&$command)
     {
-        if ( $command == 'ImageResize' )
-        {
+        if ($command == 'ImageResize') {
             $this->sendResponse();
             return false;
         }
@@ -185,7 +186,7 @@ class CKFinder_Connector_CommandHandler_ImageResizeInfo extends CKFinder_Connect
      * @access protected
      *
      */
-    function buildXml()
+    public function buildXml()
     {
         $this->checkConnector();
         $this->checkRequest();
@@ -226,10 +227,9 @@ class CKFinder_Connector_CommandHandler_ImageResizeInfo extends CKFinder_Connect
     /**
      * @access public
      */
-    function onBeforeExecuteCommand( &$command )
+    public function onBeforeExecuteCommand(&$command)
     {
-        if ( $command == 'ImageResizeInfo' )
-        {
+        if ($command == 'ImageResizeInfo') {
             $this->sendResponse();
             return false;
         }
@@ -239,10 +239,10 @@ class CKFinder_Connector_CommandHandler_ImageResizeInfo extends CKFinder_Connect
 }
 
 if (function_exists('imagecreate')) {
-	$CommandHandler_ImageResize = new CKFinder_Connector_CommandHandler_ImageResize();
-	$CommandHandler_ImageResizeInfo = new CKFinder_Connector_CommandHandler_ImageResizeInfo();
-	$config['Hooks']['BeforeExecuteCommand'][] = array($CommandHandler_ImageResize, "onBeforeExecuteCommand");
-	$config['Hooks']['BeforeExecuteCommand'][] = array($CommandHandler_ImageResizeInfo, "onBeforeExecuteCommand");
-	$config['Hooks']['InitCommand'][] = array($CommandHandler_ImageResize, "onInitCommand");
-	$config['Plugins'][] = 'imageresize';
+    $CommandHandler_ImageResize = new CKFinder_Connector_CommandHandler_ImageResize();
+    $CommandHandler_ImageResizeInfo = new CKFinder_Connector_CommandHandler_ImageResizeInfo();
+    $config['Hooks']['BeforeExecuteCommand'][] = array($CommandHandler_ImageResize, "onBeforeExecuteCommand");
+    $config['Hooks']['BeforeExecuteCommand'][] = array($CommandHandler_ImageResizeInfo, "onBeforeExecuteCommand");
+    $config['Hooks']['InitCommand'][] = array($CommandHandler_ImageResize, "onInitCommand");
+    $config['Plugins'][] = 'imageresize';
 }

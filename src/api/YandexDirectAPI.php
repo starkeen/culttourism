@@ -9,7 +9,7 @@ use Throwable;
  */
 class YandexDirectAPI
 {
-    const MAX_COUNT = 5;
+    public const MAX_COUNT = 5;
 
     protected $token = '';
     protected $urlService = 'https://api.direct.yandex.ru/v4/json/';

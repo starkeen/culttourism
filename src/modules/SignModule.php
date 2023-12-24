@@ -70,7 +70,8 @@ class SignModule extends Module implements ModuleInterface
         }
 
         return $this->templateEngine->getContent(
-            'sign/in.tpl', [
+            'sign/in.tpl',
+            [
             'key' => $uniqueKey,
             'url' => GLOBAL_SITE_URL,
             ]

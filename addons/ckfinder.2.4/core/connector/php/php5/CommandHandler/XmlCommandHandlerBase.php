@@ -10,7 +10,9 @@
 * modifying or distribute this file or part of its contents. The contents of
 * this file is part of the Source Code of CKFinder.
 */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -53,8 +55,8 @@ abstract class CKFinder_Connector_CommandHandler_XmlCommandHandlerBase extends C
      */
     public function sendResponse()
     {
-        $xml =& CKFinder_Connector_Core_Factory::getInstance("Core_Xml");
-        $this->_connectorNode =& $xml->getConnectorNode();
+        $xml = &CKFinder_Connector_Core_Factory::getInstance("Core_Xml");
+        $this->_connectorNode = &$xml->getConnectorNode();
 
         $this->checkConnector();
         if ($this->mustCheckRequest()) {
@@ -81,7 +83,7 @@ abstract class CKFinder_Connector_CommandHandler_XmlCommandHandlerBase extends C
 
         $this->buildXml();
 
-        $_oErrorNode =& $xml->getErrorNode();
+        $_oErrorNode = &$xml->getErrorNode();
         $_oErrorNode->addAttribute("number", "0");
 
         echo $this->_connectorNode->asXML();

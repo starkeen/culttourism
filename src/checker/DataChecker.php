@@ -195,7 +195,8 @@ class DataChecker
             $newPhones = trim($phoneString);
             if ($newPhones !== $phoneString) {
                 $ptModel->updateByPk(
-                    $pointId, [
+                    $pointId,
+                    [
                     'pt_phone' => $newPhones,
                     ]
                 );

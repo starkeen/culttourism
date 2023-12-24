@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -61,7 +63,7 @@ class CKFinder_Connector_CommandHandler_RenameFolder extends CKFinder_Connector_
         }
 
         $newFolderName = CKFinder_Connector_Utils_FileSystem::convertToFilesystemEncoding($_GET["NewFolderName"]);
-        $_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+        $_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
         if ($_config->forceAscii()) {
             $newFolderName = CKFinder_Connector_Utils_FileSystem::convertToAscii($newFolderName);
         }

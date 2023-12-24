@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -54,11 +56,11 @@ class CKFinder_Connector_Core_Config
      */
     private $_isEnabled = false;
     /**
-	 * License Name
-	 *
-	 * @var string
-	 * @access private
-	 */
+     * License Name
+     *
+     * @var string
+     * @access private
+     */
     private $_licenseName = "";
     /**
      * License Key
@@ -204,72 +206,72 @@ class CKFinder_Connector_Core_Config
      */
     private $_xsendfileNginx = array();
 
-    function __construct()
+    public function __construct()
     {
         $this->loadValues();
     }
 
     /**
-	 * Get file system encoding, returns null if encoding is not set
-	 *
-	 * @access public
-	 * @return string
-	 */
+     * Get file system encoding, returns null if encoding is not set
+     *
+     * @access public
+     * @return string
+     */
     public function getFilesystemEncoding()
     {
         return $this->_filesystemEncoding;
     }
 
     /**
-	 * Get "secureImageUploads" value
-	 *
-	 * @access public
-	 * @return boolean
-	 */
+     * Get "secureImageUploads" value
+     *
+     * @access public
+     * @return boolean
+     */
     public function getSecureImageUploads()
     {
         return $this->_secureImageUploads;
     }
 
     /**
-	 * Get "checkSizeAfterScaling" value
-	 *
-	 * @access public
-	 * @return boolean
-	 */
+     * Get "checkSizeAfterScaling" value
+     *
+     * @access public
+     * @return boolean
+     */
     public function checkSizeAfterScaling()
     {
         return $this->_checkSizeAfterScaling;
     }
 
     /**
-	 * Get "htmlExtensions" value
-	 *
-	 * @access public
-	 * @return array
-	 */
+     * Get "htmlExtensions" value
+     *
+     * @access public
+     * @return array
+     */
     public function getHtmlExtensions()
     {
         return $this->_htmlExtensions;
     }
 
     /**
-	 * Get "forceAscii" value
-	 *
-	 * @access public
-	 * @return array
-	 */
+     * Get "forceAscii" value
+     *
+     * @access public
+     * @return array
+     */
     public function forceAscii()
     {
         return $this->_forceAscii;
     }
 
     /**
-	 * Get regular expression to hide folders
-	 *
-	 * @access public
-	 * @return array
-	 */
+     * Get regular expression to hide folders
+     *
+     * @access public
+     * @return array
+     */
     public function getHideFoldersRegex()
     {
         static $folderRegex;
@@ -281,8 +283,7 @@ class CKFinder_Connector_Core_Config
                 $folderRegex = preg_quote($folderRegex, "/");
                 $folderRegex = strtr($folderRegex, array("__QMK__" => ".", "__AST__" => ".*", "__PIP__" => "|"));
                 $folderRegex = "/^(?:" . $folderRegex . ")$/uim";
-            }
-            else {
+            } else {
                 $folderRegex = "";
             }
         }
@@ -291,11 +292,11 @@ class CKFinder_Connector_Core_Config
     }
 
     /**
-	 * Get regular expression to hide files
-	 *
-	 * @access public
-	 * @return array
-	 */
+     * Get regular expression to hide files
+     *
+     * @access public
+     * @return array
+     */
     public function getHideFilesRegex()
     {
         static $fileRegex;
@@ -307,8 +308,7 @@ class CKFinder_Connector_Core_Config
                 $fileRegex = preg_quote($fileRegex, "/");
                 $fileRegex = strtr($fileRegex, array("__QMK__" => ".", "__AST__" => ".*", "__PIP__" => "|"));
                 $fileRegex = "/^(?:" . $fileRegex . ")$/uim";
-            }
-            else {
+            } else {
                 $fileRegex = "";
             }
         }
@@ -317,111 +317,111 @@ class CKFinder_Connector_Core_Config
     }
 
     /**
-	 * Get "Check double extension" value
-	 *
-	 * @access public
-	 * @return boolean
-	 */
+     * Get "Check double extension" value
+     *
+     * @access public
+     * @return boolean
+     */
     public function getCheckDoubleExtension()
     {
         return $this->_checkDoubleExtension;
     }
 
     /**
-	 * Get "Disallow unsafe characters" value
-	 *
-	 * @access public
-	 * @return boolean
-	 */
+     * Get "Disallow unsafe characters" value
+     *
+     * @access public
+     * @return boolean
+     */
     public function getDisallowUnsafeCharacters()
     {
         return $this->_disallowUnsafeCharacters;
     }
 
     /**
-	 * Get default resource types
-	 *
-	 * @access public
-	 * @return array()
-	 */
+     * Get default resource types
+     *
+     * @access public
+     * @return array()
+     */
     public function getDefaultResourceTypes()
     {
         return $this->_defaultResourceTypes;
     }
 
     /**
-	 * Is CKFinder enabled
-	 *
-	 * @access public
-	 * @return boolean
-	 */
+     * Is CKFinder enabled
+     *
+     * @access public
+     * @return boolean
+     */
     public function getIsEnabled()
     {
         return $this->_isEnabled;
     }
 
     /**
-	 * Get license key
-	 *
-	 * @access public
-	 * @return string
-	 */
+     * Get license key
+     *
+     * @access public
+     * @return string
+     */
     public function getLicenseKey()
     {
         return $this->_licenseKey;
     }
 
     /**
-	* Get license name
-	*
-	* @access public
-	* @return string
-	*/
+    * Get license name
+    *
+    * @access public
+    * @return string
+    */
     public function getLicenseName()
     {
         return $this->_licenseName;
     }
 
     /**
-	* Get chmod settings for uploaded files
-	*
-	* @access public
-	* @return integer
-	*/
+    * Get chmod settings for uploaded files
+    *
+    * @access public
+    * @return integer
+    */
     public function getChmodFiles()
     {
         return $this->_chmodFiles;
     }
 
     /**
-	* Get chmod settings for created directories
-	*
-	* @access public
-	* @return integer
-	*/
+    * Get chmod settings for created directories
+    *
+    * @access public
+    * @return integer
+    */
     public function getChmodFolders()
     {
         return $this->_chmodFolders;
     }
 
     /**
-	 * Get role sesion variable name
-	 *
-	 * @access public
-	 * @return string
-	 */
+     * Get role sesion variable name
+     *
+     * @access public
+     * @return string
+     */
     public function getRoleSessionVar()
     {
         return $this->_roleSessionVar;
     }
 
     /**
-	 * Get resourceTypeName config
-	 *
-	 * @param string $resourceTypeName
-	 * @return CKFinder_Connector_Core_ResourceTypeConfig|null
-	 * @access public
-	 */
+     * Get resourceTypeName config
+     *
+     * @param string $resourceTypeName
+     * @return CKFinder_Connector_Core_ResourceTypeConfig|null
+     * @access public
+     */
     public function &getResourceTypeConfig($resourceTypeName)
     {
         $_null = null;
@@ -435,7 +435,7 @@ class CKFinder_Connector_Core_Config
         }
 
         reset($GLOBALS['config']['ResourceType']);
-        while (list($_key,$_resourceTypeNode) = each($GLOBALS['config']['ResourceType'])) {
+        while (list($_key, $_resourceTypeNode) = each($GLOBALS['config']['ResourceType'])) {
             if ($_resourceTypeNode['name'] === $resourceTypeName) {
                 $this->_resourceTypeConfigCache[$resourceTypeName] = new CKFinder_Connector_Core_ResourceTypeConfig($_resourceTypeNode);
 
@@ -550,13 +550,13 @@ class CKFinder_Connector_Core_Config
             }
         }
         if (isset($GLOBALS['config']['TempDirectory'])) {
-          $this->_tempDirectory = $GLOBALS['config']['TempDirectory'];
+            $this->_tempDirectory = $GLOBALS['config']['TempDirectory'];
         }
         if (isset($GLOBALS['config']['XSendfile'])) {
-          $this->_xsendfile = CKFinder_Connector_Utils_Misc::booleanValue($GLOBALS['config']['XSendfile']);
+            $this->_xsendfile = CKFinder_Connector_Utils_Misc::booleanValue($GLOBALS['config']['XSendfile']);
         }
         if (isset($GLOBALS['config']['XSendfileNginx'])) {
-          $this->_xsendfileNginx = (array)$GLOBALS['config']['XSendfileNginx'];
+            $this->_xsendfileNginx = (array)$GLOBALS['config']['XSendfileNginx'];
         }
     }
 
@@ -589,32 +589,34 @@ class CKFinder_Connector_Core_Config
      */
     public function getTempDirectory()
     {
-      return $this->_tempDirectory;
+        return $this->_tempDirectory;
     }
 
     /**
      * Get X-Sendfile option
      */
-    public function getXSendfile(){
-      return $this->_xsendfile;
+    public function getXSendfile()
+    {
+        return $this->_xsendfile;
     }
 
     /**
      * Get the dditional Nginx X-Sendfile configuration (location => root)
      */
-    public function getXSendfileNginx(){
-      $xsendfileNginx = array();
-      foreach ( $this->_xsendfileNginx as $location => $root ){
-        $root = (string)$root;
-        $location = rtrim((string)$location,'/').'/';
-        if ( substr($root,-1,1) != '/' && substr($root,-1,1) != '\\') {
-          // root and location paths are concatenated
-          // @see http://wiki.nginx.org/XSendfile
-          $root = CKFinder_Connector_Utils_FileSystem::combinePaths(rtrim($root,'/'),$location);
+    public function getXSendfileNginx()
+    {
+        $xsendfileNginx = array();
+        foreach ($this->_xsendfileNginx as $location => $root) {
+            $root = (string)$root;
+            $location = rtrim((string)$location, '/').'/';
+            if (substr($root, -1, 1) != '/' && substr($root, -1, 1) != '\\') {
+                // root and location paths are concatenated
+                // @see http://wiki.nginx.org/XSendfile
+                $root = CKFinder_Connector_Utils_FileSystem::combinePaths(rtrim($root, '/'), $location);
+            }
+            $xsendfileNginx[$location] = $root;
         }
-        $xsendfileNginx[$location] = $root;
-      }
-      return $xsendfileNginx;
+        return $xsendfileNginx;
     }
 
 }

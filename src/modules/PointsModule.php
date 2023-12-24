@@ -77,7 +77,7 @@ class PointsModule implements ModuleInterface
      * @param  SiteResponse $response
      * @throws NotFoundException
      */
-    private function saveContacts(int $pointId, SiteRequest $request,  SiteResponse $response): void
+    private function saveContacts(int $pointId, SiteRequest $request, SiteResponse $response): void
     {
         $repository = $this->getPointsRepository();
         $point = $repository->getItemByPk($pointId);
@@ -120,7 +120,7 @@ class PointsModule implements ModuleInterface
      * @param  SiteResponse $response
      * @throws NotFoundException
      */
-    private function saveTitle(int $pointId, SiteRequest $request,  SiteResponse $response): void
+    private function saveTitle(int $pointId, SiteRequest $request, SiteResponse $response): void
     {
         $repository = $this->getPointsRepository();
         $point = $repository->getItemByPk($pointId);
@@ -156,7 +156,7 @@ class PointsModule implements ModuleInterface
      * @param  SiteResponse $response
      * @throws NotFoundException
      */
-    private function saveDescription(int $pointId, SiteRequest $request,  SiteResponse $response): void
+    private function saveDescription(int $pointId, SiteRequest $request, SiteResponse $response): void
     {
         $repository = $this->getPointsRepository();
         $point = $repository->getItemByPk($pointId);

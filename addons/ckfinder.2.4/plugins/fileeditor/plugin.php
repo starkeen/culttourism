@@ -12,7 +12,9 @@
 *
 * CKFinder extension: prodives command that saves edited file.
 */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * Include base XML command handler
@@ -25,7 +27,7 @@ class CKFinder_Connector_CommandHandler_FileEditor extends CKFinder_Connector_Co
      * handle request and build XML
      * @access protected
      */
-    function buildXml()
+    public function buildXml()
     {
         if (empty($_POST['CKFinderCommand']) || $_POST['CKFinderCommand'] != 'true') {
             $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_INVALID_REQUEST);
@@ -70,8 +72,7 @@ class CKFinder_Connector_CommandHandler_FileEditor extends CKFinder_Connector_Co
         $fp = @fopen($filePath, 'wb');
         if ($fp === false || !flock($fp, LOCK_EX)) {
             $result = false;
-        }
-        else {
+        } else {
             $result = fwrite($fp, $_POST["content"]);
             flock($fp, LOCK_UN);
             fclose($fp);
@@ -84,10 +85,9 @@ class CKFinder_Connector_CommandHandler_FileEditor extends CKFinder_Connector_Co
     /**
      * @access public
      */
-    function onBeforeExecuteCommand( &$command )
+    public function onBeforeExecuteCommand(&$command)
     {
-        if ( $command == 'SaveFile' )
-        {
+        if ($command == 'SaveFile') {
             $this->sendResponse();
             return false;
         }

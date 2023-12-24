@@ -38,4 +38,3 @@ $smarty->assign('content', $smarty->fetch(GLOBAL_DIR_TEMPLATES . '/_admin/nogps.
 
 $smarty->display(GLOBAL_DIR_TEMPLATES . '/_admin/admpage.tpl');
 exit();
-?>

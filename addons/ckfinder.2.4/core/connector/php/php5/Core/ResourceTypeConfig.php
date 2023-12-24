@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -84,7 +86,7 @@ class CKFinder_Connector_Core_ResourceTypeConfig
      * @return array
      *
      */
-    function __construct($resourceTypeNode)
+    public function __construct($resourceTypeNode)
     {
         if (isset($resourceTypeNode["name"])) {
             $this->_name = $resourceTypeNode["name"];
@@ -96,8 +98,7 @@ class CKFinder_Connector_Core_ResourceTypeConfig
 
         if (!strlen($this->_url)) {
             $this->_url = "/";
-        }
-        else if(substr($this->_url,-1,1) != "/") {
+        } elseif(substr($this->_url, -1, 1) != "/") {
             $this->_url .= "/";
         }
 
@@ -118,8 +119,7 @@ class CKFinder_Connector_Core_ResourceTypeConfig
                 foreach ($resourceTypeNode["allowedExtensions"] as $e) {
                     $this->_allowedExtensions[] = strtolower(trim((string)$e));
                 }
-            }
-            else {
+            } else {
                 $resourceTypeNode["allowedExtensions"] = trim((string)$resourceTypeNode["allowedExtensions"]);
                 if (strlen($resourceTypeNode["allowedExtensions"])) {
                     $extensions = explode(",", $resourceTypeNode["allowedExtensions"]);
@@ -136,8 +136,7 @@ class CKFinder_Connector_Core_ResourceTypeConfig
                 foreach ($resourceTypeNode["deniedExtensions"] as $extension) {
                     $this->_deniedExtensions[] = strtolower(trim((string)$e));
                 }
-            }
-            else {
+            } else {
                 $resourceTypeNode["deniedExtensions"] = trim((string)$resourceTypeNode["deniedExtensions"]);
                 if (strlen($resourceTypeNode["deniedExtensions"])) {
                     $extensions = explode(",", $resourceTypeNode["deniedExtensions"]);
@@ -232,14 +231,14 @@ class CKFinder_Connector_Core_ResourceTypeConfig
         }
 
         if (is_null($this->_config)) {
-            $this->_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+            $this->_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
         }
 
         if ($this->_config->getCheckDoubleExtension()) {
             $pieces = explode('.', $fileName);
 
             // First, check the last extension (ex. in file.php.jpg, the "jpg").
-            if ( !$this->checkSingleExtension( $pieces[sizeof($pieces)-1] ) ) {
+            if (!$this->checkSingleExtension($pieces[sizeof($pieces) - 1])) {
                 return false;
             }
 
@@ -247,18 +246,17 @@ class CKFinder_Connector_Core_ResourceTypeConfig
                 // Check the other extensions, rebuilding the file name. If an extension is
                 // not allowed, replace the dot with an underscore.
                 $fileName = $pieces[0] ;
-                for ($i=1; $i<sizeof($pieces)-1; $i++) {
-                    $fileName .= $this->checkSingleExtension( $pieces[$i] ) ? '.' : '_' ;
+                for ($i = 1; $i < sizeof($pieces) - 1; $i++) {
+                    $fileName .= $this->checkSingleExtension($pieces[$i]) ? '.' : '_' ;
                     $fileName .= $pieces[$i];
                 }
 
                 // Add the last extension to the final name.
-                $fileName .= '.' . $pieces[sizeof($pieces)-1] ;
+                $fileName .= '.' . $pieces[sizeof($pieces) - 1] ;
             }
-        }
-        else {
+        } else {
             // Check only the last extension (ex. in file.php.jpg, only "jpg").
-            return $this->checkSingleExtension( substr($fileName, strrpos($fileName,'.')+1) );
+            return $this->checkSingleExtension(substr($fileName, strrpos($fileName, '.') + 1));
         }
 
         return true;
@@ -275,7 +273,7 @@ class CKFinder_Connector_Core_ResourceTypeConfig
     public function checkIsHiddenFolder($folderName)
     {
         if (is_null($this->_config)) {
-            $this->_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+            $this->_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
         }
 
         $regex = $this->_config->getHideFoldersRegex();
@@ -297,7 +295,7 @@ class CKFinder_Connector_Core_ResourceTypeConfig
     public function checkIsHiddenFile($fileName)
     {
         if (is_null($this->_config)) {
-            $this->_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+            $this->_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
         }
 
         $regex = $this->_config->getHideFilesRegex();
@@ -340,7 +338,7 @@ class CKFinder_Connector_Core_ResourceTypeConfig
      */
     public function checkSingleExtension($extension)
     {
-        $extension = strtolower(ltrim($extension,'.'));
+        $extension = strtolower(ltrim($extension, '.'));
 
         if (sizeof($this->_deniedExtensions)) {
             if (in_array($extension, $this->_deniedExtensions)) {
@@ -361,7 +359,8 @@ class CKFinder_Connector_Core_ResourceTypeConfig
      * @access public
      * @return string 16 digit hash
      */
-    public function getHash(){
-      return substr(md5($this->getDirectory()), 0, 16);
+    public function getHash()
+    {
+        return substr(md5($this->getDirectory()), 0, 16);
     }
 }

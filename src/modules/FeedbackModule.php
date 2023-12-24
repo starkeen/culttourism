@@ -257,7 +257,8 @@ class FeedbackModule extends Module implements ModuleInterface
         $response->getContent()->getHead()->addTitleElement('Добавить объект (музей, гостиницу, кафе и др.)');
 
         return $this->templateEngine->getContent(
-            'feedback/point_add_form_page.tpl', [
+            'feedback/point_add_form_page.tpl',
+            [
             'recaptcha_key' => $this->getReCaptcha()->getKey(),
             ]
         );

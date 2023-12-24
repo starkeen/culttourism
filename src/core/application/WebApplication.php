@@ -108,7 +108,8 @@ class WebApplication extends Application
             $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(GLOBAL_DIR_TEMPLATES . '/_errors/er404.tpl'));
         } catch (AccessDeniedException $exception) {
             $this->getLogger()->notice(
-                'Ошибка 403', [
+                'Ошибка 403',
+                [
                 'srv' => $_SERVER ?? [],
                 'trace' => $exception->getTrace(),
                 'file' => $exception->getFile(),
@@ -209,7 +210,8 @@ class WebApplication extends Application
         }
 
         $this->getLogger()->notice(
-            'Ошибка 404', [
+            'Ошибка 404',
+            [
             'srv' => $_SERVER ?? [],
             'trace' => $exception->getTrace(),
             ]

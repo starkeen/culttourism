@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -47,7 +49,7 @@ class CKFinder_Connector_Core_Xml
      */
     private $_errorNode;
 
-    function __construct()
+    public function __construct()
     {
         $this->sendXmlHeaders();
         echo $this->getXMLDeclaration();
@@ -64,7 +66,7 @@ class CKFinder_Connector_Core_Xml
      */
     public function &getConnectorNode()
     {
-    	return $this->_connectorNode;
+        return $this->_connectorNode;
     }
 
     /**
@@ -75,7 +77,7 @@ class CKFinder_Connector_Core_Xml
      */
     public function &getErrorNode()
     {
-    	return $this->_errorNode;
+        return $this->_errorNode;
     }
 
     /**
@@ -96,7 +98,7 @@ class CKFinder_Connector_Core_Xml
         header('Pragma: no-cache') ;
 
         // Set the response format.
-        header( 'Content-Type: text/xml; charset=utf-8' ) ;
+        header('Content-Type: text/xml; charset=utf-8') ;
     }
 
     /**
@@ -107,7 +109,7 @@ class CKFinder_Connector_Core_Xml
      */
     private function getXMLDeclaration()
     {
-    	return '<?xml version="1.0" encoding="utf-8"?>';
+        return '<?xml version="1.0" encoding="utf-8"?>';
     }
 
     /**
@@ -118,10 +120,10 @@ class CKFinder_Connector_Core_Xml
      * @param int $number error number
      * @param string $text Custom error message (optional)
      */
-    public function raiseError( $number, $text = false)
+    public function raiseError($number, $text = false)
     {
         $this->_errorNode->addAttribute("number", intval($number));
-        if (false!=$text) {
+        if (false != $text) {
             $this->_errorNode->addAttribute("text", $text);
         }
 

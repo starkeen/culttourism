@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -47,7 +49,7 @@ class CKFinder_Connector_CommandHandler_GetFiles extends CKFinder_Connector_Comm
      */
     protected function buildXml()
     {
-        $_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+        $_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
         if (!$this->_currentFolder->checkAcl(CKFINDER_CONNECTOR_ACL_FILE_VIEW)) {
             $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UNAUTHORIZED);
         }
@@ -79,7 +81,7 @@ class CKFinder_Connector_CommandHandler_GetFiles extends CKFinder_Connector_Comm
 
         $resourceTypeInfo = $this->_currentFolder->getResourceTypeConfig();
 
-        if (sizeof($files)>0) {
+        if (sizeof($files) > 0) {
             $_thumbnailsConfig = $_config->getThumbnailsConfig();
             $_thumbServerPath = '';
             $_showThumbs = (!empty($_GET['showThumbs']) && $_GET['showThumbs'] == 1);
@@ -88,7 +90,7 @@ class CKFinder_Connector_CommandHandler_GetFiles extends CKFinder_Connector_Comm
             }
 
             natcasesort($files);
-            $i=0;
+            $i = 0;
             foreach ($files as $file) {
                 $filemtime = @filemtime($_sServerDir . $file);
 
@@ -108,16 +110,14 @@ class CKFinder_Connector_CommandHandler_GetFiles extends CKFinder_Connector_Comm
                     if (!empty($_thumbServerPath) && preg_match(CKFINDER_REGEX_IMAGES_EXT, $filename)) {
                         if (file_exists($_thumbServerPath . $filename)) {
                             $oFileNode[$i]->addAttribute("thumb", $filename);
-                        }
-                        elseif ($_showThumbs) {
+                        } elseif ($_showThumbs) {
                             $oFileNode[$i]->addAttribute("thumb", "?" . $filename);
                         }
                     }
                     $size = filesize($_sServerDir . $file);
-                    if ($size && $size<1024) {
+                    if ($size && $size < 1024) {
                         $size = 1;
-                    }
-                    else {
+                    } else {
                         $size = (int)round($size / 1024);
                     }
                     $oFileNode[$i]->addAttribute("size", $size);

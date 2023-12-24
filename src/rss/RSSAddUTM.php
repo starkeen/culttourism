@@ -8,7 +8,7 @@ namespace app\rss;
 class RSSAddUTM extends RSSComponent
 {
     /**
-     * @var string 
+     * @var string
      */
     public $rootUrl;
 
@@ -36,13 +36,15 @@ class RSSAddUTM extends RSSComponent
 
         foreach($data as $i => $item) {
             $text = preg_replace_callback(
-                $pattern, function ($matches) use ($item) {
+                $pattern,
+                function ($matches) use ($item) {
                     $linkOld = $matches[2];
                     $utmContent = date('Ymd', strtotime($item['br_date']));
                     $linkNew = $this->addUTM($linkOld, $utmContent);
 
                     return str_replace($linkOld, $linkNew, $matches[0]);
-                }, $item['br_text_absolute']
+                },
+                $item['br_text_absolute']
             );
 
             $data[$i]['br_text_absolute'] = $text;

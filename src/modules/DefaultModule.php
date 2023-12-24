@@ -205,7 +205,8 @@ class DefaultModule implements ModuleInterface
         $response->getContent()->getHead()->addMainMicroData('name', $object['esc_name']);
         $response->getContent()->getHead()->addMainMicroData('description', $short);
         $response->getContent()->getHead()->addMainMicroData(
-            'address', [
+            'address',
+            [
             '@type' => 'PostalAddress',
             'addressLocality' => $city['pc_title'],
             'streetAddress' => $object['pt_adress'],

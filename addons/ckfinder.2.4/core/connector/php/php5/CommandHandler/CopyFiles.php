@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -55,7 +57,7 @@ class CKFinder_Connector_CommandHandler_CopyFiles extends CKFinder_Connector_Com
         $clientPath = $this->_currentFolder->getClientPath();
         $sServerDir = $this->_currentFolder->getServerPath();
         $currentResourceTypeConfig = $this->_currentFolder->getResourceTypeConfig();
-        $_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+        $_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
         $_aclConfig = $_config->getAccessControlConfig();
         $aclMasks = array();
         $_resourceTypeConfig = array();
@@ -165,7 +167,7 @@ class CKFinder_Connector_CommandHandler_CopyFiles extends CKFinder_Connector_Com
                 if ($currentResourceTypeConfig->getName() != $type) {
                     $maxSize = $currentResourceTypeConfig->getMaxSize();
                     $fileSize = filesize($sourceFilePath);
-                    if ($maxSize && $fileSize>$maxSize) {
+                    if ($maxSize && $fileSize > $maxSize) {
                         $errorCode = CKFINDER_CONNECTOR_ERROR_UPLOADED_TOO_BIG;
                         $this->appendErrorNode($oErrorsNode, $errorCode, $name, $type, $path);
                         continue;
@@ -181,7 +183,7 @@ class CKFinder_Connector_CommandHandler_CopyFiles extends CKFinder_Connector_Com
                     continue;
                 }
                 // check if file exists if we don't force overwriting
-                else if (file_exists($destinationFilePath) && strpos($options, "overwrite") === false) {
+                elseif (file_exists($destinationFilePath) && strpos($options, "overwrite") === false) {
                     if (strpos($options, "autorename") !== false) {
                         $fileName = CKFinder_Connector_Utils_FileSystem::autoRename($sServerDir, $name);
                         $destinationFilePath = $sServerDir.$fileName;
@@ -189,12 +191,10 @@ class CKFinder_Connector_CommandHandler_CopyFiles extends CKFinder_Connector_Com
                             $errorCode = CKFINDER_CONNECTOR_ERROR_ACCESS_DENIED;
                             $this->appendErrorNode($oErrorsNode, $errorCode, $name, $type, $path);
                             continue;
-                        }
-                        else {
+                        } else {
                             $copied++;
                         }
-                    }
-                    else {
+                    } else {
                         $errorCode = CKFINDER_CONNECTOR_ERROR_ALREADY_EXIST;
                         $this->appendErrorNode($oErrorsNode, $errorCode, $name, $type, $path);
                         continue;
@@ -206,8 +206,7 @@ class CKFinder_Connector_CommandHandler_CopyFiles extends CKFinder_Connector_Com
                         $errorCode = CKFINDER_CONNECTOR_ERROR_ACCESS_DENIED;
                         $this->appendErrorNode($oErrorsNode, $errorCode, $name, $type, $path);
                         continue;
-                    }
-                    else {
+                    } else {
                         $copied++;
                     }
                 }

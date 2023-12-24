@@ -97,7 +97,8 @@ class CityModule extends Module implements ModuleInterface
         if ($weatherData !== null) {
             $out['state'] = true;
             $out['content'] = $this->templateEngine->getContent(
-                'city/weather.block.tpl', [
+                'city/weather.block.tpl',
+                [
                 'weatherData' => $weatherData,
                 ]
             );
@@ -123,83 +124,83 @@ class CityModule extends Module implements ModuleInterface
             }
             $uid = $this->webUser->getId();
             switch ($_POST['act']) {
-            case 'add':
-                $cf_id = (int) $_POST['cf'];
-                $value = trim($_POST['val']);
-                $city_id = (int) $_POST['cpid'];
-                $this->db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
-                $this->db->execute(
-                    [
-                        ':city_id' => $city_id,
-                        ':cf_id' => $cf_id,
-                    ]
-                );
+                case 'add':
+                    $cf_id = (int) $_POST['cf'];
+                    $value = trim($_POST['val']);
+                    $city_id = (int) $_POST['cpid'];
+                    $this->db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                    $this->db->execute(
+                        [
+                            ':city_id' => $city_id,
+                            ':cf_id' => $cf_id,
+                        ]
+                    );
 
-                if ($value != '') {
-                    $this->db->sql = "INSERT INTO $dbcd SET cd_pc_id = :city_id, cd_cf_id = :cf_id, cd_value = :cd_value";
+                    if ($value != '') {
+                        $this->db->sql = "INSERT INTO $dbcd SET cd_pc_id = :city_id, cd_cf_id = :cf_id, cd_value = :cd_value";
+                        $this->db->execute(
+                            [
+                                ':city_id' => $city_id,
+                                ':cf_id' => $cf_id,
+                                ':cd_value' => $value,
+                            ]
+                        );
+                    }
+                    $this->db->sql = "SELECT * FROM  $dbcf WHERE cf_id = :cf_id";
+                    $this->db->execute(
+                        [
+                            ':cf_id' => $cf_id,
+                        ]
+                    );
+                    $row = $this->db->fetch();
+                    $this->buildModelPageCities()->updateByPk(
+                        $city_id,
+                        [
+                            'pc_lastup_user' => $uid,
+                        ]
+                    );
+                    echo $row['cf_title'];
+                    break;
+                case 'del':
+                    $cf_id = (int) $_POST['cf'];
+                    $city_id = (int) $_POST['cpid'];
+                    $this->db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
                     $this->db->execute(
                         [
                             ':city_id' => $city_id,
                             ':cf_id' => $cf_id,
-                            ':cd_value' => $value,
                         ]
                     );
-                }
-                $this->db->sql = "SELECT * FROM  $dbcf WHERE cf_id = :cf_id";
-                $this->db->execute(
-                    [
-                        ':cf_id' => $cf_id,
-                    ]
-                );
-                $row = $this->db->fetch();
-                $this->buildModelPageCities()->updateByPk(
-                    $city_id,
-                    [
-                        'pc_lastup_user' => $uid,
-                    ]
-                );
-                echo $row['cf_title'];
-                break;
-            case 'del':
-                $cf_id = (int) $_POST['cf'];
-                $city_id = (int) $_POST['cpid'];
-                $this->db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
-                $this->db->execute(
-                    [
-                        ':city_id' => $city_id,
-                        ':cf_id' => $cf_id,
-                    ]
-                );
-                $this->buildModelPageCities()->updateByPk(
-                    $city_id,
-                    [
-                        'pc_lastup_user' => $uid,
-                    ]
-                );
-                echo 'ok';
-                break;
-            case 'edit':
-                $cf_id = (int) $_POST['cf'];
-                $city_id = (int) $_POST['cpid'];
-                $value = trim($_POST['val']);
-                if ($value != '') {
-                    $this->db->sql = "UPDATE $dbcd SET cd_value = :cd_value WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
-                    $this->db->execute(
+                    $this->buildModelPageCities()->updateByPk(
+                        $city_id,
                         [
-                            ':city_id' => $city_id,
-                            ':cf_id' => $cf_id,
-                            ':cd_value' => $value,
+                            'pc_lastup_user' => $uid,
                         ]
                     );
-                }
-                $this->buildModelPageCities()->updateByPk(
-                    $city_id,
-                    [
-                        'pc_lastup_user' => $uid,
-                    ]
-                );
-                echo 'ok';
-                break;
+                    echo 'ok';
+                    break;
+                case 'edit':
+                    $cf_id = (int) $_POST['cf'];
+                    $city_id = (int) $_POST['cpid'];
+                    $value = trim($_POST['val']);
+                    if ($value != '') {
+                        $this->db->sql = "UPDATE $dbcd SET cd_value = :cd_value WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                        $this->db->execute(
+                            [
+                                ':city_id' => $city_id,
+                                ':cf_id' => $cf_id,
+                                ':cd_value' => $value,
+                            ]
+                        );
+                    }
+                    $this->buildModelPageCities()->updateByPk(
+                        $city_id,
+                        [
+                            'pc_lastup_user' => $uid,
+                        ]
+                    );
+                    echo 'ok';
+                    break;
             }
         } elseif (isset($_GET['id'])) {
             $this->db->sql = "SELECT cf_title, cd_value
@@ -303,7 +304,8 @@ class CityModule extends Module implements ModuleInterface
         $response->setLastEditTimestamp($citypage['last_update']);
 
         $body = $this->templateEngine->getContent(
-            'city/details.tpl', [
+            'city/details.tpl',
+            [
             'adminlogined' => $this->webUser->getId() ?: 0,
             'city' => $citypage,
             'baseurl' => GLOBAL_URL_ROOT,

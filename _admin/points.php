@@ -173,7 +173,7 @@ if ($filter['gps']['lat'] != 0) {
     $db->sql .= "AND pp.pt_latitude >= '{$filter['gps']['lat']}' AND pp.pt_latitude < '$lat_max'\n";
 }
 if ($filter['gps']['lon'] != 0) {
-    $lon_max =($filter['gps']['lon']) + 0.5;
+    $lon_max = ($filter['gps']['lon']) + 0.5;
     $db->sql .= "AND pp.pt_longitude >= '{$filter['gps']['lon']}' AND pp.pt_longitude < '$lon_max'\n";
 }
 $db->sql .= "ORDER BY pp.pt_create_date

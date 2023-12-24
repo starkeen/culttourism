@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -94,7 +96,7 @@ class CKFinder_Connector_Core_FolderHandler
      */
     private $_thumbsFolderInfo;
 
-    function __construct()
+    public function __construct()
     {
         if (isset($_GET["type"])) {
             $this->_resourceTypeName = (string)$_GET["type"];
@@ -106,8 +108,7 @@ class CKFinder_Connector_Core_FolderHandler
 
         if (!strlen($this->_clientPath)) {
             $this->_clientPath = "/";
-        }
-        else {
+        } else {
             if (substr($this->_clientPath, -1, 1) != "/") {
                 $this->_clientPath .= "/";
             }
@@ -128,13 +129,13 @@ class CKFinder_Connector_Core_FolderHandler
     public function &getResourceTypeConfig()
     {
         if (!isset($this->_resourceTypeConfig)) {
-            $_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+            $_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
             $this->_resourceTypeConfig = $_config->getResourceTypeConfig($this->_resourceTypeName);
         }
 
         if (is_null($this->_resourceTypeConfig)) {
-            $connector =& CKFinder_Connector_Core_Factory::getInstance("Core_Connector");
-            $oErrorHandler =& $connector->getErrorHandler();
+            $connector = &CKFinder_Connector_Core_Factory::getInstance("Core_Connector");
+            $oErrorHandler = &$connector->getErrorHandler();
             $oErrorHandler->throwError(CKFINDER_CONNECTOR_ERROR_INVALID_TYPE);
         }
 
@@ -174,12 +175,11 @@ class CKFinder_Connector_Core_FolderHandler
         if (is_null($this->_url)) {
             $this->_resourceTypeConfig = $this->getResourceTypeConfig();
             if (is_null($this->_resourceTypeConfig)) {
-                $connector =& CKFinder_Connector_Core_Factory::getInstance("Core_Connector");
-                $oErrorHandler =& $connector->getErrorHandler();
+                $connector = &CKFinder_Connector_Core_Factory::getInstance("Core_Connector");
+                $oErrorHandler = &$connector->getErrorHandler();
                 $oErrorHandler->throwError(CKFINDER_CONNECTOR_ERROR_INVALID_TYPE);
                 $this->_url = "";
-            }
-            else {
+            } else {
                 $this->_url = $this->_resourceTypeConfig->getUrl() . ltrim($this->getClientPath(), "/");
             }
         }
@@ -214,7 +214,7 @@ class CKFinder_Connector_Core_FolderHandler
         if (is_null($this->_thumbsServerPath)) {
             $this->_resourceTypeConfig = $this->getResourceTypeConfig();
 
-            $_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+            $_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
             $_thumbnailsConfig = $_config->getThumbnailsConfig();
 
             // Get the resource type directory.
@@ -244,7 +244,7 @@ class CKFinder_Connector_Core_FolderHandler
      */
     public function getAclMask()
     {
-        $_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+        $_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
         $_aclConfig = $_config->getAccessControlConfig();
 
         if ($this->_aclMask == -1) {

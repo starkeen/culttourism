@@ -24,7 +24,7 @@ if (isset($_GET['act'])) {
             if (!empty($_GET['mode']) && $_GET['mode'] === 'auto') {
                 $cp = new MCandidatePoints($db);
                 $out['state'] = $cp->add(
-                        [
+                    [
                             'cp_title' => $out['data']['title'],
                             'cp_text' => $out['data']['text'],
                             'cp_addr' => $out['data']['addr'],
@@ -41,7 +41,7 @@ if (isset($_GET['act'])) {
                             'cp_source_id' => 26,
                             'cp_referer' => $_GET['url'],
                         ]
-                    ) > 0;
+                ) > 0;
             }
             break;
         default:

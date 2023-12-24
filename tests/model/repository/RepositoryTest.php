@@ -26,8 +26,7 @@ class RepositoryTest extends TestCase
             ->onlyMethods(['execute', 'setSQL'])
             ->getMock();
 
-        $this->repository = new class($this->dbMock) extends Repository {
-
+        $this->repository = new class ($this->dbMock) extends Repository {
             protected static function getTableName(): string
             {
                 return 'table_name';
@@ -68,7 +67,8 @@ class RepositoryTest extends TestCase
                 . 'WHERE primary_key_id = :primary_key_id');
         $this->dbMock->expects(self::once())
             ->method('execute')
-            ->with([
+            ->with(
+                [
                     ':primary_key_id' => 122345,
                     ':field_one' => 'value_one',
                     ':field_two' => 54321,
@@ -106,7 +106,8 @@ class RepositoryTest extends TestCase
                 . PHP_EOL);
         $this->dbMock->expects(self::once())
             ->method('execute')
-            ->with([
+            ->with(
+                [
                     ':field_one' => 'value_one',
                     ':field_two' => 54321,
                     ':field_3' => null,

@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -68,8 +70,8 @@ class CKFinder_Connector_Core_Registry
      */
     public function get($key)
     {
-    	if ($this->isValid($key)) {
-    	    return $this->_store[$key];
-    	}
+        if ($this->isValid($key)) {
+            return $this->_store[$key];
+        }
     }
 }

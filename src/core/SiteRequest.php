@@ -99,7 +99,7 @@ class SiteRequest
         if (!$this->parsed) {
             $this->parseRequest();
         }
-        return $this->level1 !== null ?  urldecode($this->level1) : null;
+        return $this->level1 !== null ? urldecode($this->level1) : null;
     }
 
     /**
@@ -121,7 +121,7 @@ class SiteRequest
         if (!$this->parsed) {
             $this->parseRequest();
         }
-        return $this->level3 !== null ?  urldecode($this->level3) : null;
+        return $this->level3 !== null ? urldecode($this->level3) : null;
     }
 
     /**

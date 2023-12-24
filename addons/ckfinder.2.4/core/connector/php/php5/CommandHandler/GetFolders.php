@@ -10,7 +10,9 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
-if (!defined('IN_CKFINDER')) exit;
+if (!defined('IN_CKFINDER')) {
+    exit;
+}
 
 /**
  * @package CKFinder
@@ -47,7 +49,7 @@ class CKFinder_Connector_CommandHandler_GetFolders extends CKFinder_Connector_Co
      */
     protected function buildXml()
     {
-        $_config =& CKFinder_Connector_Core_Factory::getInstance("Core_Config");
+        $_config = &CKFinder_Connector_Core_Factory::getInstance("Core_Config");
         if (!$this->_currentFolder->checkAcl(CKFINDER_CONNECTOR_ACL_FOLDER_VIEW)) {
             $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UNAUTHORIZED);
         }
@@ -77,9 +79,9 @@ class CKFinder_Connector_CommandHandler_GetFolders extends CKFinder_Connector_Co
 
         $resourceTypeInfo = $this->_currentFolder->getResourceTypeConfig();
 
-        if (sizeof($files)>0) {
+        if (sizeof($files) > 0) {
             natcasesort($files);
-            $i=0;
+            $i = 0;
             foreach ($files as $file) {
                 $oAcl = $_config->getAccessControlConfig();
                 $folderPath = $this->_currentFolder->getClientPath() . $file . "/";

@@ -69,7 +69,9 @@ class Bitly
     {
         if (empty($this->token)) {
             $this->client->request(
-                'POST', self::BITLY_HOST . '/oauth/access_token', [
+                'POST',
+                self::BITLY_HOST . '/oauth/access_token',
+                [
                 'client_id' => $this->clientId,
                 'client_secret' => $this->clientSecret,
                 'code' => 200, // TODO: use real code
@@ -101,7 +103,8 @@ class Bitly
         $pattern = '%s/v3/shorten?access_token=%s&longUrl=%s&format=json';
 
         return vsprintf(
-            $pattern, [
+            $pattern,
+            [
             $this->getBitlyHost(),
             $this->getToken(),
             urlencode($url),
