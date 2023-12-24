@@ -1,4 +1,5 @@
 <?php
+
 /*
  * CKFinder
  * ========
@@ -70,25 +71,25 @@ class CKFinder_Connector_Core_AccessControlConfig
                 $_resourceType,
                 $_folder,
                 array(
-            $_folderView ? CKFINDER_CONNECTOR_ACL_FOLDER_VIEW : 0,
-            $_folderCreate ? CKFINDER_CONNECTOR_ACL_FOLDER_CREATE : 0,
-            $_folderRename ? CKFINDER_CONNECTOR_ACL_FOLDER_RENAME : 0,
-            $_folderDelete ? CKFINDER_CONNECTOR_ACL_FOLDER_DELETE : 0,
-            $_fileView ? CKFINDER_CONNECTOR_ACL_FILE_VIEW : 0,
-            $_fileUpload ? CKFINDER_CONNECTOR_ACL_FILE_UPLOAD : 0,
-            $_fileRename ? CKFINDER_CONNECTOR_ACL_FILE_RENAME : 0,
-            $_fileDelete ? CKFINDER_CONNECTOR_ACL_FILE_DELETE : 0,
-            ),
+                $_folderView ? CKFINDER_CONNECTOR_ACL_FOLDER_VIEW : 0,
+                $_folderCreate ? CKFINDER_CONNECTOR_ACL_FOLDER_CREATE : 0,
+                $_folderRename ? CKFINDER_CONNECTOR_ACL_FOLDER_RENAME : 0,
+                $_folderDelete ? CKFINDER_CONNECTOR_ACL_FOLDER_DELETE : 0,
+                $_fileView ? CKFINDER_CONNECTOR_ACL_FILE_VIEW : 0,
+                $_fileUpload ? CKFINDER_CONNECTOR_ACL_FILE_UPLOAD : 0,
+                $_fileRename ? CKFINDER_CONNECTOR_ACL_FILE_RENAME : 0,
+                $_fileDelete ? CKFINDER_CONNECTOR_ACL_FILE_DELETE : 0,
+                ),
                 array(
-            $_folderView ? 0 : CKFINDER_CONNECTOR_ACL_FOLDER_VIEW,
-            $_folderCreate ? 0 : CKFINDER_CONNECTOR_ACL_FOLDER_CREATE,
-            $_folderRename ? 0 : CKFINDER_CONNECTOR_ACL_FOLDER_RENAME,
-            $_folderDelete ? 0 : CKFINDER_CONNECTOR_ACL_FOLDER_DELETE,
-            $_fileView ? 0 : CKFINDER_CONNECTOR_ACL_FILE_VIEW,
-            $_fileUpload ? 0 : CKFINDER_CONNECTOR_ACL_FILE_UPLOAD,
-            $_fileRename ? 0 : CKFINDER_CONNECTOR_ACL_FILE_RENAME,
-            $_fileDelete ? 0 : CKFINDER_CONNECTOR_ACL_FILE_DELETE,
-            )
+                $_folderView ? 0 : CKFINDER_CONNECTOR_ACL_FOLDER_VIEW,
+                $_folderCreate ? 0 : CKFINDER_CONNECTOR_ACL_FOLDER_CREATE,
+                $_folderRename ? 0 : CKFINDER_CONNECTOR_ACL_FOLDER_RENAME,
+                $_folderDelete ? 0 : CKFINDER_CONNECTOR_ACL_FOLDER_DELETE,
+                $_fileView ? 0 : CKFINDER_CONNECTOR_ACL_FILE_VIEW,
+                $_fileUpload ? 0 : CKFINDER_CONNECTOR_ACL_FILE_UPLOAD,
+                $_fileRename ? 0 : CKFINDER_CONNECTOR_ACL_FILE_RENAME,
+                $_fileDelete ? 0 : CKFINDER_CONNECTOR_ACL_FILE_DELETE,
+                )
             );
         }
     }
@@ -165,7 +166,7 @@ class CKFinder_Connector_Core_AccessControlConfig
 
         $_currentPath = "/";
 
-        for($i = -1; $i < sizeof($_pathParts); $i++) {
+        for ($i = -1; $i < sizeof($_pathParts); $i++) {
             if ($i >= 0) {
                 if (!strlen($_pathParts[$i])) {
                     continue;

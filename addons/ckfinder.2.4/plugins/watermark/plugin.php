@@ -1,4 +1,5 @@
 <?php
+
 /*
 * CKFinder
 * ========
@@ -50,84 +51,84 @@ class Watermark
         switch ($watermarkImageAttr['mime']) {
             case 'image/gif':
                 {
-                    if (@imagetypes() & IMG_GIF) {
-                        $oWatermarkImage = @imagecreatefromgif($watermarkFile);
-                    } else {
-                        $ermsg = 'GIF images are not supported';
-                    }
+                if (@imagetypes() & IMG_GIF) {
+                    $oWatermarkImage = @imagecreatefromgif($watermarkFile);
+                } else {
+                    $ermsg = 'GIF images are not supported';
                 }
-                break;
+            }
+            break;
             case 'image/jpeg':
                 {
-                    if (@imagetypes() & IMG_JPG) {
-                        $oWatermarkImage = @imagecreatefromjpeg($watermarkFile) ;
-                    } else {
-                        $ermsg = 'JPEG images are not supported';
-                    }
+                if (@imagetypes() & IMG_JPG) {
+                    $oWatermarkImage = @imagecreatefromjpeg($watermarkFile) ;
+                } else {
+                    $ermsg = 'JPEG images are not supported';
                 }
-                break;
+            }
+            break;
             case 'image/png':
                 {
-                    if (@imagetypes() & IMG_PNG) {
-                        $oWatermarkImage = @imagecreatefrompng($watermarkFile) ;
-                    } else {
-                        $ermsg = 'PNG images are not supported';
-                    }
+                if (@imagetypes() & IMG_PNG) {
+                    $oWatermarkImage = @imagecreatefrompng($watermarkFile) ;
+                } else {
+                    $ermsg = 'PNG images are not supported';
                 }
-                break;
+            }
+            break;
             case 'image/wbmp':
                 {
-                    if (@imagetypes() & IMG_WBMP) {
-                        $oWatermarkImage = @imagecreatefromwbmp($watermarkFile);
-                    } else {
-                        $ermsg = 'WBMP images are not supported';
-                    }
+                if (@imagetypes() & IMG_WBMP) {
+                    $oWatermarkImage = @imagecreatefromwbmp($watermarkFile);
+                } else {
+                    $ermsg = 'WBMP images are not supported';
                 }
-                break;
+            }
+            break;
             default:
-                $ermsg = $watermarkImageAttr['mime'].' images are not supported';
+                $ermsg = $watermarkImageAttr['mime'] . ' images are not supported';
                 break;
         }
 
         switch ($sourceImageAttr['mime']) {
             case 'image/gif':
                 {
-                    if (@imagetypes() & IMG_GIF) {
-                        $oImage = @imagecreatefromgif($sourceFile);
-                    } else {
-                        $ermsg = 'GIF images are not supported';
-                    }
+                if (@imagetypes() & IMG_GIF) {
+                    $oImage = @imagecreatefromgif($sourceFile);
+                } else {
+                    $ermsg = 'GIF images are not supported';
                 }
-                break;
+            }
+            break;
             case 'image/jpeg':
                 {
-                    if (@imagetypes() & IMG_JPG) {
-                        $oImage = @imagecreatefromjpeg($sourceFile) ;
-                    } else {
-                        $ermsg = 'JPEG images are not supported';
-                    }
+                if (@imagetypes() & IMG_JPG) {
+                    $oImage = @imagecreatefromjpeg($sourceFile) ;
+                } else {
+                    $ermsg = 'JPEG images are not supported';
                 }
-                break;
+            }
+            break;
             case 'image/png':
                 {
-                    if (@imagetypes() & IMG_PNG) {
-                        $oImage = @imagecreatefrompng($sourceFile) ;
-                    } else {
-                        $ermsg = 'PNG images are not supported';
-                    }
+                if (@imagetypes() & IMG_PNG) {
+                    $oImage = @imagecreatefrompng($sourceFile) ;
+                } else {
+                    $ermsg = 'PNG images are not supported';
                 }
-                break;
+            }
+            break;
             case 'image/wbmp':
                 {
-                    if (@imagetypes() & IMG_WBMP) {
-                        $oImage = @imagecreatefromwbmp($sourceFile);
-                    } else {
-                        $ermsg = 'WBMP images are not supported';
-                    }
+                if (@imagetypes() & IMG_WBMP) {
+                    $oImage = @imagecreatefromwbmp($sourceFile);
+                } else {
+                    $ermsg = 'WBMP images are not supported';
                 }
-                break;
+            }
+            break;
             default:
-                $ermsg = $sourceImageAttr['mime'].' images are not supported';
+                $ermsg = $sourceImageAttr['mime'] . ' images are not supported';
                 break;
         }
 
@@ -141,7 +142,7 @@ class Watermark
         $dest_y = $sourceImageAttr[1] - $watermark_height - $marginBottom;
 
         if ($sourceImageAttr['mime'] == 'image/png') {
-            if(function_exists('imagesavealpha') && function_exists('imagecolorallocatealpha')) {
+            if (function_exists('imagesavealpha') && function_exists('imagecolorallocatealpha')) {
                 $bg = imagecolorallocatealpha($oImage, 255, 255, 255, 127); // (PHP 4 >= 4.3.2, PHP 5)
                 imagefill($oImage, 0, 0, $bg);
                 imagealphablending($oImage, false);

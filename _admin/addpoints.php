@@ -175,7 +175,8 @@ if (isset($_GET['id'], $_GET['act'])) {
                 );
             }
             break;
-        default: throw new NotFoundException();
+        default:
+            throw new NotFoundException();
     }
     $out['data'] = $c->getItemByPk($out['id']);
     JSON::echo($out);

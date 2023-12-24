@@ -61,18 +61,17 @@ class CKFinder_Connector_ErrorHandler_FileUpload extends CKFinder_Connector_Erro
             $sEncodedFileName = "";
         }
         if (!empty($_GET['response_type']) && $_GET['response_type'] == 'txt') {
-            echo $sFileName."|".$errorMessage;
+            echo $sFileName . "|" . $errorMessage;
         } else {
             echo "<script type=\"text/javascript\">";
             if (!empty($_GET['CKFinderFuncNum'])) {
-
                 if (!$uploaded) {
                     $sFileUrl = "";
                     $sFileName = "";
                 }
 
                 $funcNum = preg_replace("/[^0-9]/", "", $_GET['CKFinderFuncNum']);
-                echo "window.parent.CKFinder.tools.callFunction($funcNum, '" . str_replace("'", "\\'", $sFileUrl . $sFileName) . "', '" .str_replace("'", "\\'", $errorMessage). "');";
+                echo "window.parent.CKFinder.tools.callFunction($funcNum, '" . str_replace("'", "\\'", $sFileUrl . $sFileName) . "', '" . str_replace("'", "\\'", $errorMessage) . "');";
             } else {
                 echo "window.parent.OnUploadCompleted('" . str_replace("'", "\\'", $sEncodedFileName) . "', '" . str_replace("'", "\\'", $errorMessage) . "') ;";
             }

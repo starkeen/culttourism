@@ -1,4 +1,5 @@
 <?php
+
 /*
  * CKFinder
  * ========
@@ -224,7 +225,7 @@ class CKFinder_Connector_Core_FolderHandler
             $this->_thumbsServerPath = CKFinder_Connector_Utils_FileSystem::combinePaths($this->_thumbsServerPath, ltrim($this->_clientPath, '/'));
 
             if (!is_dir($this->_thumbsServerPath)) {
-                if(!CKFinder_Connector_Utils_FileSystem::createDirectoryRecursively($this->_thumbsServerPath)) {
+                if (!CKFinder_Connector_Utils_FileSystem::createDirectoryRecursively($this->_thumbsServerPath)) {
                     /**
                      * @todo  Ckfinder_Connector_Utils_Xml::raiseError(); perhaps we should return error
                      *

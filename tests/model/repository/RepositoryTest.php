@@ -59,7 +59,7 @@ class RepositoryTest extends TestCase
             ->with('UPDATE `table_name` SET '
                 . PHP_EOL
                 . 'field_one = :field_one,'
-                .PHP_EOL
+                . PHP_EOL
                 . 'field_two = :field_two,'
                 . PHP_EOL
                 . 'field_3 = :field_3'
@@ -99,7 +99,7 @@ class RepositoryTest extends TestCase
             ->with('INSERT INTO `table_name` SET '
                 . PHP_EOL
                 . 'field_one = :field_one,'
-                .PHP_EOL
+                . PHP_EOL
                 . 'field_two = :field_two,'
                 . PHP_EOL
                 . 'field_3 = :field_3'

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * CKFinder
  * ========
@@ -44,7 +45,6 @@ class CKFinder_Connector_Core_Hooks
         $errorHandler = $GLOBALS['connector']->getErrorHandler();
 
         foreach ($hooks[$event] as $i => $hook) {
-
             $object = null;
             $method = null;
             $function = null;
@@ -134,12 +134,12 @@ class CKFinder_Connector_Core_Hooks
                 return false;
             }
             //no value returned
-            elseif($ret === null) {
+            elseif ($ret === null) {
                 $functionName = CKFinder_Connector_Core_Hooks::_printCallback($callback);
                 $errorHandler->throwError(
                     CKFINDER_CONNECTOR_ERROR_CUSTOM_ERROR,
                     "CKFinder extension returned an invalid value (null)." .
-                "Hook " . $functionName . " should return a value."
+                    "Hook " . $functionName . " should return a value."
                 );
                 return false;
             } elseif (!$ret) {

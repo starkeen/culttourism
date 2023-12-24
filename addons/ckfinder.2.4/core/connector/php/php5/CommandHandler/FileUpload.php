@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CKFinder
  * ========
@@ -10,6 +11,7 @@
  * modifying or distribute this file or part of its contents. The contents of
  * this file is part of the Source Code of CKFinder.
  */
+
 if (!defined('IN_CKFINDER')) {
     exit;
 }
@@ -92,15 +94,19 @@ class CKFinder_Connector_CommandHandler_FileUpload extends CKFinder_Connector_Co
         $htmlExtensions = $_config->getHtmlExtensions();
         $sExtension = CKFinder_Connector_Utils_FileSystem::getExtension($sFileName);
 
-        if ($htmlExtensions
-        && !CKFinder_Connector_Utils_Misc::inArrayCaseInsensitive($sExtension, $htmlExtensions)
-        && ($detectHtml = CKFinder_Connector_Utils_FileSystem::detectHtml($uploadedFile['tmp_name'])) === true) {
+        if (
+            $htmlExtensions
+            && !CKFinder_Connector_Utils_Misc::inArrayCaseInsensitive($sExtension, $htmlExtensions)
+            && ($detectHtml = CKFinder_Connector_Utils_FileSystem::detectHtml($uploadedFile['tmp_name'])) === true
+        ) {
             $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UPLOADED_WRONG_HTML_FILE);
         }
 
         $secureImageUploads = $_config->getSecureImageUploads();
-        if ($secureImageUploads
-        && ($isImageValid = CKFinder_Connector_Utils_FileSystem::isImageValid($uploadedFile['tmp_name'], $sExtension)) === false) {
+        if (
+            $secureImageUploads
+            && ($isImageValid = CKFinder_Connector_Utils_FileSystem::isImageValid($uploadedFile['tmp_name'], $sExtension)) === false
+        ) {
             $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UPLOADED_CORRUPT);
         }
 

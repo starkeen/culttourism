@@ -1,4 +1,5 @@
 <?php
+
 /*
  * CKFinder
 * ========
@@ -110,16 +111,16 @@ class CKFinder_Connector_CommandHandler_DeleteFiles extends CKFinder_Connector_C
                     $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_INVALID_REQUEST);
                 }
 
-                if (!isset($aclMasks[$type."@".$path])) {
-                    $aclMasks[$type."@".$path] = $_aclConfig->getComputedMask($type, $path);
+                if (!isset($aclMasks[$type . "@" . $path])) {
+                    $aclMasks[$type . "@" . $path] = $_aclConfig->getComputedMask($type, $path);
                 }
 
-                $isAuthorized = (($aclMasks[$type."@".$path] & CKFINDER_CONNECTOR_ACL_FILE_DELETE) == CKFINDER_CONNECTOR_ACL_FILE_DELETE);
+                $isAuthorized = (($aclMasks[$type . "@" . $path] & CKFINDER_CONNECTOR_ACL_FILE_DELETE) == CKFINDER_CONNECTOR_ACL_FILE_DELETE);
                 if (!$isAuthorized) {
                     $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_UNAUTHORIZED);
                 }
 
-                $filePath = $_resourceTypeConfig[$type]->getDirectory().$path.$name;
+                $filePath = $_resourceTypeConfig[$type]->getDirectory() . $path . $name;
 
                 if (!file_exists($filePath) || !is_file($filePath)) {
                     $errorCode = CKFINDER_CONNECTOR_ERROR_FILE_NOT_FOUND;

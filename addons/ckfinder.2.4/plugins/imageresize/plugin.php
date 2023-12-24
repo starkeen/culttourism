@@ -1,4 +1,5 @@
 <?php
+
 /*
 * CKFinder
 * ========
@@ -135,16 +136,15 @@ class CKFinder_Connector_CommandHandler_ImageResize extends CKFinder_Connector_C
         $extension = CKFinder_Connector_Utils_FileSystem::getExtension($fileName);
         foreach (array('small', 'medium', 'large') as $size) {
             if (!empty($_POST[$size]) && $_POST[$size] == '1') {
-                $thumbName = $nameWithoutExt."_".$size.".".$extension;
+                $thumbName = $nameWithoutExt . "_" . $size . "." . $extension;
                 $newFilePath = CKFinder_Connector_Utils_FileSystem::combinePaths($this->_currentFolder->getServerPath(), $thumbName);
-                if (!empty($config[$size.'Thumb'])) {
-                    if (preg_match("/^(\d+)x(\d+)$/", $config[$size.'Thumb'], $matches)) {
+                if (!empty($config[$size . 'Thumb'])) {
+                    if (preg_match("/^(\d+)x(\d+)$/", $config[$size . 'Thumb'], $matches)) {
                         CKFinder_Connector_CommandHandler_Thumbnail::createThumb($filePath, $newFilePath, $matches[1], $matches[2], $quality, true) ;
                     }
                 }
             }
         }
-
     }
 
     /**
@@ -158,8 +158,8 @@ class CKFinder_Connector_CommandHandler_ImageResize extends CKFinder_Connector_C
         $pluginsInfo->addChild($imageresize);
         $config = $this->getConfig();
         foreach (array('small', 'medium', 'large') as $size) {
-            if (!empty($config[$size.'Thumb'])) {
-                $imageresize->addAttribute($size.'Thumb', $config[$size.'Thumb']);
+            if (!empty($config[$size . 'Thumb'])) {
+                $imageresize->addAttribute($size . 'Thumb', $config[$size . 'Thumb']);
             }
         }
         return true ;

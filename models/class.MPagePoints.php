@@ -331,7 +331,8 @@ class MPagePoints extends Model
                 unset($values['pt_longitude']);
             }
         }
-        if (isset($values['pt_website'])
+        if (
+            isset($values['pt_website'])
             && trim($values['pt_website']) !== ''
             && strpos($values['pt_website'], 'http') === false
         ) {
@@ -442,7 +443,8 @@ class MPagePoints extends Model
         }
         $values['pt_lastup_date'] = $values['pt_create_date'];
         $values['pt_lastup_user'] = $values['pt_create_user'];
-        if (isset($values['pt_website'])
+        if (
+            isset($values['pt_website'])
             && trim($values['pt_website']) !== ''
             && strpos($values['pt_website'], 'http') === false
         ) {

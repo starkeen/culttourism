@@ -35,8 +35,10 @@ class Pager
 
             $i = 0;
             foreach ($all as $id => $item) {
-                if (($i >= $cur_page * $this->items_per_page)
-                    && ($i < ($cur_page + 1) * $this->items_per_page)) {
+                if (
+                    ($i >= $cur_page * $this->items_per_page)
+                    && ($i < ($cur_page + 1) * $this->items_per_page)
+                ) {
                     $this->out[$id] = $item;
                 }
                 $i++;

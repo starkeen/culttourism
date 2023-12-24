@@ -1,4 +1,5 @@
 <?php
+
 /*
 * CKFinder
 * ========
@@ -108,7 +109,6 @@ class CKFinder_Connector_Utils_Misc
             imagecopyresized($temp, $src_image, $dst_x, $dst_y, $src_x, $src_y, $dst_w + 1, $dst_h + 1, $src_w, $src_h);
             imagecopyresized($dst_image, $temp, 0, 0, 0, 0, $dst_w, $dst_h, $dst_w, $dst_h);
             imagedestroy($temp);
-
         } elseif ($quality < 5 && (($dst_w * $quality) < $src_w || ($dst_h * $quality) < $src_h)) {
             $tmp_w = $dst_w * $quality;
             $tmp_h = $dst_h * $quality;
@@ -116,7 +116,6 @@ class CKFinder_Connector_Utils_Misc
             imagecopyresized($temp, $src_image, 0, 0, $src_x, $src_y, $tmp_w + 1, $tmp_h + 1, $src_w, $src_h);
             imagecopyresampled($dst_image, $temp, $dst_x, $dst_y, 0, 0, $dst_w, $dst_h, $tmp_w, $tmp_h);
             imagedestroy($temp);
-
         } else {
             imagecopyresampled($dst_image, $src_image, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h);
         }
@@ -141,9 +140,9 @@ class CKFinder_Connector_Utils_Misc
         $memoryNeeded = round(
             (
                 $imageWidth * $imageHeight
-        * $imageBits
-        * $imageChannels / 8
-        + $K64
+            * $imageBits
+            * $imageChannels / 8
+            + $K64
             ) * $TWEAKFACTOR
         ) + 3 * $MB;
 
@@ -165,8 +164,8 @@ class CKFinder_Connector_Utils_Misc
                 $newLimit = $memoryLimit + ceil(
                     (
                         memory_get_usage()
-                + $memoryNeeded
-                - $memoryLimitMB
+                    + $memoryNeeded
+                    - $memoryLimitMB
                     ) / $MB
                 );
                 if (@ini_set('memory_limit', $newLimit . 'M') === false) {
@@ -178,8 +177,8 @@ class CKFinder_Connector_Utils_Misc
                 $newLimit = $memoryLimit + ceil(
                     (
                         3 * $MB
-                + $memoryNeeded
-                - $memoryLimitMB
+                    + $memoryNeeded
+                    - $memoryLimitMB
                     ) / $MB
                 );
                 if (false === @ini_set('memory_limit', $newLimit . 'M')) {
@@ -207,7 +206,7 @@ class CKFinder_Connector_Utils_Misc
             return 0;
         }
         $last = strtolower($val[strlen($val) - 1]);
-        switch($last) {
+        switch ($last) {
             // The 'G' modifier is available since PHP 5.1.0
             case 'g':
                 $val *= 1024;
@@ -295,8 +294,8 @@ class CKFinder_Connector_Utils_Misc
             return false;
         }
 
-        $BMP = unpack('Vheader_size/Vwidth/Vheight/vplanes/vbits_per_pixel'.
-        '/Vcompression/Vsize_bitmap/Vhoriz_resolution'.
+        $BMP = unpack('Vheader_size/Vwidth/Vheight/vplanes/vbits_per_pixel' .
+        '/Vcompression/Vsize_bitmap/Vhoriz_resolution' .
         '/Vvert_resolution/Vcolors_used/Vcolors_important', fread($f1, 40));
 
         $BMP['colors'] = pow(2, $BMP['bits_per_pixel']);
@@ -317,7 +316,7 @@ class CKFinder_Connector_Utils_Misc
 
         $PALETTE = array();
         if ($BMP['colors'] < 16777216) {
-            $PALETTE = unpack('V'.$BMP['colors'], fread($f1, $BMP['colors'] * 4));
+            $PALETTE = unpack('V' . $BMP['colors'], fread($f1, $BMP['colors'] * 4));
         }
 
         //2048x1536px@24bit don't even try to process larger files as it will probably fail
@@ -381,8 +380,8 @@ class CKFinder_Connector_Utils_Misc
                 $P += $line_length + $BMP['decal'];
             }
         } elseif ($BMP['bits_per_pixel'] == 1) {
-            $COLOR = unpack("n", $VIDE.substr($IMG, floor($P), 1));
-            if     (($P * 8) % 8 == 0) {
+            $COLOR = unpack("n", $VIDE . substr($IMG, floor($P), 1));
+            if (($P * 8) % 8 == 0) {
                 $COLOR[1] =  $COLOR[1]        >> 7;
             } elseif (($P * 8) % 8 == 1) {
                 $COLOR[1] = ($COLOR[1] & 0x40) >> 6;

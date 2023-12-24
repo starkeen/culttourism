@@ -1,4 +1,5 @@
 <?php
+
 /*
  * CKFinder
  * ========
@@ -53,17 +54,17 @@ class CKFinder_Connector_ErrorHandler_Http extends CKFinder_Connector_ErrorHandl
             case CKFINDER_CONNECTOR_ERROR_THUMBNAILS_DISABLED:
             case CKFINDER_CONNECTOR_ERROR_UNAUTHORIZED:
                 header("HTTP/1.0 403 Forbidden");
-                header("X-CKFinder-Error: ". $number);
+                header("X-CKFinder-Error: " . $number);
                 break;
 
             case CKFINDER_CONNECTOR_ERROR_ACCESS_DENIED:
                 header("HTTP/1.0 500 Internal Server Error");
-                header("X-CKFinder-Error: ".$number);
+                header("X-CKFinder-Error: " . $number);
                 break;
 
             default:
                 header("HTTP/1.0 404 Not Found");
-                header("X-CKFinder-Error: ". $number);
+                header("X-CKFinder-Error: " . $number);
                 break;
         }
 

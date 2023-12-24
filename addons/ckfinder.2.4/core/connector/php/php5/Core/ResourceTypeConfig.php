@@ -1,4 +1,5 @@
 <?php
+
 /*
  * CKFinder
  * ========
@@ -98,7 +99,7 @@ class CKFinder_Connector_Core_ResourceTypeConfig
 
         if (!strlen($this->_url)) {
             $this->_url = "/";
-        } elseif(substr($this->_url, -1, 1) != "/") {
+        } elseif (substr($this->_url, -1, 1) != "/") {
             $this->_url .= "/";
         }
 
@@ -132,7 +133,6 @@ class CKFinder_Connector_Core_ResourceTypeConfig
 
         if (isset($resourceTypeNode["deniedExtensions"])) {
             if (is_array($resourceTypeNode["deniedExtensions"])) {
-
                 foreach ($resourceTypeNode["deniedExtensions"] as $extension) {
                     $this->_deniedExtensions[] = strtolower(trim((string)$e));
                 }

@@ -45,7 +45,6 @@ jobs:
             ./phpunit-coverage.xml
             ./phpunit-report.xml
 
-
   deploy:
     name: Deploy
     needs:

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * CKFinder
  * ========
@@ -196,13 +197,13 @@ class CKFinder_Connector_Core_Config
     private $_tempDirectory = '';
     /**
      * If set to true send files using X-Sendfile server module
-     * @var	bool $_xsendfile
+     * @var bool $_xsendfile
      */
     private $_xsendfile = false;
     /**
      * Additional Nginx X-Sendfile configuration
      *
-     * @var	array	$_xsendfileNginx	Configuration for location => root
+     * @var array   $_xsendfileNginx    Configuration for location => root
      */
     private $_xsendfileNginx = array();
 
@@ -608,7 +609,7 @@ class CKFinder_Connector_Core_Config
         $xsendfileNginx = array();
         foreach ($this->_xsendfileNginx as $location => $root) {
             $root = (string)$root;
-            $location = rtrim((string)$location, '/').'/';
+            $location = rtrim((string)$location, '/') . '/';
             if (substr($root, -1, 1) != '/' && substr($root, -1, 1) != '\\') {
                 // root and location paths are concatenated
                 // @see http://wiki.nginx.org/XSendfile
@@ -618,5 +619,4 @@ class CKFinder_Connector_Core_Config
         }
         return $xsendfileNginx;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * CKFinder
  * ========
@@ -70,7 +71,7 @@ class CKFinder_Connector_ErrorHandler_QuickUpload extends CKFinder_Connector_Err
             }
 
             $funcNum = preg_replace("/[^0-9]/", "", $_GET['CKEditorFuncNum']);
-            echo "window.parent.CKEDITOR.tools.callFunction($funcNum, '" . str_replace("'", "\\'", $sFileUrl . CKFinder_Connector_Utils_Misc::encodeURIComponent($sEncodedFileName)) . "', '" .str_replace("'", "\\'", $errorMessage). "');";
+            echo "window.parent.CKEDITOR.tools.callFunction($funcNum, '" . str_replace("'", "\\'", $sFileUrl . CKFinder_Connector_Utils_Misc::encodeURIComponent($sEncodedFileName)) . "', '" . str_replace("'", "\\'", $errorMessage) . "');";
         } else {
             if (!$uploaded) {
                 echo "window.parent.OnUploadCompleted(" . $number . ", '', '', '') ;";

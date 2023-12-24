@@ -1,4 +1,5 @@
 <?php
+
 /*
 * CKFinder
 * ========
@@ -85,7 +86,7 @@ class CKFinder_Connector_CommandHandler_Thumbnail extends CKFinder_Connector_Com
 
         // If the thumbnail file doesn't exists, create it now.
         if (!file_exists($thumbFilePath)) {
-            if(!$this->createThumb($sourceFilePath, $thumbFilePath, $_thumbnails->getMaxWidth(), $_thumbnails->getMaxHeight(), $_thumbnails->getQuality(), true, $_thumbnails->getBmpSupported())) {
+            if (!$this->createThumb($sourceFilePath, $thumbFilePath, $_thumbnails->getMaxWidth(), $_thumbnails->getMaxHeight(), $_thumbnails->getQuality(), true, $_thumbnails->getBmpSupported())) {
                 $this->_errorHandler->throwError(CKFINDER_CONNECTOR_ERROR_ACCESS_DENIED);
             }
         }
@@ -102,7 +103,7 @@ class CKFinder_Connector_CommandHandler_Thumbnail extends CKFinder_Connector_Com
 
         if (isset($_SERVER["HTTP_IF_NONE_MATCH"]) && $_SERVER["HTTP_IF_NONE_MATCH"] === $etag) {
             $is304 = true;
-        } elseif($rtime == $mtime) {
+        } elseif ($rtime == $mtime) {
             $is304 = true;
         }
 
@@ -117,10 +118,10 @@ class CKFinder_Connector_CommandHandler_Thumbnail extends CKFinder_Connector_Com
         header('Cache-control: public');
         header('Etag: ' . $etag);
         header("Content-type: " . $mime . "; name=\"" . CKFinder_Connector_Utils_Misc::mbBasename($thumbFilePath) . "\"");
-        header("Last-Modified: ".gmdate('D, d M Y H:i:s', $mtime) . " GMT");
+        header("Last-Modified: " . gmdate('D, d M Y H:i:s', $mtime) . " GMT");
         //header("Content-type: application/octet-stream; name=\"{$file}\"");
         //header("Content-Disposition: attachment; filename=\"{$file}\"");
-        header("Content-Length: ".$size);
+        header("Content-Length: " . $size);
         readfile($thumbFilePath);
         exit;
     }
@@ -176,40 +177,40 @@ class CKFinder_Connector_CommandHandler_Thumbnail extends CKFinder_Connector_Com
         switch ($sourceImageAttr['mime']) {
             case 'image/gif':
                 {
-                    if (@imagetypes() & IMG_GIF) {
-                        $oImage = @imagecreatefromgif($sourceFile);
-                    } else {
-                        $ermsg = 'GIF images are not supported';
-                    }
+                if (@imagetypes() & IMG_GIF) {
+                    $oImage = @imagecreatefromgif($sourceFile);
+                } else {
+                    $ermsg = 'GIF images are not supported';
                 }
-                break;
+            }
+            break;
             case 'image/jpeg':
                 {
-                    if (@imagetypes() & IMG_JPG) {
-                        $oImage = @imagecreatefromjpeg($sourceFile) ;
-                    } else {
-                        $ermsg = 'JPEG images are not supported';
-                    }
+                if (@imagetypes() & IMG_JPG) {
+                    $oImage = @imagecreatefromjpeg($sourceFile) ;
+                } else {
+                    $ermsg = 'JPEG images are not supported';
                 }
-                break;
+            }
+            break;
             case 'image/png':
                 {
-                    if (@imagetypes() & IMG_PNG) {
-                        $oImage = @imagecreatefrompng($sourceFile) ;
-                    } else {
-                        $ermsg = 'PNG images are not supported';
-                    }
+                if (@imagetypes() & IMG_PNG) {
+                    $oImage = @imagecreatefrompng($sourceFile) ;
+                } else {
+                    $ermsg = 'PNG images are not supported';
                 }
-                break;
+            }
+            break;
             case 'image/wbmp':
                 {
-                    if (@imagetypes() & IMG_WBMP) {
-                        $oImage = @imagecreatefromwbmp($sourceFile);
-                    } else {
-                        $ermsg = 'WBMP images are not supported';
-                    }
+                if (@imagetypes() & IMG_WBMP) {
+                    $oImage = @imagecreatefromwbmp($sourceFile);
+                } else {
+                    $ermsg = 'WBMP images are not supported';
                 }
-                break;
+            }
+            break;
             case 'image/bmp':
                 {
                     /*
@@ -218,15 +219,15 @@ class CKFinder_Connector_CommandHandler_Thumbnail extends CKFinder_Connector_Com
                     * We'll not resize images this way (if $sourceFile === $targetFile),
                     * because user defined imagecreatefrombmp and imagecreatebmp are horribly slow
                     */
-                    if ($bmpSupported && (@imagetypes() & IMG_JPG) && $sourceFile != $targetFile) {
-                        $oImage = CKFinder_Connector_Utils_Misc::imageCreateFromBmp($sourceFile);
-                    } else {
-                        $ermsg = 'BMP/JPG images are not supported';
-                    }
+                if ($bmpSupported && (@imagetypes() & IMG_JPG) && $sourceFile != $targetFile) {
+                    $oImage = CKFinder_Connector_Utils_Misc::imageCreateFromBmp($sourceFile);
+                } else {
+                    $ermsg = 'BMP/JPG images are not supported';
                 }
-                break;
+            }
+            break;
             default:
-                $ermsg = $sourceImageAttr['mime'].' images are not supported';
+                $ermsg = $sourceImageAttr['mime'] . ' images are not supported';
                 break;
         }
 

@@ -252,11 +252,16 @@ class DataChecker
 
         $points = $p->getPointsWithoutCoordinates($count);
         foreach ($points as $pt) {
-            $addr = preg_replace('/(\d{3})(\s{1})(\d{3})/', '$1$3', $pt['pt_adress']);
+            $addr = preg_replace('/(\d{3})(\s)(\d{3})/', '$1$3', $pt['pt_adress']);
             $response = $api->check(DadataAPI::TYPE_ADDRESS, $addr);
             $result = $response[0];
             $coordinates = '';
-            if ((int) $result['qc'] === 0 && (int) $result['qc_geo'] === 0 && (float) $result['geo_lat'] !== 0 && (float) $result['geo_lon'] !== 0) {
+            if (
+                (int) $result['qc'] === 0
+                && (int) $result['qc_geo'] === 0
+                && (float) $result['geo_lat'] !== 0
+                && (float) $result['geo_lon'] !== 0
+            ) {
                 $coordinates = sprintf('%f, %f', $result['geo_lat'], $result['geo_lon']);
                 $geoData = [
                     'pt_latitude' => (float) $result['geo_lat'],
@@ -327,7 +332,7 @@ class DataChecker
 
         $items = $this->getCheckingPortion($count, 'cp_active', true);
         foreach ($items as $item) {
-            $addr = preg_replace('/(\d{3})(\s{1})(\d{3})/', '$1$3', $item[$this->entityField]);
+            $addr = preg_replace('/(\d{3})(\s)(\d{3})/', '$1$3', $item[$this->entityField]);
             $response = $api->check(DadataAPI::TYPE_ADDRESS, $addr);
             $result = $response[0]['result'];
             if ((int) $response[0]['quality_parse'] === 0) {
@@ -335,7 +340,11 @@ class DataChecker
                 $result = $this->typograph->typo($dotted);
                 $cp->updateByPk($item[$this->entityId], [$this->entityField => $result]);
 
-                if ((int) $item['cp_latitude'] === 0 && (int) $item['cp_longitude'] === 0 && (int) $response[0]['qc_geo'] === 0) {
+                if (
+                    (int) $item['cp_latitude'] === 0
+                    && (int) $item['cp_longitude'] === 0
+                    && (int) $response[0]['qc_geo'] === 0
+                ) {
                     $geoData = [
                         'cp_latitude' => $response[0]['geo_lat'],
                         'cp_longitude' => $response[0]['geo_lon'],

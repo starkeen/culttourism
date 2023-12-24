@@ -1,4 +1,5 @@
 <?php
+
 /*
  * CKFinder
  * ========
@@ -33,11 +34,11 @@ class CKFinder
     // PHP 5 Constructor
     public function __construct($basePath = CKFINDER_DEFAULT_BASEPATH, $width = '100%', $height = 400, $selectFunction = null)
     {
-        $this->BasePath			= $basePath ;
-        $this->Width			= $width ;
-        $this->Height			= $height ;
-        $this->SelectFunction	= $selectFunction ;
-        $this->SelectThumbnailFunction	= $selectFunction ;
+        $this->BasePath         = $basePath ;
+        $this->Width            = $width ;
+        $this->Height           = $height ;
+        $this->SelectFunction   = $selectFunction ;
+        $this->SelectThumbnailFunction  = $selectFunction ;
     }
 
     // Renders CKFinder in the current page.
