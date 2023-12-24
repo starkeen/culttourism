@@ -46,8 +46,12 @@ class Keyboard
 
     /**
      * Функция возвращает замененные парные символы по клавиатуре QWERTY - ЙЦУКЕН
-     * @param string $text Строка, подлежащая преобразованию
-     * @param bool $latRusDirection Флаг направления преобразования
+     *
+     * @param  string $text            Строка,
+     *                                 подлежащая
+     *                                 преобразованию
+     * @param  bool   $latRusDirection Флаг направления
+     *                                 преобразования
      * @return string
      */
     public static function getQwerty(string $text, $latRusDirection = true): string
@@ -56,7 +60,7 @@ class Keyboard
     }
 
     /**
-     * @param bool $latRusDirection
+     * @param  bool $latRusDirection
      * @return array
      */
     private static function getPairs(bool $latRusDirection): array

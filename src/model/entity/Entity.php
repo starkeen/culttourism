@@ -21,7 +21,7 @@ abstract class Entity
     }
 
     /**
-     * @param string $name
+     * @param  string $name
      * @return bool
      */
     public function __isset(string $name): bool
@@ -30,7 +30,7 @@ abstract class Entity
     }
 
     /**
-     * @param string $name
+     * @param string               $name
      * @param int|null|string|bool $value
      */
     public function __set(string $name, $value): void
@@ -40,7 +40,7 @@ abstract class Entity
     }
 
     /**
-     * @param string $name
+     * @param  string $name
      * @return int|string|bool|null
      */
     public function __get(string $name)

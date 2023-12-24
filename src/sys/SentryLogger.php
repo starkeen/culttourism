@@ -107,7 +107,7 @@ class SentryLogger
     public function plainContext(array $context, string $prefix = null): array
     {
         $result = [];
-        foreach($context as $key => $value) {
+        foreach ($context as $key => $value) {
             $key = (string) $key;
             $resultKey = $key;
             if ($prefix !== null) {

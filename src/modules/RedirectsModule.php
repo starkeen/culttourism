@@ -56,7 +56,7 @@ class RedirectsModule implements ModuleInterface
 
     /**
      * @inheritDoc
-     * @throws RedirectException
+     * @throws     RedirectException
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {

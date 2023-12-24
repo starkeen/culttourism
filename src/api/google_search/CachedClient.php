@@ -21,7 +21,7 @@ class CachedClient implements HttpClientInterface
 
     /**
      * @param HttpClientInterface $client
-     * @param MSearchLog $cacheModel
+     * @param MSearchLog          $cacheModel
      */
     public function __construct(HttpClientInterface $client, MSearchLog $cacheModel)
     {

@@ -187,7 +187,7 @@ class Content
 
     /**
      * @deprecated
-     * @param array $map
+     * @param      array $map
      */
     public function setJsResources(array $map): void
     {

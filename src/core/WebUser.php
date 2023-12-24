@@ -19,7 +19,7 @@ class WebUser
     private $sessionStorage;
 
     /**
-     * @param Auth $auth
+     * @param Auth           $auth
      * @param SessionStorage $sessionStorage
      */
     public function __construct(Auth $auth, SessionStorage $sessionStorage)
@@ -74,6 +74,7 @@ class WebUser
 
     /**
      * проверяет возможность редактирования
+     *
      * @return bool|null
      */
     public function isEditor(): ?bool

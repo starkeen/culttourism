@@ -29,10 +29,10 @@ class BlogModule extends Module implements ModuleInterface
     private BlogRepository $blogRepository;
 
     /**
-     * @param MyDB $db
+     * @param MyDB           $db
      * @param TemplateEngine $templateEngine
-     * @param WebUser $webUser
-     * @param GlobalConfig $globalConfig
+     * @param WebUser        $webUser
+     * @param GlobalConfig   $globalConfig
      */
     public function __construct(MyDB $db, TemplateEngine $templateEngine, WebUser $webUser, GlobalConfig $globalConfig)
     {
@@ -51,9 +51,9 @@ class BlogModule extends Module implements ModuleInterface
 
     /**
      * @inheritDoc
-     * @throws NotFoundException
-     * @throws RedirectException
-     * @throws AccessDeniedException
+     * @throws     NotFoundException
+     * @throws     RedirectException
+     * @throws     AccessDeniedException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
@@ -158,10 +158,10 @@ class BlogModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param SiteResponse $response
-     * @param string $id
-     * @param int $year
-     * @param int $month
+     * @param  SiteResponse $response
+     * @param  string       $id
+     * @param  int          $year
+     * @param  int          $month
      * @throws NotFoundException
      */
     private function processOneEntry(SiteResponse $response, string $id, int $year, int $month): void
@@ -211,8 +211,8 @@ class BlogModule extends Module implements ModuleInterface
 
     /**
      * @param SiteResponse $response
-     * @param int $year
-     * @param int|null $month
+     * @param int          $year
+     * @param int|null     $month
      */
     private function processCalendar(SiteResponse $response, int $year, int $month = null): void
     {
@@ -259,8 +259,8 @@ class BlogModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param SiteResponse $response
-     * @param int|null $id
+     * @param  SiteResponse $response
+     * @param  int|null     $id
      * @throws AccessDeniedException
      */
     private function getFormBlog(SiteResponse $response, int $id = null): void
@@ -289,15 +289,18 @@ class BlogModule extends Module implements ModuleInterface
 
     /**
      * Обновление записи в блоге
+     *
      * @param SiteResponse $response
      */
     private function saveFormBlog(SiteResponse $response): void
     {
-        $entry = new BlogEntry([
+        $entry = new BlogEntry(
+            [
             'br_title' => $_POST['ntitle'],
             'br_text' => $_POST['ntext'],
             'br_url' => $_POST['nurl'],
-        ]);
+            ]
+        );
         $entry->br_date = Dates::normalToSQL($_POST['ndate']) . ' ' . $_POST['ntime'];
         $entry->br_active = $_POST['nact'] === 'true' ? 1 : 0;
         $entry->setOwner(new User(['us_id' => $this->webUser->getId()]));

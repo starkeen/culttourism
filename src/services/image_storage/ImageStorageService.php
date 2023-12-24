@@ -28,8 +28,8 @@ class ImageStorageService
     private $photosModel;
 
     /**
-     * @param string $tmpDir
-     * @param string $photosDirectory
+     * @param string  $tmpDir
+     * @param string  $photosDirectory
      * @param MPhotos $photosModel
      */
     public function __construct(string $tmpDir, string $photosDirectory, MPhotos $photosModel)
@@ -40,7 +40,7 @@ class ImageStorageService
     }
 
     /**
-     * @param string $url
+     * @param string      $url
      * @param string|null $origin
      * @param string|null $title
      * @param string|null $author
@@ -175,7 +175,7 @@ class ImageStorageService
     }
 
     /**
-     * @param string $fileName
+     * @param  string $fileName
      * @return string
      * @throws CoreException
      */

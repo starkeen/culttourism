@@ -76,6 +76,7 @@ class PointType extends Enum
 
     /**
      * Типы, относящиеся к достопримечательностям
+     *
      * @return self[]
      */
     public static function getSights(): array
@@ -92,6 +93,7 @@ class PointType extends Enum
 
     /**
      * Сервисные типы точек
+     *
      * @return self[]
      */
     public static function getServices(): array

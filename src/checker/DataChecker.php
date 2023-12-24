@@ -57,7 +57,7 @@ class DataChecker
     ];
 
     /**
-     * @param MyDB $db
+     * @param MyDB      $db
      * @param Typograph $typograph
      */
     public function __construct(MyDB $db, Typograph $typograph)
@@ -194,9 +194,11 @@ class DataChecker
             // исправление формата телефонов
             $newPhones = trim($phoneString);
             if ($newPhones !== $phoneString) {
-                $ptModel->updateByPk($pointId, [
+                $ptModel->updateByPk(
+                    $pointId, [
                     'pt_phone' => $newPhones,
-                ]);
+                    ]
+                );
                 $logItem = [
                     'pt_id' => $pointId,
                     'old_phone' => $phoneString,
@@ -433,9 +435,9 @@ class DataChecker
     }
 
     /**
-     * @param int $limit
+     * @param int    $limit
      * @param string $activeField
-     * @param bool $unchecked
+     * @param bool   $unchecked
      *
      * @return array
      */
@@ -470,7 +472,7 @@ class DataChecker
     /**
      * @param string $type
      * @param string $field
-     * @param int $ageDays
+     * @param int    $ageDays
      */
     public function resetOldData(string $type, string $field, int $ageDays): void
     {

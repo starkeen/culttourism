@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - analyzers
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -44,6 +45,7 @@ jobs:
           path: |
             ./phpunit-coverage.xml
             ./phpunit-report.xml
+
 
   deploy:
     name: Deploy
@@ -94,8 +96,71 @@ jobs:
           environment: production
           ignore_missing: true
 
+  phpcs:
+    name: PHP Code Sniffer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Composer install
+        uses: php-actions/composer@v6
+        with:
+          php_version: 8.1
+          args: "--ignore-platform-reqs --optimize-autoloader"
+          dev: yes
+
+      - name: PHP Code Sniffer
+        uses: php-actions/phpcs@v1
+        with:
+          php_version: 8.1
+          path: src/
+          standard: PSR12
+          report: full
+        continue-on-error: true
+
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: php-actions/composer@v6
+        with:
+          php_version: 8.1
+          args: "--ignore-platform-reqs --optimize-autoloader"
+          dev: yes
+      - uses: php-actions/phpstan@v3
+        with:
+          path: src/
+          memory_limit: 256M
+        continue-on-error: true
+
+  phpmd:
+    name: PHP Mess Detector
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP environment
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          php-version: 8.1
+          tools: phpmd
+
+      - name: Composer install
+        uses: php-actions/composer@v6
+        with:
+          php_version: 8.1
+          args: "--ignore-platform-reqs --optimize-autoloader"
+          dev: yes
+          progress: yes
+
+      - name: PHP Mess Detector
+        run: phpmd . github phpmd.xml --exclude 'tests/*,vendor/*'
+        continue-on-error: true
+
   codecov:
-    name: Codecov
+    name: CodeCov
 #    if: github.event_name == 'workflow_run' && github.event.workflow_run.event == 'manual'
     runs-on: ubuntu-latest
     needs:

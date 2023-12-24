@@ -108,7 +108,7 @@ class Head
     /**
      * Добавляет данные в набор JSON+LD
      *
-     * @param string $key
+     * @param string       $key
      * @param string|array $value
      */
     public function addMainMicroData(string $key, $value): void

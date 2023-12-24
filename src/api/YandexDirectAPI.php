@@ -89,6 +89,7 @@ class YandexDirectAPI
 
     /**
      * Получить список всех отчетов
+     *
      * @return array
      */
     public function getReportsAll(): array
@@ -111,6 +112,7 @@ class YandexDirectAPI
 
     /**
      * Получить список ID готовых отчетов
+     *
      * @return array
      */
     public function getReportsDone(): array
@@ -126,6 +128,7 @@ class YandexDirectAPI
 
     /**
      * Общее количество текущих отчетов
+     *
      * @return int
      */
     public function getReportsCount(): int
@@ -137,6 +140,7 @@ class YandexDirectAPI
 
     /**
      * Количество доступных для создания отчетов
+     *
      * @return int
      */
     public function getReportsCountRemain(): int
@@ -146,6 +150,7 @@ class YandexDirectAPI
 
     /**
      * Максимально доступное количество отчетов
+     *
      * @return int
      */
     public function getReportsCountMax(): int
@@ -172,6 +177,7 @@ class YandexDirectAPI
 
     /**
      * Количество оставшихся баллов по клиенту
+     *
      * @return int
      */
     public function getClientUnits(): int
@@ -238,7 +244,8 @@ class YandexDirectAPI
     /**
      * Отправка POST-запроса по указанному URL
      *
-     * @param string $url - URL запроса
+     * @param string $url  - URL
+     *                     запроса
      * @param string $data - данные запроса (json или http_build_query)
      *
      * @return string чистый ответ сервера

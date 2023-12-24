@@ -37,8 +37,8 @@ class PictureModule implements ModuleInterface
     }
 
     /**
-     * @param SiteRequest $request
-     * @param SiteResponse $response
+     * @param  SiteRequest  $request
+     * @param  SiteResponse $response
      * @throws NotFoundException
      */
     public function handle(SiteRequest $request, SiteResponse $response): void

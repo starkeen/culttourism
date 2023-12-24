@@ -40,7 +40,7 @@ class FeedbackModule extends Module implements ModuleInterface
 
     /**
      * @inheritDoc
-     * @throws NotFoundException
+     * @throws     NotFoundException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
@@ -72,6 +72,7 @@ class FeedbackModule extends Module implements ModuleInterface
 
     /**
      * Обработка формы добавления точки
+     *
      * @param SiteResponse $response
      */
     private function getAdd(SiteResponse $response): void
@@ -150,7 +151,7 @@ class FeedbackModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param SiteRequest $request
+     * @param SiteRequest  $request
      * @param SiteResponse $response
      */
     private function getCommon(SiteRequest $request, SiteResponse $response): void
@@ -173,15 +174,15 @@ class FeedbackModule extends Module implements ModuleInterface
 
     /**
      * Обработка запроса на сохранение обратной связи
-     * @param SiteRequest $request
+     *
+     * @param SiteRequest  $request
      * @param SiteResponse $response
      */
     private function processFeedbackPosting(SiteRequest $request, SiteResponse $response): void
     {
-       if (
-           (!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] === null)
-           && $request->getReferer() !== null
-       ) {
+        if ((!isset($_SESSION['feedback_referer']) || $_SESSION['feedback_referer'] === null)
+            && $request->getReferer() !== null
+        ) {
             $_SESSION['feedback_referer'] = $request->getReferer();
         }
         $referer = !empty($_SESSION['feedback_referer']) ? $_SESSION['feedback_referer'] : null;
@@ -239,7 +240,7 @@ class FeedbackModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param array $data
+     * @param  array $data
      * @return string
      */
     private function getCommonSuccess(array $data): string
@@ -248,22 +249,24 @@ class FeedbackModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param SiteResponse $response
+     * @param  SiteResponse $response
      * @return string
      */
     private function getAddingForm(SiteResponse $response): string
     {
         $response->getContent()->getHead()->addTitleElement('Добавить объект (музей, гостиницу, кафе и др.)');
 
-        return $this->templateEngine->getContent('feedback/point_add_form_page.tpl', [
+        return $this->templateEngine->getContent(
+            'feedback/point_add_form_page.tpl', [
             'recaptcha_key' => $this->getReCaptcha()->getKey(),
-        ]);
+            ]
+        );
     }
 
     /**
-     * @param $title
-     * @param $descr
-     * @param $region
+     * @param  $title
+     * @param  $descr
+     * @param  $region
      * @return string
      */
     private function getAddingSuccess($title, $descr, $region): string

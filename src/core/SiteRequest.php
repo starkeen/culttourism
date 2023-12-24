@@ -23,30 +23,35 @@ class SiteRequest
 
     /**
      * Домен сайта в запросе
+     *
      * @var string|null
      */
     private $hostId;
 
     /**
      * Идентификатор корневого раздела (модуля)
+     *
      * @var string|null
      */
     private $moduleId;
 
     /**
      * Идентификатор страницы внутри раздела - первый уровень
+     *
      * @var string|null
      */
     private $level1;
 
     /**
      * Идентификатор страницы внутри раздела - второй уровень
+     *
      * @var string|null
      */
     private $level2;
 
     /**
      * Идентификатор страницы внутри раздела - третий уровень
+     *
      * @var string|null
      */
     private $level3;
@@ -157,7 +162,7 @@ class SiteRequest
     }
 
     /**
-     * @param string $name
+     * @param  string $name
      * @return string|null
      */
     public function getGETParam(string $name): ?string
@@ -174,7 +179,7 @@ class SiteRequest
     }
 
     /**
-     * @param string $name
+     * @param  string $name
      * @return string|null
      */
     public function getHeader(string $name): ?string
@@ -196,6 +201,7 @@ class SiteRequest
 
     /**
      * Сделан ли запрос через HTTPS
+     *
      * @return bool
      */
     public function isSSL(): bool
@@ -205,6 +211,7 @@ class SiteRequest
 
     /**
      * Определяет POST-запрос
+     *
      * @return bool
      */
     public function isPost(): bool
@@ -214,7 +221,8 @@ class SiteRequest
 
     /**
      * Возвращает параметр POST-запроса по имени
-     * @param string $name
+     *
+     * @param  string $name
      * @return int|string|bool|null
      */
     public function getPostParameter(string $name)

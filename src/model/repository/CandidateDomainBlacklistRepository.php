@@ -49,9 +49,11 @@ class CandidateDomainBlacklistRepository extends Repository
         $this->getDb()->sql = "INSERT INTO $table
                           SET domain = :domain, weight = 1, created_at = NOW(), last_at = NOW(), active = 0
                           ON DUPLICATE KEY UPDATE weight = weight+1, last_at = NOW()";
-        $this->getDb()->execute([
+        $this->getDb()->execute(
+            [
             ':domain' => $domain,
-        ]);
+            ]
+        );
     }
 
     public function getEntityByDomain(?string $domain): ?CandidateBlockedDomain

@@ -23,7 +23,7 @@ class WordstatRepository
     }
 
     /**
-     * @param string $name
+     * @param  string $name
      * @return Wordstat|null
      */
     public function getDataByCityName(string $name): ?Wordstat

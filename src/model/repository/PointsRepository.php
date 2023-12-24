@@ -9,7 +9,7 @@ use app\model\entity\Point;
 class PointsRepository extends Repository
 {
     /**
-     * @param int $id
+     * @param  int $id
      * @return Point|null
      */
     public function getItemByPk(int $id): ?Point

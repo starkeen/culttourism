@@ -26,8 +26,8 @@ class BlogRepository
     }
 
     /**
-     * @param int $count
-     * @param bool $withHidden
+     * @param  int  $count
+     * @param  bool $withHidden
      * @return BlogEntry[]
      */
     public function getLastEntries(int $count, bool $withHidden): array
@@ -54,10 +54,14 @@ class BlogRepository
 
         while ($row = $this->db->fetch()) {
             $entry = new BlogEntry($row);
-            $entry->setOwner(new User([
-                'us_id' => $row['br_us_id'],
-                'us_name' => $row['us_name'],
-            ]));
+            $entry->setOwner(
+                new User(
+                    [
+                    'us_id' => $row['br_us_id'],
+                    'us_name' => $row['us_name'],
+                    ]
+                )
+            );
             $result[] = $entry;
         }
 
@@ -65,9 +69,9 @@ class BlogRepository
     }
 
     /**
-     * @param string $key
-     * @param int $month
-     * @param int $year
+     * @param  string $key
+     * @param  int    $month
+     * @param  int    $year
      * @return BlogEntry|null
      */
     public function getItem(string $key, int $month, int $year): ?BlogEntry
@@ -94,10 +98,14 @@ class BlogRepository
             $row = $this->db->fetch();
             if ($row !== null) {
                 $result = new BlogEntry($row);
-                $result->setOwner(new User([
-                    'us_id' => $row['br_us_id'],
-                    'us_name' => $row['us_name'],
-                ]));
+                $result->setOwner(
+                    new User(
+                        [
+                        'us_id' => $row['br_us_id'],
+                        'us_name' => $row['us_name'],
+                        ]
+                    )
+                );
             }
         }
 
@@ -105,7 +113,7 @@ class BlogRepository
     }
 
     /**
-     * @param int $id
+     * @param  int $id
      * @return BlogEntry|null
      */
     public function getItemByPk(int $id): ?BlogEntry
@@ -127,10 +135,14 @@ class BlogRepository
             $row = $this->db->fetch();
             if ($row !== null) {
                 $result = new BlogEntry($row);
-                $result->setOwner(new User([
-                    'us_id' => $row['br_us_id'],
-                    'us_name' => $row['us_name'],
-                ]));
+                $result->setOwner(
+                    new User(
+                        [
+                        'us_id' => $row['br_us_id'],
+                        'us_name' => $row['us_name'],
+                        ]
+                    )
+                );
             }
         }
 
@@ -155,7 +167,7 @@ class BlogRepository
     }
 
     /**
-     * @param BlogEntry $entry
+     * @param  BlogEntry $entry
      * @return int|null
      */
     public function save(BlogEntry $entry): ?int
@@ -196,8 +208,8 @@ class BlogRepository
     }
 
     /**
-     * @param int $year
-     * @param int|null $month
+     * @param  int      $year
+     * @param  int|null $month
      * @return array
      */
     public function getCalendarItems(int $year, int $month = null): array
@@ -223,10 +235,14 @@ class BlogRepository
 
         while ($row = $this->db->fetch()) {
             $entry = new BlogEntry($row);
-            $entry->setOwner(new User([
-                'us_id' => $row['br_us_id'],
-                'us_name' => $row['us_name'],
-            ]));
+            $entry->setOwner(
+                new User(
+                    [
+                    'us_id' => $row['br_us_id'],
+                    'us_name' => $row['us_name'],
+                    ]
+                )
+            );
 
             $month = $entry->getMonthNumber();
             $result[$month][] = $entry;

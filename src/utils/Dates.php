@@ -11,7 +11,7 @@ class Dates
     /**
      * приводит дату к виду "2008-02-15" из нормального 15.02.2008
      *
-     * @param string $date
+     * @param  string $date
      * @return string|null
      */
     public static function normalToSQL(string $date): ?string

@@ -35,11 +35,11 @@ class SearchModule extends Module implements ModuleInterface
     private YandexSearchService $searchService;
 
     /**
-     * @param MyDB $db
+     * @param MyDB           $db
      * @param TemplateEngine $templateEngine
-     * @param WebUser $webUser
-     * @param GlobalConfig $globalConfig
-     * @param Logger $logger
+     * @param WebUser        $webUser
+     * @param GlobalConfig   $globalConfig
+     * @param Logger         $logger
      */
     public function __construct(
         MyDB $db,
@@ -56,7 +56,7 @@ class SearchModule extends Module implements ModuleInterface
 
     /**
      * @inheritDoc
-     * @throws NotFoundException
+     * @throws     NotFoundException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
@@ -180,7 +180,7 @@ class SearchModule extends Module implements ModuleInterface
                 $correctionInfo = $result->getCorrection();
                 if ($correctionInfo !== null) {
                     $resultMeta['text_source'] = str_replace(
-                        self::SEARCH_POSTFIX ,
+                        self::SEARCH_POSTFIX,
                         '',
                         $correctionInfo->getSourceText()
                     );
@@ -212,7 +212,7 @@ class SearchModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param SearchResponse $searchResult
+     * @param  SearchResponse $searchResult
      * @return array
      */
     private function makeResults(SearchResponse $searchResult): array
@@ -251,7 +251,7 @@ class SearchModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param string $raw
+     * @param  string $raw
      * @return string
      */
     private function getCleanedQuery(string $raw): string

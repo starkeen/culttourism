@@ -10,7 +10,8 @@ class RedirectException extends LogicApplicationException
 
     /**
      * Исключение с перехватом в редирект
-     * @param string $target
+     *
+     * @param string   $target
      * @param int|null $code
      */
     public function __construct(string $target, int $code = 301)

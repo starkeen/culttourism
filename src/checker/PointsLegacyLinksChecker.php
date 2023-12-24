@@ -92,7 +92,7 @@ class PointsLegacyLinksChecker
     ];
 
     /**
-     * @param int $objectId
+     * @param  int $objectId
      * @return bool
      */
     public static function isLegacyRedirectEnabled(int $objectId): bool

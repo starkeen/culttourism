@@ -14,7 +14,7 @@ class ApiModule extends Module implements ModuleInterface
 {
     /**
      * @inheritDoc
-     * @throws NotFoundException
+     * @throws     NotFoundException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
@@ -118,7 +118,7 @@ class ApiModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param $id
+     * @param  $id
      * @return false|string
      */
     private function getApi2($id)
@@ -145,7 +145,7 @@ class ApiModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param $center
+     * @param  $center
      * @return mixed
      */
     private function getApi3($center)
@@ -268,10 +268,10 @@ class ApiModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param float $lat1
-     * @param float $lon1
-     * @param float $lat2
-     * @param float $lon2
+     * @param  float $lat1
+     * @param  float $lon1
+     * @param  float $lat2
+     * @param  float $lon2
      * @return float
      */
     private function calcGeodesicLine(float $lat1, float $lon1, float $lat2, float $lon2): float

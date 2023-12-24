@@ -31,8 +31,8 @@ class PointsModule implements ModuleInterface
 
     /**
      * @inheritDoc
-     * @throws NotFoundException
-     * @throws AccessDeniedException
+     * @throws     NotFoundException
+     * @throws     AccessDeniedException
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {
@@ -72,9 +72,9 @@ class PointsModule implements ModuleInterface
     }
 
     /**
-     * @param int $pointId
-     * @param SiteRequest $request
-     * @param SiteResponse $response
+     * @param  int          $pointId
+     * @param  SiteRequest  $request
+     * @param  SiteResponse $response
      * @throws NotFoundException
      */
     private function saveContacts(int $pointId, SiteRequest $request,  SiteResponse $response): void
@@ -115,9 +115,9 @@ class PointsModule implements ModuleInterface
     }
 
     /**
-     * @param int $pointId
-     * @param SiteRequest $request
-     * @param SiteResponse $response
+     * @param  int          $pointId
+     * @param  SiteRequest  $request
+     * @param  SiteResponse $response
      * @throws NotFoundException
      */
     private function saveTitle(int $pointId, SiteRequest $request,  SiteResponse $response): void
@@ -142,16 +142,18 @@ class PointsModule implements ModuleInterface
 
         $point = $repository->getItemByPk($pointId);
 
-        $response->getContent()->setJson([
+        $response->getContent()->setJson(
+            [
             'id' => $point->getId(),
             'title' => $point->pt_name,
-        ]);
+            ]
+        );
     }
 
     /**
-     * @param int $pointId
-     * @param SiteRequest $request
-     * @param SiteResponse $response
+     * @param  int          $pointId
+     * @param  SiteRequest  $request
+     * @param  SiteResponse $response
      * @throws NotFoundException
      */
     private function saveDescription(int $pointId, SiteRequest $request,  SiteResponse $response): void
@@ -176,10 +178,12 @@ class PointsModule implements ModuleInterface
 
         $point = $repository->getItemByPk($pointId);
 
-        $response->getContent()->setJson([
+        $response->getContent()->setJson(
+            [
             'id' => $point->getId(),
             'description' => $point->pt_description,
-        ]);
+            ]
+        );
     }
 
     /**

@@ -36,6 +36,7 @@ abstract class Module
 
     /**
      * Обработка запроса
+     *
      * @param SiteRequest  $request
      * @param SiteResponse $response
      */
@@ -47,7 +48,7 @@ abstract class Module
     abstract protected function getModuleKey(): string;
 
     /**
-     * @param SiteResponse $response
+     * @param  SiteResponse $response
      * @throws RedirectException
      */
     protected function preProcess(SiteResponse $response): void
@@ -97,8 +98,9 @@ abstract class Module
 
     /**
      * Обработка запроса
-     * @param SiteRequest $request
-     * @param SiteResponse $response
+     *
+     * @param  SiteRequest  $request
+     * @param  SiteResponse $response
      * @throws RedirectException
      */
     public function handle(SiteRequest $request, SiteResponse $response): void

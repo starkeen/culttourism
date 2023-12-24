@@ -107,12 +107,14 @@ class WebApplication extends Application
             $this->getTemplateEngine()->assign('suggestions', []);
             $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(GLOBAL_DIR_TEMPLATES . '/_errors/er404.tpl'));
         } catch (AccessDeniedException $exception) {
-            $this->getLogger()->notice('Ошибка 403', [
+            $this->getLogger()->notice(
+                'Ошибка 403', [
                 'srv' => $_SERVER ?? [],
                 'trace' => $exception->getTrace(),
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
-            ]);
+                ]
+            );
 
             $this->getSiteResponse()->getHeaders()->add('HTTP/1.1 403 Forbidden');
 
@@ -206,10 +208,12 @@ class WebApplication extends Application
             return;
         }
 
-        $this->getLogger()->notice('Ошибка 404', [
+        $this->getLogger()->notice(
+            'Ошибка 404', [
             'srv' => $_SERVER ?? [],
             'trace' => $exception->getTrace(),
-        ]);
+            ]
+        );
     }
 
     private function getSessionStorage(): SessionStorage
@@ -294,7 +298,7 @@ class WebApplication extends Application
             new AjaxModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser()),
             new MapModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new ListModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
-            new PointsModule($this->getDb(),$this->getWebUser()),
+            new PointsModule($this->getDb(), $this->getWebUser()),
             new CityModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
             new PictureModule($this->getDb(), $this->getWebUser()),
             new SearchModule(

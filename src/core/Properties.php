@@ -8,6 +8,7 @@ use app\core\exception\CoreException;
 
 /**
  * DTO с базовыми настройками
+ *
  * @property string $sitename
  * @property string $default_pagekeywords
  * @property string $default_pagedescription

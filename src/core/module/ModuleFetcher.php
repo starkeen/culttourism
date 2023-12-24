@@ -22,7 +22,7 @@ class ModuleFetcher
     }
 
     /**
-     * @param SiteRequest $request
+     * @param  SiteRequest $request
      * @return ModuleInterface
      */
     public function getModule(SiteRequest $request): ModuleInterface

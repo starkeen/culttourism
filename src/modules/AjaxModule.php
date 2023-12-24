@@ -39,8 +39,8 @@ class AjaxModule implements ModuleInterface
 
     /**
      * @inheritDoc
-     * @throws AccessDeniedException
-     * @throws NotFoundException
+     * @throws     AccessDeniedException
+     * @throws     NotFoundException
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {
@@ -115,7 +115,8 @@ class AjaxModule implements ModuleInterface
      * /
 
     /**
-     * @param int $pid
+     *
+     * @param  int $pid
      * @return int
      * @throws AccessDeniedException
      */
@@ -134,7 +135,7 @@ class AjaxModule implements ModuleInterface
     }
 
     /**
-     * @param int $pid
+     * @param  int $pid
      * @return bool
      * @throws AccessDeniedException
      */
@@ -150,7 +151,7 @@ class AjaxModule implements ModuleInterface
     }
 
     /**
-     * @param int $pid
+     * @param  int $pid
      * @return null|string
      * @throws AccessDeniedException
      */
@@ -191,7 +192,7 @@ class AjaxModule implements ModuleInterface
     }
 
     /**
-     * @param int $pid
+     * @param  int $pid
      * @return string
      */
     private function getFormPointGPS(int $pid): string
@@ -251,7 +252,7 @@ class AjaxModule implements ModuleInterface
     }
 
     /**
-     * @param int $pid
+     * @param  int $pid
      * @return string
      * @throws AccessDeniedException
      */
@@ -281,7 +282,7 @@ class AjaxModule implements ModuleInterface
     }
 
     /**
-     * @param int $id
+     * @param  int $id
      * @return string
      * @throws AccessDeniedException
      */
@@ -304,7 +305,7 @@ class AjaxModule implements ModuleInterface
     }
 
     /**
-     * @param int $pid
+     * @param  int $pid
      * @return null|int
      * @throws NotFoundException
      * @throws AccessDeniedException
@@ -334,7 +335,7 @@ class AjaxModule implements ModuleInterface
     }
 
     /**
-     * @param int $cid
+     * @param  int $cid
      * @return int
      * @throws NotFoundException
      * @throws AccessDeniedException
@@ -369,7 +370,7 @@ class AjaxModule implements ModuleInterface
     }
 
     /**
-     * @param int $id
+     * @param  int $id
      * @return string
      * @throws NotFoundException
      */
@@ -402,7 +403,7 @@ class AjaxModule implements ModuleInterface
     }
 
     /**
-     * @param string $slugLine
+     * @param  string $slugLine
      * @return string
      * @throws NotFoundException
      */
@@ -435,7 +436,8 @@ class AjaxModule implements ModuleInterface
 
     /**
      * -------------------------------------------------------------- CITY ----------
-     * @param int $cid
+     *
+     * @param  int $cid
      * @return bool|null
      * @throws AccessDeniedException
      */
@@ -462,7 +464,7 @@ class AjaxModule implements ModuleInterface
     }
 
     /**
-     * @param int $cid
+     * @param  int $cid
      * @return string
      */
     private function getFormCityGPS(int $cid): string
@@ -488,7 +490,7 @@ class AjaxModule implements ModuleInterface
     }
 
     /**
-     * @param int $id
+     * @param  int $id
      * @return string
      * @throws NotFoundException
      * @throws AccessDeniedException
@@ -523,7 +525,7 @@ class AjaxModule implements ModuleInterface
     }
 
     /**
-     * @param int $id
+     * @param  int $id
      * @return string
      * @throws NotFoundException
      * @throws AccessDeniedException

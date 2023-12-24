@@ -28,8 +28,8 @@ class PlainClient implements HttpClientInterface
 
     /**
      * @param ClientInterface $client
-     * @param string $key
-     * @param string $cx
+     * @param string          $key
+     * @param string          $cx
      */
     public function __construct(ClientInterface $client, string $key, string $cx)
     {

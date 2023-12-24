@@ -1,6 +1,8 @@
 <?php
 
-/** @noinspection PhpMultipleClassDeclarationsInspection */
+/**
+ * @noinspection PhpMultipleClassDeclarationsInspection 
+ */
 
 declare(strict_types=1);
 
@@ -143,8 +145,7 @@ class CheckUrlsCommand extends AbstractCrontabCommand
      */
     private function getCookieFilePath(string $url): string
     {
-        if (
-            !file_exists(self::COOKIES_PATH)
+        if (!file_exists(self::COOKIES_PATH)
             && !mkdir(self::COOKIES_PATH, 0700, true)
             && !is_dir(self::COOKIES_PATH)
         ) {
