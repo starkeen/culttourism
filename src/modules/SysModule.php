@@ -17,8 +17,8 @@ class SysModule implements ModuleInterface
 {
     /**
      * @inheritDoc
-     * @throws NotFoundException
-     * @throws RedirectException
+     * @throws     NotFoundException
+     * @throws     RedirectException
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {
@@ -30,8 +30,7 @@ class SysModule implements ModuleInterface
             throw new RedirectException('/');
         }
 
-        if (
-            $request->getLevel1() === 'static'
+        if ($request->getLevel1() === 'static'
             && $request->getGETParam('type') !== null
             && $request->getGETParam('pack') !== null
         ) {

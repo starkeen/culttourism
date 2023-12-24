@@ -12,7 +12,7 @@ class Logging
     /**
      * @param string $module
      * @param string $action
-     * @param array $data
+     * @param array  $data
      *
      * @return bool
      */

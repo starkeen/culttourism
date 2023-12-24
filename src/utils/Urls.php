@@ -8,6 +8,7 @@ class Urls
 {
     /**
      * Из относительного пути делаем абсолютный
+     *
      * @param string $path
      *
      * @return string

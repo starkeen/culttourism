@@ -30,7 +30,7 @@ class GoogleSearch
 
     /**
      * @param string $query
-     * @param int $page
+     * @param int    $page
      *
      * @return Result
      * @throws SearchException

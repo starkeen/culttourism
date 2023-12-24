@@ -70,7 +70,7 @@ abstract class Repository
     }
 
     /**
-     * @param Entity $entity
+     * @param  Entity $entity
      * @return array - два элемента - тело SQL-запроса и набор данных для него
      */
     private function getSQLSetWithBinds(Entity $entity): array

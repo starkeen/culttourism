@@ -44,10 +44,10 @@ class DefaultModule implements ModuleInterface
     private WebUser $user;
 
     /**
-     * @param MyDB $db
+     * @param MyDB           $db
      * @param TemplateEngine $templateEngine
-     * @param WebUser $user
-     * @param GlobalConfig $globalConfig
+     * @param WebUser        $user
+     * @param GlobalConfig   $globalConfig
      */
     public function __construct(MyDB $db, TemplateEngine $templateEngine, WebUser $user, GlobalConfig $globalConfig)
     {
@@ -59,8 +59,8 @@ class DefaultModule implements ModuleInterface
 
     /**
      * @inheritDoc
-     * @throws NotFoundException
-     * @throws RedirectException
+     * @throws     NotFoundException
+     * @throws     RedirectException
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {
@@ -80,8 +80,8 @@ class DefaultModule implements ModuleInterface
     }
 
     /**
-     * @param SiteRequest $request
-     * @param SiteResponse $response
+     * @param  SiteRequest  $request
+     * @param  SiteResponse $response
      * @throws NotFoundException
      * @throws RedirectException
      */
@@ -121,7 +121,7 @@ class DefaultModule implements ModuleInterface
     }
 
     /**
-     * @param int $id
+     * @param  int $id
      * @return string|null
      */
     private function getObjectCanonicalById(int $id): ?string
@@ -134,8 +134,8 @@ class DefaultModule implements ModuleInterface
     }
 
     /**
-     * @param string $slugLine
-     * @param SiteResponse $response
+     * @param  string       $slugLine
+     * @param  SiteResponse $response
      * @return string
      * @throws NotFoundException
      * @throws RedirectException
@@ -170,8 +170,8 @@ class DefaultModule implements ModuleInterface
             $object_lat_short = round($object['pt_latitude'], 5);
             $object_lon_short = round($object['pt_longitude'], 5);
             $object['gps_dec'] = (($object_lat_short >= 0) ? 'N' : 'S') . abs(
-                    $object_lat_short
-                ) . ' ' . (($object_lon_short >= 0) ? 'E' : 'W') . abs($object_lon_short);
+                $object_lat_short
+            ) . ' ' . (($object_lon_short >= 0) ? 'E' : 'W') . abs($object_lon_short);
             $object['sw_ne_delta'] = 0.01;
             $object['sw_ne'] = [
                 'sw' => [
@@ -204,11 +204,13 @@ class DefaultModule implements ModuleInterface
         $response->getContent()->getHead()->addMainMicroData('@type', 'Place');
         $response->getContent()->getHead()->addMainMicroData('name', $object['esc_name']);
         $response->getContent()->getHead()->addMainMicroData('description', $short);
-        $response->getContent()->getHead()->addMainMicroData('address', [
+        $response->getContent()->getHead()->addMainMicroData(
+            'address', [
             '@type' => 'PostalAddress',
             'addressLocality' => $city['pc_title'],
             'streetAddress' => $object['pt_adress'],
-        ]);
+            ]
+        );
 
         if ($object['tr_sight']) {
             $response->getContent()->getHead()->addDescription('Достопримечательности ' . $city['pc_inwheretext']);
@@ -280,8 +282,8 @@ class DefaultModule implements ModuleInterface
     }
 
     /**
-     * @param string $url
-     * @param SiteResponse $response
+     * @param  string       $url
+     * @param  SiteResponse $response
      * @return string
      * @throws NotFoundException
      * @throws RedirectException
@@ -379,7 +381,7 @@ class DefaultModule implements ModuleInterface
     }
 
     /**
-     * @param string $url
+     * @param  string $url
      * @throws RedirectException
      */
     private function redirectToCityMap(string $url): void

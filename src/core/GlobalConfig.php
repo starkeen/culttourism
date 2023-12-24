@@ -36,7 +36,7 @@ class GlobalConfig
 
     /**
      * @deprecated
-     * @return array
+     * @return     array
      */
     public function getJsResources(): array
     {

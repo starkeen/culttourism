@@ -30,7 +30,7 @@ class Headers
     }
 
     /**
-     * @param string $location
+     * @param string    $location
      * @param bool|null $terminate
      */
     public function sendRedirect(string $location, bool $terminate = false): void

@@ -82,7 +82,7 @@ class WeatherData
         $this->rawData = $raw;
         $this->parsed = false;
     }
-    
+
     private function parse(): void
     {
         if (!$this->parsed) {
@@ -111,6 +111,7 @@ class WeatherData
     public function getCityName(): string
     {
         $this->parse();
+
         return $this->cityName;
     }
 
@@ -120,18 +121,21 @@ class WeatherData
     public function getIcon(): string
     {
         $this->parse();
+
         return $this->weatherIcon;
     }
 
     /**
      * Температура со знаком
+     *
      * @return string
      */
     public function getTemperature(): string
     {
         $this->parse();
-        $result = null;
-        if ($this->temperatureMin !== null
+
+        if (
+            $this->temperatureMin !== null
             && $this->temperatureMax !== null
             && $this->temperatureMin !== $this->temperatureMax
         ) {
@@ -149,6 +153,7 @@ class WeatherData
     public function getPressure(): string
     {
         $this->parse();
+
         return $this->pressure . ' кПа';
     }
 
@@ -158,24 +163,28 @@ class WeatherData
     public function getHumidity(): string
     {
         $this->parse();
+
         return $this->humidity . '%';
     }
 
     public function getWindDescription(): string
     {
         $this->parse();
+
         return sprintf('%s&nbsp;%d&nbsp;м/с', $this->getWindDirection($this->windDirection), (int) round($this->windSpeed));
     }
 
     public function getWeatherText(): string
     {
         $this->parse();
+
         return self::CODES[$this->weatherId] ?? $this->weatherMain;
     }
 
     public function getWeatherDescription(): string
     {
         $this->parse();
+
         return $this->weatherDescription . ', по ощущениям ' . $this->formatTemperature($this->temperatureFeels) . '&deg;C';
     }
 

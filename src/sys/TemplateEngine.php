@@ -29,10 +29,10 @@ class TemplateEngine
     }
 
     /**
-     * @param null $template
-     * @param null $cache_id
-     * @param null $compile_id
-     * @param null $parent
+     * @param  null $template
+     * @param  null $cache_id
+     * @param  null $compile_id
+     * @param  null $parent
      * @return string
      */
     public function fetch($template = null, $cache_id = null, $compile_id = null, $parent = null): string
@@ -41,9 +41,9 @@ class TemplateEngine
     }
 
     /**
-     * @param array|string $tpl_var
-     * @param null $value
-     * @param false $nocache
+     * @param  array|string $tpl_var
+     * @param  null         $value
+     * @param  false        $nocache
      * @return TemplateEngine|Smarty
      */
     public function assign($tpl_var, $value = null, $nocache = false)
@@ -83,8 +83,8 @@ class TemplateEngine
     }
 
     /**
-     * @param string $template
-     * @param array $data
+     * @param  string $template
+     * @param  array  $data
      * @return string
      */
     public function getContent(string $template, array $data = []): string
@@ -96,7 +96,7 @@ class TemplateEngine
 
     /**
      * @param string $template
-     * @param array $data
+     * @param array  $data
      */
     public function displayPage(string $template, array $data = []): void
     {

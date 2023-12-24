@@ -47,7 +47,7 @@ class MapModule implements ModuleInterface
 
     /**
      * @inheritDoc
-     * @throws NotFoundException
+     * @throws     NotFoundException
      */
     public function handle(SiteRequest $request, SiteResponse $response): void
     {
@@ -168,7 +168,7 @@ class MapModule implements ModuleInterface
     }
 
     /**
-     * @param $cid
+     * @param  $cid
      * @throws NotFoundException
      */
     private function getYMapsMLRegion($cid): void
@@ -269,7 +269,7 @@ class MapModule implements ModuleInterface
     }
 
     /**
-     * @param $cid
+     * @param  $cid
      * @throws NotFoundException
      */
     private function showCityPointsGPX($cid): void
@@ -303,8 +303,8 @@ class MapModule implements ModuleInterface
     }
 
     /**
-     * @param string $longDescription
-     * @param int $size
+     * @param  string $longDescription
+     * @param  int    $size
      * @return string
      */
     private function getShortDescription(string $longDescription, int $size): string

@@ -7,7 +7,9 @@ namespace app\rss;
  */
 class RSSAddUTM extends RSSComponent
 {
-    /** @var string */
+    /**
+     * @var string 
+     */
     public $rootUrl;
 
     protected $utm = [
@@ -25,7 +27,7 @@ class RSSAddUTM extends RSSComponent
     }
 
     /**
-     * @param array $data
+     * @param  array $data
      * @return string
      */
     public function process(array $data): string
@@ -33,13 +35,15 @@ class RSSAddUTM extends RSSComponent
         $pattern = sprintf('#(.*)href="(%s.*)"(.*)#uUi', $this->getRootUrl());
 
         foreach($data as $i => $item) {
-            $text = preg_replace_callback($pattern, function ($matches) use ($item) {
-                $linkOld = $matches[2];
-                $utmContent = date('Ymd', strtotime($item['br_date']));
-                $linkNew = $this->addUTM($linkOld, $utmContent);
+            $text = preg_replace_callback(
+                $pattern, function ($matches) use ($item) {
+                    $linkOld = $matches[2];
+                    $utmContent = date('Ymd', strtotime($item['br_date']));
+                    $linkNew = $this->addUTM($linkOld, $utmContent);
 
-                return str_replace($linkOld, $linkNew, $matches[0]);
-            }, $item['br_text_absolute']);
+                    return str_replace($linkOld, $linkNew, $matches[0]);
+                }, $item['br_text_absolute']
+            );
 
             $data[$i]['br_text_absolute'] = $text;
         }
@@ -48,7 +52,7 @@ class RSSAddUTM extends RSSComponent
     }
 
     /**
-     * @param string $link
+     * @param string      $link
      * @param string|null $content
      *
      * @return string

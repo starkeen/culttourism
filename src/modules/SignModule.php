@@ -19,8 +19,8 @@ class SignModule extends Module implements ModuleInterface
 
     /**
      * @inheritDoc
-     * @throws RedirectException
-     * @throws NotFoundException
+     * @throws     RedirectException
+     * @throws     NotFoundException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
@@ -69,14 +69,17 @@ class SignModule extends Module implements ModuleInterface
             $uniqueKey = $_SESSION[self::COOKIE_KEY];
         }
 
-        return $this->templateEngine->getContent('sign/in.tpl', [
+        return $this->templateEngine->getContent(
+            'sign/in.tpl', [
             'key' => $uniqueKey,
             'url' => GLOBAL_SITE_URL,
-        ]);
+            ]
+        );
     }
 
     /**
      * Форма регистрации
+     *
      * @return string
      */
     private function getUp(): string
@@ -100,7 +103,7 @@ class SignModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param string $key
+     * @param  string $key
      * @throws RedirectException
      */
     private function doCheck(string $key): void

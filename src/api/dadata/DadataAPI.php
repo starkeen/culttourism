@@ -140,7 +140,7 @@ class DadataAPI
 
     /**
      * @param string $type
-     * @param mixed $response
+     * @param mixed  $response
      *
      * @return array
      */

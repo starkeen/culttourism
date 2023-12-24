@@ -23,7 +23,7 @@ class Parser
             throw new InvalidArgumentException('Не передан URL');
         }
 
-        $sites = require_once GLOBAL_DIR_ROOT . '/config/config.parser.php';
+        $sites = include_once GLOBAL_DIR_ROOT . '/config/config.parser.php';
         if ($sites === true) {
             throw new ParserException('Не найден файл конфигурации парсера');
         }
@@ -172,14 +172,14 @@ class Parser
             $out['web'] = $parts['goto'];
         }
         $out['title'] = mb_strtoupper(mb_substr($out['title'], 0, 1, 'utf-8'), 'utf-8') . mb_substr(
+            $out['title'],
+            1,
+            mb_strlen(
                 $out['title'],
-                1,
-                mb_strlen(
-                    $out['title'],
-                    'utf-8'
-                ) - 1,
                 'utf-8'
-            );
+            ) - 1,
+            'utf-8'
+        );
         $out['text'] = nl2br(strip_tags(html_entity_decode($out['text'], ENT_QUOTES, 'utf-8')));
         if ($out['geo_latlon'] && mb_strpos($out['geo_latlon'], ',') !== false) {
             $latlon = explode(',', $out['geo_latlon']);
@@ -222,7 +222,7 @@ class Parser
     }
 
     /**
-     * @param string $string
+     * @param  string $string
      * @return string
      */
     protected function cleanXML(string $string): string

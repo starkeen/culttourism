@@ -18,7 +18,7 @@ class ListModule extends Module implements ModuleInterface
 {
     /**
      * @inheritDoc
-     * @throws NotFoundException
+     * @throws     NotFoundException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
@@ -62,8 +62,8 @@ class ListModule extends Module implements ModuleInterface
     }
 
     /**
-     * @param string $slug
-     * @param SiteResponse $response
+     * @param  string       $slug
+     * @param  SiteResponse $response
      * @throws NotFoundException
      */
     private function prepareListBySlug(string $slug, SiteResponse $response): void

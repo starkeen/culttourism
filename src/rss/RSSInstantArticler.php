@@ -11,7 +11,7 @@ class RSSInstantArticler extends RSSComponent
     const REPLACE = '$2';
 
     /**
-     * @param array $data
+     * @param  array $data
      * @return string
      */
     public function process(array $data): string

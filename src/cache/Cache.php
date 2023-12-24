@@ -16,10 +16,14 @@ class Cache
      */
     protected static array $instances = [];
 
-    /** @var string */
+    /**
+     * @var string 
+     */
     private $cacheDir;
 
-    /** @var mixed */
+    /**
+     * @var mixed 
+     */
     private $cacheCurrent;
 
     private function __construct(string $cacheId)
@@ -75,7 +79,7 @@ class Cache
      * Записываем данные в кэш
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return bool
      */

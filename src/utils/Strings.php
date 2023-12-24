@@ -77,8 +77,11 @@ class Strings
 
     /**
      * Функция возвращает транслит строки
-     * @param string $text Строка, подлежащая транслитерации
-     * @param string $space Строка-заменитель пробелов
+     *
+     * @param  string $text  Строка,
+     *                       подлежащая
+     *                       транслитерации
+     * @param  string $space Строка-заменитель пробелов
      * @return string
      */
     public static function getTransliteration(string $text, string $space = ' '): string

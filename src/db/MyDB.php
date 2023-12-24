@@ -89,10 +89,10 @@ class MyDB
     private $time;
 
     /**
-     * @param string $dbHost
-     * @param string $dbUser
-     * @param string $dbPwd
-     * @param string $dbBase
+     * @param string      $dbHost
+     * @param string      $dbUser
+     * @param string      $dbPwd
+     * @param string      $dbBase
      * @param string|null $dbPrefix
      */
     public function __construct(string $dbHost, string $dbUser, string $dbPwd, string $dbBase, string $dbPrefix = null)
@@ -176,7 +176,7 @@ class MyDB
      * Привязываем параметры по одному
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function bind(string $key, $value): void
     {
@@ -185,7 +185,8 @@ class MyDB
 
     /**
      * Выполняем PDO::execute
-     * @param array $params
+     *
+     * @param  array $params
      * @return PDOStatement
      * @throws DuplicateKeyException
      * @throws MyPDOException
@@ -364,7 +365,7 @@ class MyDB
     }
 
     /**
-     * @param string $name
+     * @param string               $name
      * @param string|int|bool|null $value
      */
     public function __set(string $name, $value)

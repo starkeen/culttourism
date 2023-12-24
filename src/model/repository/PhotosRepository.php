@@ -19,7 +19,7 @@ class PhotosRepository extends Repository
     }
 
     /**
-     * @param int $id
+     * @param  int $id
      * @return Photo|null
      */
     public function getItemByPk(int $id): ?Photo

@@ -7,7 +7,7 @@ namespace app\core;
 class CookieStorage
 {
     /**
-     * @param string $name
+     * @param  string $name
      * @return string|null
      */
     public function getCookieValue(string $name): ?string
@@ -22,7 +22,7 @@ class CookieStorage
     /**
      * @param string $name
      * @param string $value
-     * @param int $lifeTime
+     * @param int    $lifeTime
      */
     public function setCookie(string $name, string $value, int $lifeTime): void
     {

@@ -14,7 +14,7 @@ class AboutModule extends Module implements ModuleInterface
 {
     /**
      * @inheritDoc
-     * @throws NotFoundException
+     * @throws     NotFoundException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {

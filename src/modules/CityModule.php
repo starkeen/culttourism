@@ -44,9 +44,9 @@ class CityModule extends Module implements ModuleInterface
 
     /**
      * @inheritDoc
-     * @throws NotFoundException
-     * @throws AccessDeniedException
-     * @throws RedirectException
+     * @throws     NotFoundException
+     * @throws     AccessDeniedException
+     * @throws     RedirectException
      */
     protected function process(SiteRequest $request, SiteResponse $response): void
     {
@@ -83,7 +83,8 @@ class CityModule extends Module implements ModuleInterface
     }
 
     /**
-     **************************************  БЛОК  ПОГОДЫ  *****************
+     * *************************************  БЛОК  ПОГОДЫ  *****************
+     *
      * @param float $lat
      * @param float $lon
      */
@@ -91,20 +92,23 @@ class CityModule extends Module implements ModuleInterface
     {
         $out = ['state' => false, 'content' => '', 'color' => ''];
 
-       $weatherData = $this->getWeatherService()->getWeatherByCoordinates($lat, $lon);
+        $weatherData = $this->getWeatherService()->getWeatherByCoordinates($lat, $lon);
 
         if ($weatherData !== null) {
             $out['state'] = true;
-            $out['content'] = $this->templateEngine->getContent('city/weather.block.tpl', [
+            $out['content'] = $this->templateEngine->getContent(
+                'city/weather.block.tpl', [
                 'weatherData' => $weatherData,
-            ]);
+                ]
+            );
         }
 
         JSON::echo($out);
     }
 
     /**
-     **************************************  ТАБЛИЦА МЕТА  *****************
+     * *************************************  ТАБЛИЦА МЕТА  *****************
+     *
      * @throws AccessDeniedException
      * @throws NotFoundException
      */
@@ -119,83 +123,83 @@ class CityModule extends Module implements ModuleInterface
             }
             $uid = $this->webUser->getId();
             switch ($_POST['act']) {
-                case 'add':
-                    $cf_id = (int) $_POST['cf'];
-                    $value = trim($_POST['val']);
-                    $city_id = (int) $_POST['cpid'];
-                    $this->db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
-                    $this->db->execute(
-                        [
-                            ':city_id' => $city_id,
-                            ':cf_id' => $cf_id,
-                        ]
-                    );
+            case 'add':
+                $cf_id = (int) $_POST['cf'];
+                $value = trim($_POST['val']);
+                $city_id = (int) $_POST['cpid'];
+                $this->db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                $this->db->execute(
+                    [
+                        ':city_id' => $city_id,
+                        ':cf_id' => $cf_id,
+                    ]
+                );
 
-                    if ($value != '') {
-                        $this->db->sql = "INSERT INTO $dbcd SET cd_pc_id = :city_id, cd_cf_id = :cf_id, cd_value = :cd_value";
-                        $this->db->execute(
-                            [
-                                ':city_id' => $city_id,
-                                ':cf_id' => $cf_id,
-                                ':cd_value' => $value,
-                            ]
-                        );
-                    }
-                    $this->db->sql = "SELECT * FROM  $dbcf WHERE cf_id = :cf_id";
-                    $this->db->execute(
-                        [
-                            ':cf_id' => $cf_id,
-                        ]
-                    );
-                    $row = $this->db->fetch();
-                    $this->buildModelPageCities()->updateByPk(
-                        $city_id,
-                        [
-                            'pc_lastup_user' => $uid,
-                        ]
-                    );
-                    echo $row['cf_title'];
-                    break;
-                case 'del':
-                    $cf_id = (int) $_POST['cf'];
-                    $city_id = (int) $_POST['cpid'];
-                    $this->db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                if ($value != '') {
+                    $this->db->sql = "INSERT INTO $dbcd SET cd_pc_id = :city_id, cd_cf_id = :cf_id, cd_value = :cd_value";
                     $this->db->execute(
                         [
                             ':city_id' => $city_id,
                             ':cf_id' => $cf_id,
+                            ':cd_value' => $value,
                         ]
                     );
-                    $this->buildModelPageCities()->updateByPk(
-                        $city_id,
+                }
+                $this->db->sql = "SELECT * FROM  $dbcf WHERE cf_id = :cf_id";
+                $this->db->execute(
+                    [
+                        ':cf_id' => $cf_id,
+                    ]
+                );
+                $row = $this->db->fetch();
+                $this->buildModelPageCities()->updateByPk(
+                    $city_id,
+                    [
+                        'pc_lastup_user' => $uid,
+                    ]
+                );
+                echo $row['cf_title'];
+                break;
+            case 'del':
+                $cf_id = (int) $_POST['cf'];
+                $city_id = (int) $_POST['cpid'];
+                $this->db->sql = "DELETE FROM $dbcd WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                $this->db->execute(
+                    [
+                        ':city_id' => $city_id,
+                        ':cf_id' => $cf_id,
+                    ]
+                );
+                $this->buildModelPageCities()->updateByPk(
+                    $city_id,
+                    [
+                        'pc_lastup_user' => $uid,
+                    ]
+                );
+                echo 'ok';
+                break;
+            case 'edit':
+                $cf_id = (int) $_POST['cf'];
+                $city_id = (int) $_POST['cpid'];
+                $value = trim($_POST['val']);
+                if ($value != '') {
+                    $this->db->sql = "UPDATE $dbcd SET cd_value = :cd_value WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                    $this->db->execute(
                         [
-                            'pc_lastup_user' => $uid,
+                            ':city_id' => $city_id,
+                            ':cf_id' => $cf_id,
+                            ':cd_value' => $value,
                         ]
                     );
-                    echo 'ok';
-                    break;
-                case 'edit':
-                    $cf_id = (int) $_POST['cf'];
-                    $city_id = (int) $_POST['cpid'];
-                    $value = trim($_POST['val']);
-                    if ($value != '') {
-                        $this->db->sql = "UPDATE $dbcd SET cd_value = :cd_value WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
-                        $this->db->execute(
-                            [
-                                ':city_id' => $city_id,
-                                ':cf_id' => $cf_id,
-                                ':cd_value' => $value,
-                            ]
-                        );
-                    }
-                    $this->buildModelPageCities()->updateByPk(
-                        $city_id,
-                        [
-                            'pc_lastup_user' => $uid,
-                        ]
-                    );
-                    echo 'ok';
-                    break;
+                }
+                $this->buildModelPageCities()->updateByPk(
+                    $city_id,
+                    [
+                        'pc_lastup_user' => $uid,
+                    ]
+                );
+                echo 'ok';
+                break;
             }
         } elseif (isset($_GET['id'])) {
             $this->db->sql = "SELECT cf_title, cd_value
@@ -221,8 +225,9 @@ class CityModule extends Module implements ModuleInterface
     }
 
     /**
-     ************************************** РЕДАКТИРОВАНИЕ *****************
-     * @param SiteResponse $response
+     * ************************************* РЕДАКТИРОВАНИЕ *****************
+     *
+     * @param  SiteResponse $response
      * @throws AccessDeniedException
      * @throws NotFoundException
      * @throws RedirectException
@@ -297,7 +302,8 @@ class CityModule extends Module implements ModuleInterface
 
         $response->setLastEditTimestamp($citypage['last_update']);
 
-        $body = $this->templateEngine->getContent('city/details.tpl', [
+        $body = $this->templateEngine->getContent(
+            'city/details.tpl', [
             'adminlogined' => $this->webUser->getId() ?: 0,
             'city' => $citypage,
             'baseurl' => GLOBAL_URL_ROOT,
@@ -305,14 +311,16 @@ class CityModule extends Module implements ModuleInterface
             'photos' => $photos['items'],
             'ref_meta' => $ref_meta,
             'wordstat' => $wordstat,
-        ]);
+            ]
+        );
 
         $response->getContent()->setBody($body);
     }
 
     /**
-     ************************************** ДОБАВЛЕНИЕ *****************
-     * @param SiteResponse $response
+     * ************************************* ДОБАВЛЕНИЕ *****************
+     *
+     * @param  SiteResponse $response
      * @throws RedirectException
      */
     private function addCity(SiteResponse $response): void
@@ -450,7 +458,8 @@ class CityModule extends Module implements ModuleInterface
     }
 
     /**
-     ************************************** СПИСОК *********************
+     * ************************************* СПИСОК *********************
+     *
      * @param SiteResponse $response
      */
     private function pageCity(SiteResponse $response): void

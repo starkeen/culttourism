@@ -23,13 +23,15 @@ class WeatherService
 
     public function getWeatherByCoordinates(float $latitude, float $longitude): ?WeatherData
     {
-        $url = self::URL . '?' . http_build_query([
+        $url = self::URL . '?' . http_build_query(
+            [
                 'lat' => $latitude,
                 'lon' => $longitude,
                 'APPID' => $this->appKey,
                 'lang' => 'ru',
                 'units' => 'metric',
-            ]);
+            ]
+        );
 
         return $this->httpClient->fetchData($url);
     }

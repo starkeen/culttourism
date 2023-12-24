@@ -77,7 +77,7 @@ class Logger implements LoggerInterface
     /**
      * @param string $level
      * @param string $message
-     * @param array $context
+     * @param array  $context
      */
     public function log($level, $message, array $context = []): void
     {
@@ -130,7 +130,7 @@ class Logger implements LoggerInterface
     /**
      * @param string $level
      * @param string $message
-     * @param array $context
+     * @param array  $context
      */
     private function sendSentry(string $level, string $message, array $context = []): void
     {

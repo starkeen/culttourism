@@ -77,6 +77,7 @@ class SiteResponse
 
     /**
      * Установить метку времени последнего редактирования только если она больше текущей
+     *
      * @param int $timestamp
      */
     public function setMaxLastEditTimestamp(int $timestamp): void

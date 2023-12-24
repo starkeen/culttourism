@@ -11,10 +11,10 @@ class GPS
     /**
      * Функция вычисляет расстояние между двумя точками по координатам
      *
-     * @param float $lat1
-     * @param float $long1
-     * @param float $lat2
-     * @param float $long2
+     * @param  float $lat1
+     * @param  float $long1
+     * @param  float $lat2
+     * @param  float $long2
      * @return int
      */
     public static function distanceGPS(float $lat1, float $long1, float $lat2, float $long2): int

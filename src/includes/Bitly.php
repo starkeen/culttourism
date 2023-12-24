@@ -24,7 +24,7 @@ class Bitly
     private string $clientSecret = BITLY_CLIENT_SECRET;
 
     /**
-     * @param Client $client
+     * @param Client     $client
      * @param MCurlCache $cc
      */
     public function __construct(Client $client, MCurlCache $cc)
@@ -34,7 +34,7 @@ class Bitly
     }
 
     /**
-     * @param string $url
+     * @param  string $url
      * @return string
      * @throws RuntimeException
      */
@@ -68,11 +68,13 @@ class Bitly
     private function getToken(): string
     {
         if (empty($this->token)) {
-            $this->client->request('POST', self::BITLY_HOST . '/oauth/access_token', [
+            $this->client->request(
+                'POST', self::BITLY_HOST . '/oauth/access_token', [
                 'client_id' => $this->clientId,
                 'client_secret' => $this->clientSecret,
                 'code' => 200, // TODO: use real code
-            ]);
+                ]
+            );
         }
 
         return $this->token;
@@ -98,11 +100,13 @@ class Bitly
     {
         $pattern = '%s/v3/shorten?access_token=%s&longUrl=%s&format=json';
 
-        return vsprintf($pattern, [
+        return vsprintf(
+            $pattern, [
             $this->getBitlyHost(),
             $this->getToken(),
             urlencode($url),
-        ]);
+            ]
+        );
     }
 
     /**

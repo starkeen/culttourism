@@ -15,7 +15,7 @@ class SessionStorage
     }
 
     /**
-     * @param string $name
+     * @param  string $name
      * @return string|int|bool|null
      */
     public function getValue(string $name)
@@ -24,7 +24,7 @@ class SessionStorage
     }
 
     /**
-     * @param string $name
+     * @param string          $name
      * @param string|int|bool $value
      */
     public function setValue(string $name, $value): void
