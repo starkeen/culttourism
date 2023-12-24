@@ -17,7 +17,7 @@ class Bitly
 
     private ?string $bitlyHost = null;
 
-    private ?string $token = null;
+    private ?string $token = BITLY_CLIENT_TOKEN;
 
     private string $clientId = BITLY_CLIENT_ID;
 
@@ -71,7 +71,7 @@ class Bitly
             $this->client->request('POST', self::BITLY_HOST . '/oauth/access_token', [
                 'client_id' => $this->clientId,
                 'client_secret' => $this->clientSecret,
-                'code' => 200,
+                'code' => 200, // TODO: use real code
             ]);
         }
 

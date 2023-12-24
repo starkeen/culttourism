@@ -9,6 +9,7 @@ use Psr\Http\Message\StreamInterface;
 
 const BITLY_CLIENT_ID = 'client_id_string';
 const BITLY_CLIENT_SECRET = 'client_secret_string';
+const BITLY_CLIENT_TOKEN = 'client_token_string';
 
 class BitlyTest extends TestCase
 {

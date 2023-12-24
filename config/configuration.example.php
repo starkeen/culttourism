@@ -45,6 +45,7 @@ const RECAPTCHA_SECRET = 'ABCDEFGHIJK';
 // https://app.bitly.com/settings/api
 const BITLY_CLIENT_ID = 'abcdef1234567890abcdef1234567890abcdef12';
 const BITLY_CLIENT_SECRET = 'zxcvbnmasdfghjklqwertyuiop1234567890asdfghjkl';
+const BITLY_CLIENT_TOKEN = '1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7';
 
 /*
  * ============================================================
