@@ -194,7 +194,7 @@ class Content
         $this->jsResources = $map;
     }
 
-    public function getYandexMapsKey(): string
+    public function getYandexMapsKey(): ?string
     {
         return $this->yandexMapsKey;
     }
