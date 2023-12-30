@@ -14,9 +14,9 @@ class Content
 
     private ?string $h1 = null;
 
-    private string $urlCss;
+    private ?string $urlCss = null;
 
-    private string $urlJs;
+    private ?string $urlJs = null;
 
     private string $urlRss;
 
