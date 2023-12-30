@@ -18,7 +18,7 @@ class Content
 
     private ?string $urlJs = null;
 
-    private string $urlRss;
+    private ?string $urlRss = null;
 
     private ?string $yandexMapsKey = null;
 
