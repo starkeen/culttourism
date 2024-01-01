@@ -9,7 +9,7 @@ use config\CachesConfig;
  */
 class MSysProperties extends Model
 {
-    private const CACHE_PREFIX_BY_NAME = 'by_name_';
+    private const CACHE_PREFIX_BY_NAME = 'by_name_v1__';
     private const CACHE_KEY_PUBLIC = 'public';
 
     protected $_table_pk = 'sp_id';
@@ -107,8 +107,6 @@ class MSysProperties extends Model
      */
     public function getByName(string $name): string
     {
-        $result = null;
-
         $cacheKey = self::CACHE_PREFIX_BY_NAME . $name;
 
         $result = $this->cache->get($cacheKey);

@@ -69,7 +69,6 @@ class FeedbackModule extends Module implements ModuleInterface
         return $request->getModuleKey() === $this->getModuleKey();
     }
 
-
     /**
      * Обработка формы добавления точки
      *

@@ -7,8 +7,12 @@
         <td><a href="{$admenuitem.link}">{$admenuitem.title}</a><td>
     </tr>
     {/foreach}
-
-    <div>
-        Остаток лимита запросов к Яндексу: {$yandexSearchLimit}
-    </div>
 </table>
+
+
+<div>
+    Остаток лимита запросов к Яндексу: {$yandexSearchLimit}
+</div>
+<div>
+    Остаток лимита запросов к Dadata: {$dadataLimit}
+</div>

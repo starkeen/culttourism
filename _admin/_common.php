@@ -4,12 +4,15 @@ use app\core\application\AdminApplication;
 use app\core\CookieStorage;
 
 error_reporting(E_ALL);
-ini_set('display_errors', 'Off');
 ini_set('memory_limit', '512M');
 session_start();
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/config/configuration.php';
+
+ini_set('display_errors', GLOBAL_ERROR_REPORTING ? 1 : 0);
+ini_set('display_startup_errors', GLOBAL_ERROR_REPORTING ? 1 : 0);
+
 $app = new AdminApplication();
 $app->run();
 

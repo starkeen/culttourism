@@ -11,6 +11,7 @@ use app\db\MyDB;
 use app\sys\Logger;
 use app\sys\SentryLogger;
 use app\sys\TemplateEngine;
+use Dadata\DadataClient;
 use GuzzleHttp\Client;
 use MSysProperties;
 
@@ -97,6 +98,14 @@ abstract class Application
     public function setTemplateEngine(TemplateEngine $templateEngine): void
     {
         $this->templateEngine = $templateEngine;
+    }
+
+    public function getDadata(): DadataClient
+    {
+        return new DadataClient(
+            $this->getSysPropertiesModel()->getByName('app_dadata_token'),
+            $this->getSysPropertiesModel()->getByName('app_dadata_secret')
+        );
     }
 
     abstract public function run(): void;

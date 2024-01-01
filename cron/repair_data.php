@@ -4,7 +4,7 @@ use app\checker\DataChecker;
 use app\component\typograph\TypographFactory;
 use app\crontab\RepairDataCommand;
 
-$checker = new DataChecker($db, TypographFactory::build());
+$checker = new DataChecker($db, TypographFactory::build(), $app->getDadata());
 
 $pc = new MPageCities($db);
 $pt = new MPagePoints($db);

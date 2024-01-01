@@ -3,11 +3,11 @@
 use app\core\application\CrontabApplication;
 
 error_reporting(E_ALL & ~E_DEPRECATED);
-ini_set('display_errors', false);
+ini_set('display_errors', true);
 $_timer_start_main = microtime(true);
 header('Content-Type: text/html; charset=utf-8');
-require_once dirname(__DIR__) . '/config/configuration.php';
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once dirname(__DIR__) . '/config/configuration.php';
 $app = new CrontabApplication();
 $app->run();
 

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace app\checker;
 
-use app\api\dadata\DadataAPI;
 use app\component\typograph\Typograph;
 use app\db\MyDB;
 use app\utils\GPS;
 use Curl;
+use Dadata\DadataClient;
 use MBlogEntries;
 use MCandidatePoints;
 use MDataCheck;
@@ -18,35 +18,20 @@ use MPagePoints;
 
 class DataChecker
 {
-    /**
-     * @var MyDB
-     */
-    private $db;
+    private MyDB $db;
 
-    /**
-     * @var Typograph
-     */
-    private $typograph;
+    private Typograph $typograph;
 
-    /**
-     * @var string
-     */
-    private $entityType = 'type';
+    private DadataClient $dadata;
 
-    /**
-     * @var string
-     */
-    private $entityId = 'id';
-
-    /**
-     * @var string
-     */
-    private $entityField;
+    private string $entityType = 'type';
+    private string $entityId = 'id';
+    private string $entityField;
 
     /**
      * @var string[]
      */
-    private $dotting = [
+    private array $dotting = [
         ' г ' => ' г. ',
         ' пос ' => ' пос. ',
         ' ул ' => ' ул. ',
@@ -57,13 +42,14 @@ class DataChecker
     ];
 
     /**
-     * @param MyDB      $db
+     * @param MyDB $db
      * @param Typograph $typograph
      */
-    public function __construct(MyDB $db, Typograph $typograph)
+    public function __construct(MyDB $db, Typograph $typograph, DadataClient $dadata)
     {
         $this->db = $db;
         $this->typograph = $typograph;
+        $this->dadata = $dadata;
     }
 
     /**
@@ -71,7 +57,7 @@ class DataChecker
      *
      * @return array[]
      */
-    public function repairPointsAddresses($count = 100): array
+    public function repairPointsAddresses(int $count = 100): array
     {
         $this->entityType = MDataCheck::ENTITY_POINTS;
         $this->entityId = 'pt_id';
@@ -110,7 +96,9 @@ class DataChecker
             foreach ($featureMember as $fm) {
                 $posLatLon = explode(' ', $fm->GeoObject->Point->pos);
                 $addrVariant = [
-                    'text' => isset($fm->GeoObject->metaDataProperty->GeocoderMetaData) ? $fm->GeoObject->metaDataProperty->GeocoderMetaData->text : $fm->GeoObject->name,
+                    'text' => isset($fm->GeoObject->metaDataProperty->GeocoderMetaData)
+                        ? $fm->GeoObject->metaDataProperty->GeocoderMetaData->text
+                        : $fm->GeoObject->name,
                     'gps' => [
                         'latitude' => $posLatLon[1],
                         'longitude' => $posLatLon[0],
@@ -185,7 +173,7 @@ class DataChecker
                     [
                         'phone_raw' => $phoneItem,
                         'id_point' => $pointId,
-                        'id_city' => (int)$pt['pc_id'],
+                        'id_city' => (int) $pt['pc_id'],
                     ]
                 );
             }
@@ -197,7 +185,7 @@ class DataChecker
                 $ptModel->updateByPk(
                     $pointId,
                     [
-                    'pt_phone' => $newPhones,
+                        'pt_phone' => $newPhones,
                     ]
                 );
                 $logItem = [
@@ -238,9 +226,9 @@ class DataChecker
         $p = new MPagePoints($this->db);
         $dc = new MDataCheck($this->db);
 
-        $api = new DadataAPI($this->db);
-        if ($api->getBalance() < 5.0) {
+        if ($this->dadata->getBalance() < 5.0) {
             echo 'Баланс Dadata.ru нулевой';
+
             return [];
         }
 
@@ -253,14 +241,13 @@ class DataChecker
         $points = $p->getPointsWithoutCoordinates($count);
         foreach ($points as $pt) {
             $addr = preg_replace('/(\d{3})(\s)(\d{3})/', '$1$3', $pt['pt_adress']);
-            $response = $api->check(DadataAPI::TYPE_ADDRESS, $addr);
-            $result = $response[0];
+            $result = $this->dadata->clean('address', $addr);
             $coordinates = '';
             if (
                 (int) $result['qc'] === 0
                 && (int) $result['qc_geo'] === 0
-                && (float) $result['geo_lat'] !== 0
-                && (float) $result['geo_lon'] !== 0
+                && (float) $result['geo_lat'] !== 0.0
+                && (float) $result['geo_lon'] !== 0.0
             ) {
                 $coordinates = sprintf('%f, %f', $result['geo_lat'], $result['geo_lon']);
                 $geoData = [
@@ -288,7 +275,7 @@ class DataChecker
      *
      * @return array
      */
-    public function repairCandidates($count = 10): array
+    public function repairCandidates(int $count = 10): array
     {
         $this->entityType = MDataCheck::ENTITY_CANDIDATES;
         $this->entityId = 'cp_id';
@@ -315,7 +302,7 @@ class DataChecker
      *
      * @return array
      */
-    public function repairCandidatesAddresses($count = 10): array
+    public function repairCandidatesAddresses(int $count = 10): array
     {
         $log = [];
         $this->entityType = MDataCheck::ENTITY_CANDIDATES;
@@ -324,35 +311,35 @@ class DataChecker
         $dc = new MDataCheck($this->db);
         $cp = new MCandidatePoints($this->db);
 
-        $api = new DadataAPI($this->db);
-        if ($api->getBalance() < 5.0) {
+        if ($this->dadata->getBalance() < 5.0) {
             echo 'Баланс Dadata.ru нулевой';
+
             return [];
         }
 
         $items = $this->getCheckingPortion($count, 'cp_active', true);
         foreach ($items as $item) {
             $addr = preg_replace('/(\d{3})(\s)(\d{3})/', '$1$3', $item[$this->entityField]);
-            $response = $api->check(DadataAPI::TYPE_ADDRESS, $addr);
-            $result = $response[0]['result'];
-            if ((int) $response[0]['quality_parse'] === 0) {
-                $dotted = str_replace(array_keys($this->dotting), array_values($this->dotting), $response[0]['result']);
+            $cleaned = $this->dadata->clean('address', $addr);
+            $result = $cleaned['result'];
+            if ((int) $cleaned['quality_parse'] === 0) {
+                $dotted = str_replace(array_keys($this->dotting), array_values($this->dotting), $cleaned['result']);
                 $result = $this->typograph->typo($dotted);
                 $cp->updateByPk($item[$this->entityId], [$this->entityField => $result]);
 
                 if (
                     (int) $item['cp_latitude'] === 0
                     && (int) $item['cp_longitude'] === 0
-                    && (int) $response[0]['qc_geo'] === 0
+                    && (int) $cleaned['qc_geo'] === 0
                 ) {
                     $geoData = [
-                        'cp_latitude' => $response[0]['geo_lat'],
-                        'cp_longitude' => $response[0]['geo_lon'],
+                        'cp_latitude' => $cleaned['geo_lat'],
+                        'cp_longitude' => $cleaned['geo_lon'],
                     ];
                     $cp->updateByPk($item[$this->entityId], $geoData);
                 }
             } else {
-                $result = '[quality:' . $response[0]['quality_parse'] . '] ' . $result;
+                $result = '[quality:' . $cleaned['quality_parse'] . '] ' . $result;
             }
             $dc->markChecked($this->entityType, $item[$this->entityId], $this->entityField, $result);
         }
@@ -365,7 +352,7 @@ class DataChecker
      *
      * @return array
      */
-    public function repairBlog($count = 10): array
+    public function repairBlog(int $count = 10): array
     {
         $log = [];
         $this->entityType = MDataCheck::ENTITY_BLOG;
@@ -389,7 +376,7 @@ class DataChecker
      *
      * @return array
      */
-    public function repairPoints($count = 10): array
+    public function repairPoints(int $count = 10): array
     {
         $log = [];
         $this->entityType = MDataCheck::ENTITY_POINTS;
@@ -419,7 +406,7 @@ class DataChecker
      *
      * @return array
      */
-    public function repairCity($count = 10): array
+    public function repairCity(int $count = 10): array
     {
         $log = [];
         $this->entityType = MDataCheck::ENTITY_CITIES;
@@ -445,9 +432,9 @@ class DataChecker
     }
 
     /**
-     * @param int    $limit
+     * @param int $limit
      * @param string $activeField
-     * @param bool   $unchecked
+     * @param bool $unchecked
      *
      * @return array
      */
@@ -482,7 +469,7 @@ class DataChecker
     /**
      * @param string $type
      * @param string $field
-     * @param int    $ageDays
+     * @param int $ageDays
      */
     public function resetOldData(string $type, string $field, int $ageDays): void
     {
