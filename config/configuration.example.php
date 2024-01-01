@@ -58,7 +58,7 @@ const BITLY_CLIENT_TOKEN = '1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7';
 /* Directory settings */
 const GLOBAL_DIR_DATA = GLOBAL_DIR_ROOT . '/data';
 const GLOBAL_DIR_PHOTOS = GLOBAL_DIR_DATA . '/photos';
-const GLOBAL_DIR_TEMPLATES = GLOBAL_DIR_ROOT . '/templates';
+const GLOBAL_DIR_TEMPLATES = GLOBAL_DIR_ROOT . '/src/templates';
 const GLOBAL_DIR_VAR = GLOBAL_DIR_ROOT . '/var';
 const GLOBAL_DIR_CACHE = GLOBAL_DIR_VAR . '/cache';
 const GLOBAL_DIR_TMP = GLOBAL_DIR_VAR . '/tmp';
