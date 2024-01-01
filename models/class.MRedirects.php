@@ -10,6 +10,8 @@ class MRedirects extends Model
     protected $_table_order = 'rd_order';
     protected $_table_active = 'rd_active';
 
+    private Cache $cache;
+
     public function __construct(MyDB $db)
     {
         $this->_table_name = $db->getTableName('redirects');

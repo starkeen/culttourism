@@ -237,7 +237,7 @@ class BlogModule extends Module implements ModuleInterface
         $response->getContent()->getHead()->setCanonicalUrl($canonical);
 
         $entries = $this->blogRepository->getCalendarItems($year, $month);
-        if (count($entries) === 0) {
+        if (empty($entries)) {
             $response->getContent()->getHead()->setRobotsIndexing('noindex,follow');
         }
 
