@@ -17,6 +17,8 @@ use PDOStatement;
 
 /**
  * Обёртка для работы с БД
+ *
+ * @property string $sql
  */
 class MyDB
 {
@@ -84,9 +86,9 @@ class MyDB
     private $startTimestamp;
 
     /**
-     * @var float
+     * @var float|null
      */
-    private $time;
+    private ?float $time = null;
 
     /**
      * @param string      $dbHost

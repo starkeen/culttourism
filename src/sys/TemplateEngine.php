@@ -11,7 +11,7 @@ class TemplateEngine
     /**
      * @var Smarty
      */
-    private $smarty;
+    private Smarty $smarty;
 
     /**
      * @param Smarty|null $smarty
@@ -29,37 +29,30 @@ class TemplateEngine
     }
 
     /**
-     * @param  null $template
-     * @param  null $cache_id
-     * @param  null $compile_id
-     * @param  null $parent
+     * @param  string $template
      * @return string
      */
-    public function fetch($template = null, $cache_id = null, $compile_id = null, $parent = null): string
+    public function fetch(string $template): string
     {
-        return $this->smarty->fetch($template, $cache_id, $compile_id, $parent);
+        return $this->smarty->fetch($template, null, null, null);
     }
 
     /**
-     * @param  array|string $tpl_var
-     * @param  null         $value
-     * @param  false        $nocache
-     * @return TemplateEngine|Smarty
+     * @param string $tplVar
+     * @param string|int|mixed|null $value
+     * @return Smarty
      */
-    public function assign($tpl_var, $value = null, $nocache = false)
+    public function assign(string $tplVar, $value = null)
     {
-        return $this->smarty->assign($tpl_var, $value, $nocache);
+        return $this->smarty->assign($tplVar, $value, false);
     }
 
     /**
-     * @param null $template
-     * @param null $cache_id
-     * @param null $compile_id
-     * @param null $parent
+     * @param string $template
      */
-    public function display($template = null, $cache_id = null, $compile_id = null, $parent = null): void
+    public function display(string $template): void
     {
-        $this->smarty->display($template, $cache_id, $compile_id, $parent);
+        $this->smarty->display($template, null, null, null);
     }
 
     /**
