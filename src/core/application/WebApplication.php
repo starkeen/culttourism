@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace app\core\application;
 
 use app\constant\OgType;
-use app\constant\WrongUrls;
 use app\core\CookieStorage;
 use app\core\GlobalConfig;
 use app\core\module\ModuleFetcher;
@@ -80,7 +79,9 @@ class WebApplication extends Application
 
             $module = $this->getModuleFetcher()->getModule($this->getSiteRequest());
 
-            $this->getSiteResponse()->getContent()->getHead()->setTitleDelimiter($this->getGlobalConfig()->getTitleDelimiter());
+            $this->getSiteResponse()->getContent()->getHead()->setTitleDelimiter(
+                $this->getGlobalConfig()->getTitleDelimiter()
+            );
             $this->getSiteResponse()->getContent()->setUrlRss($this->getGlobalConfig()->getUrlRSS());
             $this->getSiteResponse()->getContent()->setYandexMapsKey($this->getGlobalConfig()->getYandexMapsKey());
             $this->getSiteResponse()->getContent()->setJsResources($this->getGlobalConfig()->getJsResources());
@@ -94,8 +95,6 @@ class WebApplication extends Application
         } catch (RedirectException $exception) {
             $this->getSiteResponse()->getHeaders()->sendRedirect($exception->getTargetUrl(), true);
         } catch (NotFoundException $exception) {
-            $this->logError404($exception);
-
             $this->getSiteResponse()->getHeaders()->add('HTTP/1.0 404 Not Found');
 
             $this->getSiteResponse()->getContent()->getHead()->addTitleElement(
@@ -105,34 +104,44 @@ class WebApplication extends Application
             $this->getTemplateEngine()->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
             $this->getTemplateEngine()->assign('host', GLOBAL_SITE_URL);
             $this->getTemplateEngine()->assign('suggestions', []);
-            $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(GLOBAL_DIR_TEMPLATES . '/_errors/er404.tpl'));
+            $this->getSiteResponse()->getContent()->setBody(
+                $this->getTemplateEngine()->fetch(GLOBAL_DIR_TEMPLATES . '/_errors/er404.tpl')
+            );
         } catch (AccessDeniedException $exception) {
             $this->getLogger()->notice(
                 'Ошибка 403',
                 [
-                'srv' => $_SERVER ?? [],
-                'trace' => $exception->getTrace(),
-                'file' => $exception->getFile(),
-                'line' => $exception->getLine(),
+                    'srv' => $_SERVER ?? [],
+                    'trace' => $exception->getTrace(),
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
                 ]
             );
 
             $this->getSiteResponse()->getHeaders()->add('HTTP/1.1 403 Forbidden');
 
-            $this->getSiteResponse()->getContent()->getHead()->addTitleElement('403 Forbidden - страница недоступна (запрещено)');
+            $this->getSiteResponse()->getContent()->getHead()->addTitleElement(
+                '403 Forbidden - страница недоступна (запрещено)'
+            );
             $this->getSiteResponse()->getContent()->setH1('Запрещено');
             $this->getTemplateEngine()->assign('requested', $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
             $this->getTemplateEngine()->assign('host', GLOBAL_SITE_URL);
-            $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(GLOBAL_DIR_TEMPLATES . '/_errors/er403.tpl'));
+            $this->getSiteResponse()->getContent()->setBody(
+                $this->getTemplateEngine()->fetch(GLOBAL_DIR_TEMPLATES . '/_errors/er403.tpl')
+            );
         } catch (Throwable $exception) {
             $this->getSiteResponse()->getHeaders()->add('Content-Type: text/html; charset=utf-8');
             $this->getSiteResponse()->getHeaders()->add('HTTP/1.1 503 Service Temporarily Unavailable');
             $this->getSiteResponse()->getHeaders()->add('Status: 503 Service Temporarily Unavailable');
             $this->getSiteResponse()->getHeaders()->add('Retry-After: 300');
 
-            $this->getSiteResponse()->getContent()->getHead()->addTitleElement('Ошибка 503 - Сервис временно недоступен');
+            $this->getSiteResponse()->getContent()->getHead()->addTitleElement(
+                'Ошибка 503 - Сервис временно недоступен'
+            );
             $this->getSiteResponse()->getContent()->setH1('Сервис временно недоступен');
-            $this->getSiteResponse()->getContent()->setBody($this->getTemplateEngine()->fetch(GLOBAL_DIR_TEMPLATES . '/_errors/er503.tpl'));
+            $this->getSiteResponse()->getContent()->setBody(
+                $this->getTemplateEngine()->fetch(GLOBAL_DIR_TEMPLATES . '/_errors/er503.tpl')
+            );
 
             $this->getLogger()->sendSentryException($exception);
         }
@@ -147,7 +156,9 @@ class WebApplication extends Application
         }
 
         if ($this->getSiteResponse()->getLastEditTimestamp() > 0 && !$this->getSiteRequest()->isAjax()) {
-            $this->getSiteResponse()->getHeaders()->add('Last-Modified: ' . $this->getSiteResponse()->getLastEditTimeGMT());
+            $this->getSiteResponse()->getHeaders()->add(
+                'Last-Modified: ' . $this->getSiteResponse()->getLastEditTimeGMT()
+            );
             $this->getSiteResponse()->getHeaders()->add('Cache-control: public');
             $this->getSiteResponse()->getHeaders()->add('Pragma: cache');
             $this->getSiteResponse()->getHeaders()->add('Expires: ' . $this->getSiteResponse()->getExpiresTimeGMT());
@@ -202,27 +213,12 @@ class WebApplication extends Application
         }
     }
 
-    private function logError404(Throwable $exception): void
-    {
-        $url = $this->getSiteRequest()->getUrl();
-        if (in_array($url, WrongUrls::LIST, true)) {
-            return;
-        }
-
-        $this->getLogger()->notice(
-            'Ошибка 404',
-            [
-            'srv' => $_SERVER ?? [],
-            'trace' => $exception->getTrace(),
-            ]
-        );
-    }
-
     private function getSessionStorage(): SessionStorage
     {
         if ($this->sessionStorage === null) {
             $this->sessionStorage = new SessionStorage();
         }
+
         return $this->sessionStorage;
     }
 
@@ -236,6 +232,7 @@ class WebApplication extends Application
         if ($this->request === null) {
             $this->request = new SiteRequest($_SERVER['REQUEST_URI']);
         }
+
         return $this->request;
     }
 
@@ -249,6 +246,7 @@ class WebApplication extends Application
         if ($this->response === null) {
             $this->response = new SiteResponse(new Headers(), new Content(new Head()));
         }
+
         return $this->response;
     }
 
@@ -262,6 +260,7 @@ class WebApplication extends Application
         if ($this->globalConfig === null) {
             $this->globalConfig = new GlobalConfig($this->getDb());
         }
+
         return $this->globalConfig;
     }
 
@@ -275,6 +274,7 @@ class WebApplication extends Application
         if ($this->user === null) {
             $this->user = new WebUser(new Auth($this->getDb(), new CookieStorage()), $this->getSessionStorage());
         }
+
         return $this->user;
     }
 
@@ -294,15 +294,47 @@ class WebApplication extends Application
 
     private function getModuleFetcher(): ModuleFetcher
     {
-        $modules =  [
-            new RedirectsModule($this->getDb()),
-            new MainPageModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
-            new AjaxModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser()),
-            new MapModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
-            new ListModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
-            new PointsModule($this->getDb(), $this->getWebUser()),
-            new CityModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
-            new PictureModule($this->getDb(), $this->getWebUser()),
+        $modules = [
+            new RedirectsModule(
+                $this->getDb()
+            ),
+            new MainPageModule(
+                $this->getDb(),
+                $this->getTemplateEngine(),
+                $this->getWebUser(),
+                $this->getGlobalConfig()
+            ),
+            new AjaxModule(
+                $this->getDb(),
+                $this->getTemplateEngine(),
+                $this->getWebUser()
+            ),
+            new MapModule(
+                $this->getDb(),
+                $this->getTemplateEngine(),
+                $this->getWebUser(),
+                $this->getGlobalConfig()
+            ),
+            new ListModule(
+                $this->getDb(),
+                $this->getTemplateEngine(),
+                $this->getWebUser(),
+                $this->getGlobalConfig()
+            ),
+            new PointsModule(
+                $this->getDb(),
+                $this->getWebUser()
+            ),
+            new CityModule(
+                $this->getDb(),
+                $this->getTemplateEngine(),
+                $this->getWebUser(),
+                $this->getGlobalConfig()
+            ),
+            new PictureModule(
+                $this->getDb(),
+                $this->getWebUser()
+            ),
             new SearchModule(
                 $this->getDb(),
                 $this->getTemplateEngine(),
@@ -311,13 +343,43 @@ class WebApplication extends Application
                 $this->getLogger(),
                 $this->getSearchService()
             ),
-            new BlogModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
-            new FeedbackModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
-            new AboutModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
-            new SignModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new BlogModule(
+                $this->getDb(),
+                $this->getTemplateEngine(),
+                $this->getWebUser(),
+                $this->getGlobalConfig()
+            ),
+            new FeedbackModule(
+                $this->getDb(),
+                $this->getTemplateEngine(),
+                $this->getWebUser(),
+                $this->getGlobalConfig()
+            ),
+            new AboutModule(
+                $this->getDb(),
+                $this->getTemplateEngine(),
+                $this->getWebUser(),
+                $this->getGlobalConfig()
+            ),
+            new SignModule(
+                $this->getDb(),
+                $this->getTemplateEngine(),
+                $this->getWebUser(),
+                $this->getGlobalConfig()
+            ),
             new SysModule(),
-            new ApiModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
-            new DefaultModule($this->getDb(), $this->getTemplateEngine(), $this->getWebUser(), $this->getGlobalConfig()),
+            new ApiModule(
+                $this->getDb(),
+                $this->getTemplateEngine(),
+                $this->getWebUser(),
+                $this->getGlobalConfig()
+            ),
+            new DefaultModule(
+                $this->getDb(),
+                $this->getTemplateEngine(),
+                $this->getWebUser(),
+                $this->getGlobalConfig()
+            ),
         ];
 
         return new ModuleFetcher($modules);
