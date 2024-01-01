@@ -11,7 +11,7 @@ use YandexSearchAPI\SearchException;
 use YandexSearchAPI\SearchRequest;
 use YandexSearchAPI\YandexSearchService;
 
-require_once 'common.php';
+require_once '_common.php';
 
 $smarty->assign('title', 'Заявки на добавление');
 

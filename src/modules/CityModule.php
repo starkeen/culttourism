@@ -137,7 +137,8 @@ class CityModule extends Module implements ModuleInterface
                     );
 
                     if ($value != '') {
-                        $this->db->sql = "INSERT INTO $dbcd SET cd_pc_id = :city_id, cd_cf_id = :cf_id, cd_value = :cd_value";
+                        $this->db->sql = "INSERT INTO $dbcd 
+                                            SET cd_pc_id = :city_id, cd_cf_id = :cf_id, cd_value = :cd_value";
                         $this->db->execute(
                             [
                                 ':city_id' => $city_id,
@@ -184,7 +185,10 @@ class CityModule extends Module implements ModuleInterface
                     $city_id = (int) $_POST['cpid'];
                     $value = trim($_POST['val']);
                     if ($value != '') {
-                        $this->db->sql = "UPDATE $dbcd SET cd_value = :cd_value WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
+                        $this->db->sql = "
+                            UPDATE $dbcd
+                            SET cd_value = :cd_value 
+                            WHERE cd_pc_id = :city_id AND cd_cf_id = :cf_id";
                         $this->db->execute(
                             [
                                 ':city_id' => $city_id,
@@ -201,6 +205,8 @@ class CityModule extends Module implements ModuleInterface
                     );
                     echo 'ok';
                     break;
+                default:
+                    throw new NotFoundException();
             }
         } elseif (isset($_GET['id'])) {
             $this->db->sql = "SELECT cf_title, cd_value
@@ -374,40 +380,41 @@ class CityModule extends Module implements ModuleInterface
                 $already[$row['url']] = $row['pc_title'];
             }
             //------------------- поиск в справочнике регионов --------------
-            $this->db->sql = "SELECT rc.name as name, rc.id as city_id,
-                            rr.name as region, rr.id as region_id,
-                            rs.name as country, rs.id as country_id, rs.alpha2 AS country_code,
-                            city.pc_title as pc_title, url.url
+            $this->db->sql = "SELECT rc.name AS name, rc.id AS city_id,
+                            rr.name AS region, rr.id AS region_id,
+                            rs.name AS country, rs.id AS country_id, rs.alpha2 AS country_code,
+                            city.pc_title AS pc_title, url.url
                         FROM $dbrc rc
                         LEFT JOIN $dbrr rr ON rr.id = rc.region_id
                         LEFT JOIN $dbrs rs ON rs.id = rc.country_id
                         LEFT JOIN $dbc city ON city.pc_city_id = rc.id
                         LEFT JOIN $dbu url ON url.uid = city.pc_url_id
                         WHERE rc.name LIKE :newcity1
-                        
+
                         UNION
-                        
-                        SELECT '' as name, 0 as city_id,
-                            rr.name as region, rr.id as region_id,
-                            rs.name as country, rs.id as country_id, rs.alpha2 AS country_code,
-                            city.pc_title as pc_title, url.url
+
+                        SELECT '' as name, 0 AS city_id,
+                            rr.name AS region, rr.id AS region_id,
+                            rs.name AS country, rs.id AS country_id, rs.alpha2 AS country_code,
+                            city.pc_title AS pc_title, url.url
                         FROM $dbrr rr
                         LEFT JOIN $dbrs rs ON rs.id = rr.country_id
                         LEFT JOIN $dbc city ON city.pc_region_id = rr.id AND city.pc_city_id = 0
                         LEFT JOIN $dbu url ON url.uid = city.pc_url_id
                         WHERE rr.name LIKE :newcity2
-                        
+
                         UNION
-                        
-                        SELECT '' as name, 0 as city_id,
-                            '' as region, 0 as region_id,
-                            rs.name as country, rs.id as country_id, rs.alpha2 AS country_code,
-                            city.pc_title as pc_title, url.url
+
+                        SELECT '' AS name, 0 AS city_id,
+                            '' AS region, 0 AS region_id,
+                            rs.name AS country, rs.id AS country_id, rs.alpha2 AS country_code,
+                            city.pc_title AS pc_title, url.url
                         FROM $dbrs rs
-                        LEFT JOIN $dbc city ON city.pc_country_id = rs.id AND city.pc_city_id = 0 AND city.pc_region_id = 0
+                        LEFT JOIN $dbc city ON city.pc_country_id = rs.id
+                                                    AND city.pc_city_id = 0
+                                                    AND city.pc_region_id = 0
                         LEFT JOIN $dbu url ON url.uid = city.pc_url_id
                         WHERE rs.name LIKE :newcity3
-                        
                         ORDER BY country, region, name";
             $this->db->execute(
                 [

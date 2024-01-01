@@ -6,7 +6,7 @@ use app\sys\TemplateEngine;
 use app\utils\JSON;
 use models\MLinks;
 
-require_once 'common.php';
+require_once '_common.php';
 
 /** @var TemplateEngine $smarty */
 $smarty->assign('title', 'Ссылки для ручной проверки');

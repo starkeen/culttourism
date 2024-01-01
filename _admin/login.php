@@ -1,13 +1,19 @@
 <?php
 
-require_once 'common.php';
+require_once '_common.php';
 
 $smarty->assign('title', 'Авторизация в системе');
 $login = '';
 $error = '';
 if (isset($_GET['out'])) {
     $ticket->deleteKey();
-    unset($_SESSION['auth'], $_SESSION['user_auth'], $_SESSION['user_name'], $_SESSION['user_admin'], $_SESSION['user_id']);
+    unset(
+        $_SESSION['auth'],
+        $_SESSION['user_auth'],
+        $_SESSION['user_name'],
+        $_SESSION['user_admin'],
+        $_SESSION['user_id']
+    );
     header('Location: login.php');
     exit();
 }

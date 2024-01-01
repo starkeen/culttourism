@@ -2,7 +2,7 @@
 
 use app\services\image_storage\ImageStorageFactory;
 
-require_once 'common.php';
+require_once '_common.php';
 
 $smarty->assign('title', 'Фотографии');
 

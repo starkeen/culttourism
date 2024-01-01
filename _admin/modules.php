@@ -1,6 +1,6 @@
 <?php
 
-require_once 'common.php';
+require_once '_common.php';
 
 $smarty->assign('title', 'Модули и страницы на сайте');
 

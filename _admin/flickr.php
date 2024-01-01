@@ -4,7 +4,7 @@ use app\db\exceptions\DuplicateKeyException;
 use app\services\image_storage\ImageStorageFactory;
 use app\utils\JSON;
 
-require_once 'common.php';
+require_once '_common.php';
 
 $smarty->assign('title', 'Flickr');
 

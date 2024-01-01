@@ -3,7 +3,7 @@
 use app\services\parser\Parser;
 use app\utils\JSON;
 
-require_once 'common.php';
+require_once '_common.php';
 
 $smarty->assign('title', 'Парсер');
 

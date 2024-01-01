@@ -1,6 +1,6 @@
 <?php
 
-require_once 'common.php';
+require_once '_common.php';
 
 $smarty->assign('title', 'Задачи по расписанию');
 $dbcron = $db->getTableName('cron');

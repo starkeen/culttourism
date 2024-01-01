@@ -2,7 +2,7 @@
 
 /* Админка */
 
-require_once 'common.php';
+require_once '_common.php';
 
 $smarty->assign('title', 'Административная часть сайта');
 $smarty->assign('content', 'Выберите раздел в меню выше');

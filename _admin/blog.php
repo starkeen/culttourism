@@ -2,7 +2,7 @@
 
 use JetBrains\PhpStorm\NoReturn;
 
-require_once 'common.php';
+require_once '_common.php';
 
 $smarty->assign('title', 'Управление записями в блоге');
 

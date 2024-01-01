@@ -8,7 +8,7 @@ use app\model\entity\Redirect;
 use app\model\repository\RedirectsRepository;
 use config\CachesConfig;
 
-require_once 'common.php';
+require_once '_common.php';
 
 $act = $_GET['act'] ?? null;
 
