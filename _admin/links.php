@@ -127,10 +127,10 @@ foreach ($pager->out as $link) {
             $currentUrlDomain = '-empty-';
         }
 
-        if (strpos($currentUrlDomain, 'www.') === 0) {
+        if (str_starts_with($currentUrlDomain, 'www.')) {
             $currentUrlDomain = str_replace('www.', '', $currentUrlDomain);
         }
-        if (strpos($redirectUrlDomain, 'www.') === 0) {
+        if (str_starts_with($redirectUrlDomain, 'www.')) {
             $redirectUrlDomain = str_replace('www.', '', $redirectUrlDomain);
         }
 

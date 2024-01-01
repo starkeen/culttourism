@@ -1,7 +1,7 @@
 {if $adminlogined}
 <div style="border:1px solid #ddd;padding:5px;background-color: #eee;">
     <p>Здесь можно добавить город в базу</p>
-    <form method="get" action="./">
+    <form method="get" action="">
         <label for="cityname">название</label>&nbsp;<input type="text" name="cityname" id="cityname" value="{$addregion}" />
         <input type="submit" value="искать" />
     </form>

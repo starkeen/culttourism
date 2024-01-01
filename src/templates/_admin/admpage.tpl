@@ -16,7 +16,7 @@
     <body>
         <div id="admheader">
             <p id="mainadmin">
-                <a href="/_admin/"><b>Административная часть сайта</b></a>&nbsp;
+                <a href="/_admin"><b>Административная часть сайта</b></a>&nbsp;
                 <a href="/">{$site_url}</a>
             </p>
             <p id="adm_username">{if $adm_user}вы вошли как <b>{$adm_user}</b>{else}необходима авторизация{/if}</p>
