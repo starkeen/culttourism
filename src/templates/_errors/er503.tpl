@@ -12,3 +12,9 @@
         window.yaCounter1209661.reachGoal('error-503', { url: document.location.pathname + document.location.search, referer: document.referrer });
     });
 </script>
+
+{if $show_trace}
+<div style="white-space: pre; border: 1px solid #efefef; position: absolute; left: 500px;">
+    {$exception}
+</div>
+{/if}

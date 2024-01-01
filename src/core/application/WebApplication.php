@@ -139,11 +139,28 @@ class WebApplication extends Application
                 'Ошибка 503 - Сервис временно недоступен'
             );
             $this->getSiteResponse()->getContent()->setH1('Сервис временно недоступен');
+
+            if (GLOBAL_ERROR_REPORTING) {
+                $this->getTemplateEngine()->assign('show_trace', true);
+                $this->getTemplateEngine()->assign('exception', $exception);
+            } else {
+                $this->getTemplateEngine()->assign('show_trace', false);
+            }
+
             $this->getSiteResponse()->getContent()->setBody(
                 $this->getTemplateEngine()->fetch(GLOBAL_DIR_TEMPLATES . '/_errors/er503.tpl')
             );
 
             $this->getLogger()->sendSentryException($exception);
+            $this->getLogger()->error(
+                'Ошибка 503',
+                [
+                    'srv' => $_SERVER ?? [],
+                    'trace' => $exception->getTrace(),
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                ]
+            );
         }
 
         $this->getSiteResponse()->getHeaders()->add('X-Powered-By: culttourism');
