@@ -5,30 +5,24 @@ declare(strict_types=1);
 namespace tests\component\typograph;
 
 use app\component\typograph\Typograph;
-use EMT\EMTypograph;
+use JoliTypo\Fixer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class TypographTest extends TestCase
 {
-    /**
-     * @var MockObject|EMTypograph
-     */
-    private $baseTypographMock;
+    private MockObject|null|Fixer $baseFixerMock = null;
 
-    /**
-     * @var Typograph
-     */
-    private $service;
+    private ?Typograph $service = null;
 
     public function setUp(): void
     {
-        $this->baseTypographMock = $this->getMockBuilder(EMTypograph::class)
-                                  ->disableOriginalConstructor()
-                                  ->onlyMethods(['setup', 'apply', 'set_text'])
-                                  ->getMock();
+        $this->baseFixerMock = $this->getMockBuilder(Fixer::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['fix', 'setLocale', 'setRules'])
+            ->getMock();
 
-        $this->service = new Typograph($this->baseTypographMock);
+        $this->service = new Typograph($this->baseFixerMock);
     }
 
     /**
@@ -39,9 +33,9 @@ class TypographTest extends TestCase
      */
     public function testPostProcessing(string $input, string $output): void
     {
-        $this->baseTypographMock->expects(self::once())
-                          ->method('apply')
-                          ->willReturn($input);
+        $this->baseFixerMock->expects(self::once())
+            ->method('fix')
+            ->willReturn($input);
 
         self::assertEquals($output, $this->service->typo($input));
     }

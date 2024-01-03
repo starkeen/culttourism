@@ -14,7 +14,7 @@
         "ezyang/htmlpurifier": "^4.7",
         "sentry/sdk": "^4.0",
         "guzzlehttp/guzzle": "^7.8",
-        "fanamurov/mdash": "^1.0",
+        "jolicode/jolitypo": "*",
         "vlucas/phpdotenv": "^4.1",
         "myclabs/php-enum": "^1.7",
         "starkeen/yandex-search-api": "^1.2",

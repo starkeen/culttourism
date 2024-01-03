@@ -10,6 +10,7 @@ use MCandidatePoints;
 use MLists;
 use MPageCities;
 use MPagePoints;
+use Throwable;
 
 class RepairDataCommand extends AbstractCrontabCommand
 {
@@ -31,8 +32,14 @@ class RepairDataCommand extends AbstractCrontabCommand
     private MLists $lists;
     private MBlogEntries $blogEntries;
 
-    public function __construct(DataChecker $checker, MPagePoints $pt, MCandidatePoints $ca, MPageCities $pc, MLists $ls, MBlogEntries $bg)
-    {
+    public function __construct(
+        DataChecker $checker,
+        MPagePoints $pt,
+        MCandidatePoints $ca,
+        MPageCities $pc,
+        MLists $ls,
+        MBlogEntries $bg
+    ) {
         $this->checker = $checker;
         $this->pagePoints = $pt;
         $this->candidatePoints = $ca;

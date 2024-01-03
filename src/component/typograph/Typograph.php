@@ -4,25 +4,38 @@ declare(strict_types=1);
 
 namespace app\component\typograph;
 
-use EMT\EMTypograph;
+use JoliTypo\Fixer;
+use JoliTypo\Fixer\Dash;
+use JoliTypo\Fixer\Ellipsis;
+use JoliTypo\Fixer\NoSpaceBeforeComma;
+use JoliTypo\Fixer\SmartQuotes;
 
 class Typograph
 {
-    /**
-     * @var EMTypograph
-     */
-    private $service;
-
     private const TYPICAL_MISTAKES = [
         'вв.</nobr>ек' => 'век',
         '<nobr>' => '',
         '</nobr>' => '',
         '−' => '-',
+        '-' => '-',
+        '–' => '-',
+        ' − ' => ' – ',
     ];
 
-    public function __construct(EMTypograph $baseService)
+    private const FIXERS_LIST = [
+        Dash::class,
+        Ellipsis::class,
+        SmartQuotes::class,
+        NoSpaceBeforeComma::class,
+    ];
+
+    private Fixer $fixer;
+
+    public function __construct(Fixer $fixer)
     {
-        $this->service = $baseService;
+        $this->fixer = $fixer;
+        $this->fixer->setLocale('ru_RU');
+        $this->fixer->setRules(self::FIXERS_LIST);
     }
 
     /**
@@ -32,26 +45,7 @@ class Typograph
      */
     public function typo(string $input): string
     {
-        $this->service->setup(
-            [
-                'Text.paragraphs' => 'off',
-                'Text.breakline' => 'off',
-                'OptAlign.oa_oquote' => 'off',
-                'OptAlign.oa_oquote_extra' => 'off',
-                'OptAlign.oa_obracket_coma' => 'off',
-                'Space.nbsp_before_open_quote' => 'off',
-                'Space.nbsp_before_month' => 'off',
-                'Nobr.super_nbsp' => 'off',
-                'Nobr.nbsp_in_the_end' => 'off',
-                'Nobr.phone_builder' => 'off',
-                'Nobr.phone_builder_v2' => 'off',
-                'Nobr.spaces_nobr_in_surname_abbr' => 'off',
-                'Etc.split_number_to_triads' => 'off',
-            ]
-        );
-
-        $this->service->set_text($input);
-        $result = $this->service->apply();
+        $result = $this->fixer->fix($input);
 
         return $this->postProcessing($result);
     }
@@ -65,7 +59,11 @@ class Typograph
      */
     private function postProcessing(string $input): string
     {
-        $replaced = str_replace(array_keys(self::TYPICAL_MISTAKES), array_values(self::TYPICAL_MISTAKES), $input);
+        $replaced = str_replace(
+            array_keys(self::TYPICAL_MISTAKES),
+            array_values(self::TYPICAL_MISTAKES),
+            $input
+        );
 
         return html_entity_decode($replaced, ENT_QUOTES, 'UTF-8');
     }
