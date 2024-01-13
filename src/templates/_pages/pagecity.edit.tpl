@@ -175,3 +175,6 @@
 <input type="hidden" id="mapcity_pc_osmid" value="{$city.pc_osm_id}" />
 <input type="hidden" id="mapcity_pc_country" value="{$city.pc_country_code}" />
 {/if}
+
+<div id="yandex_ad_city" class="CommonYandexAdverts"></div>
+<div id="yandex_context_city"></div>
