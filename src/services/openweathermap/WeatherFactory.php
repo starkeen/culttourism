@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace app\services\openweathermap;
 
+use Cmfcmf\OpenWeatherMap;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\HttpFactory;
 
 class WeatherFactory
 {
-    public static function build(string $key): WeatherService
+    public static function build(string $key): OpenWeatherMap
     {
         $guzzle = new Client();
-        $http = new PlainHttpClient($guzzle);
+        $httpRequestFactory = new HttpFactory();
 
-        return new WeatherService($http, $key);
+        return new OpenWeatherMap($key, $guzzle, $httpRequestFactory);
     }
 }

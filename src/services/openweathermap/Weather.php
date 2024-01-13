@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace app\services\openweathermap;
 
+use Cmfcmf\OpenWeatherMap\CurrentWeather;
+use DateTime;
 use InvalidArgumentException;
 
-class WeatherData
+class Weather
 {
     private const CODES = [
         200 => 'Гроза с дождем',
@@ -60,132 +62,72 @@ class WeatherData
         906 => 'Град',
     ];
 
-    private array $rawData;
-    private bool $parsed;
+    private CurrentWeather $currentWeather;
 
-    private string $cityName;
-    private string $weatherIcon;
-    private int $temperature;
-    private int $temperatureFeels;
-    private ?int $temperatureMin;
-    private ?int $temperatureMax;
-    private int $pressure;
-    private int $humidity;
-    private float $windSpeed;
-    private int $windDirection;
-    private string $weatherMain;
-    private string $weatherDescription;
-    private int $weatherId;
-
-    public function __construct(array $raw)
+    public function __construct(CurrentWeather $currentWeather)
     {
-        $this->rawData = $raw;
-        $this->parsed = false;
+        $this->currentWeather = $currentWeather;
     }
 
-    private function parse(): void
-    {
-        if (!$this->parsed) {
-            $this->cityName = $this->rawData['name'];
-            $this->temperature = (int) round($this->rawData['main']['temp']);
-            $this->temperatureFeels = (int) round($this->rawData['main']['feels_like']);
-            $this->temperatureMin = isset($this->rawData['main']['temp_min']) ? (int) round($this->rawData['main']['temp_min']) : null;
-            $this->temperatureMax = isset($this->rawData['main']['temp_max']) ? (int) round($this->rawData['main']['temp_max']) : null;
-            $this->pressure = $this->rawData['main']['pressure'];
-            $this->humidity = $this->rawData['main']['humidity'];
-            $this->windSpeed = $this->rawData['wind']['speed'];
-            $this->windDirection = $this->rawData['wind']['deg'];
-
-            $this->weatherIcon = $this->rawData['weather'][0]['icon'];
-            $this->weatherId = $this->rawData['weather'][0]['id'];
-            $this->weatherMain = $this->rawData['weather'][0]['main'];
-            $this->weatherDescription = $this->rawData['weather'][0]['description'];
-
-            $this->parsed = true;
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getCityName(): string
-    {
-        $this->parse();
-
-        return $this->cityName;
-    }
-
-    /**
-     * @return string
-     */
     public function getIcon(): string
     {
-        $this->parse();
-
-        return $this->weatherIcon;
-    }
-
-    /**
-     * Температура со знаком
-     *
-     * @return string
-     */
-    public function getTemperature(): string
-    {
-        $this->parse();
-
-        if (
-            $this->temperatureMin !== null
-            && $this->temperatureMax !== null
-            && $this->temperatureMin !== $this->temperatureMax
-        ) {
-            $result = $this->formatTemperature($this->temperatureMin) . '&hellip;' . $this->formatTemperature($this->temperatureMax);
-        } else {
-            $result = $this->formatTemperature($this->temperature);
-        }
-
-        return $result . '&deg;C';
-    }
-
-    /**
-     * @return string
-     */
-    public function getPressure(): string
-    {
-        $this->parse();
-
-        return $this->pressure . ' кПа';
-    }
-
-    /**
-     * @return string
-     */
-    public function getHumidity(): string
-    {
-        $this->parse();
-
-        return $this->humidity . '%';
-    }
-
-    public function getWindDescription(): string
-    {
-        $this->parse();
-
-        return sprintf('%s&nbsp;%d&nbsp;м/с', $this->getWindDirection($this->windDirection), (int) round($this->windSpeed));
+        return $this->currentWeather->weather->icon;
     }
 
     public function getWeatherText(): string
     {
-        $this->parse();
-
-        return self::CODES[$this->weatherId] ?? $this->weatherMain;
+        return self::CODES[$this->currentWeather->weather->id] ?? $this->currentWeather->weather->description;
     }
 
     public function getWeatherDescription(): string
     {
-        $this->parse();
+        return $this->currentWeather->weather->description
+            . ', сейчас '
+            . $this->currentWeather->clouds->getDescription()
+            . $this->formatTemperature(round($this->currentWeather->temperature->now->getValue())). '&deg;C';
+    }
 
-        return $this->weatherDescription . ', по ощущениям ' . $this->formatTemperature($this->temperatureFeels) . '&deg;C';
+    public function getTemperature(): string
+    {
+        return $this->formatTemperature(round($this->currentWeather->temperature->min->getValue()))
+            . '&hellip;'
+            . $this->formatTemperature(round($this->currentWeather->temperature->max->getValue()))
+            . '°C';
+    }
+
+    public function getPressure(): string
+    {
+        return $this->currentWeather->pressure->getValue() . ' кПа';
+    }
+
+    public function getHumidity(): string
+    {
+        return $this->currentWeather->humidity->getValue() . '%';
+    }
+
+    public function getWindDescription(): string
+    {
+        return sprintf(
+            '%s&nbsp;%d&nbsp;м/с',
+            $this->getWindDirection($this->currentWeather->wind->direction->getValue()),
+            (int) round($this->currentWeather->wind->speed->getValue())
+        );
+    }
+
+    public function timeUntilSunset(): string
+    {
+        $tz = $this->currentWeather->city->timezone;
+        $sunsetTime = $this->currentWeather->sun->set;
+        $sunsetTime->setTimezone($tz);
+        $currentTime = new DateTime('now', $tz);
+        $timeUntil = $currentTime->diff($sunsetTime);
+
+        if ($timeUntil->invert === 1) {
+            return '';
+        }
+
+        return sprintf('до заката %d ч ', $timeUntil->h)
+            . ($timeUntil->i > 0 ? sprintf('%d мин', $timeUntil->i) : '');
     }
 
     private function formatTemperature(float $temperature): string

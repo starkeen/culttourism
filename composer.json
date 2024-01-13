@@ -19,6 +19,7 @@
         "myclabs/php-enum": "^1.7",
         "starkeen/yandex-search-api": "^1.2",
         "hflabs/dadata": "^22.3",
+        "cmfcmf/openweathermap-php-api": "^3.3",
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-SimpleXML": "*",
