@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace app\modules;
 
+use app\constant\OgType;
 use app\core\module\Module;
 use app\core\module\ModuleInterface;
 use app\core\SiteRequest;
 use app\core\SiteResponse;
-use app\exceptions\NotFoundException;
-use app\constant\OgType;
 use app\exceptions\AccessDeniedException;
+use app\exceptions\NotFoundException;
 use app\exceptions\RedirectException;
 use app\model\repository\WordstatRepository;
+use app\services\openweathermap\Weather;
 use app\services\openweathermap\WeatherFactory;
-use app\services\openweathermap\WeatherService;
 use app\utils\JSON;
 use app\utils\Strings;
+use Cmfcmf\OpenWeatherMap;
 use MPageCities;
 use MPhotos;
+use Throwable;
 
 class CityModule extends Module implements ModuleInterface
 {
@@ -37,10 +39,7 @@ class CityModule extends Module implements ModuleInterface
      */
     private $wordstatRepository;
 
-    /**
-     * @var WeatherService
-     */
-    private $weatherService;
+    private OpenWeatherMap|null $weatherService = null;
 
     /**
      * @inheritDoc
@@ -92,14 +91,19 @@ class CityModule extends Module implements ModuleInterface
     {
         $out = ['state' => false, 'content' => '', 'color' => ''];
 
-        $weatherData = $this->getWeatherService()->getWeatherByCoordinates($lat, $lon);
+        try {
+            $weather = $this->getWeatherService()->getWeather(['lat' => $lat, 'lon' => $lon], 'metric', 'ru');
+            $weatherData = new Weather($weather);
+        } catch (Throwable $exception) {
+            $weatherData = null;
+        }
 
         if ($weatherData !== null) {
             $out['state'] = true;
             $out['content'] = $this->templateEngine->getContent(
                 'city/weather.block.tpl',
                 [
-                'weatherData' => $weatherData,
+                    'weatherData' => $weatherData,
                 ]
             );
         }
@@ -551,7 +555,7 @@ class CityModule extends Module implements ModuleInterface
         return $this->wordstatRepository;
     }
 
-    private function getWeatherService(): WeatherService
+    private function getWeatherService(): OpenWeatherMap
     {
         if ($this->weatherService === null) {
             $this->weatherService = WeatherFactory::build($this->globalConfig->getOpenWeatherAPIKey());

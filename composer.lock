@@ -4,8 +4,76 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9091d3b419401af0c950e775911c9b7b",
+    "content-hash": "a79c12e1dd6a4086040acdd6cbbfe8e0",
     "packages": [
+        {
+            "name": "cmfcmf/openweathermap-php-api",
+            "version": "v3.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cmfcmf/OpenWeatherMap-PHP-API.git",
+                "reference": "569d2fba018a6d940fae3ae55ab3e649416378f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cmfcmf/OpenWeatherMap-PHP-API/zipball/569d2fba018a6d940fae3ae55ab3e649416378f8",
+                "reference": "569d2fba018a6d940fae3ae55ab3e649416378f8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-libxml": "*",
+                "ext-simplexml": "*",
+                "php": ">=7.0.0",
+                "psr/cache": "^1 || ^2 || ^3",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0"
+            },
+            "require-dev": {
+                "cache/array-adapter": "^1.0",
+                "http-interop/http-factory-guzzle": "^1.0",
+                "php-http/guzzle6-adapter": "^2.0 || ^1.0",
+                "phpunit/phpunit": "^7 || ^8 || ^9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cmfcmf\\": "Cmfcmf"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Flach (cmfcmf)",
+                    "email": "cmfcmf.flach@gmail.com",
+                    "homepage": "http://cmfcmf.github.io",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP API to parse weather data from OpenWeatherMap.org. This wrapper tries to normalise and abstract the data and remove inconsistencies.",
+            "homepage": "https://github.com/cmfcmf/OpenWeatherMap-PHP-API",
+            "keywords": [
+                "OpenWeatherMap",
+                "api",
+                "free",
+                "owm",
+                "weather"
+            ],
+            "support": {
+                "issues": "https://github.com/cmfcmf/OpenWeatherMap-PHP-API/issues",
+                "source": "https://github.com/cmfcmf/OpenWeatherMap-PHP-API.git"
+            },
+            "funding": [
+                {
+                    "url": "https://ko-fi.com/cmfcmf",
+                    "type": "ko_fi"
+                }
+            ],
+            "time": "2022-02-19T15:37:17+00:00"
+        },
         {
             "name": "ezyang/htmlpurifier",
             "version": "v4.17.0",
@@ -834,6 +902,55 @@
                 }
             ],
             "time": "2023-02-25T19:38:58+00:00"
+        },
+        {
+            "name": "psr/cache",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/cache.git",
+                "reference": "aa5030cfa5405eccfdcb1083ce040c2cb8d253bf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/cache/zipball/aa5030cfa5405eccfdcb1083ce040c2cb8d253bf",
+                "reference": "aa5030cfa5405eccfdcb1083ce040c2cb8d253bf",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Cache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for caching libraries",
+            "keywords": [
+                "cache",
+                "psr",
+                "psr-6"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/cache/tree/3.0.0"
+            },
+            "time": "2021-02-03T23:26:27+00:00"
         },
         {
             "name": "psr/http-client",
