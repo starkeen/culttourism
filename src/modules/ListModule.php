@@ -26,7 +26,6 @@ class ListModule extends Module implements ModuleInterface
         if (strpos($id, '?') !== false) {
             $id = substr($id, 0, strpos($id, '?'));
         }
-        $this->id = $id;
         $regs = [];
 
         $response->getContent()->setCustomJsModule($request->getModuleKey());
