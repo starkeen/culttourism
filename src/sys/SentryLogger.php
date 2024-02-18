@@ -17,6 +17,7 @@ use Sentry\Severity;
 use Sentry\State\Hub;
 use Sentry\State\HubInterface;
 use Sentry\State\Scope;
+use Sentry\Tracing\SamplingContext;
 use Throwable;
 
 class SentryLogger
@@ -47,7 +48,9 @@ class SentryLogger
             [
                 'dsn' => $this->sentryDSN,
                 'capture_silenced_errors' => true,
-                'traces_sample_rate' => 0.2,
+                'traces_sampler' => function (SamplingContext $context): float {
+                    return 0.2;
+                },
                 'environment' => GLOBAL_ERROR_REPORTING ? 'developer' : 'production',
                 'send_default_pii' => true,
             ]

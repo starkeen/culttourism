@@ -17,7 +17,7 @@ class RSSAddUTM extends RSSComponent
         'utm_term' => null,
     ];
 
-    public function __construct(IRSSGenerator $generator, string $source = null)
+    public function __construct(RSSGeneratorInterface $generator, string $source = null)
     {
         parent::__construct($generator);
         $this->utm['utm_source'] = $source;

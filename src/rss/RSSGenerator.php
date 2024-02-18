@@ -13,7 +13,7 @@ use SimpleXMLElement;
  * @property string $webMaster
  * @property string $email
  */
-class RSSGenerator implements IRSSGenerator
+class RSSGenerator implements RSSGeneratorInterface
 {
     protected array $props = [
         'title' => '',

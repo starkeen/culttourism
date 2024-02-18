@@ -2,25 +2,19 @@
 
 namespace app\rss;
 
-use app\includes\Bitly;
+use app\services\shortio\ShortIoClient;
 use RuntimeException;
 
-class RSSBitlyer extends RSSComponent
+class RSSUrlShortener extends RSSComponent
 {
-    /**
-     * @var Bitly
-     */
-    private $bitly;
+    private ShortIoClient $shortener;
 
-    /**
-     * @var string
-     */
-    public $rootUrl;
+    public ?string $rootUrl = null;
 
-    public function __construct(IRSSGenerator $generator, Bitly $bitly)
+    public function __construct(RSSGeneratorInterface $generator, ShortIoClient $shortener)
     {
         parent::__construct($generator);
-        $this->bitly = $bitly;
+        $this->shortener = $shortener;
     }
 
     /**
@@ -38,7 +32,7 @@ class RSSBitlyer extends RSSComponent
                 $pattern,
                 function ($matches) {
                     $linkOld = $matches[2];
-                    $linkNew = $this->bitly->short($linkOld);
+                    $linkNew = $this->shortener->short($linkOld);
 
                     return str_replace($linkOld, $linkNew, $matches[0]);
                 },
