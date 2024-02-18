@@ -322,7 +322,7 @@ class DataChecker
             $addr = preg_replace('/(\d{3})(\s)(\d{3})/', '$1$3', $item[$this->entityField]);
             $cleaned = $this->dadata->clean('address', $addr);
             $result = $cleaned['result'];
-            $quality = $cleaned['quality_parse'] ?? null;
+            $quality = $cleaned['qc'] ?? null;
             if ($quality === 0) {
                 $dotted = str_replace(array_keys($this->dotting), array_values($this->dotting), $cleaned['result']);
                 $result = $this->typograph->typo($dotted);
@@ -340,7 +340,7 @@ class DataChecker
                     $cp->updateByPk($item[$this->entityId], $geoData);
                 }
             } else {
-                $result = '[quality:' . $cleaned['quality_parse'] ?? null . '] ' . $result;
+                $result = '[quality:' . $quality . '] ' . $result;
                 $log[] = [
                     'quality_parse',
                     $addr,
