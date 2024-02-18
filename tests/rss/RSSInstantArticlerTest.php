@@ -2,18 +2,18 @@
 
 namespace tests\rss;
 
-use app\rss\IRSSGenerator;
+use app\rss\RSSGeneratorInterface;
 use app\rss\RSSInstantArticler;
 use PHPUnit\Framework\TestCase;
 
 class RSSInstantArticlerTest extends TestCase
 {
-    /** @var IRSSGenerator */
+    /** @var RSSGeneratorInterface */
     private $generator;
 
     public function setUp(): void
     {
-        $this->generator = $this->getMockBuilder(IRSSGenerator::class)->getMock();
+        $this->generator = $this->getMockBuilder(RSSGeneratorInterface::class)->getMock();
         $this->generator->method('process')
                         ->willReturnCallback(
                             function ($arg) {

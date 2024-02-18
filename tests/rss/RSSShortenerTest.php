@@ -2,24 +2,23 @@
 
 namespace tests\rss;
 
-use app\includes\Bitly;
-use app\rss\IRSSGenerator;
-use app\rss\RSSBitlyer;
+use app\rss\RSSGeneratorInterface;
+use app\rss\RSSUrlShortener;
+use app\services\shortio\ShortIoClient;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 
-class RSSBitlyerTest extends TestCase
+class RSSShortenerTest extends TestCase
 {
-    /** @var IRSSGenerator */
+    /** @var RSSGeneratorInterface */
     private $generator;
 
-    /** @var Bitly|MockObject */
-    private $bitly;
+    /** @var ShortIoClient|MockObject */
+    private $shortener;
 
     public function setUp(): void
     {
-        $this->generator = $this->getMockBuilder(IRSSGenerator::class)
+        $this->generator = $this->getMockBuilder(RSSGeneratorInterface::class)
                                 ->getMock();
         $this->generator->method('process')
                         ->willReturnCallback(
@@ -39,11 +38,11 @@ class RSSBitlyerTest extends TestCase
                             }
                         );
 
-        $this->bitly = $this->getMockBuilder(Bitly::class)
+        $this->shortener = $this->getMockBuilder(ShortIoClient::class)
                             ->disableOriginalConstructor()
                             ->onlyMethods(['short'])
                             ->getMock();
-        $this->bitly->method('short')->willReturnCallback(
+        $this->shortener->method('short')->willReturnCallback(
             static function ($arg) {
                 return sprintf('https://%s.tld/', md5($arg));
             }
@@ -57,13 +56,13 @@ class RSSBitlyerTest extends TestCase
      *
      * @dataProvider getExamples
      */
-    public function testProcessing(array $in, string $expected, int $count)
+    public function testProcessing(array $in, string $expected, int $count): void
     {
-        $this->bitly->expects($this->exactly($count))->method('short');
+        $this->shortener->expects($this->exactly($count))->method('short');
 
-        $bitlyer = new RSSBitlyer($this->generator, $this->bitly);
-        $bitlyer->rootUrl = 'https://host.tld/';
-        $out = $bitlyer->process($in);
+        $urlShortener = new RSSUrlShortener($this->generator, $this->shortener);
+        $urlShortener->rootUrl = 'https://host.tld/';
+        $out = $urlShortener->process($in);
 
         $this->assertEquals($expected, $out);
     }

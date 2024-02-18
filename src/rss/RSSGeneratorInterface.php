@@ -5,7 +5,7 @@ namespace app\rss;
 /**
  * @property string $url
  */
-interface IRSSGenerator
+interface RSSGeneratorInterface
 {
     public function __get($name);
 
