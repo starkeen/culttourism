@@ -341,11 +341,6 @@ class DataChecker
                 }
             } else {
                 $result = '[quality:' . $quality . '] ' . $result;
-                $log[] = [
-                    'quality_parse',
-                    $addr,
-                    $cleaned,
-                ];
             }
             $dc->markChecked($this->entityType, $item[$this->entityId], $this->entityField, $result);
         }
