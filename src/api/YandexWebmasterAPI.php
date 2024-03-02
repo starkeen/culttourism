@@ -11,17 +11,9 @@ class YandexWebmasterAPI
 {
     private Client $client;
 
-    private string $token = YANDEX_WEBMASTER_TOKEN;
+    private string $hostKey = 'https:culttourism.ru:443';
 
-    /**
-     * @var string
-     */
-    private $hostKey = 'https:culttourism.ru:443';
-
-    /**
-     * @var int
-     */
-    private $userId;
+    private ?int $userId = null;
 
     /**
      * @param Client $client
@@ -36,18 +28,21 @@ class YandexWebmasterAPI
      */
     public function getUploadUrl(): ?string
     {
-        $url = 'https://api.webmaster.yandex.net/v4/user/' . $this->getUserId() . '/hosts/' . $this->hostKey . '/turbo/uploadAddress';
+        $url = 'https://api.webmaster.yandex.net/v4/user/'
+            . $this->getUserId()
+            . '/hosts/' . $this->hostKey
+            . '/turbo/uploadAddress';
 
         $response = $this->client->get(
             $url,
             [
                 'headers' => [
-                    'Authorization' => 'OAuth ' . $this->token,
+                    'Authorization' => 'OAuth ' . YANDEX_WEBMASTER_TOKEN,
                 ],
             ]
         );
         $rawData = $response->getBody()->getContents();
-        $data = json_decode($rawData, true);
+        $data = json_decode($rawData, true, 512, JSON_THROW_ON_ERROR);
 
         return $data['upload_address'] ?? null;
     }
@@ -60,6 +55,7 @@ class YandexWebmasterAPI
     public function uploadRSS(string $fileName): ?string
     {
         $uploadUrl = $this->getUploadUrl();
+
         $body = fopen($fileName, 'rb');
         $response = $this->client->request(
             'POST',
@@ -67,7 +63,7 @@ class YandexWebmasterAPI
             [
                 'body' => $body,
                 'headers' => [
-                    'Authorization' => 'OAuth ' . $this->token,
+                    'Authorization' => 'OAuth ' . YANDEX_WEBMASTER_TOKEN,
                     'Content-Type' => 'application/rss+xml',
                 ],
             ]

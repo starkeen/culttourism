@@ -14,17 +14,11 @@ class Cache
     /**
      * @var self[]
      */
-    protected static array $instances = [];
+    private static array $instances = [];
 
-    /**
-     * @var string
-     */
-    private $cacheDir;
+    private string $cacheDir;
 
-    /**
-     * @var mixed
-     */
-    private $cacheCurrent;
+    private mixed $cacheCurrent;
 
     private function __construct(string $cacheId)
     {

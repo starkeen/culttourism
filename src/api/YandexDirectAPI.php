@@ -9,13 +9,15 @@ use Throwable;
  */
 class YandexDirectAPI
 {
-    public const MAX_COUNT = 5;
+    private const MAX_COUNT = 5;
 
-    protected $token = '';
-    protected $urlService = 'https://api.direct.yandex.ru/v4/json/';
-    protected $urlOauth = 'https://oauth.yandex.ru/token';
+    private const SERVICE_URL = 'https://api.direct.yandex.ru/v4/json/';
 
-    public function __construct($token)
+    private const OAUTH_URL = 'https://oauth.yandex.ru/token';
+
+    private string $token;
+
+    public function __construct(string $token)
     {
         $this->token = $token;
     }
@@ -37,40 +39,48 @@ class YandexDirectAPI
                 'GeoID' => [0],
             ],
         ];
+
         foreach ($phrases as $phrase) {
             $rq['param']['Phrases'][] = iconv('ISO-8859-1', 'utf-8', $phrase);
         }
+
         $res = $this->getRequest($rq);
         if (isset($res['data'])) {
             return $res['data'];
         }
+
         if (isset($res['error_code'])) {
-            throw new YandexDirectException('API error:' . $res['error_detail'] ?? 'unknown', $res['error_code']);
+            $errorDetail = $res['error_detail'] ?? 'unknown';
+            throw new YandexDirectException('API error:' . $errorDetail, $res['error_code']);
         }
 
-        throw new YandexDirectException('Empty DATA response' . print_r($res, true));
+        throw new YandexDirectException('Empty DATA response' . var_export($res, true));
     }
 
     /**
      * Получение данных по отчету
      *
-     * @param int $report_id - ID отчета
+     * @param int $reportId - ID отчета
      *
      * @return array список слов в отчете
      * @throws YandexDirectException
      */
-    public function getReport(int $report_id): array
+    public function getReport(int $reportId): array
     {
         $res = $this->getRequest(
             [
                 'method' => 'GetWordstatReport',
-                'param' => $report_id,
+                'param' => $reportId,
             ]
         );
         $reps = [];
         if (isset($res['data'])) {
             foreach ($res['data'] as $data) {
-                $rep = ['word' => $data['Phrase'], 'weight' => 0, 'rep_id' => $report_id];
+                $rep = [
+                    'word' => $data['Phrase'],
+                    'weight' => 0,
+                    'rep_id' => $reportId,
+                ];
                 foreach ($data['SearchedWith'] as $item) {
                     if ($item['Shows'] >= $rep['weight']) {
                         $rep['weight'] = $item['Shows'];
@@ -79,9 +89,7 @@ class YandexDirectAPI
                 $reps[] = $rep;
             }
         } else {
-            $ex = new YandexDirectException("Empty data in report $report_id");
-            $ex->level = 'warning';
-            throw $ex;
+            throw new YandexDirectException("Empty data in report $reportId");
         }
 
         return $reps;
@@ -100,14 +108,14 @@ class YandexDirectAPI
             ]
         );
 
-        $open_reports = [];
-        if (isset($res['data']) && !empty($res['data'])) {
+        $openReports = [];
+        if (!empty($res['data'])) {
             foreach ((array) $res['data'] as $rep) {
-                $open_reports[] = $rep;
+                $openReports[] = $rep;
             }
         }
 
-        return $open_reports;
+        return $openReports;
     }
 
     /**
@@ -161,16 +169,16 @@ class YandexDirectAPI
     /**
      * Удаление отчета по ID
      *
-     * @param int $report_id - ID отчета
+     * @param int $reportId - ID отчета
      *
      * @return array
      */
-    public function deleteReport($report_id): array
+    public function deleteReport(int $reportId): array
     {
         return $this->getRequest(
             [
                 'method' => 'DeleteWordstatReport',
-                'param' => $report_id,
+                'param' => $reportId,
             ]
         );
     }
@@ -185,7 +193,6 @@ class YandexDirectAPI
         $res = $this->getRequest(
             [
                 'method' => 'GetClientsUnits',
-                //'param' => array('starkeen'),
             ]
         );
 
@@ -196,27 +203,25 @@ class YandexDirectAPI
      * Получение токена по коду подтверждения
      *
      * @param string $apikey  - ID приложения
-     * @param string $apipass - пароль приложения
+     * @param string $apiPass - пароль приложения
      * @param string $code    - полученный код
      *
      * @return string - токен
      */
-    public function getTokenConfirm($apikey, $apipass, $code)
+    public function getTokenConfirm(string $apikey, string $apiPass, string $code): string
     {
         $query = [
             'grant_type' => 'authorization_code',
             'code' => $code,
             'client_id' => $apikey,
-            'client_secret' => $apipass,
+            'client_secret' => $apiPass,
         ];
         try {
-            $answer = $this->curlPostExec($this->urlOauth, http_build_query($query));
-            $response = json_decode($answer);
+            $answer = $this->curlPostExec(self::OAUTH_URL, http_build_query($query));
 
-            return $response->access_token;
+            return json_decode($answer, false, 512, JSON_THROW_ON_ERROR)->access_token;
         } catch (Throwable $e) {
-            echo $e->getMessage();
-            exit();
+            throw new YandexDirectException($e->getMessage());
         }
     }
 
@@ -227,31 +232,31 @@ class YandexDirectAPI
      *
      * @return array
      */
-    protected function getRequest($request)
+    protected function getRequest(array $request): array
     {
         $request['locale'] = 'ru';
         $request['token'] = $this->token;
+
         try {
-            $answer = $this->curlPostExec($this->urlService, json_encode($request));
+            $answer = $this->curlPostExec(self::SERVICE_URL, json_encode($request, JSON_THROW_ON_ERROR));
         } catch (Throwable $e) {
             echo $e->getMessage();
             exit();
         }
 
-        return json_decode($answer, true);
+        return json_decode($answer, true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
      * Отправка POST-запроса по указанному URL
      *
-     * @param string $url  - URL
-     *                     запроса
+     * @param string $url  - URL запроса
      * @param string $data - данные запроса (json или http_build_query)
      *
      * @return string чистый ответ сервера
      * @throws YandexDirectException
      */
-    protected function curlPostExec($url, $data)
+    protected function curlPostExec(string $url, string $data)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
