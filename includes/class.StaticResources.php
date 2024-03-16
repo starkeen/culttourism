@@ -11,15 +11,9 @@ class StaticResources
     private const DIRECTORY_CSS = '/css/';
     private const DIRECTORY_JS = '/js/';
 
-    /**
-     * @var StaticFilesConfigInterface
-     */
-    private $config;
+    private StaticFilesConfigInterface $config;
 
-    /**
-     * @var int
-     */
-    private $timestampOld;
+    private int $timestampOld;
 
     /**
      * @param StaticFilesConfigInterface $config
@@ -39,16 +33,11 @@ class StaticResources
     public function getFull(Type $type, Pack $pack): string
     {
         $out = '';
-        switch ($type->getValue()) {
-            case Type::CSS:
-                $packs = $this->config->getCSSList();
-                break;
-            case Type::JS:
-                $packs = $this->config->getJavascriptList();
-                break;
-            default:
-                throw new InvalidArgumentException('Неизвестный тип');
-        }
+        $packs = match ($type->getValue()) {
+            Type::CSS => $this->config->getCSSList(),
+            Type::JS => $this->config->getJavascriptList(),
+            default => throw new InvalidArgumentException('Неизвестный тип'),
+        };
         $files = $packs[$pack->getValue()];
         foreach ($files as $file) {
             $out .= file_get_contents($file);
@@ -64,22 +53,23 @@ class StaticResources
     {
         $out = [];
         foreach ($this->config->getCSSList() as $pack => $files) {
-            $file_out = GLOBAL_DIR_ROOT . self::DIRECTORY_CSS . self::PREFIX . '-' . $pack . '.css';
-            file_put_contents($file_out, '');
+            $fileOut = GLOBAL_DIR_ROOT . self::DIRECTORY_CSS . self::PREFIX . '-' . $pack . '.css';
+            file_put_contents($fileOut, '');
             foreach ((array) $files as $file) {
-                file_put_contents($file_out, "/*\n$file\n*/\n\n\n", FILE_APPEND);
-                file_put_contents($file_out, file_get_contents($file) . "\n", FILE_APPEND);
+                file_put_contents($fileOut, "/*\n$file\n*/\n\n\n", FILE_APPEND);
+                file_put_contents($fileOut, file_get_contents($file) . "\n", FILE_APPEND);
             }
-            $file_hash_new = crc32(file_get_contents($file_out));
-            $file_production = GLOBAL_DIR_ROOT . self::DIRECTORY_CSS . self::PREFIX . '-' . $pack . '-' . $file_hash_new . '.min.css';
-            if (!file_exists($file_production)) {
-                $minified = $this->getMinifiedCss(file_get_contents($file_out));
+            $fileHashNew = crc32(file_get_contents($fileOut));
+            $fileProduction = GLOBAL_DIR_ROOT . self::DIRECTORY_CSS
+                . self::PREFIX . '-' . $pack . '-' . $fileHashNew . '.min.css';
+            if (!file_exists($fileProduction)) {
+                $minified = $this->getMinifiedCss(file_get_contents($fileOut));
                 if ($minified !== '') {
-                    file_put_contents($file_production, $minified);
+                    file_put_contents($fileProduction, $minified);
                 }
             }
-            unlink($file_out);
-            $out[$pack] = $file_production;
+            unlink($fileOut);
+            $out[$pack] = $fileProduction;
         }
 
         return $out;
@@ -92,22 +82,23 @@ class StaticResources
     {
         $out = [];
         foreach ($this->config->getJavascriptList() as $pack => $files) {
-            $file_out = GLOBAL_DIR_ROOT . self::DIRECTORY_JS . self::PREFIX . '-' . $pack . '.js';
-            file_put_contents($file_out, '');
+            $fileOut = GLOBAL_DIR_ROOT . self::DIRECTORY_JS . self::PREFIX . '-' . $pack . '.js';
+            file_put_contents($fileOut, '');
             foreach ((array) $files as $file) {
-                file_put_contents($file_out, "/*\n$file\n*/\n\n\n", FILE_APPEND);
-                file_put_contents($file_out, file_get_contents($file) . "\n", FILE_APPEND);
+                file_put_contents($fileOut, "/*\n$file\n*/\n\n\n", FILE_APPEND);
+                file_put_contents($fileOut, file_get_contents($file) . PHP_EOL, FILE_APPEND);
             }
-            $file_hash_new = crc32(file_get_contents($file_out));
-            $file_production = GLOBAL_DIR_ROOT . self::DIRECTORY_JS . self::PREFIX . '-' . $pack . '-' . $file_hash_new . '.min.js';
-            if (!file_exists($file_production)) {
-                $minified = $this->getMinifiedJavascript(file_get_contents($file_out));
+            $fileHashNew = crc32(file_get_contents($fileOut));
+            $fileProduction = GLOBAL_DIR_ROOT . self::DIRECTORY_JS
+                . self::PREFIX . '-' . $pack . '-' . $fileHashNew . '.min.js';
+            if (!file_exists($fileProduction)) {
+                $minified = $this->getMinifiedJavascript(file_get_contents($fileOut));
                 if ($minified !== '') {
-                    file_put_contents($file_production, $minified);
+                    file_put_contents($fileProduction, $minified);
                 }
             }
-            unlink($file_out);
-            $out[$pack] = $file_production;
+            unlink($fileOut);
+            $out[$pack] = $fileProduction;
         }
 
         return $out;
@@ -151,7 +142,7 @@ class StaticResources
             ksort($files[$id]);
         }
 
-        foreach ($files as $id => $variant) {
+        foreach ($files as $variant) {
             array_pop($variant);
             foreach ((array) $variant as $file) {
                 if ($file['delete']) {

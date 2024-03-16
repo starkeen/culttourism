@@ -44,20 +44,32 @@ class StaticFilesConfig implements StaticFilesConfigInterface
     {
         return [
             Pack::COMMON => self::JS_COMMON,
-            Pack::MAP => array_merge(self::JS_COMMON, [
-                GLOBAL_DIR_ROOT . '/js/map.js',
-            ]),
-            Pack::LIST => array_merge(self::JS_COMMON, [
-                GLOBAL_DIR_ROOT . '/js/map_page_list.js',
-            ]),
-            Pack::CITY => array_merge(self::JS_COMMON, [
-                GLOBAL_DIR_ROOT . '/js/map_page_city.js',
-                GLOBAL_DIR_ROOT . '/js/adv_city.js',
-            ]),
-            Pack::POINT => array_merge(self::JS_COMMON, [
-                GLOBAL_DIR_ROOT . '/js/adv_point.js',
-                GLOBAL_DIR_ROOT . '/js/map_page_point.js',
-            ]),
+            Pack::MAP => array_merge(
+                self::JS_COMMON,
+                [
+                    GLOBAL_DIR_ROOT . '/js/map.js',
+                ]
+            ),
+            Pack::LIST => array_merge(
+                self::JS_COMMON,
+                [
+                    GLOBAL_DIR_ROOT . '/js/map_page_list.js',
+                ]
+            ),
+            Pack::CITY => array_merge(
+                self::JS_COMMON,
+                [
+                    GLOBAL_DIR_ROOT . '/js/map_page_city.js',
+                    GLOBAL_DIR_ROOT . '/js/adv_city.js',
+                ]
+            ),
+            Pack::POINT => array_merge(
+                self::JS_COMMON,
+                [
+                    GLOBAL_DIR_ROOT . '/js/adv_point.js',
+                    GLOBAL_DIR_ROOT . '/js/map_page_point.js',
+                ]
+            ),
             Pack::API => [
                 GLOBAL_DIR_ROOT . '/js/api.js',
             ],
