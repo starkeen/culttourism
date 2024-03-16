@@ -26,6 +26,17 @@ class CookieStorage
      */
     public function setCookie(string $name, string $value, int $lifeTime): void
     {
-        setcookie($name, $value, time() + $lifeTime, '/', '', !GLOBAL_ERROR_REPORTING, !GLOBAL_ERROR_REPORTING);
+        setcookie(
+            $name,
+            $value,
+            [
+                'expires' => time() + $lifeTime, // Время жизни куки
+                'path' => '/', // Путь, для которого кука будет доступна
+                'domain' => '', // Домен куки
+                'secure' => !GLOBAL_ERROR_REPORTING, // Устанавливать куку только по защищенному соединению
+                'httponly' => !GLOBAL_ERROR_REPORTING, // Доступ к куке только через HTTP-протокол
+                'samesite' => 'Strict', // Атрибут SameSite
+            ],
+        );
     }
 }

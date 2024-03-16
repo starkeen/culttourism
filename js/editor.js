@@ -320,7 +320,6 @@ $(document).ready(function () {
 
     //--------------------------------------- POINT GPS ------------------------------
     $(".point_latlon").live("click", function () {
-        console.log("open window for point " + this.id.split("_")[1]);
         showWindByURL("/ajax/point/getformGPS/", {
             pid: this.id.split("_")[1]
         });
