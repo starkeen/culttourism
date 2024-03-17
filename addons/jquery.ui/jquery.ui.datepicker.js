@@ -653,7 +653,7 @@
             }
             var isFixed = false;
             $(input).parents().each(function () {
-                isFixed |  = $(this).css('position') == 'fixed';
+                isFixed |= $(this).css('position') == 'fixed';
                 return !isFixed;
             });
             if (isFixed && $.browser.opera) { // correction for Opera when fixed and scrolled
