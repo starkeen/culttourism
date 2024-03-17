@@ -79,19 +79,14 @@
     </head>
     <body>
         {literal}
-        <script type="text/javascript">
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-            ga('create', 'UA-6799673-8', 'auto');
-            ga('send', 'pageview');
-            window.onerror = function (msg, url, line) {
-                var preventErrorAlert = true;
-                ga('send', 'event', 'JS Error', msg, navigator.userAgent + ' -> ' + url + " : " + line, 0);
-                return preventErrorAlert;
-            };
-        </script>
+            <script async src="https://www.googletagmanager.com/gtag/js?id=G-86NVBND771"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', 'G-86NVBND771');
+            </script>
             <script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)}; m[i].l=1*new Date(); for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }} k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)}) (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym"); ym(1209661, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true }); </script> <noscript><div><img src="https://mc.yandex.ru/watch/1209661" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
         {/literal}
         <div id="wrapper">
