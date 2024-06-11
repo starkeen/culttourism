@@ -7,7 +7,7 @@ namespace tests\sys;
 use app\sys\TemplateEngine;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Smarty;
+use Smarty\Smarty;
 
 class TemplateEngineTest extends TestCase
 {

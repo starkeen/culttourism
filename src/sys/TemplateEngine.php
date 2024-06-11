@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\sys;
 
-use Smarty;
+use Smarty\Smarty;
 
 class TemplateEngine
 {
